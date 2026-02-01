@@ -1,0 +1,87 @@
+<section class="teams-table">
+  <div class="container-fluid">
+    <h2 class="teams-title">Custom Payment Plans</h2>
+    <div class="proj-details">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="table table-responsive">
+            <table class="table table-bordered">
+              <tr>
+                <th>ID</th>
+                <th>Plan Name</th>
+                <th>Unit Serial</th>
+                <th>Project Name</th>
+                <th>Status</th>
+                <th>Created By</th>
+                <th>Created At</th>
+                <th>Action</th>
+              </tr>
+              <tr *ngFor="let payment of payments" [ngClass]="{ 'bg-success': payment.status == 'approved', 'bg-danger': payment.status == 'declined' }">
+                <td>#{{ payment.id }}</td>
+                <td>{{ payment.plan_name }}</td>
+                <td>{{ payment?.unit?.serial }}</td>
+                <td>{{ payment?.project?.name }}</td>
+                <td>{{ payment?.status }}</td>
+                <td>{{ payment?.user?.name }}</td>
+                <td>{{ payment?.created_at }}</td>
+                <td>
+                  <div class="dropdown" dropdown>
+                    <img
+                      class="more-options-icon"
+                      src="assets/img/show-more-button-with-three-dots.svg"
+                      dropdown-open
+                    />
+                    <ul class="dropdown-menu">
+                      <li *ngIf="payment.status == 'approved' && payment?.unit?.status == 'Available' || (payment?.unit?.status == 'Temp Blocked' && payment?.unit?.temp_block_by == userInfo.id)" (click)="resrveUnit(payment?.unit?.id, payment?.unit?.status, payment)">
+                        <a>
+                          <span>Reserve Unit</span>
+                        </a>
+                      </li>
+                      <li (click)="edit(payment.id)" *ngIf="payment?.can_edit">
+                        <a>
+                          <span class="doc_link">Edit</span>
+                        </a>
+                      </li>
+                      <li (click)="view(payment.id)">
+                        <a>
+                          <span class="doc_link">View</span>
+                        </a>
+                      </li>
+                      <li (click)="getPdf(payment.id)">
+                        <a>
+                          <span class="doc_link">pdf</span>
+                        </a>
+                      </li>
+                      <li (click)="getExcel(payment.id)">
+                        <a>
+                          <span class="doc_link">excel</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div class="col-xs-12">
+            <div class="col-md-12 text-center">
+              <ngb-pagination
+                [collectionSize]="raw_payments?.last_page * 10"
+                [(page)]="pageTest"
+                [maxSize]="5"
+                [rotate]="true"
+                [ellipses]="true"
+                [boundaryLinks]="true"
+                (pageChange)="pageChange($event)"
+                [size]="'lg'"
+              >
+              </ngb-pagination>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- <p>{{ team_tree?.branch?.name }}</p> -->

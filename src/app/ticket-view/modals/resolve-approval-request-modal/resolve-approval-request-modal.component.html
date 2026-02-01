@@ -1,0 +1,35 @@
+<modal #modal title="Resolve request #{{ticket?.pending_approval?.id}}" modalClass="modal-md"
+  [hideCloseButton]="false" [closeOnOutsideClick]="true"  >
+  <modal-header> </modal-header>
+  <modal-content>
+    <div class="row">
+      <div class="col-12" style="padding: 0 15px;">
+        <label for="">Request description:</label>
+        <p>{{ticket?.pending_approval?.description || 'No description found!!!'}}</p>
+      </div>
+    </div>
+    <div class="row marign-top-10">
+      <div class="form-group col-xs-6">
+        <label for="">Your feedback: <span style="color: red;"><small>(required)</small></span> </label>
+        <textarea name="requestApprovalFeedBackDescription" [(ngModel)]="requestResolve.feedback.description" cols="25"
+          rows="5"></textarea>
+      </div>
+      <div class="form-group col-xs-6">
+        <label for="">Feedback Attachments: </label>
+        <input type="file" class="form-control" id="document" multiple #requestApprovalFileInput
+          (change)="onFeedbackFilesChange($event)" required />
+      </div>
+    </div>
+  </modal-content>
+  <modal-footer>
+
+    <button class="btn btn-danger" (click)="submit(false)" title="Irreversible action">
+      Deny
+    </button>
+
+    <button class="btn btn-success" (click)="submit(true)" title="Irreversible action">
+      Accept
+    </button>
+
+  </modal-footer>
+</modal>

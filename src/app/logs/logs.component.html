@@ -1,0 +1,50 @@
+<div *ngIf="!coming_soon" class="container-fluid logs-page">
+  <div class="row">
+    <div class="col-md-3">
+      <div class="log-filter-outer-container">
+        <div class="log-filter-headline">
+          <h4>Log Filter</h4>
+        </div>
+        <div class="log-filter-inputs-container">
+          <form>
+            <div class="form-control">
+              <label for="">Select Log</label>
+              <select name="log_type" id="log_type">
+                <option value="1">value 1</option>
+              </select>
+            </div>
+            <div class="form-control">
+              <label for="">Select a filter 1</label>
+              <select name="filter_type" id="filter_type">
+                <option value="type 1">value 2</option>
+              </select>
+            </div>
+            <div class="form-control">
+              <label for="">Select a filter 2</label>
+              <select name="filter_type" id="filter_type">
+                <option value="type 1">value 2</option>
+              </select>
+            </div>
+          </form>
+        </div>
+        <div class="button-container">
+          <button>Apply Filter</button>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-9">
+      <div class="logs-container">
+        <h4>Logs</h4>
+        <div class="log">
+          <div class="highlight"></div>
+          <div class="rotation">
+            <p class="rotation-date">9/10/2010</p>
+            <p class="rotation-text">log action happened here</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-upcoming-scene *ngIf="coming_soon" [name]="'Logs'"></app-upcoming-scene>

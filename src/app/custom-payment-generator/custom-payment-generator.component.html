@@ -1,0 +1,1082 @@
+<section class="projects">
+  <div class="container-fluid">
+    <h2>
+      Custom Payment Generator
+      <span *ngIf="payment_plan_details" class="payment-status">{{
+        payment_plan_details?.status
+      }}</span>
+    </h2>
+    <div class="row">
+      <div
+        class="w-55 p-h-20"
+        [ngClass]="{ 'w-full': mode == 'edit' || mode == 'view' }"
+      >
+        <div class="box clear-fix" *ngIf="generatedPrices">
+          <div class="row d-flex flex-wrap" *ngIf="mode == 'edit' || mode == 'add'">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="">Type</label>
+                <ng-select placeholder="Select Type" [(ngModel)]="payment_type">
+                  <ng-option
+                    *ngFor="let type of payment_types"
+                    [value]="type?.value"
+                  >
+                    {{ type?.name }}
+                  </ng-option>
+                </ng-select>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="">Number</label>
+                <input
+                  [(ngModel)]="payment_number"
+                  type="number"
+                  class="form-control"
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="">Payment Type</label>
+                <ng-select placeholder="Select Payment Type" [(ngModel)]="payment_type_amount">
+                  <ng-option value="amount">Single Payment Amount</ng-option>
+                  <ng-option value="percentage">percentage</ng-option>
+                </ng-select>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label
+                  for="payment_amount"
+                  *ngIf="payment_type_amount == 'amount'"
+                  >Single Payment Amount</label
+                >
+                <label
+                  for="payment_amount"
+                  *ngIf="payment_type_amount == 'percentage'"
+                  >Percentage</label
+                >
+                <input
+                  [(ngModel)]="payment_amount"
+                  type="text"
+                  class="form-control"
+                  oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="col-md-12 percentage-actions margin-top-20"
+            *ngIf="mode == 'edit' || mode == 'add'"
+          >
+            <div class="d-flex justify-content-end w-100">
+              <button
+                class="add-btn btn btn-default btn-black"
+                (click)="calculateTable()"
+              >
+                Add
+              </button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12 percentage-actions">
+              <div class="percentage-container">
+                <div class="percentage-inner">
+                  Total Remaining: {{ remainingAmount | currency : " " }}
+                </div>
+              </div>
+              <div class="percentage-container">
+                <div class="percentage-inner">
+                  Percentage Until Delivery: {{ completionRate }} %
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12 percentage-actions margin-top-20">
+              <div class="percentage-container">
+                <div class="percentage-inner">
+                  Unit Price:
+                  {{ generatedPrices[0].unit_price | currency : " " }}
+                </div>
+              </div>
+              <div class="percentage-container">
+                <div class="percentage-inner">
+                  Unit Remaining: {{ unitRemaining | currency : " " }}
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12 percentage-actions margin-top-20">
+              <div class="percentage-container">
+                <div class="percentage-inner">
+                  Maintenance Fees:
+                  {{ generatedPrices[0].maintenance_fees | currency : " " }}
+                </div>
+              </div>
+              <div class="percentage-container">
+                <div class="percentage-inner">
+                  Maintenance Remaining:
+                  {{ maintenanceRemaining | currency : " " }}
+                </div>
+              </div>
+            </div>
+            <div
+              class="col-md-12 percentage-actions margin-top-20"
+              *ngIf="generatedPrices[0]?.storage_price"
+            >
+              <div class="percentage-container">
+                <div class="percentage-inner">
+                  Storage Price:
+                  {{ generatedPrices[0].storage_price | currency : " " }}
+                </div>
+              </div>
+              <div
+                class="percentage-container"
+                *ngIf="!is_merge_storage_price_accessor"
+              >
+                <div class="percentage-inner">
+                  Storage Remaining: {{ storageRemaining | currency : " " }}
+                </div>
+              </div>
+            </div>
+            <div
+              class="col-md-12 percentage-actions margin-top-20"
+              *ngIf="generatedPrices[0]?.extra_outdoor_meter_price"
+            >
+              <div class="percentage-container">
+                <div class="percentage-inner">
+                  Extra Outdoor Meters Price:
+                  {{
+                    generatedPrices[0].extra_outdoor_meter_price
+                      | currency : " "
+                  }}
+                </div>
+              </div>
+              <div
+                class="percentage-container"
+                *ngIf="!is_merge_extra_outdoor_price_accessor"
+              >
+                <div class="percentage-inner">
+                  Extra Outdoor Meters Price Remaining:
+                  {{ extraOutDoorRemaining | currency : " " }}
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12 percentage-actions margin-top-20">
+              <div
+                class="percentage-container"
+                *ngIf="generatedPrices[0].unit_outdoor_meter_price"
+              >
+                <div class="percentage-inner">
+                  Outdoor Price / meter:
+                  {{
+                    generatedPrices[0].unit_outdoor_meter_price | currency : " "
+                  }}
+                </div>
+              </div>
+              <div
+                class="percentage-container"
+                *ngIf="generatedPrices[0].garage_price"
+              >
+                <div class="percentage-inner">
+                  Garage Price:
+                  {{ generatedPrices[0].garage_price | currency : " " }}
+                </div>
+              </div>
+              <div
+                class="percentage-container"
+                *ngIf="
+                  generatedPrices[0].garage_price &&
+                  !is_merge_garage_price_accessor
+                "
+              >
+                <div class="percentage-inner">
+                  Garage Remaining: {{ garageRemaining | currency : " " }}
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12 percentage-actions margin-top-20">
+              <div class="percentage-container">
+                <div class="percentage-inner">
+                  Indoor Price / meter:
+                  {{
+                    generatedPrices[0].unit_indoor_meter_price | currency : " "
+                  }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="table table-responsive margin-top-20">
+                <table class="table table-bordered">
+                  <tr>
+                    <th>Type</th>
+                    <th>Name</th>
+                    <th>Amount</th>
+                    <th>Percentage</th>
+                    <th>Static Date</th>
+                    <th>Action</th>
+                  </tr>
+                  <tr *ngFor="let payment of paymentTable; let index = index">
+                    <td>{{ payment?.type_text || payment?.type }}</td>
+                    <td>
+                      <input
+                        [disabled]="mode == 'view'"
+                        type="text"
+                        class="form-control table-input"
+                        [(ngModel)]="payment.name"
+                        name="{{ name + index }}"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        [disabled]="mode == 'view'"
+                        type="text"
+                        class="form-control table-input"
+                        [(ngModel)]="payment.amount"
+                        oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+                        (blur)="amountChange($event, payment, index)"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        readonly
+                        type="text"
+                        class="form-control table-input"
+                        [(ngModel)]="payment.percentage"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        [ngClass]="{
+                          'invalid-date':
+                            payment.static_date == null ||
+                            payment.static_date == undefined
+                        }"
+                        [disabled]="mode == 'view'"
+                        (change)="dateTimeChange($event, index)"
+                        type="date"
+                        id="static_date"
+                        placeholder=""
+                        class="form-control table-input"
+                        [(ngModel)]="payment.static_date"
+                      />
+                    </td>
+                    <td>
+                      <div
+                        *ngIf="mode != 'view'"
+                        role="button"
+                        class="d-flex justify-content-center align-items-center remove-button"
+                        (click)="removePayment(index)"
+                      >
+                        <i class="fa fa-trash-o" aria-hidden="true"></i>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="lead-content-section">
+              <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active">
+                  <a
+                    href="#unit"
+                    aria-controls="unit"
+                    role="tab"
+                    data-toggle="tab"
+                    >Unit Details</a
+                  >
+                </li>
+                <li role="presentation" *ngIf="payment_plan_details">
+                  <a
+                    href="#activity"
+                    aria-controls="activity"
+                    role="tab"
+                    data-toggle="tab"
+                    >Activity</a
+                  >
+                </li>
+                <li
+                  role="presentation"
+                  *ngIf="mode == 'edit' || mode == 'view'"
+                >
+                  <a
+                    href="#comments"
+                    aria-controls="comments"
+                    role="tab"
+                    data-toggle="tab"
+                    >Admin Comments</a
+                  >
+                </li>
+                <li role="presentation" *ngIf="payment_plan_details">
+                  <a
+                    href="#user"
+                    aria-controls="user"
+                    role="tab"
+                    data-toggle="tab"
+                    >User</a
+                  >
+                </li>
+                <li role="presentation" *ngIf="payment_plan_details">
+                  <a
+                    href="#lead"
+                    aria-controls="user"
+                    role="tab"
+                    data-toggle="tab"
+                    >Lead</a
+                  >
+                </li>
+              </ul>
+
+              <div class="tab-content">
+                <div role="tabpanel" class="tab-pane fade in active" id="unit">
+                  <div class="unit-details">
+                    <div class="col-xs-4">
+                      <ul class="list-unstyled">
+                        <li *ngIf="unit_details?.serial">
+                          Unit Serial : {{ unit_details?.serial }}
+                        </li>
+                        <li *ngIf="unit_details?.phase?.serial">
+                          phase: {{ unit_details?.phase?.serial }}
+                        </li>
+                        <li *ngIf="unit_details?.building_num">
+                          Building Number: {{ unit_details?.building_num }}
+                        </li>
+                        <li *ngIf="unit_details?.floor_number">
+                          Floor: {{ unit_details?.floor_number }}
+                        </li>
+                        <li *ngIf="unit_details?.unit_type?.name">
+                          Type: {{ unit_details?.unit_type?.name }}
+                        </li>
+                        <!-- <li>Sale Price: {{unit_details?.price | currency: ' '}}</li> -->
+                        <!-- <li>New Sale Price: {{unit_details?.new_price | currency: ' '}}</li> -->
+                        <div
+                          *ngFor="
+                            let price_type of unit_details?.finishing_types
+                          "
+                        >
+                          <li *ngIf="price_type?.pivot?.price">
+                            {{ price_type?.name }} Price:
+                            {{ price_type?.pivot?.price | number : "4.0-0" }}
+                          </li>
+                          <li *ngIf="price_type?.pivot?.price">
+                            Indoor meter Price:
+                            {{
+                              price_type?.pivot?.indoor_meter_price
+                                | number : "4.0-0"
+                            }}
+                          </li>
+                          <li *ngIf="price_type?.pivot?.new_price">
+                            New {{ price_type?.name }} Price:
+                            {{
+                              price_type?.pivot?.new_price | number : "4.0-0"
+                            }}
+                          </li>
+                        </div>
+                        <li *ngIf="unit_details?.outdoor_area">
+                          Outdoor Area: {{ unit_details?.outdoor_area }}
+                        </li>
+                        <li *ngIf="unit_details?.total_area">
+                          Total Area: {{ unit_details?.total_area }}
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="col-xs-4">
+                      <ul class="list-unstyled">
+                        <li *ngIf="unit_details?.build_area">
+                          Building Area: {{ unit_details?.build_area }} M
+                          <sup>2</sup>
+                        </li>
+                        <li *ngIf="unit_details?.num_rooms">
+                          Rooms: {{ unit_details?.num_rooms }}
+                        </li>
+                        <li *ngIf="unit_details?.num_bathrooms">
+                          Bathrooms: {{ unit_details?.num_bathrooms }}
+                        </li>
+                        <li *ngIf="unit_details?.garage_area">
+                          Garage Area: {{ unit_details?.garage_area }} M
+                          <sup>2</sup>
+                        </li>
+                        <li *ngIf="unit_details?.garden_area">
+                          Garden Area: {{ unit_details?.garden_area }} M
+                          <sup>2</sup>
+                        </li>
+                        <li
+                          *ngIf="
+                            unit_details?.indoor_price &&
+                            unit_details?.project.type == 'Residential'
+                          "
+                        >
+                          Indoor Price:
+                          {{ unit_details?.indoor_price | currency : " " }}
+                        </li>
+                        <li
+                          *ngIf="
+                            unit_details?.outdoor_price &&
+                            unit_details?.project.type == 'Residential'
+                          "
+                        >
+                          Outdoor Price:
+                          {{ unit_details?.outdoor_price | currency : " " }}
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="col-xs-4">
+                      <ul class="list-unstyled">
+                        <!-- <li>Building Area: 680 M
+                          <sup>2</sup>
+                        </li> -->
+                        <!-- <li *ngIf="unit_details?.maintenance_fees">Maintanance Fees:
+                          {{unit_details?.maintenance_fees}}
+                          <sup>EGP</sup>/Year</li> -->
+                        <li
+                          *ngIf="
+                            unit_details?.price_per_month &&
+                            unit_details?.project.type == 'Commercial'
+                          "
+                        >
+                          Rent price per month:
+                          {{ unit_details?.price_per_month | currency : " " }}
+                        </li>
+                        <li
+                          *ngIf="
+                            unit_details?.price_rent_3years &&
+                            unit_details?.project.type == 'Commercial'
+                          "
+                        >
+                          Rent price for 3 years:
+                          {{ unit_details?.price_rent_3years | currency : " " }}
+                        </li>
+                        <li
+                          *ngIf="
+                            unit_details?.price_rent_4years &&
+                            unit_details?.project.type == 'Commercial'
+                          "
+                        >
+                          Rent price for 4 years:
+                          {{ unit_details?.price_rent_4years | currency : " " }}
+                        </li>
+                        <li
+                          *ngIf="
+                            unit_details?.price_rent_5years &&
+                            unit_details?.project.type == 'Commercial'
+                          "
+                        >
+                          Rent price for 5 years:
+                          {{ unit_details?.price_rent_5years | currency : " " }}
+                        </li>
+                        <li
+                          *ngIf="
+                            unit_details?.driver_room &&
+                            unit_details?.project.type == 'Residential'
+                          "
+                        >
+                          Driver Room: {{ unit_details?.driver_room }}
+                        </li>
+                        <li
+                          *ngIf="
+                            unit_details?.eng_type &&
+                            unit_details?.project.type == 'Residential'
+                          "
+                        >
+                          Engineering Type: {{ unit_details?.eng_type }}
+                        </li>
+                        <li
+                          *ngIf="
+                            unit_details?.kitchen &&
+                            unit_details?.project.type == 'Residential'
+                          "
+                        >
+                          Kitchen: {{ unit_details?.kitchen }}
+                        </li>
+                        <li
+                          *ngIf="
+                            unit_details?.maid_room &&
+                            unit_details?.project.type == 'Residential'
+                          "
+                        >
+                          Maid Room: {{ unit_details?.maid_room }}
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="activity">
+                  <div class="table table-responsive margin-top-10">
+                    <table class="table table-bordered">
+                      <tr>
+                        <th>ID</th>
+                        <th>Action Taken</th>
+                        <th>Description</th>
+                        <th>Created By</th>
+                        <th>Created At</th>
+                      </tr>
+                      <tr *ngFor="let log of payment_plan_details?.logs">
+                        <td>{{ log?.id }}</td>
+                        <th>{{ log?.type }}</th>
+                        <td>{{ log?.details }}</td>
+                        <td>{{ log?.user?.name }}</td>
+                        <td>{{ comment?.created_at }}</td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="comments">
+                  <div class="table table-responsive margin-top-10">
+                    <table class="table table-bordered">
+                      <tr>
+                        <th>ID</th>
+                        <th>Comment</th>
+                        <th>Created At</th>
+                      </tr>
+                      <tr
+                        *ngFor="let comment of payment_plan_details?.comments"
+                      >
+                        <td>{{ comment?.id }}</td>
+                        <td>{{ comment?.details }}</td>
+                        <td>{{ comment?.created_at }}</td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="user">
+                  <div class="unit-details">
+                    <div class="col-xs-4">
+                      <ul class="list-unstyled">
+                        <li>Name : {{ payment_plan_details?.user?.name }}</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="lead">
+                  <div class="unit-details">
+                    <div class="col-xs-4">
+                      <ul class="list-unstyled">
+                        <li *ngIf="payment_plan_details?.lead?.name">
+                          Name :
+                          <a
+                            *ngIf="payment_plan_details?.lead"
+                            (click)="goToLead(payment_plan_details?.lead)"
+                            >{{ payment_plan_details?.lead?.name }}</a
+                          >
+                        </li>
+                        <li *ngIf="payment_plan_details?.lead?.phone">
+                          Phone : {{ payment_plan_details?.lead?.phone }}
+                        </li>
+                        <li *ngIf="payment_plan_details?.lead?.phone">
+                          Email : {{ payment_plan_details?.lead?.phone }}
+                        </li>
+                        <li *ngIf="payment_plan_details?.lead?.email">
+                          Phone : {{ payment_plan_details?.lead?.email }}
+                        </li>
+                        <li *ngIf="payment_plan_details?.lead?.email">
+                          National ID : {{ payment_plan_details?.lead?.email }}
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12 percentage-actions margin-top-20">
+            <div class="d-flex justify-content-end w-100">
+              <button
+                class="add-btn btn btn-default margin-right-20"
+                [routerLink]="['/pages/list-custom-payments']"
+              >
+                back
+              </button>
+              <button
+                class="add-btn btn btn-default margin-right-20"
+                *ngIf="mode == 'add'"
+                (click)="submitTable()"
+              >
+                Submit
+              </button>
+              <button
+                class="add-btn btn btn-default margin-right-20"
+                *ngIf="mode == 'edit' && mode != 'add'"
+                (click)="editPayment()"
+              >
+                Edit
+              </button>
+              <button
+                class="add-btn btn btn-default margin-right-20"
+                *ngIf="
+                  (userProfile.role == 'Admin' ||
+                    userProfile.role == 'Super Development') &&
+                  mode != 'add'
+                "
+                (click)="commentModal.open()"
+              >
+                Add Comment
+              </button>
+              <button
+                class="add-btn btn btn-success margin-right-20"
+                *ngIf="
+                  (userProfile.role == 'Admin' ||
+                    userProfile.role == 'Super Development') &&
+                  mode != 'add' &&
+                  payment_plan_details?.status != 'approved'
+                "
+                (click)="approve(payment_id)"
+              >
+                Approve
+              </button>
+              <button
+                class="add-btn btn btn-danger"
+                *ngIf="
+                  (userProfile.role == 'Admin' ||
+                    userProfile.role == 'Super Development') &&
+                  mode != 'add' &&
+                  payment_plan_details?.status != 'declined'
+                "
+                (click)="decline(payment_id)"
+              >
+                Decline
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="w-45">
+        <div class="affix">
+          <div class="box payment-form-container px-10" *ngIf="mode == 'add'">
+            <form [formGroup]="paymentForm" (ngSubmit)="generatePrices()">
+              <div class="border-sec">
+                <div class="row">
+                  <div class="col-xs-6">
+                    <div class="form-group">
+                      <label>Unit Serial</label>
+                      <div class="search-btn-container">
+                        <div>
+                          <input
+                            ng2-auto-complete
+                            autocomplete="off"
+                            placeholder="Search for available unit by serial "
+                            [source]="observableSource.bind(this)"
+                            (valueChanged)="valueChanged($event)"
+                            formControlName="unit_serial"
+                            class="form-control"
+                            name="unit_serial"
+                            [(ngModel)]="unit_serial"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label>Lead</label>
+                      <div class="search-btn-container">
+                        <div>
+                          <input
+                            ng2-auto-complete
+                            autocomplete="off"
+                            placeholder="Search for lead by name "
+                            [source]="leadObservableSource.bind(this)"
+                            (valueChanged)="leadValueChanged($event)"
+                            formControlName="lead_id"
+                            class="form-control"
+                            name="lead_id"
+                            [(ngModel)]="lead_id"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="">Finish Type</label>
+                      <ng-select
+                        (change)="onFinishTypePriceChange($event)"
+                        placeholder="Select Finish Type"
+                        name="finishing_type_id"
+                        id="finishing_type_id"
+                        formControlName="finishing_type_id"
+                      >
+                        <ng-option
+                          *ngFor="
+                            let finishing_type of unit_details?.finishing_types
+                          "
+                          [value]="finishing_type?.id"
+                        >
+                          {{ finishing_type?.name }}
+                        </ng-option>
+                      </ng-select>
+                    </div>
+                    <div class="form-group">
+                      <label>Unit Price</label>
+                      <input
+                        type="number"
+                        readonly
+                        class="form-control req"
+                        [(ngModel)]="unit_price"
+                        formControlName="price"
+                        name="price"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label>Delivery Compliation</label>
+                      <input
+                        type="text"
+                        readonly
+                        class="form-control req"
+                        [(ngModel)]="delivery_compilation"
+                        [ngModelOptions]="{ standalone: true }"
+                        name="delivery_compilation"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="">First Payment Date</label>
+                      <input
+                        type="date"
+                        class="form-control req"
+                        formControlName="starting_date"
+                        name="starting_date"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="">Delivery Date</label>
+                      <input
+                        type="date"
+                        class="form-control req"
+                        formControlName="delivery_date"
+                        name="delivery_date"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label>Interval in months</label>
+                      <ng-select
+                        placeholder="Select interval"
+                        formControlName="interval"
+                        name="interval"
+                      >
+                        <ng-option value="1">1 month</ng-option>
+                        <ng-option value="2">2 month</ng-option>
+                        <ng-option value="3">3 month</ng-option>
+                        <ng-option value="4">4 month</ng-option>
+                        <ng-option value="5">5 month</ng-option>
+                        <ng-option value="6">6 month</ng-option>
+                        <ng-option value="12">12 month</ng-option>
+                      </ng-select>
+                    </div>
+                    <div class="form-group" *ngIf="maintenance_fees_accessor">
+                      <label for="">Maintenance Price</label>
+                      <input
+                        type="text"
+                        readonly
+                        class="form-control req"
+                        formControlName="maintenance_fees"
+                        name="maintenance_fees"
+                      />
+                    </div>
+                    <div class="form-group" *ngIf="maintenance_fees_accessor">
+                      <label for="">Maintenance price discount type</label>
+                      <ng-select
+                        placeholder="Select discount type"
+                        formControlName="maintenance_discount_type"
+                      >
+                        <ng-option
+                          *ngFor="let price_type of prices_type_for_maintenance"
+                          [value]="price_type"
+                        >
+                          {{ price_type }}
+                        </ng-option>
+                      </ng-select>
+                    </div>
+                    <div class="form-group" *ngIf="maintenance_fees_accessor">
+                      <label for="">Maintenance price discount</label>
+                      <input
+                        type="text"
+                        class="form-control req"
+                        formControlName="maintenance_discount"
+                        name="maintenance_discount"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="col-xs-6">
+                    <div class="form-group">
+                      <label for="">Unit Status</label>
+                      <input
+                        type="text"
+                        class="form-control req"
+                        formControlName="status"
+                        name="status"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="">Unit Indoor area</label>
+                      <input
+                        type="text"
+                        class="form-control req"
+                        formControlName="build_area"
+                        name="build_area"
+                      />
+                    </div>
+                    <div class="form-group" *ngIf="unit_outdoor_area">
+                      <label for="">Unit outdoor area</label>
+                      <input
+                        type="text"
+                        class="form-control req"
+                        formControlName="outdoor_area"
+                        name="outdoor_area"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="">Unit indoor meter value</label>
+                      <input
+                        type="text"
+                        class="form-control req"
+                        formControlName="indoor_price"
+                        name="indoor_price"
+                      />
+                    </div>
+                    <div class="form-group" *ngIf="unit_outdoor_area">
+                      <label for="">Unit outdoor meter price</label>
+                      <input
+                        type="text"
+                        class="form-control req"
+                        formControlName="outdoor_price"
+                        name="outdoor_price"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for=""
+                        >Unit indoor meter price discount type</label
+                      >
+                      <ng-select
+                        placeholder="Select discount type"
+                        formControlName="unit_indoor_meter_discount_type"
+                      >
+                        <ng-option
+                          *ngFor="let price_type of prices_type"
+                          [value]="price_type"
+                        >
+                          {{ price_type }}
+                        </ng-option>
+                      </ng-select>
+                    </div>
+                    <div class="form-group">
+                      <label for="">Indoor meter discount value</label>
+                      <input
+                        type="text"
+                        class="form-control req"
+                        formControlName="unit_indoor_meter_discount"
+                        name="unit_indoor_meter_discount"
+                      />
+                    </div>
+                    <div class="form-group" *ngIf="unit_outdoor_area">
+                      <label for=""
+                        >Unit outdoor meter price discount type</label
+                      >
+                      <ng-select
+                        placeholder="Select discount type"
+                        formControlName="unit_outdoor_meter_discount_type"
+                      >
+                        <ng-option
+                          *ngFor="let price_type of prices_type"
+                          [value]="price_type"
+                        >
+                          {{ price_type }}
+                        </ng-option>
+                      </ng-select>
+                    </div>
+                    <div class="form-group" *ngIf="unit_outdoor_area">
+                      <label for="">Outdoor meter discount value</label>
+                      <input
+                        type="text"
+                        class="form-control req"
+                        formControlName="unit_outdoor_meter_discount"
+                        name="unit_outdoor_meter_discount"
+                      />
+                    </div>
+                    <div class="form-group" *ngIf="unit_outdoor_area">
+                      <label for="">Garage price discount type</label>
+                      <ng-select
+                        placeholder="Select discount type"
+                        formControlName="garage_discount_type"
+                      >
+                        <ng-option
+                          *ngFor="let price_type of prices_type"
+                          [value]="price_type"
+                        >
+                          {{ price_type }}
+                        </ng-option>
+                      </ng-select>
+                    </div>
+                    <div class="form-group checkbox-container">
+                      <label for="is_merge_garage_price"
+                        >Merge Garage Price
+                      </label>
+                      <input
+                        id="is_merge_garage_price"
+                        name="is_merge_garage_price"
+                        type="checkbox"
+                        formControlName="is_merge_garage_price"
+                      />
+                    </div>
+                    <div class="form-group" *ngIf="unit_outdoor_area">
+                      <label for="">Garage discount value</label>
+                      <input
+                        type="text"
+                        class="form-control req"
+                        formControlName="garage_discount"
+                        name="garage_discount"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label>Number of parking Slots</label>
+                      <ng-select
+                        palceholder="Select number of slots"
+                        [(ngModel)]="slots"
+                        formControlName="slots"
+                        name="slots"
+                      >
+                        <ng-option value="0">Without Parking Slots</ng-option>
+                        <ng-option value="1">One Parking Slots</ng-option>
+                        <ng-option value="2">Two Parking Slots</ng-option>
+                      </ng-select>
+                    </div>
+                    <div class="form-group">
+                      <label>Number of storage Slots</label>
+                      <ng-select
+                        placeholder="Select number of slots"
+                        [(ngModel)]="storage_slots"
+                        formControlName="storage_slots"
+                        name="storage_slots"
+                      >
+                        <ng-option value="0">Without Storage Slots</ng-option>
+                        <ng-option value="1">One Storage Slots</ng-option>
+                        <ng-option value="2">Two Storage Slots</ng-option>
+                      </ng-select>
+                    </div>
+                    <div class="form-group" *ngIf="storage_slots_accessor">
+                      <label for="">Storage slots discount type</label>
+                      <ng-select
+                        placeholder="Select discount type"
+                        formControlName="storage_discount_type"
+                      >
+                        <ng-option
+                          *ngFor="let price_type of prices_type_for_maintenance"
+                          [value]="price_type"
+                        >
+                          {{ price_type }}
+                        </ng-option>
+                      </ng-select>
+                    </div>
+                    <div
+                      class="form-group checkbox-container"
+                      *ngIf="storage_slots_accessor"
+                    >
+                      <label for="is_merge_storage_price"
+                        >Merge Storage Price
+                      </label>
+                      <input
+                        id="is_merge_storage_price"
+                        name="is_merge_storage_price"
+                        type="checkbox"
+                        formControlName="is_merge_storage_price"
+                      />
+                    </div>
+                    <div class="form-group" *ngIf="storage_slots_accessor">
+                      <label for="">Storage slots discount</label>
+                      <input
+                        type="text"
+                        class="form-control req"
+                        formControlName="storage_discount"
+                        name="storage_discount"
+                      />
+                    </div>
+                    <ng-container *ngIf="unit_details?.has_outdoor_meters">
+                      <div class="form-group">
+                        <label>Extra Outdoor Meters</label>
+                        <input
+                          type="text"
+                          class="form-control req"
+                          formControlName="extra_outdoor_meters"
+                          name="extra_outdoor_meters"
+                        />
+                      </div>
+                      <div class="form-group">
+                        <label for="">Extra Outdoor Meter Discount type</label>
+                        <ng-select
+                          placeholder="Select discount type"
+                          formControlName="extra_outdoor_meter_discount_type"
+                        >
+                          <ng-option
+                            *ngFor="
+                              let price_type of prices_type_for_maintenance
+                            "
+                            [value]="price_type"
+                          >
+                            {{ price_type }}
+                          </ng-option>
+                        </ng-select>
+                      </div>
+                      <div class="form-group checkbox-container">
+                        <label for="is_merge_extra_outdoor_price"
+                          >Merge Storage Extra Outdoor Meter Price
+                        </label>
+                        <input
+                          id="is_merge_extra_outdoor_price"
+                          name="is_merge_extra_outdoor_price"
+                          type="checkbox"
+                          formControlName="is_merge_extra_outdoor_price"
+                        />
+                      </div>
+                      <div class="form-group">
+                        <label for="">Extra Outdoor Meter Discount</label>
+                        <input
+                          type="text"
+                          class="form-control req"
+                          formControlName="extra_outdoor_meter_discount"
+                          name="extra_outdoor_meter_discount"
+                        />
+                      </div>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group d-flex justify-content-end">
+                <button
+                  class="btn btn-default btn-black"
+                  [disabled]="!paymentForm.valid"
+                >
+                  Generate
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<modal
+  #commentModal
+  title="Add Unit comment"
+  submitButtonLabel="submit"
+  modalClass="modal-lg"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="submitCommentModal(payment_id, commentModal)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <div class="search">
+      <label for="">Comment :</label>
+      <textarea
+        type="text"
+        class="form-control"
+        [(ngModel)]="admin_comment"
+      ></textarea>
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="commentModal.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>

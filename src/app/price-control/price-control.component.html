@@ -1,0 +1,220 @@
+<section class="projects">
+  <div class="container-fluid">
+    <h2>Price Controller</h2>
+    <div class="box">
+      <form
+        *ngIf="projects"
+        [formGroup]="price_control_form"
+        (ngSubmit)="submit()"
+      >
+        <div class="border-sec">
+          <div class="row">
+            <div class="col-md-2 p-3 border-bottom m">
+              <span class="bolder">Unit Details: </span>
+            </div>
+            <div class="col-md-12 d-flex flex-wrap">
+              <div class="form-group col-md-3">
+                <label for="project_id">Project <span class="required">*</span></label>
+                <ng-select
+                  name="project_id"
+                  placeholder="Select Project"
+                  formControlName="project_id"
+                  [items]="projects"
+                  bindLabel="name"
+                  bindValue="id"
+                  (change)="checkproject($event.id)"
+                >
+                </ng-select>
+              </div>
+              <div class="form-group col-md-3">
+                <label for="type">Unit Type</label>
+                <ng-select
+                  name="type"
+                  placeholder="Select Unit Type"
+                  formControlName="type"
+                  [items]="types"
+                  bindLabel="name"
+                  bindValue="id"
+                >
+                </ng-select>
+              </div>
+              <div class="form-group col-md-3">
+                <label for="floor">Unit Floor</label>
+                <ng-select
+                  name="floor"
+                  placeholder="Select Floor"
+                  formControlName="floor"
+                  [items]="floors"
+                  bindLabel="value"
+                  bindValue="value"
+                >
+                </ng-select>
+              </div>
+              <div class="form-group col-md-3">
+                <label for="phase">Phase</label>
+                <ng-select
+                  name="phase"
+                  placeholder="Phase"
+                  formControlName="phase_id"
+                  [multiple]="true"
+                  [items]="phases"
+                  bindLabel="serial"
+                  bindValue="id"
+                >
+                </ng-select>
+              </div>
+              <div class="form-group col-md-3">
+                <label for="status">Unit Status</label>
+                <ng-select
+                  name="status"
+                  placeholder="Select Unit Status"
+                  formControlName="status"
+                  [items]="allStatus"
+                  bindLabel="name"
+                  bindValue="name"
+                >
+                </ng-select>
+              </div>
+              <div class="form-group col-md-3">
+                <label for="block_num">Zone</label>
+                <input
+                  name="block_num"
+                  type="text"
+                  placeholder="Enter Zone"
+                  class="form-control"
+                  formControlName="block_num"
+                />
+              </div>
+              <div class="form-group col-md-3">
+                <label for="bed_rooms">Bed Rooms</label>
+                <input
+                  name="bed_rooms"
+                  type="text"
+                  placeholder="Enter Bed Rooms"
+                  class="form-control"
+                  formControlName="bed_rooms"
+                />
+              </div>
+              <div class="form-group col-md-3">
+                <label for="area_from">Unit Area From</label>
+                <input
+                  name="area_from"
+                  type="text"
+                  placeholder="Enter Unit Area From"
+                  class="form-control"
+                  formControlName="area_from"
+                />
+              </div>
+              <div class="form-group col-md-3">
+                <label for="area_to">Unit Area To</label>
+                <input
+                  name="area_to"
+                  type="text"
+                  placeholder="Enter Unit Area To"
+                  class="form-control"
+                  formControlName="area_to"
+                />
+              </div>
+              <div
+                *ngIf="
+                  price_control_form?.get('project_id')?.value
+                "
+                class="form-group col-md-3"
+              >
+                <label for="chosen_unit">Search Units</label>
+                <div class="search-btn-container">
+                  <div>
+                    <input
+                      name="chosen_unit"
+                      placeholder="Search for unit by serial "
+                      class="form-control"
+                      ngui-auto-complete
+                      (valueChanged)="selectUnit($event)"
+                      [source]="observableSource.bind(this)"
+                      [(ngModel)]="chosen_unit"
+                      [ngModelOptions]="{ standalone: true }"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3 d-flex align-items-center justify-content-start" *ngIf="units_count">
+                <span class="btn btn-default pull-right btn-black m-none">
+                  Selected Units Count: {{ units_count }}
+                </span>
+              </div>
+              <div class="col-md-12 d-flex align-items-center justify-content-end">
+                <button type="button" class="btn btn-default pull-right btn-black" [disabled]="!price_control_form?.get('project_id')?.value" (click)="getUnitsCount()">
+                  Get Units Count
+                </button>
+              </div>
+            </div>
+            <div class="col-md-2 p-3 border-bottom m">
+              <span class="bolder">Pricing: </span>
+            </div>
+            <div class="col-md-12">
+              <div class="form-group col-md-3">
+                <label for="finishing_type_id">Finishing Type <span class="required">*</span></label>
+                <ng-select
+                  name="finishing_type_id"
+                  placeholder="Select Finishing Type"
+                  formControlName="finishing_type_id"
+                  [items]="finishing_types"
+                  bindLabel="name"
+                  bindValue="id"
+                ></ng-select>
+              </div>
+              <div class="form-group col-md-3">
+                <label for="price_type">Price Type <span class="required">*</span></label>
+                <ng-select
+                  name="price_type"
+                  placeholder="Select Price Type"
+                  formControlName="price_type"
+                  [items]="price_types"
+                  bindLabel="name"
+                  bindValue="name"
+                >
+                </ng-select>
+              </div>
+              <div class="form-group col-md-3">
+                <label for="price_value">{{
+                  price_control_form?.get("price_type")?.value
+                }}</label>
+                <input
+                  name="price_value"
+                  type="number"
+                  class="form-control"
+                  [placeholder]="'Enter '+price_control_form?.get('price_type')?.value"
+                  formControlName="price_value"
+                />
+              </div>
+            </div>
+            <div class="col-md-2 p-3 border-bottom m">
+              <span class="bolder">Notes: </span>
+            </div>
+            <div class="col-md-12">
+              <div class="form-group col-md-3">
+                <label for="comment">Comment: </label>
+                <textarea
+                  name="comment"
+                  rows="5"
+                  cols="300"
+                  class="form-control"
+                  placeholder="Comment"
+                  formControlName="comment"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <button
+            class="btn btn-default pull-right btn-black"
+            [disabled]="!price_control_form?.valid"
+          >
+            Submit
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>

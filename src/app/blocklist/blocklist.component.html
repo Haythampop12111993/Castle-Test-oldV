@@ -1,0 +1,103 @@
+<section class="users-table">
+  <div class="container-fluid">
+    <h2>Blocklist</h2>
+    <div class="proj-details">
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="settings-icons pull-right">
+            <div class="dropdown" dropdown>
+              <i class="fa fa-cog" aria-hidden="true" dropdown-open></i>
+              <ul class="dropdown-menu">
+                <li [routerLink]="['/pages/blocklist/manage/0']">
+                  <a>
+                    <span class="doc_link">Add new to blocklist</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="col-md-12">
+          <div class="table table-responsive">
+            <table class="table table-bordered">
+              <tr>
+                <th>ID</th>
+                <th>Lead ID</th>
+                <th>Name</th>
+                <th>ID number</th>
+                <th>Phone 1</th>
+                <th>Phone 2</th>
+                <th>Phone 3</th>
+                <th>Action</th>
+              </tr>
+              <tr *ngFor="let block of blocklist?.data">
+                <td>{{ block?.id }}</td>
+                <td>
+                  <ng-container *ngIf="block.lead_id">
+                    <a *ngIf="block?.lead" (click)="goToLead(block?.lead)">{{
+                      block?.lead?.name
+                    }}</a>
+                  </ng-container>
+                </td>
+                <td>{{ block?.name }}</td>
+                <td>{{ block?.id_number }}</td>
+                <td>{{ block?.phone1 }}</td>
+                <td>{{ block?.phone2 }}</td>
+                <td>{{ block?.phone3 }}</td>
+                <td>
+                  <div class="dropdown" dropdown>
+                    <img
+                      class="more-options-icon"
+                      src="assets/img/show-more-button-with-three-dots.svg"
+                      dropdown-open
+                    />
+                    <ul class="dropdown-menu">
+                      <ng-container *ngIf="!block.lead_id">
+                        <li (click)="editBlocklist(block)">
+                          <a>
+                            <span class="doc_link">Edit</span>
+                          </a>
+                        </li>
+                        <li (click)="deleteBlocklist(block)">
+                          <a>
+                            <span class="doc_link">Delete</span>
+                          </a>
+                        </li>
+                      </ng-container>
+                      <ng-container *ngIf="block.lead_id">
+                        <li (click)="removeLeadFromBlocklist(block)">
+                          <a>
+                            <span class="doc_link"
+                              >Remove lead from blocklist</span
+                            >
+                          </a>
+                        </li>
+                      </ng-container>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div *ngIf="current_page" class="col-xs-6">
+            <p>({{ per_page }} / {{ total }}) page {{ current_page }}</p>
+          </div>
+          <div class="col-xs-6 text-right">
+            <ngb-pagination
+              [collectionSize]="blocklist?.last_page * 10"
+              [(page)]="pageTest"
+              [maxSize]="5"
+              [rotate]="true"
+              [ellipses]="true"
+              [boundaryLinks]="true"
+              (pageChange)="pageChange($event)"
+              [size]="lg"
+            >
+            </ngb-pagination>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,146 @@
+<div class="row">
+  <div class="col-xs-12">
+      <div class="import-container">
+          <div class="import-inner-container flex-space">
+              <h2 class="title">Contracts</h2>
+          </div>
+      </div>
+  </div>
+  <div class="col-xs-12">
+    <div class="table table-responsive">
+      <table class="table table-bordered">
+          <thead class="card-head">
+              <tr>
+                <th>#</th>
+                <th>Contract Name</th>
+                <th>Contract Type</th>
+                <th>Project</th>
+                <th>Contract Parent</th>
+                <th>Documents</th>
+                <th>Created At</th>
+                <th>Action</th>
+              </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let contract of contracts?.data; let index = index">
+              <td>{{index + 1}}</td>
+              <td>{{ contract?.name }}</td>
+              <td>{{ contract?.template_type }}</td>
+              <td>{{ contract?.project?.name }}</td>
+              <td>{{ contract?.parent?.name }}</td>
+              <td>
+                <a [href]="contract?.full_url">Download</a>
+              </td>
+              <td>{{ contract?.created_at }}</td>
+              <td>
+                <div class="dropdown" dropdown>
+                  <img
+                    class="more-options-icon"
+                    src="assets/img/show-more-button-with-three-dots.svg"
+                    dropdown-open
+                  />
+                  <ul class="dropdown-menu actions">
+                    <li (click)="editContract(contract.id)">
+                      <a>
+                        <span>Edit Contract</span>
+                      </a>
+                    </li>
+                    <li (click)="deleteContract(index, contract.id)">
+                      <a>
+                        <span>Delete Contract</span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+    </div>
+    <div class="col-xs-12 text-center">
+      <ngb-pagination
+        [collectionSize]="contracts?.last_page * 10"
+        [(page)]="pageTest"
+        [maxSize]="5"
+        [rotate]="true"
+        [ellipses]="true"
+        [boundaryLinks]="true"
+        (pageChange)="pageChange($event)"
+        [size]="lg"
+      >
+      </ngb-pagination>
+    </div>
+  </div>
+</div>
+  
+
+<!-- 
+
+<section class="payment-plans-table">
+  <div class="container-fluid">
+    <div class="proj-details">
+      <div class="row">
+        <div class="col-xs-4">
+          <h3>Contracts</h3>
+        </div>
+        <div class="col-md-12">
+          <div class="table table-responsive">
+            <table class="table table-bordered">
+              <tr>
+                <th>Contract Name</th>
+                <th>Contract Type</th>
+                <th>Contract Parents</th>
+                <th>Documents</th>
+                <th>Created At</th>
+                <th>Action</th>
+              </tr>
+              <tr *ngFor="let contract of contracts?.data; let index = index">
+                <td>{{ contract?.name }}</td>
+                <td>{{ contract?.template_type }}</td>
+                <td>{{ getContractParents(contract) || '-'}}</td>
+                <td>
+                  <a [href]="contract?.full_url">Download</a>
+                </td>
+                <td>{{ contract?.created_at }}</td>
+                <td>
+                  <div class="dropdown" dropdown>
+                    <img
+                      class="more-options-icon"
+                      src="assets/img/show-more-button-with-three-dots.svg"
+                      dropdown-open
+                    />
+                    <ul class="dropdown-menu">
+                      <li (click)="editContract(contract.id)">
+                        <a>
+                          <span>Edit Contract</span>
+                        </a>
+                      </li>
+                      <li (click)="deleteContract(index, contract.id)">
+                        <a>
+                          <span>Delete Contract</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div class="col-xs-12 text-center">
+            <ngb-pagination
+              [collectionSize]="contracts?.last_page * 10"
+              [(page)]="pageTest"
+              [maxSize]="5"
+              [rotate]="true"
+              [ellipses]="true"
+              [boundaryLinks]="true"
+              (pageChange)="pageChange($event)"
+              [size]="lg"
+            >
+            </ngb-pagination>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section> -->

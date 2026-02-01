@@ -1,0 +1,24 @@
+.bolder {
+  font-weight: bolder;
+}
+
+.m {
+  margin: 1.5rem 3rem;
+  margin-top: unset;
+}
+
+.p-3 {
+  padding: 1rem !important;
+}
+
+.border-bottom {
+  border-bottom: 1px solid #ccc;
+}
+
+.flex-warp {
+  flex-wrap: wrap;
+}
+
+.m-none {
+  margin: 0 !important;
+}

@@ -1,0 +1,40 @@
+.action {
+  width: 10%;
+}
+
+.users-table__title {
+  margin-top: 0;
+}
+
+.dropdown-menu {
+  left: unset;
+  right: 0;
+}
+
+.table-responsive {
+  overflow-x: unset;
+}
+
+i.fa.fa-cog {
+  font-size: 3rem;
+  cursor: pointer;
+  margin: 10px;
+}
+
+.dropdown-menu li {
+  border-bottom: 1px solid #eee;
+  padding: 5px 0px;
+}
+
+.dropdown-menu li:last-child {
+  border: 0px;
+}
+
+.search-btn-container {
+  display: flex;
+  margin-top: 20px;
+}
+
+.search-btn-container button {
+  margin-left: 10px;
+}

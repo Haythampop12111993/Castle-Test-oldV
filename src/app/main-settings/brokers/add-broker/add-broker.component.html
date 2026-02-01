@@ -1,0 +1,124 @@
+<mat-card>
+  <mat-card-content>
+    <div class="row">
+      <div class="col-xs-12">
+        <h3 class="card__title lato">Brokers Settings</h3>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 margin-bottom">
+        <form #brokerForm="ngForm" class="form-group">
+          <div class="form-group col-xs-4">
+            <label for="">Broker Name :</label>
+            <input
+              name="add_broker"
+              [(ngModel)]="add_broker.name"
+              type="text"
+              class="form-control"
+              required
+            />
+          </div>
+          <div class="col-xs-4 form-group">
+            <label for="">Contact Person :</label>
+            <input
+              name="contact_person"
+              [(ngModel)]="add_broker.contact_person"
+              type="text"
+              class="form-control"
+              required
+            />
+          </div>
+          <div class="col-xs-4 form-group">
+            <label for="">Contact Phone :</label>
+            <input
+              name="contact_phone"
+              [(ngModel)]="add_broker.contact_phone"
+              type="text"
+              class="form-control"
+              required
+            />
+          </div>
+          <div class="col-xs-4 form-group margin-top">
+            <label for="">Contact Address :</label>
+            <input
+              name="contact_address"
+              [(ngModel)]="add_broker.contact_address"
+              type="text"
+              class="form-control"
+              required
+            />
+          </div>
+          <div class="col-xs-4 form-group margin-top">
+            <label for="">Tax number :</label>
+            <input
+              name="tax_number"
+              [(ngModel)]="add_broker.tax_number"
+              type="text"
+              class="form-control"
+              required
+            />
+          </div>
+          <div class="col-xs-4 form-group margin-top">
+            <label for="">P.C in-charge :</label>
+            <ng-select
+              placeholder="agents"
+              class="form-control"
+              name="agent"
+              [multiple]="true"
+              [(ngModel)]="add_broker.users"
+            >
+              <!-- [multiple]="true" -->
+              <ng-option *ngFor="let agent of agents" [value]="agent.id">
+                {{ agent.name }}
+              </ng-option>
+            </ng-select>
+          </div>
+          <div class="col-xs-1 col-xs-offset-7 form-group margin-top">
+            <button
+              (click)="addBroker()"
+              class="btn btn-primary add-btn"
+              type="submit"
+              [disabled]="!brokerForm.form.valid"
+            >
+              Add
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<modal
+  #importBrokerModal
+  title="Import Brokers"
+  submitButtonLabel="submit"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onOpen)="importBrokersModalOpen()"
+  (onClose)="importBrokersModalClose()"
+  (onSubmit)="uploadBrokerExcelMethod(importBrokerModal)"
+>
+  <modal-content>
+    <div class="row">
+      <div class="form-group col-xs-6">
+        <form class="form-group btn-group-files pull-left">
+          <label for="">Brokers File : </label>
+          <input
+            type="file"
+            accept=".xlsx, .xls"
+            class="margin-left"
+            id="brokerExcelFile"
+            (change)="handleBrokerUploadExcel($event)"
+          />
+        </form>
+      </div>
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="importBrokerModal.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>

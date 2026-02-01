@@ -1,0 +1,341 @@
+<section class="dashboard">
+  <div class="dashboard-sales">
+    <h1>DASHBOARD</h1>
+    <div class="dashboard-header">
+      <div class="dashboard-header__user">
+        <span>Welcome back, {{ userData?.name }}</span>
+        <a> <i class="fa fa-map-marker" aria-hidden="true"></i> Cairo, Egypt</a>
+      </div>
+      <div class="dashboard-header__inputs">
+        <div class="calendar-container">
+          <p-dropdown
+            [style]="{ width: '196px' }"
+            [options]="projects"
+            [(ngModel)]="selectedProject"
+            (onChange)="onProjectChange()"
+            [filter]="true"
+            [autoWidth]="false"
+            placeholder="Select Project"
+            [showClear]="true"
+            optionLabel="name"
+          ></p-dropdown>
+          <p-calendar
+            [(ngModel)]="rangeDates"
+            selectionMode="range"
+            [readonlyInput]="true"
+            (onSelect)="onChangeDatePicker()"
+            yearRange="2000:2040"
+            [monthNavigator]="true"
+            [yearNavigator]="true"
+            showButtonBar="true"
+            [showIcon]="true"
+          ></p-calendar>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="inventory-pipeline">
+    <span class="inventory-pipeline__title">Inventory Pipeline</span>
+    <div class="inventory-pipeline__bar"></div>
+  </div>
+  <div class="units-stats">
+    <div class="units-stats__wrapper">
+      <div>
+        <div>
+          <div class="units-stats__number">
+            {{ statsData?.inventoryStats?.pending_finance?.count }}
+          </div>
+          <div class="units-stats__title">Pending Financial</div>
+          <div class="units-stats__price">
+            {{ statsData?.inventoryStats?.pending_finance?.sum | number }} EGP
+          </div>
+        </div>
+        <div class="card_icon">
+          <img
+            src="assets/img/dashboard/total-units-icon.png"
+            alt="total units icon"
+          />
+        </div>
+      </div>
+      <div>
+        <div>
+          <div class="units-stats__number">
+            {{ statsData?.inventoryStats?.units_sold?.count }}
+          </div>
+          <div class="units-stats__title">Pending Contract</div>
+          <div class="units-stats__price">
+            {{ statsData?.inventoryStats?.units_sold?.sum | number }} EGP
+          </div>
+        </div>
+        <div class="card_icon">
+          <img
+            src="assets/img/dashboard/sold-units-icon.png"
+            alt="sold units icon"
+          />
+        </div>
+      </div>
+      <div>
+        <div>
+          <div class="units-stats__number">
+            {{ statsData?.inventoryStats?.units_contracted?.count }}
+          </div>
+          <div class="units-stats__title">CONTRACTED UNITS</div>
+          <div class="units-stats__price">
+            {{ statsData?.inventoryStats?.units_contracted?.sum | number }} EGP
+          </div>
+        </div>
+        <div class="card_icon">
+          <img
+            src="assets/img/dashboard/contracted-units-icon.png"
+            alt="contracted units icon"
+          />
+        </div>
+      </div>
+      <div>
+        <div>
+          <div class="units-stats__number">
+            {{ statsData?.inventoryStats?.refunded?.count }}
+          </div>
+          <div class="units-stats__title">Refunded</div>
+          <div class="units-stats__price">
+            {{ statsData?.inventoryStats?.refunded?.sum | number }} EGP
+          </div>
+        </div>
+        <div class="card_icon">
+          <img
+            src="assets/img/dashboard/available-units-icon.png"
+            alt="available units icon"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="inventory-pipeline">
+    <span class="inventory-pipeline__title">Collection Pipeline</span>
+    <div class="sales-pipeline__bar reverse"></div>
+  </div>
+  <div class="units-stats">
+    <div class="units-stats__wrapper custom-colors reverse">
+      <div
+        class="contracted-units"
+        (mouseenter)="stopPaymentCardsSlider('Today_payment_collections')"
+        (mouseleave)="startPaymentCardsSlider('Today_payment_collections')"
+      >
+        <div class="contracted-units__stats row text-sm">
+          <div class="col-xs-12">Today</div>
+          <div
+            class="units-stats__price col-xs-12 animated"
+            [ngClass]="{
+              zoomOut:
+                viewPaymentCardsSlider['Today_payment_collections'].change,
+              zoomIn:
+                !viewPaymentCardsSlider['Today_payment_collections'].change
+            }"
+          >
+            <div class="units-stats__title">
+              {{
+                paymentCardsSliderValues[
+                  viewPaymentCardsSlider["Today_payment_collections"].value
+                ] | titlecase
+              }}:
+            </div>
+            {{
+              statsData?.paymentCollectedPipelineStats
+                ?.Today_payment_collections[
+                paymentCardsSliderValues[
+                  viewPaymentCardsSlider["Today_payment_collections"].value
+                ]
+              ] | number
+            }}
+            EGP
+          </div>
+        </div>
+      </div>
+      <div
+        class="sold-units"
+        (mouseenter)="stopPaymentCardsSlider('MTD_payment_collections')"
+        (mouseleave)="startPaymentCardsSlider('MTD_payment_collections')"
+      >
+        <div class="sold-units__stats row text-sm">
+          <div class="col-xs-12">Month To Date</div>
+          <div
+            class="units-stats__price col-xs-12 animated"
+            [ngClass]="{
+              zoomOut: viewPaymentCardsSlider['MTD_payment_collections'].change,
+              zoomIn: !viewPaymentCardsSlider['MTD_payment_collections'].change
+            }"
+          >
+            <div class="units-stats__title">
+              {{
+                paymentCardsSliderValues[
+                  viewPaymentCardsSlider["MTD_payment_collections"].value
+                ] | titlecase
+              }}:
+            </div>
+            {{
+              statsData?.paymentCollectedPipelineStats?.MTD_payment_collections[
+                paymentCardsSliderValues[
+                  viewPaymentCardsSlider["MTD_payment_collections"].value
+                ]
+              ] | number
+            }}
+            EGP
+          </div>
+        </div>
+      </div>
+      <div
+        class="available-units"
+        (mouseenter)="stopPaymentCardsSlider('YTD_payment_collections')"
+        (mouseleave)="startPaymentCardsSlider('YTD_payment_collections')"
+      >
+        <div class="available-units__stats row text-sm">
+          <div class="col-xs-12">Year To Date</div>
+          <div
+            class="units-stats__price col-xs-12 animated"
+            [ngClass]="{
+              zoomOut: viewPaymentCardsSlider['YTD_payment_collections'].change,
+              zoomIn: !viewPaymentCardsSlider['YTD_payment_collections'].change
+            }"
+          >
+            <div class="units-stats__title">
+              {{
+                paymentCardsSliderValues[
+                  viewPaymentCardsSlider["YTD_payment_collections"].value
+                ] | titlecase
+              }}:
+            </div>
+            {{
+              statsData?.paymentCollectedPipelineStats?.YTD_payment_collections[
+                paymentCardsSliderValues[
+                  viewPaymentCardsSlider["YTD_payment_collections"].value
+                ]
+              ] | number
+            }}
+            EGP
+          </div>
+        </div>
+      </div>
+      <div
+        class="total-units"
+        (mouseenter)="
+          stopPaymentCardsSlider('Accumulative_payment_collections')
+        "
+        (mouseleave)="
+          startPaymentCardsSlider('Accumulative_payment_collections')
+        "
+      >
+        <div class="total-units__stats row text-sm">
+          <div class="col-xs-12">Accumulative</div>
+          <div
+            class="units-stats__price col-xs-12 animated"
+            [ngClass]="{
+              zoomOut:
+                viewPaymentCardsSlider['Accumulative_payment_collections']
+                  .change,
+              zoomIn:
+                !viewPaymentCardsSlider['Accumulative_payment_collections']
+                  .change
+            }"
+          >
+            <div class="units-stats__title">
+              {{
+                paymentCardsSliderValues[
+                  viewPaymentCardsSlider["Accumulative_payment_collections"]
+                    .value
+                ] | titlecase
+              }}:
+            </div>
+            {{
+              statsData?.paymentCollectedPipelineStats
+                ?.Accumulative_payment_collections[
+                paymentCardsSliderValues[
+                  viewPaymentCardsSlider["Accumulative_payment_collections"]
+                    .value
+                ]
+              ] | number
+            }}
+            EGP
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="inventory-pipeline">
+    <span class="inventory-pipeline__title">Payment Collections</span>
+    <div class="inventory-pipeline__bar"></div>
+  </div>
+  <div class="dashboard-activities__wrapper">
+    <div class="table-responsive">
+      <table class="table table-borderd">
+        <tr>
+          <th>Client Name</th>
+          <th>Bank Name</th>
+          <th>RF Serial</th>
+          <th>Unit Serial</th>
+          <th>Cheque Number</th>
+          <th>Received Amount</th>
+          <th>Remaining Amount</th>
+          <th>Total Amount</th>
+          <th>Payment Date</th>
+          <th>Status</th>
+          <th>Reminder Status</th>
+          <th>Reminder Reason</th>
+        </tr>
+        <tr
+          *ngFor="let list of payment_collections; let index = index"
+          [ngClass]="{
+            'bg-success text-dark': list.status == 'collected',
+            'bg-danger': list.status == 'rejected'
+          }"
+        >
+          <td>
+            {{ list?.lead?.name }}
+          </td>
+          <td>
+            {{ list?.bank?.name }}
+          </td>
+          <td>{{ list.reservation_id }}</td>
+          <td>{{ list.unit?.serial }}</td>
+          <td>
+            {{ list?.cheque_number }}
+          </td>
+          <td>
+            {{ list?.amount_received | currency : " " }}
+          </td>
+          <td>
+            {{ list?.remaining_amount | currency : " " }}
+          </td>
+          <td>
+            {{ list?.amount | currency : " " }}
+          </td>
+          <td>{{ list.date }}</td>
+          <td>{{ list.status }}</td>
+          <td>
+            {{ list?.send_reminder == 0 ? "Disabled" : "Enabled" }}
+          </td>
+          <td>
+            {{ list?.reminder_reason }}
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-copyrights">
+      &copy; {{ currentYear }} {{ envStatics.projectName }}
+    </div>
+    <div class="footer-upbutton">
+      <a (click)="onGoPageTop()"><i class="fa fa-arrow-circle-up"></i> UP</a>
+    </div>
+  </div>
+</section>
+
+<!-- <div class="box">
+  <div>
+    Under Maintainance !
+  </div>
+  <p><span>Stay Tuned !</span> we`re working on a new dashboard</p>
+</div> -->

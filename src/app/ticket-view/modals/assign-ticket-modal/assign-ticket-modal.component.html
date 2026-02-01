@@ -1,0 +1,63 @@
+
+<modal
+  #modal
+  title="Assign Ticket"
+  submitButtonLabel="submit"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="submitAssignTicketModal(modal)"
+>
+<modal-header> </modal-header>
+<modal-content>
+  <div class="row">
+
+    <div class="form-group col-xs-6">
+      <label for="">Time to Next Action (SLA): </label>
+      <ng-select
+        name="time_to_next_action"
+        id="time_to_next_action"
+        [(ngModel)]="assignTicket.time_to_next_action"
+      >
+        <ng-option *ngFor="let time of time_to_actions" [value]="time">{{time}} day</ng-option>
+      </ng-select>
+    </div>
+
+    <div class="form-group col-xs-6">
+      <label for="">Department <span class="required"> *</span>: </label>
+      <ng-select name="request_approval_department_id" (change)="selectDepartment($event)" id="request_approval_department_id"
+      [(ngModel)]="assignTicket.department_id" [attr.disabled]="notSupervisor? true : null">
+        <ng-option *ngFor="let department of departments" [value]="department.id">{{department.name}}</ng-option>
+      </ng-select>
+    </div>
+
+
+  </div>
+
+  <div class="row marign-top-10">
+    <div class="form-group col-xs-6">
+      <label for="">Feedback Description: </label>
+      <textarea name="assignTicketFeedBackDescription" [(ngModel)]="assignTicket.feedback.description" cols="25"
+        rows="5"></textarea>
+    </div>
+
+    <div class="form-group col-xs-6">
+      <label for="">Assign to User: </label>
+      <ng-select name="assign_to" id="assign_to" [(ngModel)]="assignTicket.assign_to">
+        <ng-option *ngFor="let user of filteredUsers" [value]="user.id">{{user.name}}</ng-option>
+      </ng-select>
+    </div>
+
+    <div class="form-group col-xs-6">
+      <label for="">Feedback Attachments: </label>
+      <input type="file" class="form-control" id="document" multiple #assignTicketFileInput
+        (change)="onAssignToAgenFilesChange($event)" required />
+    </div>
+  </div>
+</modal-content>
+<modal-footer>
+  <button class="btn btn-secondary" (click)="modal.close()">
+    close
+  </button>
+</modal-footer>
+</modal>

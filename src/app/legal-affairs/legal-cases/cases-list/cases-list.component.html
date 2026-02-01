@@ -1,0 +1,176 @@
+<section id="legal-cases" dir="rtl">
+  <div class="container-fluid">
+    <div class="d-flex justify-content-between">
+      <h2>القضايا</h2>
+      <div class="d-flex justify-content-center align-items-center gap-15">
+        <div class="btn-group" role="group">
+          <button
+            type="button"
+            class="btn"
+            [routerLink]="['/pages/legal-affairs/cases/add']"
+          >
+            إضافة قضية جديده
+          </button>
+        </div>
+        <div class="dropdown">
+          <button
+            class="btn btn-secondary dropdown-toggle"
+            type="button"
+            id="dropdownMenuButton"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            <i class="fa fa-cog" aria-hidden="true"></i>
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <li (click)="manageModal.open()">
+              <a>
+                <span>Manage Table</span>
+              </a>
+            </li>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="col-md-12"
+      [ngClass]="{ 'no-interaction': is_refreshing }"
+      *ngIf="data_list"
+    >
+      <div class="table table-responsive table_sticky_header">
+        <table class="table table-bordered">
+          <tr class="table_sticky_header_header">
+            <th *ngIf="manageTable.case_no">رقم القضية</th>
+            <th *ngIf="manageTable.case_file_no">رقم الملف</th>
+            <th *ngIf="manageTable.status">الحالة</th>
+            <th *ngIf="manageTable.plaintiff_type">نوع الشاكي</th>
+            <th *ngIf="manageTable.plaintiff_name">اسم الشاكي</th>
+            <th *ngIf="manageTable.plaintiff_lawyer">محامي الشاكي</th>
+            <th *ngIf="manageTable.accused_type">نوع المشكو في حقة</th>
+            <th *ngIf="manageTable.accused_name">اسم المشكو في حقة</th>
+            <th *ngIf="manageTable.accused_lawyer">محامي المشكو في حقة</th>
+            <th *ngIf="manageTable.receive_date">تاريخ اول جلسة</th>
+            <th *ngIf="manageTable.filing_date">تاريخ الإيداع</th>
+            <th *ngIf="manageTable.judgement_date">تاريخ الحكم</th>
+            <th>الإجراءات</th>
+          </tr>
+          <ng-container *ngFor="let row of data_list; let index = index">
+            <tr>
+              <td *ngIf="manageTable.case_no">
+                {{ row.case_no }}
+              </td>
+              <td *ngIf="manageTable.case_file_no">
+                {{ row.case_file_no }}
+              </td>
+              <td *ngIf="manageTable.status">
+                {{ row.status?.name }}
+              </td>
+              <td *ngIf="manageTable.plaintiff_type">
+                {{ row.plaintiff_type ? typeMapping[row.plaintiff_type] : "" }}
+              </td>
+              <td *ngIf="manageTable.plaintiff_name">
+                {{ row.plaintiff_name }}
+              </td>
+              <td *ngIf="manageTable.plaintiff_lawyer" class="text-center">
+                <span> الاسم:- {{ row.plaintiff_lawyer_name }} </span>
+                <br />
+                <span> الهاتف:- {{ row.plaintiff_lawyer_phone }} </span>
+              </td>
+              <td *ngIf="manageTable.accused_type">
+                {{ row.accused_type ? typeMapping[row.accused_type] : "" }}
+              </td>
+              <td *ngIf="manageTable.accused_name">
+                {{ row.accused_name }}
+              </td>
+              <td *ngIf="manageTable.accused_lawyer" class="text-center">
+                <span> الاسم:- {{ row.accused_lawyer_name }} </span>
+                <br />
+                <span> الهاتف:- {{ row.accused_lawyer_phone }} </span>
+              </td>
+              <td *ngIf="manageTable.receive_date">
+                {{
+                  row.receive_date | date : "mediumDate" : undefined : "ar-EG"
+                }}
+              </td>
+              <td *ngIf="manageTable.filing_date">
+                {{
+                  row.filing_date | date : "mediumDate" : undefined : "ar-EG"
+                }}
+              </td>
+              <td *ngIf="manageTable.judgement_date">
+                {{
+                  row.judgement_date | date : "mediumDate" : undefined : "ar-EG"
+                }}
+              </td>
+              <td class="action">
+                <div
+                  class="d-flex flex-wrap justify-content-center align-items-center gap-15"
+                  role="group"
+                  aria-label="Basic example"
+                >
+                  <button
+                    type="button"
+                    class="btn btn-warning"
+                    [routerLink]="['/pages/legal-affairs/cases/edit', row.id]"
+                  >
+                    <i class="fa fa-pencil" aria-hidden="true"></i>
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    [routerLink]="['/pages/legal-affairs/cases/view', row.id]"
+                  >
+                    <i class="fa fa-eye" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </ng-container>
+        </table>
+      </div>
+      <div>
+        <div *ngIf="paginate.last_page" class="text-center">
+          ({{ paginate?.to }} / {{ paginate.total || 0 }}) page
+          {{ params.page }}
+        </div>
+        <div class="text-center" *ngIf="paginate.last_page">
+          <ngb-pagination
+            [collectionSize]="paginate?.total"
+            [pageSize]="paginate?.per_page"
+            [(page)]="params.page"
+            [maxSize]="5"
+            [rotate]="true"
+            [ellipses]="true"
+            [boundaryLinks]="true"
+            (pageChange)="pageChange($event)"
+            size="lg"
+          >
+          </ngb-pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<modal
+  #manageModal
+  title="Manage Table"
+  modalClass="modal-lg"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <columns-filter
+      uid="unites_view"
+      [columns]="columns"
+      (selectColumns)="onSelectColumns($event)"
+    ></columns-filter>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="manageModal.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>

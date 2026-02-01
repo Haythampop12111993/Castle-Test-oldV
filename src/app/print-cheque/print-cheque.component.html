@@ -1,0 +1,78 @@
+<div class="ch-page-container">
+  <div id="check_frame" *ngIf="payload.type">
+    <div id="check" class="check-image" [ngStyle]="{ 'background-image': 'url(' + bank_image + ')'}">
+      <div id="check_liner" v-if="liner">{{ liner_text}}</div>
+      <div id="check_date" :style="styleObject">{{ date }}</div>
+      <div id="check_place" :style="styleObject">{{ place }}</div>
+      <div id="check_amount" :style="styleObject">{{ amountAfterFormat }}</div>
+      <div id="check_to">{{ name }}</div>
+      <div id="check_amount_text" :style="styleObject">{{ amount_text }}</div>
+      <div id="check_reason" :style="styleObject">{{ reason }}</div>
+    </div>
+  </div>
+  <div id="details">
+
+    <!-- <div class="head"></div> -->
+    <div class="body">
+      <div class="input-block">
+        <label for="input-date">اختار بنك :</label>
+        <br>
+        <select (change)="onBankTypeChange($event)" [(ngModel)]="payload.type" name="type" class="input-element">
+          <option value="new">اضافه بنك جديد</option>
+          <option value="saved">البنوك</option>
+        </select>
+      </div>
+      <form *ngIf="payload.type == 'new'" [formGroup]="uploadLayoutForm">
+        <div class="input-block">
+          <label for="input-date">اسم البنك :</label>
+          <br>
+          <input type="text" dir="ltr" class="input-element" formControlName="bank_name"/>
+        </div>
+        <div class="input-block">
+          <label for="input-date">صورة الشيك :</label>
+          <br>
+          <input type="file" accept="image/*" class="margin-left" id="file"
+          (change)="handleUploadNewBank($event)" dir="ltr" class="input-element" />
+        </div>
+      </form>
+      <div *ngIf="payload.type == 'saved'" class="input-block">
+        <label for="input-date">قوالب الشيكات :</label>
+        <br>
+        <select (change)="onSavedBankChange($event)" [(ngModel)]="saved_bank_id" class="input-element">
+          <option *ngFor="let bank of saved_banks" [value]="bank.id">{{bank.bank_name}}</option>
+        </select>
+      </div>
+      <div class="input-block">
+        <label for="input-date">التاريخ :</label>
+        <br>
+        <input type="text" dir="ltr" class="input-element" [(ngModel)]="date" name="date"/>
+      </div>
+
+      <div class="input-block">
+        <label for="input-name"> الإسم / لأمر :</label>
+        <br>
+        <input type="text" class="input-element" id="input-name" [(ngModel)]="name" name="name"/>
+      </div>
+      <div class="input-block">
+        <label for="input-amount">قيمة الشيك :</label>
+        <br>
+        <!-- <input type="text" class="input-element" id="input-amount"
+                   (keyup)="updateAmount(toEN(this.value),vm.currency)" v-model="amount"/> -->
+        <input type="text" class="input-element" (keyup)="updateAmount(toEN(), 'EGP')" id="input-amount" [(ngModel)]="amount" name="amount" />
+      </div>
+
+      <div class="input-block">
+            <!-- <label for="input-liner">
+                <input type="checkbox" id="input-liner" /> تسطير الشيك
+            </label> -->
+            <label for="input-amount">نص التسطير :</label>
+            <input type="text" class="input-element" placeholder="يمكنك كتابة نص للتسطير هنا" [(ngModel)]="liner_text" id="input-liner-text"/>
+        </div>
+        <br>
+
+      <button (click)="saveBankCheuqe()" class="print-btn">
+        حفظ
+      </button>
+    </div>
+  </div>
+</div>

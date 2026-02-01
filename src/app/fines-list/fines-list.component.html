@@ -1,0 +1,468 @@
+<div class="container-fluid">
+  <div class="proj-details">
+    <div class="row filter-oute.r-container">
+      <div class="col-md-12" [ngClass]="{ 'no-interaction': is_refreshing }">
+        <div class="filter">
+          <div class="row">
+            <div class="col-md-2">
+              <h3 class="search__title">Advanced Search</h3>
+            </div>
+            <div class="search-container col-md-10">
+              <form
+                class="search-form"
+                [formGroup]="filterForm"
+                (ngSubmit)="getFines(true)"
+              >
+                <div class="search-form-inputs">
+                  <div class="form-group">
+                    <label class="unit-serial-label" for="">RF Serial :</label>
+                    <input
+                      type="text"
+                      name="filter_reservation"
+                      id="filter_reservation"
+                      class="form-control unit-serial-input"
+                      formControlName="filter_reservation"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label class="unit-serial-label" for=""
+                      >Unit Serial :</label
+                    >
+                    <input
+                      type="text"
+                      name="filter_unit"
+                      id="filter_unit"
+                      class="form-control unit-serial-input"
+                      formControlName="filter_unit"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label class="unit-serial-label" for=""
+                      >Cheque / Transaction No. :</label
+                    >
+                    <input
+                      type="text"
+                      name="filter_cheque_number"
+                      id="filter_cheque_number"
+                      class="form-control unit-serial-input"
+                      formControlName="filter_cheque_number"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="">Lead Name / Phone :</label>
+                    <input
+                      type="text"
+                      name="filter_lead"
+                      id="filter_lead"
+                      class="form-control"
+                      formControlName="filter_lead"
+                    />
+                  </div>
+                  <!-- <div class="form-group">
+                    <label for="">Status :</label>
+                    <select
+                      class="form-control"
+                      placeholder="Project"
+                      formControlName="filter_status"
+                      id="filter_status"
+                    >
+                      <option value="" selected>All</option>
+                      <option *ngFor="let value of allStatuses" [value]="value">
+                        {{ value }}
+                      </option>
+                    </select>
+                  </div> -->
+                  <div *ngIf="projects" class="form-group">
+                    <label for="">Project :</label>
+                    <select
+                      class="form-control"
+                      placeholder="Project"
+                      formControlName="filter_project_id"
+                      id="filter_project_id"
+                    >
+                      <option value="" selected>All</option>
+                      <option *ngFor="let p of projects" [value]="p.id">
+                        {{ p.name }}
+                      </option>
+                    </select>
+                  </div>
+                  <!-- <div *ngIf="store_banks" class="form-group">
+                    <label for="">Location :</label>
+                    <select
+                      class="form-control"
+                      placeholder="Store Banks"
+                      formControlName="filter_store_bank_id"
+                      id="filter_store_bank_id"
+                    >
+                      <option value="" selected>All</option>
+                      <option
+                        *ngFor="let bank of store_banks"
+                        [value]="bank.id"
+                      >
+                        {{ bank.name }}
+                      </option>
+                    </select>
+                  </div> -->
+                  <!-- <div *ngIf="banks" class="form-group">
+                    <label for="">Bank :</label>
+                    <select
+                      class="form-control"
+                      placeholder="Bank"
+                      formControlName="filter_bank_id"
+                      id="filter_bank_id"
+                    >
+                      <option value="" selected>All</option>
+                      <option *ngFor="let bank of banks" [value]="bank.id">
+                        {{ bank.name }}
+                      </option>
+                    </select>
+                  </div> -->
+                  <!-- <div class="form-group">
+                    <label for="">Colllect Type :</label>
+                    <select
+                      class="form-control"
+                      placeholder="Colllect Type"
+                      formControlName="types"
+                      id="types"
+                    >
+                      <option value="" selected>All</option>
+                      <option value="1">Cash</option>
+                      <option value="2">Visa</option>
+                      <option value="3">Bank Transfer</option>
+                      <option value="4">Cheque</option>
+                      <option value="5">Cash Insted Of Cheque</option>
+                    </select>
+                  </div> -->
+                  <div class="form-group">
+                    <label for="">Date From :</label>
+                    <input
+                      type="date"
+                      name="filter_date_from"
+                      id="filter_date_from"
+                      class="form-control"
+                      formControlName="filter_date_from"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="">Date To :</label>
+                    <input
+                      type="date"
+                      name="filter_date_to"
+                      id="filter_date_to"
+                      class="form-control"
+                      formControlName="filter_date_to"
+                    />
+                  </div>
+                  <button type="submit" class="filter button c-bg">
+                    FILTER
+                  </button>
+                  <button
+                    (click)="resetFilters()"
+                    type="button"
+                    class="button bg-danger reset-filter"
+                  >
+                    RESET
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-4">
+      <h3>Fines</h3>
+    </div>
+
+    <div class="col-xs-8">
+      <div
+        class="d-flex justify-content-end align-items-center"
+        style="gap: 5px"
+      >
+        <div class="dropdown" dropdown>
+          <i class="fa fa-cog" aria-hidden="true" dropdown-open></i>
+          <ul class="dropdown-menu menu-settings">
+            <li
+              (click)="importFinesModal.open()"
+              *ngIf="
+                userProfile.role == 'Admin' ||
+                userProfile.role == 'Super Development' ||
+                userProfile.role == 'CFO'
+              "
+            >
+              <a>
+                <span>Import Fines</span>
+              </a>
+            </li>
+            <li (click)="exportTable()">
+              <a>
+                <span>Export Fines</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12">
+      <div class="table table-responsive">
+        <table class="table table-bordered">
+          <tr>
+            <th>Client Name</th>
+            <th>Number of days late</th>
+            <th>Customer Bank</th>
+            <th>Location</th>
+            <th>Collect Method</th>
+            <th>Project</th>
+            <th>RF Serial</th>
+            <th>Unit Serial</th>
+            <th>Cheque Amount</th>
+            <th>Chq/Tran Number</th>
+            <th>Received Amount</th>
+            <th>Remaining Amount</th>
+            <th>Total Amount</th>
+            <th>Bounced Date</th>
+            <th>Payment Date</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+          <tr
+            *ngFor="let list of fines_list; let index = index"
+            [ngClass]="{
+              'bg-success': list.status == 'collected',
+              'bg-danger': list.status == 'bounced'
+            }"
+            class="payment-collections"
+          >
+            <td>
+              {{ list?.lead?.name }}
+            </td>
+            <td>
+              {{ list?.num_days_late }}
+            </td>
+            <td>
+              {{ list?.bank?.name }}
+            </td>
+            <td>
+              {{ list?.store_bank?.name }}
+            </td>
+            <td>{{ list.collect_method }}</td>
+            <td>{{ list.unit?.project?.name }}</td>
+            <td>{{ list.reservation_id }}</td>
+            <td>
+              <a
+                [routerLink]="['/pages/projects/view-unit']"
+                [queryParams]="{ unit_id: list.unit?.id }"
+                target="_blank"
+                >{{ list.unit?.serial }}</a
+              >
+            </td>
+            <td>
+              {{ list?.collection_cheque?.amount | currency : " " }}
+            </td>
+            <td>
+              {{ list?.collection_cheque?.cheque_number }}
+            </td>
+            <td>
+              {{ list?.amount_received | currency : " " }}
+            </td>
+            <td>
+              {{ list?.remaining_amount | currency : " " }}
+            </td>
+            <td>
+              {{ list.amount | currency : " " }}
+            </td>
+            <td>
+              {{ list.created_at }}
+            </td>
+            <td>
+              {{ list.collection_date }}
+            </td>
+            <td>{{ list.status }}</td>
+            <td>
+              <div
+                class="dropdown"
+                dropdown
+                *ngIf="
+                  userProfile.role === 'A.R Accountant' ||
+                  userProfile.role === 'Admin' ||
+                  userProfile.role == 'Super Development' ||
+                  userProfile.role === 'CFO' ||
+                  userProfile.role === 'Moderator' ||
+                  userProfile?.role === 'Super Moderator'
+                "
+              >
+                <img
+                  class="more-options-icon"
+                  src="assets/img/show-more-button-with-three-dots.svg"
+                  dropdown-open
+                />
+                <ul class="dropdown-menu">
+                  <li (click)="openCollectFine(list, collectChequeFine)">
+                    <a>
+                      <span>Collect</span>
+                    </a>
+                  </li>
+                  <li (click)="deleteFine(list)">
+                    <a>
+                      <span>Delete</span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <!-- <div *ngIf="payment_collections.length == 0" class="message">
+        <h1>There is no data yet</h1>
+      </div> -->
+    </div>
+
+    <div *ngIf="current_page" class="col-xs-12 text-center">
+      <p>({{ per_page }} / {{ total }})</p>
+      <p>page {{ current_page }}</p>
+    </div>
+    <div class="col-xs-12 text-center">
+      <ngb-pagination
+        [collectionSize]="pagination_meta.totalPages * 10"
+        [(page)]="pagination_meta.page"
+        [maxSize]="5"
+        [rotate]="true"
+        [ellipses]="true"
+        [boundaryLinks]="true"
+        (pageChange)="pageChange($event)"
+        [size]="lg"
+      >
+      </ngb-pagination>
+    </div>
+  </div>
+</div>
+
+<modal
+  #importFinesModal
+  title="Import Fines"
+  submitButtonLabel="submit"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onOpen)="importFinesModalOpen()"
+  (onClose)="importFinesModalClose()"
+  (onSubmit)="uploadExcelMethod(importFinesModal)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <div class="row">
+      <div class="form-group col-xs-6">
+        <form class="form-group btn-group-files pull-left">
+          <label for="">File : </label>
+          <input
+            type="file"
+            accept=".xlsx, .xls"
+            class="margin-left"
+            id="file"
+            (change)="handleUploadExcel($event)"
+          />
+        </form>
+      </div>
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="importFinesModal.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>
+
+<modal
+  #collectChequeFine
+  title="Collect Fine Cheque"
+  submitButtonLabel="Collect"
+  modalClass="modal-lg"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="submitCollectFine(collectChequeFine)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <ng-container *ngIf="collect_fine">
+      <div class="form-group">
+        <label for="collection_date_fine">Collect Date:</label>
+        <input
+          type="date"
+          class="form-control"
+          name="collection_date_fine"
+          [(ngModel)]="collect_form.collection_date"
+        />
+      </div>
+      <div class="form-group">
+        <label for="">Type:</label>
+        <select
+          class="form-control"
+          [(ngModel)]="collect_form.status"
+          name="collect_type_fine"
+        >
+          <option value="fully-collected">Fully</option>
+          <option value="partially-collected">Partially</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="chequeCollectCustomerFines">Customer:</label>
+        <select
+          class="form-control"
+          [(ngModel)]="collect_form.lead_id"
+          name="chequeCollectCustomerFines"
+        >
+          <option value="" disabled hidden></option>
+          <option
+            value="{{ customer.lead_id }}"
+            *ngFor="let customer of collect_fine.reservation.sharing_leads"
+          >
+            {{ customer.lead_name }}
+          </option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="">Method:</label>
+        <select
+          class="form-control"
+          [(ngModel)]="collect_form.partially_method"
+          name="partially_method_fines"
+        >
+          <option value="1">Cash</option>
+          <option value="2">Visa</option>
+          <option value="3">Bank Transfer</option>
+          <option value="4">Cheque</option>
+          <option value="5">Cash Insted Of Cheque</option>
+        </select>
+      </div>
+      <ng-container *ngIf="collect_form.status == 'partially-collected'">
+        <div class="form-group">
+          <label for="">Amount:</label>
+          <input
+            type="text"
+            class="form-control"
+            name="cheque_amount_fines"
+            [(ngModel)]="collect_form.amount_received"
+          />
+        </div>
+        <div class="form-group" *ngIf="collect_form.partially_method == '3'">
+          <label for="">Cheque Number:</label>
+          <input
+            type="text"
+            class="form-control"
+            name="partially_data_fines"
+            [(ngModel)]="collect_form.partially_data"
+          />
+        </div>
+      </ng-container>
+    </ng-container>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="collectChequeFine.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>

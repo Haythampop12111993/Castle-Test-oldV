@@ -1,0 +1,75 @@
+<mat-card class="option-card">
+  <mat-card-content>
+    <h3 class="card__title">Lead Ticket Types</h3>
+    <div class="row">
+      <div class="col-xs-12 margin-bottom">
+        <form #form="ngForm" class="form-inline">
+          <div class="form-group">
+            <label for="type_name">Type Name :</label>
+            <input
+              name="type_name"
+              [(ngModel)]="form_data.name"
+              type="text"
+              class="form-control"
+              required
+            />
+          </div>
+
+          <button
+            (click)="saveForm()"
+            class="btn btn-primary"
+            type="submit"
+            [disabled]="!form.form.valid"
+          >
+            {{ current_selected_type ? "Update" : "Add" }}
+          </button>
+          <button
+            *ngIf="current_selected_type"
+            (click)="resetForm()"
+            class="btn btn-default"
+            type="button"
+          >
+            Cancel
+          </button>
+        </form>
+      </div>
+      <div class="col-xs-12 margin-bottom">
+        <table>
+          <tr>
+            <th>Name</th>
+            <th>Actions</th>
+          </tr>
+          <tr class="data" *ngFor="let row of page_data.data">
+            <td>
+              {{ row?.name }}
+            </td>
+
+            <td>
+              <button
+                class="btn btn-danger delete"
+                (click)="deleteAction(row.id)"
+              >
+                Delete
+              </button>
+              <button class="btn btn-primary primary" (click)="editAction(row)">
+                Edit
+              </button>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="col-xs-12 text-center">
+        <ngb-pagination
+          [collectionSize]="page_data.meta.total_pages * 10"
+          [(page)]="page_data.payload.page"
+          [maxSize]="5"
+          [rotate]="true"
+          [ellipses]="true"
+          [boundaryLinks]="true"
+          (pageChange)="pageChange($event)"
+        >
+        </ngb-pagination>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

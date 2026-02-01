@@ -1,0 +1,107 @@
+<div class="container-fluid margin-top-20" *ngIf="client">
+  <div class="row">
+    <div class="col-xs-4">
+      <h2>Client Info</h2>
+      <div class="card-container">
+        <div class="row">
+          <div class="col-md-12 card">
+            <span class="card-label">Name:</span>
+            <span class="card-value">{{ client?.client?.name }}</span>
+          </div>
+          <div class="col-md-12 card" *ngIf="client?.client?.phone">
+            <span class="card-label">Phone:</span>
+            <span class="card-value">{{ client?.client?.phone }}</span>
+          </div>
+          <div class="col-md-12 card" *ngIf="client?.client?.email">
+            <span class="card-label">Email:</span>
+            <span class="card-value">{{ client?.client?.email }}</span>
+          </div>
+          <div class="col-md-12 card">
+            <span class="card-label">Source:</span>
+            <span class="card-value">{{
+              client?.client?.lead_source == "-1"
+                ? "Self Generate"
+                : client?.client?.lead_source
+            }}</span>
+          </div>
+          <div class="col-md-12 card" *ngIf="client?.client?.address">
+            <span class="card-label">Address:</span>
+            <span class="card-value">{{ client?.client?.address }}</span>
+          </div>
+          <div class="col-md-12 card" *ngIf="client?.client?.national_num">
+            <span class="card-label">ID Number:</span>
+            <span class="card-value">{{ client?.client?.national_num }}</span>
+          </div>
+          <div class="col-md-12 card" *ngIf="client?.client?.phone_2">
+            <span class="card-label">Phone 2:</span>
+            <span class="card-value">{{ client?.client?.phone_2 }}</span>
+          </div>
+          <div class="col-md-12 card" *ngIf="client?.client?.phone_3">
+            <span class="card-label">Phone 3:</span>
+            <span class="card-value">{{ client?.client?.phone_3 }}</span>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="client?.units?.length > 0">
+        <h2>Units</h2>
+      </div>
+      <div class="card-container" *ngIf="client?.units?.length > 0">
+        <div
+          class="units-chip"
+          *ngFor="let unit of client?.units"
+          (click)="goToUnit(unit.project.id, unit.id)"
+        >
+          <span class="units-chip__label">{{ unit }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-8">
+      <div class="col-md-12" [ngClass]="{ 'no-interaction': is_refreshing }">
+        <div class="row">
+          <div
+            class="col-md-12 d-flex justify-content-between align-items-center"
+          >
+            <h2>Client Statement</h2>
+            <div class="balance-export d-flex align-items-center">
+              <div class="balance" *ngIf="client">
+                <span class="balance__label">Balance:</span>
+                <span class="balance__value">{{
+                  client?.balance | currency : " "
+                }}</span>
+              </div>
+              <div class="export margin-left-10">
+                <button class="btn btn-primary" (click)="export()">
+                  Export
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="table table-responsive table_sticky_header">
+          <table class="table table-bordered">
+            <tr class="table_sticky_header_header">
+              <th>Cheque Number</th>
+              <th>Payment Type</th>
+              <th>Project Name</th>
+              <th>Reservation Serial</th>
+              <th>Unit Serial</th>
+              <th>Credit</th>
+              <th>Debit</th>
+              <th>Payment Date</th>
+            </tr>
+            <tr *ngFor="let payment of client_statements; let i = index">
+              <td>{{ payment.cheque_number }}</td>
+              <td>{{ payment.payment_type }}</td>
+              <td>{{ payment.project_name }}</td>
+              <td>{{ payment.reservation_serial }}</td>
+              <td>{{ payment.unit_serial }}</td>
+              <td>{{ payment.credit | currency : " " }}</td>
+              <td>{{ payment.debit | currency : " " }}</td>
+              <td>{{ payment.payment_date }}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

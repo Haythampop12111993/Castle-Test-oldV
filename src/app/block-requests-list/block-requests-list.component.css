@@ -1,0 +1,36 @@
+.action{
+  width: 10%;
+}
+
+.dropdown-menu{
+  left: unset;
+  right: 0;
+}
+
+.table-responsive{
+  overflow-x: unset;
+}
+
+.decline-list-item {
+  background-color: indianred;
+}
+
+.decline-list-item:hover,
+.decline-list-item a:hover {
+  background-color: #c95050;
+}
+
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+}
+
+.d-flex {
+  display: flex;
+}
+.align-items-center {
+
+  align-items: center;
+}

@@ -1,0 +1,91 @@
+<mat-card class="option-card">
+  <mat-card-content>
+    <h3 class="card__title">Districts</h3>
+    <div class="row">
+      <div class="col-xs-12 margin-bottom d-f-end">
+        <button
+          (click)="openDistrictModal(districtForm)"
+          class="btn btn-primary"
+        >
+          Add District
+        </button>
+      </div>
+      <div class="col-xs-12 margin-bottom">
+        <table>
+          <tr>
+            <th>name</th>
+            <th>city</th>
+            <th>Actions</th>
+          </tr>
+          <tr class="data" *ngFor="let district of districts_list">
+            <td>
+              {{ district.name }}
+            </td>
+            <td>
+              {{ district.city ? district.city.name : "" }}
+            </td>
+            <td>
+              <button
+                class="btn btn-primary"
+                (click)="openDistrictModal(districtForm, district)"
+              >
+                Edit
+              </button>
+              <button
+                class="btn btn-danger delete"
+                (click)="deleteDistrict(district)"
+              >
+                Delete
+              </button>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<modal
+  #districtForm
+  title="District Form"
+  submitButtonLabel="submit"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="sendDistrictModalSubmit(districtForm)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <form>
+      <div class="row search">
+        <div class="col-xs-12 form-group">
+          <label for="">Name</label>
+          <input
+            type="text"
+            class="form-control"
+            name="name"
+            [(ngModel)]="dataForm.name"
+          />
+        </div>
+        <div class="col-xs-12 form-group">
+          <label for="">City</label>
+          <select
+            class="form-control"
+            name="city"
+            id="city"
+            [(ngModel)]="dataForm.city_id"
+          >
+            <option [value]="city.id" *ngFor="let city of cities_list">
+              {{ city.name }}
+            </option>
+          </select>
+        </div>
+      </div>
+    </form>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="districtForm.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>

@@ -1,0 +1,391 @@
+<section *ngIf="!coming_soon" class="project-inner">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-xs-12 top-header-container">
+        <div class="col-xs-10">
+          <h2>{{ view }}</h2>
+        </div>
+        <div
+          *ngIf="view == 'Price Control Requests'"
+          class="col-xs-2 import-container"
+        >
+          <div class="settings-icons pull-right">
+            <div class="dropdown" dropdown>
+              <i class="fa fa-cog" aria-hidden="true" dropdown-open></i>
+              <ul class="dropdown-menu">
+                <li
+                  *ngIf="
+                    userProfile?.role == 'A.R Accountant' ||
+                    userProfile?.role == 'Treasury Accountant'
+                  "
+                  (click)="approveAll()"
+                >
+                  <a>
+                    <span>Accountant Review Selected</span>
+                  </a>
+                </li>
+                <li
+                  class="decline-list-item"
+                  *ngIf="
+                    userProfile?.role == 'A.R Accountant' ||
+                    userProfile?.role == 'Treasury Accountant'
+                  "
+                  (click)="declineAll()"
+                >
+                  <a>
+                    <span>Accountant Decline Selected</span>
+                  </a>
+                </li>
+                <li
+                  *ngIf="
+                    userProfile?.role == 'Admin' ||
+                    userProfile?.role == 'Super Development' ||
+                    (userProfile.role == 'Moderator' &&
+                      userProfile.role == 'Super Moderator' &&
+                      userProfile.role != 'CCO' &&
+                      userProfile.role != 'Development Director')
+                  "
+                  (click)="approveAll()"
+                >
+                  <a>
+                    <span>Admin Approve Selected</span>
+                  </a>
+                </li>
+                <li
+                  class="decline-list-item"
+                  *ngIf="
+                    userProfile?.role == 'Admin' ||
+                    userProfile?.role == 'Super Development' ||
+                    (userProfile.role == 'Moderator' &&
+                      userProfile.role == 'Super Moderator' &&
+                      userProfile.role != 'CCO' &&
+                      userProfile.role != 'Development Director')
+                  "
+                  (click)="declineAll()"
+                >
+                  <a>
+                    <span>Admin Decline Selected</span>
+                  </a>
+                </li>
+                <li
+                  *ngIf="
+                    userProfile?.role == 'Admin' ||
+                    userProfile?.role == 'Super Development' ||
+                    (userProfile.role == 'Moderator' &&
+                      userProfile.role == 'Super Moderator' &&
+                      userProfile.role != 'CCO' &&
+                      userProfile.role != 'Development Director')
+                  "
+                  (click)="exportUnitPriceRequest()"
+                >
+                  <a>
+                    <span>Export Price Control Requests</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div
+          *ngIf="view == 'Price Control History'"
+          class="col-xs-2 import-container"
+        >
+          <div class="settings-icons pull-right">
+            <div class="dropdown" dropdown>
+              <i class="fa fa-cog" aria-hidden="true" dropdown-open></i>
+              <ul class="dropdown-menu">
+                <li
+                  *ngIf="
+                    userProfile?.role == 'Admin' ||
+                    userProfile?.role == 'Super Development' ||
+                    (userProfile.role == 'Moderator' &&
+                      userProfile.role == 'Super Moderator' &&
+                      userProfile.role != 'CCO' &&
+                      userProfile.role != 'Development Director')
+                  "
+                  (click)="exportUnitPriceRequestsHistory()"
+                >
+                  <a>
+                    <span>Export Price Control History</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-3">
+        <div class="form-group">
+          <label for="">View Type</label>
+          <ng-select [(ngModel)]="view">
+            <ng-option value="Price Control Requests">
+              Price Control Requests
+            </ng-option>
+            <ng-option value="Price Control History">Price Control History</ng-option>
+          </ng-select>
+        </div>
+      </div>
+    </div>
+    <div class="proj-details" *ngIf="view == 'Price Control Requests'">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="table table-responsive">
+            <table class="table table-bordered">
+              <tr>
+                <th>
+                  <input
+                    type="checkbox"
+                    [(ngModel)]="check_all"
+                    name="check_all"
+                    (ngModelChange)="onFilterChange($event)"
+                  />
+                </th>
+                <th class="th-label">
+                  <span>Project Name</span>
+                </th>
+                <th>Requested By</th>
+                <th>Percentage/Amount</th>
+                <th>Price Before</th>
+                <th>Price After</th>
+                <th>Unit Type</th>
+                <th>Finishing Type</th>
+                <th>Unit Serial</th>
+                <th>Accountant Status</th>
+                <th>Super Admin Status</th>
+                <th>Comment</th>
+                <th>Date</th>
+                <th>Actions</th>
+              </tr>
+              <tr
+                *ngFor="let r of requests?.data; let index = index"
+                [ngClass]="{
+                  'bg-success':
+                    r?.superadmin_status == 'Approved' ||
+                    r?.accountant_status == 'Approved',
+                  'bg-danger':
+                    r?.superadmin_status == 'Declined' ||
+                    r?.accountant_status == 'Declined'
+                }"
+              >
+                <td>
+                  <input
+                    type="checkbox"
+                    name="checked"
+                    [(ngModel)]="r.checked"
+                    [checked]="r.checked"
+                  />
+                </td>
+                <td>{{ r?.project?.name }}</td>
+                <td>{{ r?.user?.name }}</td>
+                <td>
+                  <ng-container *ngIf="r?.percentage">
+                    {{ r?.percentage }}%
+                  </ng-container>
+                  <ng-container *ngIf="r?.price">
+                    {{ r?.price | currency: " " }}
+                  </ng-container>
+                </td>
+                <td>{{ r?.price_before }}</td>
+                <td>{{ r?.price_after }}</td>
+                <td>{{ r?.unit_type?.name }}</td>
+                <td>{{ r?.finishing_type_text }}</td>
+                <td>{{ r?.unit?.serial }}</td>
+                <td>{{ r?.accountant_status }}</td>
+                <td>{{ r?.superadmin_status }}</td>
+                <td>{{ r?.comment }}</td>
+                <td>{{ r?.created_at | date : "medium" }}</td>
+
+                <td>
+                  <div class="dropdown" dropdown>
+                    <img
+                      class="more-options-icon"
+                      src="assets/img/show-more-button-with-three-dots.svg"
+                      dropdown-open
+                    />
+                    <ul class="dropdown-menu">
+                      <li
+                        (click)="approve(index, r.id)"
+                        *ngIf="
+                          userProfile?.role == 'A.R Accountant' ||
+                          userProfile?.role == 'Treasury Accountant'
+                        "
+                      >
+                        <a>
+                          <span>Accountant Review</span>
+                        </a>
+                      </li>
+                      <li
+                        class="decline-list-item"
+                        (click)="decline(index, r.id)"
+                        *ngIf="
+                          userProfile?.role == 'A.R Accountant' ||
+                          userProfile?.role == 'Treasury Accountant'
+                        "
+                      >
+                        <a>
+                          <span>Accountant Decline</span>
+                        </a>
+                      </li>
+                      <li
+                        (click)="approve(index, r.id, commentModal)"
+                        *ngIf="
+                          userProfile?.role == 'Admin' ||
+                          userProfile?.role == 'Super Development' ||
+                          (userProfile.role == 'Moderator' &&
+                            userProfile.role == 'Super Moderator' &&
+                            userProfile.role != 'CCO' &&
+                            userProfile.role != 'Development Director')
+                        "
+                      >
+                        <a>
+                          <span>Super Admin Approve</span>
+                        </a>
+                      </li>
+                      <li
+                        class="decline-list-item"
+                        (click)="decline(index, r.id)"
+                        *ngIf="
+                          userProfile?.role == 'Admin' ||
+                          userProfile?.role == 'Super Development' ||
+                          (userProfile.role == 'Moderator' &&
+                            userProfile.role == 'Super Moderator' &&
+                            userProfile.role != 'CCO' &&
+                            userProfile.role != 'Development Director')
+                            && this.userProfile.role !='CCO'
+                        "
+                      >
+                        <a>
+                          <span>Super Admin Decline</span>
+                        </a>
+                      </li>
+                      <li
+                        (click)="delete(index, r.id)"
+                        *ngIf="
+                          userProfile?.role == 'Admin' ||
+                          userProfile?.role == 'Super Development' ||
+                          (userProfile.role == 'Moderator' &&
+                            userProfile.role == 'Super Moderator' &&
+                            userProfile.role != 'CCO' &&
+                            userProfile.role != 'Development Director')
+                        "
+                      >
+                        <a>
+                          <span>Super Admin Delete</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div class="col-xs-12 text-center" *ngIf="requests?.last_page">
+            <ngb-pagination [collectionSize]="requests?.last_page * 10" [(page)]="pageTest" [maxSize]="5" [rotate]="true" [ellipses]="true"
+              [boundaryLinks]="true" (pageChange)="pageChange($event, 'Requests')" [size]="lg">
+            </ngb-pagination>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="proj-details" *ngIf="view == 'Price Control History'">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="table table-responsive">
+            <table class="table table-bordered">
+              <tr>
+                <th class="th-label">
+                  <span>Project Name</span>
+                </th>
+                <th>Requested By</th>
+                <th>Percentage/Amount</th>
+                <th>Price Before</th>
+                <th>Price After</th>
+                <th>Unit Type</th>
+                <th>Finishing Type</th>
+                <th>Unit Serial</th>
+                <th>Accountant Status</th>
+                <th>Super Admin Status</th>
+                <th>Super Admin Comment</th>
+                <th>Comment</th>
+                <th>Last Action Date</th>
+              </tr>
+              <tr
+                *ngFor="let r of requests_history.data; let index = index"
+                [ngClass]="{
+                  'bg-success':
+                    r?.superadmin_status == 'Approved' ||
+                    r?.accountant_status == 'Approved',
+                  'bg-danger':
+                    r?.superadmin_status == 'Declined' ||
+                    r?.accountant_status == 'Declined'
+                }"
+              >
+                <td>{{ r?.project?.name }}</td>
+                <td>{{ r?.user?.name }}</td>
+                <td>
+                  <ng-container *ngIf="r?.percentage">
+                    {{ r?.percentage }}%
+                  </ng-container>
+                  <ng-container *ngIf="r?.price">
+                    {{ r?.price | currency: " " }}
+                  </ng-container>
+                </td>
+                <td>{{ r?.price_before }}</td>
+                <td>{{ r?.price_after }}</td>
+                <td>{{ r?.unit_type?.name }}</td>
+                <td>{{ r?.finishing_type_text }}</td>
+                <td>{{ r?.unit?.serial }}</td>
+                <td>{{ r?.accountant_status }}</td>
+                <td>{{ r?.superadmin_status }}</td>
+                <td>{{ r?.superadmin_comment }}</td>
+                <td>{{ r?.comment }}</td>
+                <td>{{ r?.updated_at | date : "medium" }}</td>
+              </tr>
+            </table>
+          </div>
+          <div class="col-xs-12 text-center">
+            <ngb-pagination
+              [collectionSize]="requests_history?.last_page * 10"
+              [(page)]="pageTest"
+              [maxSize]="5"
+              [rotate]="true"
+              [ellipses]="true"
+              [boundaryLinks]="true"
+              (pageChange)="pageChange($event)"
+              [size]="lg"
+            >
+            </ngb-pagination>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<modal
+  #commentModal
+  title="Comment"
+  submitButtonLabel="submit"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="onSubmitCommentModal(commentModal)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <textarea
+      placeholder="Add Your Comment .. "
+      class="form-control"
+      [(ngModel)]="userComment"
+      cols="30"
+      rows="10"
+    ></textarea>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="closeModal(commentModal)">
+      close
+    </button>
+  </modal-footer>
+</modal>

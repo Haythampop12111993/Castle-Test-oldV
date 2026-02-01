@@ -1,0 +1,79 @@
+<section class="new-reservation" [ngClass]="{'disable-intercation': loadingData}">
+  <form class="container-fluid">
+    <div class="border-sec">
+      <div class="row">
+        <div class="line">
+          <form #form="ngForm">
+            <div class="col-md-12">
+              <h2>Add Transaction </h2>
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </form>
+
+
+  <section class="eoi">
+    <form [formGroup]="transactionForm" (ngSubmit)="submit()" class="container-fluid">
+      <div class="border-sec">
+        <div class="row">
+          <div class="line">
+            <div class="col-md-4">
+              <div class="form-group">
+                <!-- <h4>Transaction INFORMATION</h4> -->
+              </div>
+              <div class="form-group">
+                <label for="">Type :</label>
+                <ng-select formControlName="type" placeholder="Select Type">
+                  <ng-option value="Income">Income</ng-option>
+                  <ng-option value="Expense">Expense</ng-option>
+                  <!-- <ng-option value="Transfer">Transfer</ng-option> -->
+                  <!-- <ng-option value="Settlement">Settlement</ng-option> -->
+                </ng-select>
+              </div>
+              <div *ngIf="transactionForm.get('type').valid" class="form-group">
+                <label for="">Date :</label>
+                <input type="date" class="form-control" formControlName="date">
+              </div>
+              <div *ngIf="transactionForm.get('type').valid" class="form-group">
+                <label for="">Cheque Date :</label>
+                <input type="date" class="form-control" formControlName="cheque_date">
+              </div>
+            </div>
+            <div class="col-md-4 align-top">
+              <div *ngIf="transactionForm.get('type').valid" class="form-group">
+                <label for="">From Account :</label>
+                <input #from class="form-control" formControlName="from" no-record-text="No Recoreds Found!" (keyup)="searchfrom($event)" id="fromList"filterName="name" [ng5-auto-complete]="fromList">
+              </div>
+              <div *ngIf="transactionForm.get('type').valid" class="form-group">
+                <label for="">Amount :</label>
+                <input type="number" class="form-control" formControlName="amount">
+              </div>
+              <div *ngIf="transactionForm.get('type').valid" class="form-group">
+                <label for="">Cheque Number :</label>
+                <input type="number" class="form-control" formControlName="cheque_number">
+              </div>
+            </div>
+            <div class="col-md-4 align-top">
+              <div *ngIf="transactionForm.get('type').valid" class="form-group">
+                <label for="">To Account:</label>
+                <input #to class="form-control" formControlName="to" no-record-text="No Recoreds Found!" (keyup)="searchTo($event)" id="toList" filterName="name" [ng5-auto-complete]="toList">
+              </div>
+              <div *ngIf="transactionForm.get('type').valid" class="form-group">
+                <label for="">Description :</label>
+                <textarea type="text" class="form-control" formControlName="description"></textarea>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <button class="btn btn-default btn-black" [routerLink]="['/pages/finance/transaction']">Back</button>
+        <button class="btn btn-default btn-black pull-right" [disabled]="transactionForm.invalid" type="submit">Submit</button>
+      </div>
+    </form>
+  </section>
+</section>

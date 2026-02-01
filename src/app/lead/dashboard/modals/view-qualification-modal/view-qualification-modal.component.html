@@ -1,0 +1,74 @@
+<modal
+  #modalRef
+  title="View Qualification FeedBack"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <ng-container *ngIf="lead_data">
+      <div *ngIf="lead_data.qualified_user" class="mb-2">
+        By: {{ lead_data.qualified_user.name }}
+      </div>
+      <div
+        class="form-group"
+        *ngFor="
+          let question of lead_data.qualified_feedbacks;
+          let index = index
+        "
+      >
+        <label for="question_${index}">{{ question.question.question }}</label>
+        <select
+          class="form-control"
+          placeholder="Answer :"
+          name="question_${index}"
+          disabled
+        >
+          <option selected *ngIf="question.answer">
+            {{ question.answer.answer }}
+          </option>
+        </select>
+      </div>
+      <div class="row">
+        <div class="col-sm-6 form-group">
+          <input
+            type="radio"
+            name="qualified"
+            id="qualified"
+            value="qualified"
+            [checked]="lead_data.qualified_feedback_status === 'qualified'"
+            disabled
+          />
+          <label for="qualified">Qualified</label>
+        </div>
+        <div class="col-sm-6 form-group">
+          <input
+            type="radio"
+            name="disqualified"
+            id="disqualified"
+            value="disqualified"
+            [checked]="lead_data.qualified_feedback_status === 'disqualified'"
+            disabled
+          />
+          <label for="disqualified">Disqualified</label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="feedback_comment">Comment</label>
+        <textarea
+          class="form-control"
+          name="feedback_comment"
+          id="feedback_comment"
+          [(ngModel)]="lead_data.qualified_feedback_comment"
+          cols="30"
+          rows="10"
+          disabled
+        ></textarea>
+      </div>
+    </ng-container>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="modalRef.close()">Cancle</button>
+  </modal-footer>
+</modal>

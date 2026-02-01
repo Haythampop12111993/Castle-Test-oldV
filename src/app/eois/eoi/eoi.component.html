@@ -1,0 +1,666 @@
+<section
+  class="new-reservation"
+  [ngClass]="{ 'disable-intercation': loadingData }"
+>
+  <div class="container-fluid">
+    <div class="border-sec">
+      <div class="row">
+        <div class="col-md-12">
+          <h2>ADD EOI</h2>
+        </div>
+        <div class="line">
+          <form #form="ngForm">
+            <div class="col-md-6 search-top-container">
+              <div class="col-md-7">
+                <div class="form-group">
+                  <label>Search leads :</label>
+                  <div class="search-btn-container">
+                    <div>
+                      <input
+                        ngui-auto-complete
+                        [source]="observableSource.bind(this)"
+                        placeholder="Search for lead by name "
+                        class="form-control"
+                        name="chosen_lead"
+                        [(ngModel)]="chosenLead"
+                      />
+                      <small class="required">* required</small>
+                    </div>
+                    <button
+                      class="btn btn-default pull-right btn-black input-height"
+                      type="button"
+                      [disabled]="!chosenLead"
+                      (click)="getLeadDetails()"
+                    >
+                      GET INFO
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="eoi">
+    <form
+      [formGroup]="documentForm"
+      (ngSubmit)="submit()"
+      class="container-fluid"
+    >
+      <div class="border-sec" *ngIf="isLeadSelected">
+        <div class="row">
+          <div class="line">
+            <div class="col-md-4">
+              <div class="form-group">
+                <h4>LEAD INFORMATION</h4>
+              </div>
+              <div class="form-group">
+                <label for="">Lead Name :</label>
+                <input
+                  [ngClass]="{
+                    errmsg:
+                      !documentForm.controls['lead_name'].valid &&
+                      !documentForm.controls['lead_name'].pristine
+                  }"
+                  type="name"
+                  id="lead_name"
+                  formControlName="lead_name"
+                  placeholder=""
+                  class="form-control req"
+                />
+                <small class="required">* required</small>
+              </div>
+              <div class="form-group">
+                <label for="">Lead Address :</label>
+                <input
+                  [ngClass]="{
+                    errmsg:
+                      !documentForm.controls['lead_address'].valid &&
+                      !documentForm.controls['lead_address'].pristine
+                  }"
+                  type="text"
+                  id="lead_address"
+                  placeholder=""
+                  formControlName="lead_address"
+                  class="form-control"
+                />
+                <small class="required">* required</small>
+              </div>
+              <div class="form-group">
+                <label for="">Lead Home Phone :</label>
+                <input
+                  type="tel"
+                  id="lead_home_phone"
+                  placeholder=""
+                  formControlName="lead_home_phone"
+                  class="form-control"
+                />
+              </div>
+              <div class="form-group">
+                <label for="">Lead Nationality :</label>
+                <input
+                  [ngClass]="{
+                    errmsg:
+                      !documentForm.controls['lead_nationality'].valid &&
+                      !documentForm.controls['lead_nationality'].pristine
+                  }"
+                  type="text"
+                  id="lead_nationality"
+                  placeholder=""
+                  formControlName="lead_nationality"
+                  class="form-control"
+                />
+                <small class="required">* required</small>
+              </div>
+              <div class="form-group">
+                <label for="">Lead National ID :</label>
+                <input
+                  [ngClass]="{
+                    errmsg:
+                      !documentForm.controls['lead_national_id'].valid &&
+                      !documentForm.controls['lead_national_id'].pristine
+                  }"
+                  type="text"
+                  id="lead_national_id"
+                  placeholder=""
+                  formControlName="lead_national_id"
+                  class="form-control"
+                />
+                <small class="required">* required</small>
+              </div>
+              <div class="form-group">
+                <label for="">Lead Job Title :</label>
+                <input
+                  type="text"
+                  id="lead_job_title"
+                  placeholder=""
+                  formControlName="lead_job_title"
+                  class="form-control"
+                />
+              </div>
+              <div class="form-group">
+                <label for="">Lead Work Address :</label>
+                <input
+                  type="text"
+                  id="lead_work_address"
+                  placeholder=""
+                  formControlName="lead_work_address"
+                  class="form-control"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="line">
+            <div class="col-md-4 align-top">
+              <div class="form-group">
+                <label for="">Lead Other Phone :</label>
+                <input
+                  type="tel"
+                  id="lead_other_phone"
+                  placeholder=""
+                  formControlName="lead_other_phone"
+                  class="form-control"
+                />
+              </div>
+              <div class="form-group">
+                <label for="">Lead Birthday :</label>
+                <input
+                  type="date"
+                  id="lead_birthday"
+                  placeholder=""
+                  formControlName="lead_birthday"
+                  class="form-control"
+                />
+                <small class="required">* required</small>
+              </div>
+              <div class="form-group">
+                <label for="">Lead Issue Date :</label>
+                <input
+                  [ngClass]="{
+                    errmsg:
+                      !documentForm.controls['lead_issue_date'].valid &&
+                      !documentForm.controls['lead_issue_date'].pristine
+                  }"
+                  type="month"
+                  id="lead_issue_date"
+                  placeholder=""
+                  formControlName="lead_issue_date"
+                  class="form-control"
+                />
+                <!-- <small class="required">* required</small> -->
+              </div>
+              <div class="form-group">
+                <label for="">Lead Email :</label>
+                <input
+                  type="email"
+                  id="lead_email"
+                  placeholder=""
+                  formControlName="lead_email"
+                  class="form-control"
+                />
+              </div>
+              <div class="form-group">
+                <label for="">Lead Workplace :</label>
+                <input
+                  type="text"
+                  id="lead_workplace"
+                  placeholder=""
+                  formControlName="lead_workplace"
+                  class="form-control"
+                />
+              </div>
+              <div class="form-group">
+                <label for="">Lead Fax Number :</label>
+                <input
+                  type="tel"
+                  id="lead_fax_number"
+                  placeholder=""
+                  formControlName="lead_fax_number"
+                  class="form-control"
+                />
+              </div>
+              <!-- <div class="form-group">
+                <label for="">Job Title :</label>
+                <input type="tel" id="job_title" placeholder="" formControlName="job_title"
+                  class="form-control">
+              </div> -->
+            </div>
+          </div>
+          <div class="line">
+            <div class="col-md-4 align-top">
+              <div class="form-group">
+                <label for="">Lead Phone :</label>
+                <input
+                  [ngClass]="{
+                    errmsg:
+                      !documentForm.controls['lead_phone'].valid &&
+                      !documentForm.controls['lead_phone'].pristine
+                  }"
+                  type="tel"
+                  id="lead_phone"
+                  placeholder=""
+                  formControlName="lead_phone"
+                  class="form-control"
+                />
+                <small class="required">* required</small>
+              </div>
+              <div class="form-group">
+                <label for="">Lead District :</label>
+                <input
+                  [ngClass]="{
+                    errmsg:
+                      !documentForm.controls['lead_district'].valid &&
+                      !documentForm.controls['lead_district'].pristine
+                  }"
+                  type="text"
+                  id="lead_district"
+                  placeholder=""
+                  formControlName="lead_district"
+                  class="form-control"
+                />
+                <small class="required">* required</small>
+              </div>
+              <div class="form-group">
+                <label for="">Lead Martial Status :</label>
+                <input
+                  type="text"
+                  id="lead_marital_status"
+                  placeholder=""
+                  formControlName="lead_marital_status"
+                  class="form-control"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="">Division</label>
+                <ng-select
+                  name="deal_type"
+                  formControlName="deal_type"
+                  placeholder="Status..."
+                >
+                  <ng-option *ngFor="let type of deal_types" [value]="type">
+                    {{ type }}
+                  </ng-option>
+                </ng-select>
+                <small class="required">* required</small>
+              </div>
+              <div
+                class="form-group"
+                *ngIf="documentForm.get('deal_type').value == 'Direct'"
+              >
+                <label for="">Division Type</label>
+                <ng-select
+                  name="deal_category"
+                  formControlName="deal_category"
+                >
+                  <ng-option
+                    *ngFor="let division of direct_option"
+                    [value]="division"
+                  >
+                    {{ division }}
+                  </ng-option>
+                </ng-select>
+                <small class="required">* required</small>
+              </div>
+              <div
+                class="form-group"
+                *ngIf="
+                  documentForm.get('deal_type').value == 'Direct' &&
+                  documentForm.get('deal_category').value == 'Ambassador'
+                "
+              >
+                <label for="">Ambassador</label>
+                <ng-select
+                  [items]="searchedAmbassadors"
+                  bindLabel="name"
+                  bindValue="id"
+                  formControlName="ambassador_id"
+                >
+                  <ng-template ng-header-tmp>
+                    <input
+                      class="form-control"
+                      placeholder="Search Ambassador"
+                      (keyup)="ambassadorsSearch($event.target.value)"
+                    />
+                  </ng-template>
+                </ng-select>
+                <!-- <p-dropdown
+                  formControlName="ambassador_id"
+                  class="p-ddl"
+                  [options]="ambassadors"
+                  [filter]="true"
+                  class="p-ddl"
+                  name="ambassador"
+                  [autoWidth]="false"
+                  placeholder="Ambassadors"
+                  [showClear]="true"
+                  optionLabel="name"
+                >
+                </p-dropdown> -->
+                <!-- <select class="form-control" name="ambassador" formControlName="ambassador_id">
+                  <option *ngFor="let ambassador of ambassadors" value={{ambassador.id}}>{{ambassador.name}}</option>
+                </select> -->
+                <small class="required">* required</small>
+              </div>
+              <div
+                class="form-group"
+                *ngIf="documentForm.get('deal_type').value == 'In-Direct'"
+              >
+                <label for="">Broker</label>
+                <ng-select
+                  [items]="brokers"
+                  bindLabel="name"
+                  bindValue="id"
+                  (change)="getIncentiveUsers($event.id)"
+                  formControlName="broker_id"
+                ></ng-select>
+                <!-- </ng-select>
+                <p-dropdown
+                  formControlName="broker_id"
+                  class="p-ddl"
+                  [options]="brokers"
+                  [filter]="true"
+                  class="p-ddl"
+                  name="broker"
+                  [autoWidth]="false"
+                  placeholder="Brokers"
+                  [showClear]="true"
+                  optionLabel="name"
+                >
+                </p-dropdown> -->
+                <!-- <select class="form-control" name="broker" formControlName="broker_id">
+                  <option *ngFor="let broker of brokers" value={{broker.id}}>{{broker.name}}</option>
+                </select> -->
+                <small class="required">* required</small>
+              </div>
+              <div
+                class="form-group"
+                *ngIf="documentForm.get('deal_type').value == 'In-Direct'"
+              >
+                <label for="">Broker Incentive</label>
+                <ng-select
+                  name="broker_incentive_id"
+                  formControlName="broker_incentive_id"
+                  #df
+                >
+                  <ng-option
+                    *ngFor="let brokerIncentive of incentive_users"
+                    [value]="brokerIncentive.id"
+                    >{{ brokerIncentive.name }}</ng-option
+                  >
+                </ng-select>
+                <small class="required">* required</small>
+              </div>
+              <!-- <div class="form-group">
+                <label for="">National Issue Date :</label>
+                <input type="date" id="national_issue_date" placeholder="" formControlName="national_issue_date"
+                  class="form-control">
+              </div> -->
+              <div class="form-group">
+                <label for="">Lead Arabic Name :</label>
+                <input
+                  type="tel"
+                  id="lead_arabic_name"
+                  placeholder=""
+                  formControlName="lead_arabic_name"
+                  class="form-control"
+                />
+              </div>
+              <!-- <div class="form-group">
+                <label for="">Workplace :</label>
+                <input type="date" id="workplace" placeholder="" formControlName="workplace"
+                  class="form-control">
+              </div> -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="border-sec">
+        <div class="row">
+          <div class="line">
+            <div class="col-md-4">
+              <div class="form-group">
+                <h4>EOI INFORMATION</h4>
+              </div>
+              <div class="form-group">
+                <label for="serial">Serial :</label>
+                <input
+                  type="text"
+                  name="serial"
+                  formControlName="serial"
+                  class="form-control"
+                />
+                <small class="required">* required</small>
+              </div>
+              <div class="form-group">
+                <label for="">Interested Project :</label>
+                <ng-select
+                  placeholder="Select Project"
+                  name="project_id"
+                  formControlName="project_id"
+                  (change)="onProjectChange($event)"
+                >
+                  <ng-option *ngFor="let project of projects" [value]="project.id">
+                    {{ project.name }}
+                  </ng-option>
+                </ng-select>
+                <small class="required">* required</small>
+              </div>
+
+              <div class="form-group">
+                <label for="">Interested Type :</label>
+                <input
+                  type="text"
+                  name="Interested Type"
+                  formControlName="interested_type"
+                  class="form-control"
+                  style="width: 100%"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="line">
+            <div class="col-md-4 align-top">
+              <div class="form-group">
+                <label for="">EOI Value :</label>
+                <input
+                  type="number"
+                  name="eoi_value"
+                  formControlName="eoi_value"
+                  class="form-control"
+                  style="width: 100%"
+                />
+                <small class="required">* required</small>
+              </div>
+
+              <div class="form-group">
+                <label for="">Interested Area From :</label>
+                <input
+                  type="text"
+                  name="Interested Area From"
+                  formControlName="interested_area_from"
+                  class="form-control"
+                  style="width: 100%"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="line">
+            <div class="col-md-4 align-top">
+              <div class="form-group">
+                <label for="">Interested Area To :</label>
+                <input
+                  type="text"
+                  name="Interested Area To"
+                  formControlName="interested_area_to"
+                  class="form-control"
+                  style="width: 100%"
+                />
+              </div>
+              <div class="form-group">
+                <label for="">Phase :</label>
+                <input
+                  type="text"
+                  name="Phase"
+                  formControlName="phase"
+                  class="form-control"
+                  style="width: 100%"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row"></div>
+
+      <div class="border-sec">
+        <div class="row">
+          <div class="line">
+            <div class="col-md-4 h-400">
+              <div class="form-group">
+                <h4>PAYMENT INFORMATION</h4>
+              </div>
+
+              <div class="form-group">
+                <label for="">Payment Type :</label>
+                <ng-select
+                  placeholder="Select Payment Type"
+                  name="payment_type"
+                  formControlName="payment_type"
+                >
+                  <ng-option
+                    *ngFor="let payment of payment_types"
+                    [value]="payment.name"
+                  >
+                    {{ payment.name }}
+                  </ng-option>
+                </ng-select>
+                <button
+                  type="button"
+                  (click)="addPaymentTypeModal.open()"
+                  class="btn add-district-btn"
+                >
+                  <i class="fa fa-plus" aria-hidden="true"></i>
+                </button>
+                <ul class="payment-lists row">
+                  <li class="col-md-12" *ngFor="let payment of payment_types">
+                    <div class="row">
+                      <div class="col-md-8">
+                        {{ payment.name }}
+                      </div>
+                      <div class="col-md-4">
+                        <div class="flex">
+                          <a
+                            (click)="editPayment(editPaymentTypeModal, payment)"
+                            >Edit</a
+                          >
+                          <a (click)="deletePayment(payment.id)">Delete</a>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="line">
+            <div class="col-md-4 align-top">
+              <div class="form-group">
+                <label for="">Overseas :</label>
+                <ng-select placeholder="Is Overseas" formControlName="is_overseas">
+                  <ng-option value="0">No</ng-option>
+                  <ng-option value="1">Yes</ng-option>
+                </ng-select>
+                <small class="required">* required</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <button
+          class="btn btn-default btn-black pull-right"
+          [disabled]="documentForm.invalid"
+          type="submit"
+        >
+          Submit
+        </button>
+      </div>
+    </form>
+  </section>
+</section>
+
+<modal
+  #addPaymentTypeModal
+  title="Add Payment Type Modal"
+  submitButtonLabel="submit"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="addPaymentTypeModalSubmit(addPaymentTypeModal)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <div class="row">
+      <form>
+        <div class="form-inline col-xs-12">
+          <label for="" class="price-label">Payment Type :</label>
+          <input
+            type="text"
+            [(ngModel)]="payment_type"
+            class="form-control"
+            name="payment_type"
+            placeholder="Payment Type..."
+          />
+        </div>
+      </form>
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="addPaymentTypeModal.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>
+
+<modal
+  #editPaymentTypeModal
+  title="Edit Payment Type Modal"
+  submitButtonLabel="submit"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="editPaymentTypeModalSubmit(editPaymentTypeModal)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <div class="row">
+      <form *ngIf="edit_payment_modal_data">
+        <div class="form-inline col-xs-12">
+          <label for="" class="price-label">Payment Type :</label>
+          <input
+            type="text"
+            [(ngModel)]="edit_payment_modal_data.name"
+            class="form-control"
+            name="payment_type"
+            placeholder="Payment Type..."
+          />
+        </div>
+      </form>
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="editPaymentTypeModal.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>

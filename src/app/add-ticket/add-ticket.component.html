@@ -1,0 +1,299 @@
+<form *ngIf="addTicketForm" [formGroup]="addTicketForm" class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <h2 *ngIf="!isEditMode">Add Ticket</h2>
+      <h2 *ngIf="isEditMode">Update ticket: {{ ticketToBeEdited.title }}</h2>
+    </div>
+
+    <div class="form-group col-md-6">
+      <label for=""
+        >Ticket Type <span><small>(required)</small></span></label
+      >
+      <ng-select
+        name="ticket_type"
+        id="ticket_type"
+        formControlName="type_id"
+        placeholder="Ticket Type"
+        [items]="ticket_types"
+        bindLabel="name"
+        bindValue="id"
+      >
+        <!-- <ng-option *ngFor="let type of ticket_types" [value]="type.id">
+          {{ type.name }}
+        </ng-option> -->
+      </ng-select>
+    </div>
+    <div class="form-group col-md-6">
+      <label for=""
+        >Ticket Priority <span><small>(required)</small></span></label
+      >
+      <ng-select
+        name="ticket_priority"
+        id="ticket_priority"
+        formControlName="priority_id"
+        placeholder="Ticket Priority"
+        [items]="ticket_priorities"
+        bindLabel="name"
+        bindValue="id"
+      >
+      </ng-select>
+    </div>
+    <div class="form-group col-md-6">
+      <label for=""
+        >Source <span><small>(required)</small></span></label
+      >
+      <ng-select
+        name="source_id"
+        id="source_id"
+        formControlName="source_id"
+        placeholder="Ticket Source"
+        [items]="ticket_sources"
+        bindLabel="name"
+        bindValue="id"
+      >
+      </ng-select>
+    </div>
+    <div class="form-group col-md-6">
+      <label for=""
+        >Status <span><small>(required)</small></span></label
+      >
+      <ng-select
+        name="status_id"
+        id="status_id"
+        formControlName="status_id"
+        placeholder="Ticket Status"
+        [items]="ticket_status"
+        bindLabel="name"
+        bindValue="id"
+      >
+      </ng-select>
+    </div>
+    <div class="form-group col-md-6">
+      <label for="">Client Request</label>
+      <ng-select
+        name="ticket_client_request_id"
+        id="ticket_client_request_id"
+        formControlName="ticket_client_request_id"
+        placeholder="Ticket Client Request"
+        [items]="ticket_client_requests"
+        bindLabel="name"
+        bindValue="id"
+      >
+      </ng-select>
+    </div>
+    <div class="form-group col-md-12">
+      <label *ngIf="!reservation_id">
+        Select lead
+        <span><small>(required)</small></span>
+        <span
+          *ngIf="leadId"
+          class="routable"
+          (click)="viewLead()"
+          title="'view lead #{{ leadId }} in new page'"
+          >view Lead</span
+        >
+        <i
+          *ngIf="leadId"
+          class="fa fa-trash-o unselect_lead"
+          (click)="unselectLead()"
+        ></i>
+      </label>
+
+      <div class="searchBy">
+        <span>Search by:</span>
+
+        <button
+          class="chip"
+          [ngClass]="{
+            'selected-chip': searchMode == 0,
+            disabled: reservation_id
+          }"
+          [disabled]="reservation_id"
+          (click)="searchMode = 0; resetOnTabChange()"
+        >
+          <div class="chip-content">Lead name/phone</div>
+        </button>
+
+        <button
+          class="chip"
+          [ngClass]="{
+            'selected-chip': searchMode == 1,
+            disabled: reservation_id
+          }"
+          [disabled]="reservation_id"
+          (click)="searchMode = 1; resetOnTabChange()"
+        >
+          <div class="chip-content">RFID</div>
+        </button>
+
+        <button
+          class="chip"
+          [ngClass]="{
+            'selected-chip': searchMode == 2,
+            disabled: reservation_id
+          }"
+          [disabled]="reservation_id"
+          (click)="searchMode = 2; resetOnTabChange()"
+        >
+          <div class="chip-content">Unit serial</div>
+        </button>
+      </div>
+
+      <div class="search-btn-container">
+        <div>
+          <input
+            id="lead_input"
+            ngui-auto-complete
+            [source]="selectableLeadsObservable"
+            [display-property-name]="'id'"
+            class="form-control"
+            [placeholder]="searchInputPlaceholder"
+            formControlName="selected_lead"
+            (input)="onInputEntered($event)"
+            (valueChanged)="onLeadSelected($event)"
+            [attr.disabled]="
+              leadId ? true : null || reservation_id ? true : null
+            "
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group col-md-12">
+      <label for=""> Create On </label>
+      <ng-select
+        #createOnSelect
+        (change)="changeCreateOn($event.target.value)"
+        placeholder="Create On"
+        [(ngModel)]="createOn"
+        [ngModelOptions]="{ standalone: true }"
+        [disabled]="disabledCreateOn"
+      >
+        <ng-option value="lead">Lead</ng-option>
+        <ng-option value="rfid">RFID</ng-option>
+      </ng-select>
+    </div>
+
+    <div class="form-group col-md-12" *ngIf="createOn === 'rfid'">
+      <label for="">
+        Reservation
+        <ng-container *ngIf="reservations && reservations.length > 0">
+          <span
+            *ngFor="let r of reservations"
+            class="routable"
+            style="margin-right: 10px"
+            (click)="viewReservation(r.id)"
+            title="view reservation in new page"
+          >
+            view {{ r.id }}
+          </span>
+        </ng-container>
+      </label>
+      <ng-multiselect-dropdown
+        [placeholder]="'Reservations'"
+        [data]="reservations"
+        formControlName="reservations"
+        [settings]="reservationsDropdownSettings"
+        [(ngModel)]="selectedReservations"
+        (onSelect)="onItemSelect($event)"
+        (onSelectAll)="onSelectAll($event)"
+        [disabled]="reservation_id || disabledReservations"
+      >
+      </ng-multiselect-dropdown>
+      <!-- <ng-select
+        #rfidSelect
+        placeholder="RFID"
+        [(ngModel)]="selectedReservations"
+        [ngModelOptions]="{ standalone: true }"
+        [items]="reservations"
+        (change)="onItemSelect($event)"
+        [multiple]="true"
+        bindLabel="id"
+        bindValue="id"
+        [disabled]="reservation_id || disabledReservations"
+      ></ng-select> -->
+    </div>
+
+    <div class="form-group col-md-6">
+      <label for="">Customer Name</label>
+      <input
+        type="text"
+        class="form-control"
+        [value]="addTicketForm.get('customer_name').value"
+        placeholder="Customer Name"
+        disabled
+      />
+    </div>
+    <div class="form-group col-md-6">
+      <label for="">Customer Phone</label>
+      <input
+        type="text"
+        class="form-control"
+        [value]="addTicketForm.get('customer_phone').value"
+        placeholder="Customer Phone"
+        disabled
+      />
+    </div>
+    <div class="form-group col-md-6">
+      <label for="">Customer Notes</label>
+      <textarea
+        name="customer_notes"
+        id="customer_notes"
+        cols="30"
+        rows="5"
+        class="form-control"
+        formControlName="customer_notes"
+        placeholder="Type Customer Notes here ..."
+      >
+      </textarea>
+    </div>
+    <div class="form-group col-md-6">
+      <label for=""
+        >Ticket Description <span><small>(required)</small></span></label
+      >
+      <textarea
+        name="description"
+        id="description"
+        cols="30"
+        rows="5"
+        class="form-control"
+        formControlName="description"
+        placeholder="Type ticket description here ..."
+      >
+      </textarea>
+    </div>
+
+    <div class="form-group col-md-6">
+      <input
+        type="file"
+        class="form-control"
+        id="document"
+        multiple
+        #fileInput
+        (change)="onFileChange($event)"
+        required
+      />
+    </div>
+    <div class="col-md-12">
+      <button
+        class="btn btn-primary"
+        [disabled]="addTicketForm.invalid"
+        (click)="addTicket()"
+        [ngClass]="{ 'no-interaction-on-btn': disable_submit_btn }"
+      >
+        {{ isEditMode ? "Update" : "Submit" }}
+      </button>
+      <button class="btn btn-danger" (click)="cancel()">Cancel</button>
+      <small
+        *ngIf="
+          !leadId &&
+          addTicketForm.controls.selected_lead.invalid &&
+          (addTicketForm.controls.selected_lead.dirty ||
+            addTicketForm.controls.selected_lead.touched)
+        "
+        style="color: red"
+        >You didn't select a lead</small
+      >
+    </div>
+  </div>
+</form>

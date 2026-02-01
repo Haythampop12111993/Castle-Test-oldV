@@ -1,0 +1,16 @@
+<section class="projects">
+  <div class="container-fluid">
+    <h2>Rotation Logs</h2>
+    <div class="rotations-container">
+      <div *ngFor="let log of rotationLogs" class="rotation">
+        <div class="highlight"></div>
+        <div class="rotation">
+          <p class="rotation-date">{{log?.created_at | date: 'medium'}}</p>
+          <p class="rotation-text">{{log?.details}}.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="search-results" infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50" (scrolled)="onScroll()">
+  </div>
+</section>

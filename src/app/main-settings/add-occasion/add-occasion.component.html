@@ -1,0 +1,41 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <h2 class="teams-title">Add Occasion</h2>
+    </div>
+  </div>
+  <form [formGroup]="occasion_form">
+    <div class="row">
+      <div class="col-md-6 form-group">
+        <label for="">Sending Date</label>
+        <input type="datetime-local" class="form-control" placeholder="Sending Date" formControlName="datetime">
+      </div>
+      <div class="col-md-6 form-group">
+        <label for="">Title</label>
+        <input type="text" class="form-control" placeholder="Title" formControlName="title">
+      </div>
+    </div> 
+    <div class="row">
+      <div class="col-md-6 form-group">
+        <label for="">Message</label>
+        <textarea name="message" class="form-control" formControlName="message" id="" cols="15" rows="10">
+        </textarea>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="d-flex-end">
+          <button *ngIf="!is_edit" class="btn btn-primary" [disabled]="occasion_form.invalid" (click)="addOccasion()">
+            Add
+          </button>
+          <button *ngIf="is_edit" class="btn btn-primary margin-right-20" [disabled]="occasion_form.invalid" (click)="updateOccasion()">
+            Save
+          </button>
+          <button *ngIf="is_edit" class="btn btn-default" [disabled]="occasion_form.invalid" (click)="reset()">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

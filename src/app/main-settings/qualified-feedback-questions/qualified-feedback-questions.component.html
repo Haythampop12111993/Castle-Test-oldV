@@ -1,0 +1,99 @@
+<mat-card class="option-card">
+  <mat-card-content>
+    <h3 class="card__title">Manage Qualified Feedback Questions</h3>
+    <div class="row">
+      <div class="col-xs-12 margin-bottom d-f-end">
+        <button
+          (click)="openFeedQuestionModal(questionForm)"
+          class="btn btn-primary"
+        >
+          Add Question
+        </button>
+      </div>
+      <div class="col-xs-12 margin-bottom">
+        <table>
+          <tr>
+            <th>Question</th>
+            <th>Actions</th>
+          </tr>
+          <tr class="data" *ngFor="let question of questions_list">
+            <td>
+              {{ question.question }}
+            </td>
+            <td>
+              <button
+                class="btn btn-primary"
+                (click)="openFeedQuestionModal(questionForm, question)"
+              >
+                Edit
+              </button>
+              <button
+                class="btn btn-danger delete"
+                (click)="deleteFeedQuestion(question)"
+              >
+                Delete
+              </button>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<modal
+  #questionForm
+  title="Question Form"
+  submitButtonLabel="submit"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="sendFeedQuestionModalSubmit(questionForm)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <form>
+      <div class="row search">
+        <div class="col-xs-12 form-group">
+          <label for="">Question</label>
+          <textarea
+            name="question"
+            id="question"
+            placeholder="Question"
+            class="form-control"
+            [(ngModel)]="dataForm.question"
+          ></textarea>
+        </div>
+        <div class="col-xs-10">
+          <h4>Answer:</h4>
+        </div>
+        <div class="col-xs-2">
+          <button (click)="addAnswer()" class="btn btn-primary">Add</button>
+        </div>
+        <div *ngIf="dataForm.answers.length">
+          <div *ngFor="let answer of dataForm.answers; let index = index">
+            <div class="col-xs-10 form-group">
+              <input
+                type="text"
+                class="form-control"
+                name="answer_{{ index }}"
+                placeholder="Answer"
+                [(ngModel)]="dataForm.answers[index].answer"
+              />
+            </div>
+            <div class="col-xs-2">
+              <button class="btn btn-danger" (click)="deleteAnswer(index)">
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="questionForm.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>

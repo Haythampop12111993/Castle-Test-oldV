@@ -1,0 +1,166 @@
+<section class="construction-updates container-fluid">
+  <div class="row">
+    <div class="col-md-12 d-flex justifty-between align-center">
+      <h2>Albums</h2>
+      <div>
+        <button class="btn btn-default" (click)="addAlbumModal.open()">Add Album</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- <div class="row">
+    <div class="col-md-6" *ngFor="let med of media">
+      <ng-container *ngIf="med.img_type == 'image'">
+        <figure>
+          <img [src]="med.image.url" class="img-responsive" [alt]="med?.name" />
+          <figcaption class="text-center mt-10 mb-10">{{med?.name}}</figcaption>
+        </figure>
+      </ng-container>
+      <ng-container *ngIf="med.img_type == 'video'">
+        <figure>
+          <video [src]="med.image.url"></video>
+          <figcaption class="text-center mt-10 mb-10">{{med?.name}}</figcaption>
+        </figure>
+      </ng-container>
+    </div>
+  </div> -->
+
+  <div class="row">
+    <div class="col-md-12">
+      <table>
+        <tr>
+          <th>Album Name</th>
+          <th>Created at</th>
+          <th>Updated at</th>
+          <th>Actions</th>
+        </tr>
+        <tr class="data" *ngFor="let album of albums; let index = index">
+          <td>
+            {{ album?.name }}
+          </td>
+          <!-- <td>
+            <div class="media-container">
+              <div class="media">
+                <nav class="nav-container">
+                  <ul class="nav-lists">
+                    <li class="nav-list" *ngFor="let med of album.images?.slice(0, 4); let med_index = index" style="{{'--i:' + med_index}}">
+                      <img *ngIf="med.img_type == 'image'" [src]="med?.image?.url">
+                      <video *ngIf="med.img_type == 'video'" [src]="med?.image?.url"></video>
+                    </li>
+                  </ul>
+                </nav>
+                <ng-container *ngIf="med.img_type == 'image'">
+                  <figure>
+                    <img [src]="med.image.url" class="img-responsive" [alt]="med?.name" />
+                    <figcaption class="text-center mt-10 mb-10">{{med?.name}}</figcaption>
+                  </figure>
+                </ng-container>
+                <ng-container *ngIf="med.img_type == 'video'">
+                  <figure>
+                    <video [src]="med.image.url"></video>
+                    <figcaption class="text-center mt-10 mb-10">{{med?.name}}</figcaption>
+                  </figure>
+                </ng-container>
+              </div>
+            </div>
+          </td> -->
+          <td>
+            {{album?.created_at}}
+          </td>
+          <td>
+            {{album?.updated_at}}
+          </td>
+          <td>
+            <button mat-icon-button [matMenuTriggerFor]="actionsMenu">
+              <img
+                class="more-options-icon"
+                src="assets/img/show-more-button-with-three-dots.svg"
+              />
+            </button>
+            <mat-menu #actionsMenu="matMenu">
+              <button mat-menu-item (click)="openMedia(album, openMediaModal)">
+                View Media
+              </button>
+              <button mat-menu-item (click)="uploadConstructionToAlbum(album, uploadConstructionModal)">
+                Upload Media
+              </button>
+            </mat-menu>
+          </td>
+          
+        </tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<modal #uploadConstructionModal title="Upload Updates" submitButtonLabel="submit" modalClass="modal-md"
+  [hideCloseButton]="true" [closeOnOutsideClick]="true" (onSubmit)="uploadConstruction(uploadConstructionModal)">
+  <modal-header></modal-header>
+  <modal-content>
+    <div class="row">
+      <div class="form-group col-xs-6">
+        <label for="">Media Type<span class="required"> *</span>: </label>
+        <ng-select placeholder="Select Media Type" [(ngModel)]="media_type">
+          <ng-option value="image">Image</ng-option>
+          <ng-option value="video">Video</ng-option>
+        </ng-select>
+      </div>
+      <div class="form-group col-xs-6">
+        <label for="">Media: </label>
+        <input type="file" class="form-control" id="mediaFileInput" multiple #mediaFileInput
+          (change)="onConstructionMediaUpload($event)" required />
+      </div>
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="uploadConstructionModal.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>
+
+<modal #addAlbumModal title="Add Upload" submitButtonLabel="submit" modalClass="modal-md"
+  [hideCloseButton]="true" [closeOnOutsideClick]="true" (onSubmit)="addAlbum(addAlbumModal)">
+  <modal-header></modal-header>
+  <modal-content>
+    <div class="row">
+      <div class="form-group col-xs-6">
+        <label for="">Album name : </label>
+        <input type="text" class="form-control" [(ngModel)]="album_name" name="album_name">
+      </div>
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="addAlbumModal.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>
+
+<modal #openMediaModal title="Media" modalClass="modal-md"
+  [hideCloseButton]="true" [closeOnOutsideClick]="true">
+  <modal-header></modal-header>
+  <modal-content>
+    <div class="row">
+      <div class="col-md-6" *ngFor="let med of current_album?.images; let med_index = index">
+        <ng-container *ngIf="med.img_type == 'image'">
+          <figure>
+            <img [src]="med.image.url" class="img-responsive" [alt]="med?.name" />
+            <figcaption class="text-center mt-10 mb-10">{{med?.name}}</figcaption>
+          </figure>
+        </ng-container>
+        <ng-container *ngIf="med.img_type == 'video'">
+          <figure>
+            <video [src]="med.image.url"></video>
+            <figcaption class="text-center mt-10 mb-10">{{med?.name}}</figcaption>
+          </figure>
+        </ng-container>
+      </div>
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="openMediaModal.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>

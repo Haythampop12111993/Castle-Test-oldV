@@ -1,0 +1,1247 @@
+<section class="payment-plans-table">
+  <div class="container-fluid">
+    <div class="proj-details">
+      <div class="row filter-outer-container">
+        <div class="col-md-12" [ngClass]="{ 'no-interaction': is_refreshing }">
+          <div class="row">
+            <div class="col-xs-10">
+              <h3>RESERVATION</h3>
+            </div>
+            <div class="col-xs-2 actions">
+              <button
+                (click)="filter_collapsed = !filter_collapsed"
+                class="advanced-filter"
+              >
+                <i class="fa fa-filter" aria-hidden="true"></i>
+              </button>
+              <div
+                class="settings-icons pull-right"
+                *ngIf="
+                  userProfile.role != 'Legal and Technical' &&
+                  userProfile.role != 'Facility'
+                "
+              >
+                <div class="dropdown" dropdown>
+                  <i class="fa fa-cog" aria-hidden="true" dropdown-open></i>
+                  <ul class="dropdown-menu menu-settings">
+                    <li
+                      *ngIf="
+                        userProfile.role == 'Admin' ||
+                        userProfile.role == 'Helpdesk Supervisor' ||
+                        userProfile.role == 'Super Development' ||
+                        userProfile.role == 'Moderator' ||
+                        userProfile.role == 'Super Moderator' ||
+                        userProfile.role == 'AR Manager' ||
+                        userProfile?.is_sales_top_level ||
+                        userProfile.role == 'Sales Manager' ||
+                        userProfile.role == 'Sales Director' ||
+                        userProfile?.role == 'Contractor'
+                      "
+                    >
+                      <a [href]="excel" target="_blank">
+                        <span>Export Reservations</span>
+                      </a>
+                    </li>
+                    <!-- <li *ngIf="userProfile?.is_sales_team">
+                                            <a [href]="agent_excel">
+                                                <span>Export Reservations</span>
+                                            </a>
+                                        </li> -->
+                    <li (click)="manageModal.open()">
+                      <a>
+                        <span>Manage Table</span>
+                      </a>
+                    </li>
+                    <li
+                      *ngIf="
+                        userProfile.role == 'Admin' ||
+                        userProfile.role == 'Helpdesk Supervisor' ||
+                        userProfile.role == 'Super Development' ||
+                        userProfile.role == 'Moderator' ||
+                        userProfile.role == 'Super Moderator' ||
+                        userProfile?.role == 'A.R Accountant' ||
+                        userProfile.role == 'AR Manager' ||
+                        userProfile.role == 'Sales Manager' ||
+                        userProfile.role == 'Sales Director' ||
+                        userProfile?.role == 'Treasury Accountant'
+                      "
+                      (click)="exportTable()"
+                    >
+                      <a>
+                        <span>Export Filtered Reservations</span>
+                      </a>
+                    </li>
+                    <li
+                      (click)="importReservationModal.open()"
+                      *ngIf="
+                        (userProfile.role == 'Admin' ||
+                          userProfile.role == 'Super Development' ||
+                          userProfile.role == 'Super Moderator') &&
+                        userProfile.is_full_access
+                      "
+                    >
+                      <a>
+                        <span>Import Reservation</span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <modal
+                #importReservationModal
+                title="Import Reservations"
+                submitButtonLabel="submit"
+                modalClass="modal-md"
+                [hideCloseButton]="true"
+                [closeOnOutsideClick]="true"
+                (onOpen)="importReservationModalOpen()"
+                (onClose)="importReservationModalClose()"
+                (onSubmit)="uploadExcelMethod(importReservationModal)"
+              >
+                <modal-header> </modal-header>
+                <modal-content>
+                  <div class="row">
+                    <div class="form-group col-xs-6">
+                      <form
+                        class="form-group btn-group-files pull-left"
+                        [formGroup]="uploadExcel"
+                      >
+                        <label for="">Reservation File : </label>
+                        <input
+                          type="file"
+                          accept=".xlsx, .xls"
+                          class="margin-left"
+                          id="file"
+                          (change)="handleUploadExcel($event)"
+                        />
+                      </form>
+                    </div>
+                  </div>
+                </modal-content>
+                <modal-footer>
+                  <button
+                    class="btn btn-secondary"
+                    (click)="importReservationModal.close()"
+                  >
+                    close
+                  </button>
+                </modal-footer>
+              </modal>
+              <modal
+                #manageModal
+                title="Manage Table"
+                modalClass="modal-lg"
+                [hideCloseButton]="true"
+                [closeOnOutsideClick]="true"
+              >
+                <modal-header> </modal-header>
+                <modal-content>
+                  <columns-filter
+                    uid="reservation_view"
+                    [columns]="columns"
+                    (selectColumns)="onSelectColumns($event)"
+                  ></columns-filter>
+                </modal-content>
+                <modal-footer>
+                  <button
+                    class="btn btn-secondary"
+                    (click)="manageModal.close()"
+                  >
+                    close
+                  </button>
+                </modal-footer>
+              </modal>
+            </div>
+          </div>
+          <div class="row">
+            <div
+              class="col-md-12"
+              [ngClass]="{ 'no-interaction': is_refreshing }"
+              *ngIf="filter_collapsed"
+            >
+              <form
+                class="filter"
+                [formGroup]="filterForm"
+                (ngSubmit)="filterReservations()"
+              >
+                <div class="d-flex">
+                  <div class="form-group">
+                    <label class="unit-serial-label" for=""
+                      >Unit Serial :</label
+                    >
+                    <input
+                      type="text"
+                      name="serial"
+                      id="serial"
+                      class="form-control"
+                      formControlName="serial"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="">Lead Name / Phone :</label>
+                    <input
+                      type="text"
+                      name="lead_name"
+                      id="lead_name"
+                      class="form-control"
+                      formControlName="lead_name"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="">Unit Area From:</label>
+                    <input
+                      type="text"
+                      name="area_from"
+                      id="name"
+                      class="form-control"
+                      formControlName="area_from"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="">Unit Area To:</label>
+                    <input
+                      type="text"
+                      name="area_to"
+                      id="name"
+                      class="form-control"
+                      formControlName="area_to"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="">Client Signature Date From :</label>
+                    <input
+                      type="date"
+                      name="client_signature_date_from"
+                      formControlName="client_signature_date_from"
+                      class="form-control"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="">Client Signature Date To :</label>
+                    <input
+                      type="date"
+                      name="client_signature_date_to"
+                      formControlName="client_signature_date_to"
+                      class="form-control"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="cancel_date_from">Cancel Date From :</label>
+                    <input
+                      type="date"
+                      name="cancel_date_from"
+                      formControlName="cancel_date_from"
+                      class="form-control"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="cancel_date_to">Cancel Date To :</label>
+                    <input
+                      type="date"
+                      name="cancel_date_to"
+                      formControlName="cancel_date_to"
+                      class="form-control"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="">Date From :</label>
+                    <input
+                      type="date"
+                      name="date_from"
+                      formControlName="date_from"
+                      class="form-control"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="">Date to :</label>
+                    <input
+                      type="date"
+                      name="date_to"
+                      formControlName="date_to"
+                      class="form-control"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="">Is Deposit</label>
+                    <ng-select
+                      placeholder="Is Deposit"
+                      [(ngModel)]="selectedDeposits"
+                      [ngModelOptions]="{
+                        standalone: true
+                      }"
+                      [multiple]="true"
+                      [items]="BooleanOptions"
+                      bindValue="name"
+                      bindLabel="name"
+                    >
+                      <ng-template ng-header-tmp>
+                        <div>
+                          <button
+                            class="btn btn-link"
+                            type="button"
+                            (click)="
+                              onSelectAllItems(
+                                'selectedDeposits',
+                                BooleanOptions,
+                                'name'
+                              )
+                            "
+                          >
+                            Select All
+                          </button>
+                          <button
+                            class="btn btn-link"
+                            type="button"
+                            (click)="onClearAllItems('selectedDeposits')"
+                          >
+                            Clear All
+                          </button>
+                        </div>
+                      </ng-template>
+                    </ng-select>
+                  </div>
+                  <div class="form-group">
+                    <label for="">Is Bank Transfer</label>
+                    <ng-select
+                      placeholder="Is Bank Transfer"
+                      [(ngModel)]="selectedBankTransfer"
+                      [ngModelOptions]="{
+                        standalone: true
+                      }"
+                      [multiple]="true"
+                    >
+                      <ng-template ng-header-tmp>
+                        <div>
+                          <button
+                            class="btn btn-link"
+                            type="button"
+                            (click)="
+                              onSelectAllItems(
+                                'selectedBankTransfer',
+                                BooleanOptions
+                              )
+                            "
+                          >
+                            Select All
+                          </button>
+                          <button
+                            class="btn btn-link"
+                            type="button"
+                            (click)="onClearAllItems('selectedBankTransfer')"
+                          >
+                            Clear All
+                          </button>
+                        </div>
+                      </ng-template>
+                      <ng-option
+                        value="{{ option.id }}"
+                        *ngFor="let option of BooleanOptions"
+                        >{{ option.name }}</ng-option
+                      >
+                    </ng-select>
+                  </div>
+                  <div class="form-group">
+                    <label for="">Contract Status :</label>
+                    <ng-select
+                      placeholder="Contract Status"
+                      [(ngModel)]="selectedContractStatuses"
+                      [ngModelOptions]="{
+                        standalone: true
+                      }"
+                      [multiple]="true"
+                      [items]="contractOptions"
+                      bindValue="name"
+                      bindLabel="name"
+                    >
+                      <ng-template ng-header-tmp>
+                        <div>
+                          <button
+                            class="btn btn-link"
+                            type="button"
+                            (click)="
+                              onSelectAllItems(
+                                'selectedContractStatuses',
+                                contractOptions,
+                                'name'
+                              )
+                            "
+                          >
+                            Select All
+                          </button>
+                          <button
+                            class="btn btn-link"
+                            type="button"
+                            (click)="
+                              onClearAllItems('selectedContractStatuses')
+                            "
+                          >
+                            Clear All
+                          </button>
+                        </div>
+                      </ng-template>
+                    </ng-select>
+                  </div>
+                  <div class="form-group">
+                    <label for="">Legel Type :</label>
+                    <ng-select
+                      placeholder="Legel Type"
+                      [(ngModel)]="selectedLegelTypes"
+                      [ngModelOptions]="{
+                        standalone: true
+                      }"
+                      [multiple]="true"
+                      [items]="legelTypesOptions"
+                      bindValue="value"
+                      bindLabel="name"
+                    >
+                      <ng-template ng-header-tmp>
+                        <div>
+                          <button
+                            class="btn btn-link"
+                            type="button"
+                            (click)="
+                              onSelectAllItems(
+                                'selectedLegelTypes',
+                                contractOptions,
+                                'name'
+                              )
+                            "
+                          >
+                            Select All
+                          </button>
+                          <button
+                            class="btn btn-link"
+                            type="button"
+                            (click)="onClearAllItems('selectedLegelTypes')"
+                          >
+                            Clear All
+                          </button>
+                        </div>
+                      </ng-template>
+                    </ng-select>
+                  </div>
+                  <div *ngIf="projects" class="form-group">
+                    <label for="">Project :</label>
+                    <ng-select
+                      placeholder="Project"
+                      [(ngModel)]="selectedProjects"
+                      [ngModelOptions]="{
+                        standalone: true
+                      }"
+                      [multiple]="true"
+                    >
+                      <ng-template ng-header-tmp>
+                        <div>
+                          <button
+                            class="btn btn-link"
+                            type="button"
+                            (click)="
+                              onSelectAllItems('selectedProjects', projects)
+                            "
+                          >
+                            Select All
+                          </button>
+                          <button
+                            class="btn btn-link"
+                            type="button"
+                            (click)="onClearAllItems('selectedProjects')"
+                          >
+                            Clear All
+                          </button>
+                        </div>
+                      </ng-template>
+                      <ng-option
+                        value="{{ project.id }}"
+                        *ngFor="let project of projects"
+                        >{{ project.name }}</ng-option
+                      >
+                    </ng-select>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="">Reservation Status :</label>
+                    <ng-select
+                      placeholder="Reservation Status"
+                      [(ngModel)]="selectedStatuses"
+                      [ngModelOptions]="{
+                        standalone: true
+                      }"
+                      [multiple]="true"
+                      [items]="statusesOptions"
+                      bindValue="name"
+                      bindLabel="name"
+                    >
+                      <ng-template ng-header-tmp>
+                        <div>
+                          <button
+                            class="btn btn-link"
+                            type="button"
+                            (click)="
+                              onSelectAllItems(
+                                'selectedStatuses',
+                                statusesOptions,
+                                'name'
+                              )
+                            "
+                          >
+                            Select All
+                          </button>
+                          <button
+                            class="btn btn-link"
+                            type="button"
+                            (click)="onClearAllItems('selectedStatuses')"
+                          >
+                            Clear All
+                          </button>
+                        </div>
+                      </ng-template>
+                    </ng-select>
+                  </div>
+                  <div class="form-group">
+                    <label for="">Overseas :</label>
+                    <ng-select
+                      placeholder="Overseas"
+                      [(ngModel)]="selectedOverseas"
+                      [ngModelOptions]="{
+                        standalone: true
+                      }"
+                      [multiple]="true"
+                      [items]="overseasOptions"
+                      bindValue="name"
+                      bindLabel="name"
+                    >
+                      <ng-template ng-header-tmp>
+                        <div>
+                          <button
+                            class="btn btn-link"
+                            type="button"
+                            (click)="
+                              onSelectAllItems(
+                                'selectedOverseas',
+                                overseasOptions,
+                                'name'
+                              )
+                            "
+                          >
+                            Select All
+                          </button>
+                          <button
+                            class="btn btn-link"
+                            type="button"
+                            (click)="onClearAllItems('selectedOverseas')"
+                          >
+                            Clear All
+                          </button>
+                        </div>
+                      </ng-template>
+                    </ng-select>
+                  </div>
+                  <div class="form-group">
+                    <label for="">Events :</label>
+                    <ng-select
+                      placeholder="Events"
+                      [(ngModel)]="selectedEvent_ids"
+                      [ngModelOptions]="{
+                        standalone: true
+                      }"
+                      [multiple]="true"
+                    >
+                      <ng-template ng-header-tmp>
+                        <div>
+                          <button
+                            class="btn btn-link"
+                            type="button"
+                            (click)="
+                              onSelectAllItems(
+                                'selectedEvent_ids',
+                                allEvents,
+                                'id'
+                              )
+                            "
+                          >
+                            Select All
+                          </button>
+                          <button
+                            class="btn btn-link"
+                            type="button"
+                            (click)="onClearAllItems('selectedEvent_ids')"
+                          >
+                            Clear All
+                          </button>
+                        </div>
+                      </ng-template>
+                      <ng-option
+                        *ngFor="let event of allEvents"
+                        value="{{ event.id }}"
+                        >{{ event.name }}</ng-option
+                      >
+                    </ng-select>
+                  </div>
+                  <div class="form-group">
+                    <label for="">Cheques :</label>
+                    <ng-select
+                      placeholder="Cheques"
+                      [(ngModel)]="selectedCheques"
+                      [ngModelOptions]="{
+                        standalone: true
+                      }"
+                      [multiple]="true"
+                      [items]="chequesOptions"
+                      bindValue="name"
+                      bindLabel="name"
+                    >
+                      <ng-template ng-header-tmp>
+                        <div>
+                          <button
+                            class="btn btn-link"
+                            type="button"
+                            (click)="
+                              onSelectAllItems(
+                                'selectedCheques',
+                                chequesOptions,
+                                'name'
+                              )
+                            "
+                          >
+                            Select All
+                          </button>
+                          <button
+                            class="btn btn-link"
+                            Overseas
+                            type="button"
+                            (click)="onClearAllItems('selectedCheques')"
+                          >
+                            Clear All
+                          </button>
+                        </div>
+                      </ng-template>
+                    </ng-select>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="">Agents Names :</label>
+                    <ng-select
+                      placeholder="Agents Names"
+                      [(ngModel)]="selectedAgents"
+                      [ngModelOptions]="{
+                        standalone: true
+                      }"
+                      [multiple]="true"
+                    >
+                      <ng-template ng-header-tmp>
+                        <div>
+                          <button
+                            class="btn btn-link"
+                            type="button"
+                            (click)="onSelectAllItems('selectedAgents', agents)"
+                          >
+                            Select All
+                          </button>
+                          <button
+                            class="btn btn-link"
+                            type="button"
+                            (click)="onClearAllItems('selectedAgents')"
+                          >
+                            Clear All
+                          </button>
+                        </div>
+                      </ng-template>
+                      <ng-option
+                        value="{{ agent.id }}"
+                        *ngFor="let agent of agents"
+                        >{{ agent.name }}</ng-option
+                      >
+                    </ng-select>
+                  </div>
+                  <div class="form-group">
+                    <label for="">Brokers Names :</label>
+                    <ng-select
+                      placeholder="Brokers Names"
+                      [(ngModel)]="selectedBrokers"
+                      [ngModelOptions]="{
+                        standalone: true
+                      }"
+                      [multiple]="true"
+                    >
+                      <ng-template ng-header-tmp>
+                        <div>
+                          <button
+                            class="btn btn-link"
+                            type="button"
+                            (click)="
+                              onSelectAllItems('selectedBrokers', brokers)
+                            "
+                          >
+                            Select All
+                          </button>
+                          <button
+                            class="btn btn-link"
+                            type="button"
+                            (click)="onClearAllItems('selectedBrokers')"
+                          >
+                            Clear All
+                          </button>
+                        </div>
+                      </ng-template>
+                      <ng-option
+                        value="{{ broker.id }}"
+                        *ngFor="let broker of brokers"
+                        >{{ broker.name }}</ng-option
+                      >
+                    </ng-select>
+                  </div>
+                  <div class="form-group">
+                    <label for="order_by">Order By :</label>
+                    <ng-select
+                      formControlName="order_by"
+                      placeholder="Order By"
+                    >
+                      <ng-option value="rf_serial">RF Serial</ng-option>
+                      <ng-option value="last_updated">Last Updated</ng-option>
+                    </ng-select>
+                  </div>
+                  <div class="form-group">
+                    <label for="handover_status">Handover Status</label>
+                    <ng-select formControlName="handover_status" placeholder="Handover Status">
+                      <ng-option value="Handed over">Handed over</ng-option>
+                      <ng-option value="Implied handed over">Implied handed over</ng-option>
+                    </ng-select>
+                  </div>
+                  <div class="form-group">
+                    <label for="contract_to_be_delivered">Contract to be delivered</label>
+                    <ng-select formControlName="contract_to_be_delivered" placeholder="Is Contract to be delivered">
+                      <ng-option value="yes">Yes</ng-option>
+                      <ng-option value="no">No</ng-option>
+                    </ng-select>
+                  </div>
+                  <div class="form-group">
+                    <label for="Handover_date_from">Handover Date From :</label>
+                    <input
+                      type="date"
+                      name="Handover_date_from"
+                      formControlName="Handover_date_from"
+                      class="form-control"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="Handover_date_to">Handover Date To :</label>
+                    <input
+                      type="date"
+                      name="Handover_date_to"
+                      formControlName="Handover_date_to"
+                      class="form-control"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="">Finishing Type :</label>
+                    <ng-select
+                      placeholder="Finishing Type"
+                      name="finishing_type"
+                      [multiple]="false"
+                      formControlName="finishing_type_id"
+                    >
+                      <ng-option
+                        value="{{ type.id }}"
+                        *ngFor="let type of finishing_types"
+                        >{{ type.name }}</ng-option
+                      >
+                    </ng-select>
+                  </div>
+                  <div class="form-group">
+                    <label for="building_number">Building Number</label>
+                    <p-dropdown
+                      placeholder="Select Building"
+                      optionLabel="name"
+                      optionValue="name"
+                      [style]="{ width: '130px', padding: '3px 0' }"
+                      [options]="allBuildings"
+                      [filter]="true"
+                      [panelStyle]="{ minWidth: '15em' }"
+                      [style]="{ minWidth: '15em' }"
+                      (onChange)="changeBuildingNumber($event)"
+                    ></p-dropdown>
+                  </div>
+                </div>
+                <div class="search-buttons">
+                  <div class="border-form text-center margin-top">
+                    <button type="submit" class="button c-bg">FILTER</button>
+                  </div>
+                  <div class="border-form text-center">
+                    <button
+                      (click)="resetFilters()"
+                      type="button"
+                      class="button bg-danger reset-filter"
+                    >
+                      RESET
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="col-xs-3">
+              <div class="flex">
+                <h3 class="margin-right-30">Sold Units</h3>
+                <p class="mv-20 total-unit-price margin-right-15">
+                  Total Units Price: {{ total_unit_price | currency : " " }}
+                </p>
+                <!-- <p class="mv-20 total-unit-price">Total sold units: {{ total }}</p> -->
+              </div>
+            </div>
+            <div class="col-xs-9"></div>
+            <div
+              class="col-md-12"
+              [ngClass]="{ 'no-interaction': is_refreshing }"
+            >
+              <div class="table table-responsive table_sticky_header">
+                <table class="table table-bordered">
+                  <tr class="table_sticky_header_header">
+                    <th *ngIf="manageTable.unit_serial">Unit ID</th>
+                    <th *ngIf="manageTable.id">RF Serial</th>
+                    <!-- <th>Contract Type</th> -->
+                    <th *ngIf="manageTable.lead_name">Lead Name</th>
+                    <th *ngIf="manageTable.project">Project</th>
+                    <th *ngIf="manageTable.status">Status</th>
+                    <th *ngIf="manageTable.admin_confirmation">
+                      Admin Confirmation
+                    </th>
+                    <th *ngIf="manageTable.unit_area">Unit Area</th>
+                    <th *ngIf="manageTable.garden_area">Garden Area</th>
+                    <th *ngIf="manageTable.land_area">Land Area</th>
+                    <th *ngIf="manageTable.roof_area">Roof Area</th>
+                    <th *ngIf="manageTable.finishing_type">Finishing Type</th>
+                    <th *ngIf="manageTable.price">Price</th>
+                    <th *ngIf="manageTable.unit_basement_price">
+                      Basement Price
+                    </th>
+                    <th *ngIf="manageTable.agent">Agent</th>
+                    <th>Source</th>
+                    <th *ngIf="manageTable.date">Creation Date</th>
+                    <th *ngIf="manageTable.selling_date">Selling Date</th>
+                    <th *ngIf="manageTable.contract_generated">
+                      Contract Generated
+                    </th>
+                    <th *ngIf="manageTable.is_bank_transfer">
+                      Is Bank Transfer
+                    </th>
+                    <th *ngIf="manageTable.is_deposit">Is Deposit</th>
+                    <th>Action</th>
+                  </tr>
+                  <tr
+                    *ngFor="let r of reservations; let i = index"
+                    [ngClass]="{
+                      'bg-success':
+                        r.is_accountant_approved == 1 &&
+                        r.contract_type == 'sale',
+                      'bg-danger':
+                        r.is_admin_declined == 1 && r.contract_type == 'sale',
+                      'bg-rent-success':
+                        r.is_accountant_approved == 1 &&
+                        r.contract_type == 'rent',
+                      'bg-rent-declined':
+                        r.is_admin_declined == 1 && r.contract_type == 'rent',
+                      'bg-is-deposit': r.is_deposit
+                    }"
+                  >
+                    <td *ngIf="manageTable.unit_serial">
+                      {{ r?.unit.serial }}
+                    </td>
+                    <td *ngIf="manageTable.id">{{ r.id }}</td>
+                    <!-- <td>{{r.contract_type}}</td> -->
+                    <td *ngIf="manageTable.lead_name">
+                      <ng-container
+                        *ngFor="let lead of r.sharing_leads; let last = last"
+                      >
+                        <p
+                          class="leadname"
+                          [ngClass]="{
+                            vip: lead?.lead?.is_vip,
+                            warning: lead?.lead?.legal_type > 0
+                          }"
+                          (click)="redirectToLeadDetails(lead?.lead_id)"
+                        >
+                          {{ lead?.lead_name }}
+                        </p>
+                        <hr class="custom-hr" *ngIf="!last" />
+                      </ng-container>
+                    </td>
+                    <td *ngIf="manageTable.project">
+                      {{ r?.unit?.project?.name }}
+                    </td>
+                    <td *ngIf="manageTable.status">{{ r?.status }}</td>
+                    <td *ngIf="manageTable.admin_confirmation">
+                      {{ r?.admin_confirmation }}
+                    </td>
+                    <td *ngIf="manageTable.unit_area">
+                      {{ r?.unit_building_area }}
+                    </td>
+                    <td *ngIf="manageTable.garden_area">
+                      {{ r?.unit.garden_area || "-" }}
+                    </td>
+                    <td *ngIf="manageTable.land_area">
+                      {{ r?.unit.land_area }}
+                    </td>
+                    <td *ngIf="manageTable.roof_area">
+                      {{ r?.unit.roof_area }}
+                    </td>
+                    <th *ngIf="manageTable.finishing_type">
+                      {{ r?.finishing_type?.name }}
+                    </th>
+                    <td *ngIf="manageTable.price">
+                      {{ r?.unit_price | currency : " " }}
+                    </td>
+                    <td *ngIf="manageTable.unit_basement_price">
+                      {{ (r?.unit_basement_price | currency : " ") || "-" }}
+                    </td>
+                    <!-- <td *ngIf="manageTable.price">{{r?.unit_price}} <br> ( {{r?.build_area }} / m )</td> -->
+                    <td *ngIf="manageTable.agent">{{ r?.user?.name }}</td>
+                    <td>{{ r?.source }}</td>
+                    <td *ngIf="manageTable.date">{{ r?.created_at }}</td>
+                    <td *ngIf="manageTable.selling_date">
+                      {{ r?.selling_date }}
+                    </td>
+                    <td
+                      *ngIf="
+                        manageTable.contract_generated && r?.last_contract_url
+                      "
+                    >
+                      Yes
+                    </td>
+                    <td
+                      *ngIf="
+                        manageTable.contract_generated &&
+                        r?.last_contract_url == null
+                      "
+                    >
+                      No
+                    </td>
+                    <th *ngIf="manageTable.is_bank_transfer">
+                      {{ r?.is_bank_transfer ? "Yes" : "No" }}
+                    </th>
+                    <td *ngIf="manageTable.is_deposit">
+                      {{ r?.is_deposit ? "Yes" : "No" }}
+                    </td>
+                    <td>
+                      <button mat-icon-button [matMenuTriggerFor]="actionsMenu">
+                        <img
+                          class="more-options-icon"
+                          src="assets/img/show-more-button-with-three-dots.svg"
+                        />
+                      </button>
+                      <mat-menu #actionsMenu="matMenu">
+                        <button mat-menu-item (click)="viewReservation(r)">
+                          View
+                        </button>
+                        <button
+                          mat-menu-item
+                          (click)="downloadReservation(r?.id)"
+                          *ngIf="
+                            r?.authorization?.can_download_rf &&
+                            userProfile.role != 'Super Development'
+                          "
+                        >
+                          Download
+                        </button>
+                        <button
+                          mat-menu-item
+                          (click)="unitDetail.open()"
+                          *ngIf="
+                            userProfile.role != 'Legal and Technical' &&
+                            userProfile.role != 'Facility'
+                          "
+                        >
+                          Summary
+                        </button>
+                        <button
+                          mat-menu-item
+                          *ngIf="
+                            r?.comment &&
+                            userProfile.role != 'Legal and Technical' &&
+                            userProfile.role != 'Facility' &&
+                            userProfile.role != 'Facility' &&
+                            userProfile.role != 'CCO' &&
+                            userProfile.role != 'Development Director'
+                          "
+                          (click)="viewCommentModal.open(r)"
+                        >
+                          View comment
+                        </button>
+                        <button
+                          mat-menu-item
+                          *ngIf="
+                            r?.last_contract_url &&
+                            userProfile.role != 'Legal and Technical' &&
+                            userProfile.role != 'Facility' &&
+                            userProfile.role != 'CCO' &&
+                            userProfile.role != 'Development Director'
+                          "
+                        >
+                          <a [href]="r?.last_contract_url"
+                            >Download Latest Contract</a
+                          >
+                        </button>
+                      </mat-menu>
+
+                      <modal
+                        #unitDetail
+                        title="Unit Details"
+                        modalClass="modal-lg"
+                        [hideCloseButton]="true"
+                        [closeOnOutsideClick]="true"
+                        (onOpen)="unitOnOpen(r.unit_id)"
+                        (onClose)="unitModalOnClose()"
+                      >
+                        <modal-header> </modal-header>
+                        <modal-content>
+                          <div class="row">
+                            <div class="col-xs-4">
+                              <h6>
+                                Build Area :
+                                <small>{{
+                                  units_reservation_modal_data?.build_area
+                                }}</small>
+                              </h6>
+                              <h6>
+                                Serial :
+                                <small>{{
+                                  units_reservation_modal_data?.serial
+                                }}</small>
+                              </h6>
+                              <h6>
+                                Garden Area :
+                                <small>{{
+                                  units_reservation_modal_data?.garden_area
+                                }}</small>
+                              </h6>
+                              <h6>
+                                Garden Price :
+                                <small>{{
+                                  units_reservation_modal_data?.garden_price
+                                }}</small>
+                              </h6>
+                              <h6>
+                                Unit Number :
+                                <small>{{
+                                  units_reservation_modal_data?.number
+                                }}</small>
+                              </h6>
+                              <h6>
+                                Unit Type :
+                                <small>{{
+                                  units_reservation_modal_data?.unit_type?.name
+                                }}</small>
+                              </h6>
+                            </div>
+                            <div class="col-xs-4">
+                              <h6>
+                                Delivery Date :
+                                <small>{{
+                                  units_reservation_modal_data?.delivery_date
+                                }}</small>
+                              </h6>
+                              <h6>
+                                Number of Rooms :
+                                <small>{{
+                                  units_reservation_modal_data?.num_rooms
+                                }}</small>
+                              </h6>
+                              <h6>
+                                Number of Bathrooms :
+                                <small>{{
+                                  units_reservation_modal_data?.num_bathrooms
+                                }}</small>
+                              </h6>
+                              <h6>
+                                Floor Number :
+                                <small>{{
+                                  units_reservation_modal_data?.floor_number
+                                }}</small>
+                              </h6>
+
+                              <h6>
+                                Building :
+                                <small>{{
+                                  units_reservation_modal_data?.building_num
+                                }}</small>
+                              </h6>
+                              <h6>
+                                Block :
+                                <small>{{
+                                  units_reservation_modal_data?.block_num
+                                }}</small>
+                              </h6>
+                            </div>
+                            <div class="col-xs-4">
+                              <h6>
+                                Selling Price :
+                                <small>{{
+                                  units_reservation_modal_data?.price
+                                }}</small>
+                              </h6>
+                              <h6>
+                                Comment :
+                                <small>{{
+                                  units_reservation_modal_data?.comment
+                                }}</small>
+                              </h6>
+                              <h6>
+                                Selling Date :
+                                <small>{{
+                                  units_reservation_modal_data?.reservation
+                                    ?.selling_date
+                                }}</small>
+                              </h6>
+                              <h6>
+                                Created at :
+                                <small>{{
+                                  units_reservation_modal_data?.reservation
+                                    ?.created_at
+                                }}</small>
+                              </h6>
+                            </div>
+                          </div>
+
+                          <div
+                            class="row"
+                            *ngIf="
+                              units_reservation_modal_data &&
+                              units_reservation_modal_data.reservation
+                            "
+                          >
+                            <div class="col-xs-12">
+                              <h4>Transaction</h4>
+                            </div>
+                            <div class="col-xs-4">
+                              <h6>
+                                Sales Person Name:
+                                <small>
+                                  {{
+                                    units_reservation_modal_data?.reservation
+                                      ?.user?.name
+                                  }}
+                                </small>
+                              </h6>
+                            </div>
+                            <div class="col-xs-4">
+                              <h6>
+                                Date Time:
+                                <small>
+                                  {{
+                                    units_reservation_modal_data?.reservation
+                                      ?.created_at
+                                  }}
+                                </small>
+                              </h6>
+                            </div>
+                            <div
+                              class="col-xs-4"
+                              *ngIf="units_reservation_modal_data.reservation"
+                            >
+                              <h6>
+                                Status:
+                                <span
+                                  class="label label-success"
+                                  *ngIf="
+                                    units_reservation_modal_data.reservation
+                                      .is_accountant_approved
+                                  "
+                                >
+                                  Approved
+                                </span>
+                                <span
+                                  class="label label-warning"
+                                  *ngIf="
+                                    !units_reservation_modal_data.reservation
+                                      .is_accountant_approved
+                                  "
+                                >
+                                  Pending
+                                </span>
+                              </h6>
+                            </div>
+                            <div
+                              class="col-xs-12"
+                              *ngIf="
+                                units_reservation_modal_data?.reservation
+                                  ?.sharing_leads &&
+                                units_reservation_modal_data?.reservation
+                                  ?.sharing_leads?.length > 0
+                              "
+                            >
+                              <table class="table table-bordered w-100">
+                                <tr>
+                                  <th>Client Name</th>
+                                  <th>Client Phone</th>
+                                </tr>
+                                <tr
+                                  *ngFor="
+                                    let lead of units_reservation_modal_data
+                                      ?.reservation.sharing_leads
+                                  "
+                                >
+                                  <td>{{ lead.lead_name }}</td>
+                                  <td>{{ lead.lead_phone }}</td>
+                                </tr>
+                              </table>
+                            </div>
+                          </div>
+                        </modal-content>
+                        <modal-footer>
+                          <button
+                            class="btn btn-secondary"
+                            (click)="unitDetail.close()"
+                          >
+                            close
+                          </button>
+                        </modal-footer>
+                      </modal>
+                      <modal
+                        #viewCommentModal
+                        title="Reservation Comment"
+                        modalClass="modal-lg"
+                        [hideCloseButton]="true"
+                        [closeOnOutsideClick]="true"
+                        (onOpen)="openViewCommentModal(r)"
+                        (onClose)="closeViewCommentModal()"
+                      >
+                        <modal-header> </modal-header>
+                        <modal-content>
+                          <div class="search">
+                            <p>{{ r?.comment }}</p>
+                          </div>
+                        </modal-content>
+                        <modal-footer>
+                          <button
+                            class="btn btn-secondary"
+                            (click)="viewCommentModal.close()"
+                          >
+                            close
+                          </button>
+                        </modal-footer>
+                      </modal>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+              <div *ngIf="current_page" class="col-xs-6">
+                <p>({{ per_page }} / {{ total }}) page {{ current_page }}</p>
+              </div>
+              <div class="col-xs-6 text-right">
+                <ngb-pagination
+                  [collectionSize]="reservation_raw_data?.last_page * 10"
+                  [(page)]="pageTest"
+                  [maxSize]="5"
+                  [rotate]="true"
+                  [ellipses]="true"
+                  [boundaryLinks]="true"
+                  (pageChange)="pageChange($event)"
+                  [size]="lg"
+                >
+                </ngb-pagination>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,56 @@
+<div class="row master-plan-title-container">
+  <div class="col-xs-10">
+    <h1 *ngIf="stage == 'districts'">Master Plan Setup (Districts) :</h1>
+    <h1 *ngIf="stage == 'units'">Master Plan Setup (Units) :</h1>
+  </div>
+  <div class="col-xs-2">
+    <div class="close-container">
+      <span (click)="close()">
+        <i class="fa fa-times"></i>
+      </span>
+    </div>
+  </div>
+</div>
+<div class="img-overlay-wrap" *ngIf="stage == 'districts'">
+  <img [src]="img">
+  <svg id="navigatorSVG" class="svg" viewBox="0, 0, 1920, 1080">
+    <defs></defs>
+    <path *ngFor="let p of paths" [attr.d]="p.path" stroke="#000022" class="path" (click)="pathClicked(p.path_id)"></path>
+  </svg>
+</div>
+
+<div class="img-overlay-wrap" *ngIf="stage == 'units'">
+  <img [src]="img">
+  <svg id="navigatorSVG" class="svg" viewBox="0, 0, 1920, 1080">
+    <defs></defs>
+    <path *ngFor="let p of paths" [attr.d]="p.path" stroke="#000022" class="unit-path" [ngClass]="{'unit-red': !p.unit, 'unit-green': p.unit}"
+      (click)="launchSerialModal(assignSerial, p.unit, p.path_id)" matTooltip="{{p.unit ? 'Unit Serial : ' + p.unit + ' (Assigned)' : '(Un-assigned)'}}" matTooltipPosition="before"></path>
+  </svg>
+</div>
+
+
+<modal #assignSerial title="Assign unit" submitButtonLabel="submit" modalClass="modal-md" [hideCloseButton]="true"
+  [closeOnOutsideClick]="true" (onOpen)="assignSerialOpen()" (onClose)="assignSerialClose()" (onSubmit)="assignSerialSubmit(assignSerial)">
+  <modal-header>
+  </modal-header>
+  <modal-content>
+    <div class="row">
+      <div class="form-group col-xs-6">
+        <form class="form-group btn-group-files pull-left">
+          <div class="form-group">
+            <label *ngIf="current_unit">Current Unit : {{current_unit}}</label>
+            <div class="search-btn-container">
+              <div>
+                <input ngui-auto-complete [source]="observableSource.bind(this)" placeholder="Search for unit by serial "
+                  [ngModelOptions]="{standalone: true}" class="form-control" name="chosen_unit" [(ngModel)]="chosenUnit" />
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="assignSerial.close()">close</button>
+  </modal-footer>
+</modal>

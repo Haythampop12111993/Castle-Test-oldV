@@ -1,0 +1,80 @@
+h4 {
+  margin-top: 25px;
+}
+.row {
+  margin-bottom: 20px;
+}
+.row .row {
+  margin-top: 10px;
+  margin-bottom: 0;
+}
+[class*="col-"] {
+  padding-top: 15px;
+  padding-bottom: 15px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border: 1px solid rgba(86, 61, 124, 0.2);
+}
+
+hr {
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+
+.dndPlaceholder {
+  background-color: #666;
+  display: block;
+  min-height: 42px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  border: 1px solid rgba(86, 61, 124, 0.2);
+  position: relative;
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+.select-campaign-container {
+}
+
+.select-campaign-container .form-group,
+.select-campaign-container .form-group select {
+  width: 100%;
+}
+
+.select-campaign-container .form-group select {
+  padding: 10px;
+}
+
+.apply-btn {
+  height: 43px;
+  padding: 10px 40px;
+  background-color: gray;
+  border: 1px solid gray;
+  color: #fff;
+}
+
+.no-border {
+  border: none !important;
+}
+
+.headline {
+  font-size: 24px;
+}
+
+.selected-item {
+  background-color: gray;
+  color: #fff;
+  border-bottom: 1px solid #fff;
+}
+
+.team-1 {
+  background-color: gray;
+  color: #fff;
+  border-bottom: 1px solid #fff;
+}
+
+.team-2 {
+  background-color: #403c32;
+  color: #fff;
+  border-bottom: 1px solid #fff;
+}

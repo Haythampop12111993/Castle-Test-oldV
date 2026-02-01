@@ -1,0 +1,80 @@
+<mat-card class="option-card">
+  <mat-card-content>
+    <h3 class="card__title">Contact Statuses</h3>
+    <div class="row">
+      <div class="col-xs-12 margin-bottom">
+        <form #form="ngForm" class="form-inline">
+          <div class="form-group">
+            <label for="">Status Name :</label>
+            <input
+              name="add_status"
+              [(ngModel)]="add_status"
+              type="text"
+              class="form-control"
+              required
+            />
+          </div>
+
+          <button
+            *ngIf="!current_selected_status"
+            (click)="addStatus()"
+            class="btn btn-primary"
+            type="submit"
+            [disabled]="!form.form.valid"
+          >
+            Add
+          </button>
+          <button
+            *ngIf="current_selected_status"
+            (click)="updateStatus()"
+            class="btn btn-primary"
+            type="submit"
+            [disabled]="!form.form.valid"
+          >
+            Update
+          </button>
+          <button
+            *ngIf="current_selected_status"
+            (click)="cancelUpdate()"
+            class="btn btn-default"
+            type="button"
+          >
+            Cancel
+          </button>
+        </form>
+      </div>
+      <div class="col-xs-12 margin-bottom">
+        <table>
+          <tr>
+            <th>Name</th>
+            <th>Actions</th>
+          </tr>
+          <ng-container *ngFor="let status of statuses">
+            <tr class="data">
+              <td>
+                {{ status?.name }}
+              </td>
+
+              <td>
+                <button
+                  class="btn btn-danger delete"
+                  (click)="deleteStatus(status.id)"
+                  *ngIf="status.can_deleted"
+                >
+                  Delete
+                </button>
+                <button
+                  class="btn btn-primary primary"
+                  (click)="editStatus(status)"
+                  *ngIf="status.can_deleted"
+                >
+                  Edit
+                </button>
+              </td>
+            </tr>
+          </ng-container>
+        </table>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

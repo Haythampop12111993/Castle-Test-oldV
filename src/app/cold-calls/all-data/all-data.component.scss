@@ -1,0 +1,47 @@
+.form-inline {
+  input {
+    flex: 1;
+  }
+  button {
+    width: 150px;
+  }
+}
+
+.btn-danger {
+  width: 150px;
+}
+
+.import_leads_container {
+  border: 1px solid #e0e0e0;
+}
+
+.data_card {
+  border: 1px solid #333;
+  padding: 25px;
+  font-size: 16px;
+  height: 100%;
+
+  .data_view {
+    cursor: pointer;
+  }
+
+  span {
+    margin-inline-end: 5px;
+    font-weight: bold;
+  }
+
+  p {
+    margin: 0;
+  }
+}
+
+.export_demo {
+  color: #007bff !important;
+  text-decoration: none !important;
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+.export_demo:hover {
+  font-weight: bold;
+}

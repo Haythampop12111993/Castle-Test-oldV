@@ -1,0 +1,101 @@
+<div *ngIf="!coming_soon" class="page-container">
+  <br>
+<br>
+<br>
+<br>
+<!--START PROJECT-INNER-->
+<section class="eoi-table">
+  <div class="container-fluid">
+    <div id="filter">
+      <form class="form-inline" #f="ngForm" (ngSubmit)="filterCils(f.value)">
+        <div class="form-group">
+          <h2 class="filter-cil" style="color: #414f5a">Filter Cils</h2>
+        </div>
+        <div class="form-group">
+
+          <label>Broker Name</label>
+
+          <input ngui-auto-complete type="text" [(ngModel)]="filter.broker_name" name="broker_name" class="form-control" #searchBox="ngModel"
+            [source]="brokersName" placeholder="Search....">
+
+        </div>
+        <div class="form-group">
+          <label for="exampleInputEmail2">Status</label>
+          <ng-select ngModel #status="ngModel" name="status" placeholder="Select Status">
+            <ng-option value="Accept">Approved</ng-option>
+            <ng-option value="Decline">Declined</ng-option>
+            <ng-option value="Review">Review</ng-option>
+          </ng-select>
+        </div>
+        <div class="form-group">
+          <button type="submit" class="btn btn-default">Filter</button>
+          <button type="reset" class="btn btn-default">Reset</button>
+          <button (click)="getAllCils()" class="form-control">view All</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="container-fluid">
+    <h2>CILS</h2>
+    <div class="proj-details">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="table table-responsive">
+            <table class="table table-bordered">
+              <tr>
+                <th>CIL Serial</th>
+                <th>Broker Name</th>
+                <th>CIL Name</th>
+                <th>CIL Phone Number</th>
+                <th>CIL Email</th>
+                <th>CIL Status / Lead Status</th>
+                <th>Action</th>
+              </tr>
+              <ng-container *ngFor="let cil of cils">
+                <tr [ngClass]="{
+                                    'pending':cil.status === 'Review',
+                                    'declined':cil.status === 'Decline',
+                                    'approved':cil.status === 'Accept',
+                                    'closed':cil.lead?.status ==='Closed'
+                                }">
+                  <td>#{{cil.id}}</td>
+                  <td>{{cil?.broker?.name}}</td>
+                  <td>{{cil?.lead_name}}</td>
+                  <td>{{cil?.lead_phone}}</td>
+                  <td>{{cil?.lead_email}}</td>
+                  <td *ngIf="!cil.lead">{{cil.status}} / Not accepted yet</td>
+                  <td *ngIf="cil.lead">{{cil.status}} / {{cil.lead?.status}}</td>
+                  <td>
+                    <div class="dropdown" dropdown>
+                      <img class="more-options-icon" src="assets/img/show-more-button-with-three-dots.svg" dropdown-open/>
+                      <ul class="dropdown-menu" aria-labelledby="dLabel" *ngIf="cil.status == 'Review'">
+                        <li (click)="approve(cil)">
+                          <a>Approve</a>
+                        </li>
+                        <li class="decline-list-item" (click)="decline(cil)">
+                          <a>Decline</a>
+                        </li>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+              </ng-container>
+
+            </table>
+          </div>
+
+          <div class="col-md-12 text-center">
+            <ngb-pagination [collectionSize]="clis_raw_data?.last_page * 10" [(page)]="pageTest" [maxSize]="5" [rotate]="true"
+            [ellipses]="true" [boundaryLinks]="true" (pageChange)="pageChange($event)" [size]="lg">
+          </ngb-pagination>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!--END PROJECT-INNER-->
+</div>
+
+<app-upcoming-scene *ngIf="coming_soon" [name]="'CIL'"></app-upcoming-scene>

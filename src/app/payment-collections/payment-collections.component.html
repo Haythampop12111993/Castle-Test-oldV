@@ -1,0 +1,3213 @@
+<div class="container-fluid">
+  <div class="proj-details">
+    <div class="row btn-grps">
+      <div class="col-md-12">
+        <button
+          (click)="setFilterActiveTab()"
+          class="adv-search"
+          [ngClass]="{ 'active-tab': active_tab == 'filter' }"
+        >
+          <i
+            *ngIf="active_tab != 'filter'"
+            class="fa fa-chevron-down"
+            aria-hidden="true"
+          ></i>
+          <i
+            *ngIf="active_tab == 'filter'"
+            class="fa fa-chevron-up"
+            aria-hidden="true"
+          ></i>
+          Advanced Search
+        </button>
+        <button
+          (click)="setSalesStatusTab()"
+          class="adv-search"
+          [ngClass]="{ 'active-tab': active_tab == 'sales-status' }"
+        >
+          <i
+            *ngIf="active_tab != 'sales-status'"
+            class="fa fa-chevron-down"
+            aria-hidden="true"
+          ></i>
+          <i
+            *ngIf="active_tab == 'sales-status'"
+            class="fa fa-chevron-up"
+            aria-hidden="true"
+          ></i>
+          Stats
+        </button>
+      </div>
+    </div>
+    <div *ngIf="active_tab == 'filter'" class="row filter-oute.r-container">
+      <div class="col-md-12" [ngClass]="{ 'no-interaction': is_refreshing }">
+        <div class="filter">
+          <div class="row">
+            <!-- <div class="col-md-2">
+              <h3 class="search__title">Advanced Search</h3>
+            </div> -->
+            <div class="search-container col-md-10">
+              <form
+                class="search-form"
+                [formGroup]="filterForm"
+                (ngSubmit)="filterPayments()"
+              >
+                <div class="search-form-inputs">
+                  <div class="form-group">
+                    <label class="unit-serial-label" for="">RF Serial :</label>
+                    <input
+                      type="text"
+                      name="filter_reservation"
+                      id="filter_reservation"
+                      class="form-control unit-serial-input"
+                      formControlName="filter_reservation"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label class="unit-serial-label" for=""
+                      >Unit Serial :</label
+                    >
+                    <input
+                      type="text"
+                      name="filter_unit"
+                      id="filter_unit"
+                      class="form-control unit-serial-input"
+                      formControlName="filter_unit"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label class="unit-serial-label" for="">cheque No. :</label>
+                    <input
+                      type="text"
+                      name="filter_cheque_number"
+                      id="filter_cheque_number"
+                      class="form-control unit-serial-input"
+                      formControlName="filter_cheque_number"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label class="unit-serial-label" for=""
+                      >Transaction No. :</label
+                    >
+                    <input
+                      type="text"
+                      name="transaction_number"
+                      id="transaction_number"
+                      class="form-control unit-serial-input"
+                      formControlName="transaction_number"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="">Lead Name / Phone :</label>
+                    <input
+                      type="text"
+                      name="filter_lead"
+                      id="filter_lead"
+                      class="form-control"
+                      formControlName="filter_lead"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="">Phases :</label>
+
+                    <ng-select
+                      placeholder="Phases"
+                      formControlName="phases[]"
+                      [multiple]="true"
+                      [items]="allPhases"
+                      bindValue="serial"
+                      bindLabel="serial"
+                    >
+                      <ng-template ng-header-tmp>
+                        <div>
+                          <button
+                            class="btn btn-link"
+                            type="button"
+                            (click)="
+                              onSelectAllItems('phases[]', allPhases, 'id')
+                            "
+                          >
+                            Select All
+                          </button>
+                          <button
+                            class="btn btn-link"
+                            type="button"
+                            (click)="onClearAllItems('phases[]')"
+                          >
+                            Clear All
+                          </button>
+                        </div>
+                      </ng-template>
+                    </ng-select>
+                  </div>
+                  <div class="form-group">
+                    <label for="">Status :</label>
+
+                    <ng-select
+                      placeholder="Status"
+                      formControlName="filter_status[]"
+                      [multiple]="true"
+                      [items]="allStatuses"
+                      bindValue="id"
+                      bindLabel="value"
+                    >
+                      <ng-template ng-header-tmp>
+                        <div>
+                          <button
+                            class="btn btn-link"
+                            type="button"
+                            (click)="
+                              onSelectAllItems(
+                                'filter_status[]',
+                                allStatuses,
+                                'id'
+                              )
+                            "
+                          >
+                            Select All
+                          </button>
+                          <button
+                            class="btn btn-link"
+                            type="button"
+                            (click)="onClearAllItems('filter_status[]')"
+                          >
+                            Clear All
+                          </button>
+                        </div>
+                      </ng-template>
+                    </ng-select>
+                  </div>
+                  <div class="form-group">
+                    <label for="">Is Bulk :</label>
+                    <select
+                      class="form-control"
+                      placeholder="Project"
+                      formControlName="filter_is_bulk"
+                      id="filter_is_bulk"
+                    >
+                      <option value="" selected>All</option>
+                      <option value="yes">Yes</option>
+                      <option value="no">No</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="is_final">Final Cheque Recieved :</label>
+                    <select
+                      class="form-control"
+                      placeholder="Final Cheque Recieved"
+                      formControlName="filter_is_final"
+                      id="is_final"
+                    >
+                      <option value="" selected>All</option>
+                      <option value="yes">Yes</option>
+                      <option value="no">No</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="filter_vendor_code">Vendor Code :</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      placeholder="Vendor Code"
+                      formControlName="filter_vendor_code"
+                      id="filter_vendor_code"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="">Reservation Status :</label>
+                    <select
+                      class="form-control"
+                      placeholder="Reservation Status"
+                      formControlName="filter_reservation_status"
+                      id="filter_reservation_status"
+                    >
+                      <option value="" selected>All</option>
+                      <option value="active">Active</option>
+                      <option value="cancelled">Cancelled</option>
+                    </select>
+                  </div>
+                  <div *ngIf="projects" class="form-group">
+                    <label for="">Project :</label>
+                    <ng-select
+                      placeholder="Project"
+                      formControlName="filter_project_id[]"
+                      [multiple]="true"
+                      [items]="projects"
+                      bindValue="id"
+                      bindLabel="name"
+                    >
+                      <ng-template ng-header-tmp>
+                        <div>
+                          <button
+                            class="btn btn-link"
+                            type="button"
+                            (click)="
+                              onSelectAllItems(
+                                'filter_project_id[]',
+                                projects,
+                                'id'
+                              )
+                            "
+                          >
+                            Select All
+                          </button>
+                          <button
+                            class="btn btn-link"
+                            type="button"
+                            (click)="onClearAllItems('filter_project_id[]')"
+                          >
+                            Clear All
+                          </button>
+                        </div>
+                      </ng-template>
+                    </ng-select>
+                  </div>
+                  <div *ngIf="store_banks" class="form-group">
+                    <label for="">Location :</label>
+                    <ng-select
+                      placeholder="Location"
+                      formControlName="filter_store_bank_id[]"
+                      [multiple]="true"
+                      [items]="store_banks"
+                      bindValue="id"
+                      bindLabel="name"
+                    >
+                      <ng-template ng-header-tmp>
+                        <div>
+                          <button
+                            class="btn btn-link"
+                            type="button"
+                            (click)="
+                              onSelectAllItems(
+                                'filter_store_bank_id[]',
+                                store_banks,
+                                'id'
+                              )
+                            "
+                          >
+                            Select All
+                          </button>
+                          <button
+                            class="btn btn-link"
+                            type="button"
+                            (click)="onClearAllItems('filter_store_bank_id[]')"
+                          >
+                            Clear All
+                          </button>
+                        </div>
+                      </ng-template>
+                    </ng-select>
+                  </div>
+                  <div *ngIf="store_banks" class="form-group">
+                    <label for="">Previous Loction :</label>
+                    <ng-select
+                      placeholder="Previous Location"
+                      formControlName="filter_previous_store_bank_id[]"
+                      [multiple]="true"
+                      [items]="store_banks"
+                      bindValue="id"
+                      bindLabel="name"
+                    >
+                      <ng-template ng-header-tmp>
+                        <div>
+                          <button
+                            class="btn btn-link"
+                            type="button"
+                            (click)="
+                              onSelectAllItems(
+                                'filter_previous_store_bank_id[]',
+                                store_banks,
+                                'id'
+                              )
+                            "
+                          >
+                            Select All
+                          </button>
+                          <button
+                            class="btn btn-link"
+                            type="button"
+                            (click)="
+                              onClearAllItems('filter_previous_store_bank_id[]')
+                            "
+                          >
+                            Clear All
+                          </button>
+                        </div>
+                      </ng-template>
+                    </ng-select>
+                  </div>
+                  <div *ngIf="banks" class="form-group">
+                    <label for="">Bank :</label>
+                    <ng-select
+                      placeholder="Bank"
+                      formControlName="filter_bank_id[]"
+                      [multiple]="true"
+                      [items]="banks"
+                      bindValue="id"
+                      bindLabel="name"
+                    >
+                      <ng-template ng-header-tmp>
+                        <div>
+                          <button
+                            class="btn btn-link"
+                            type="button"
+                            (click)="
+                              onSelectAllItems('filter_bank_id[]', banks, 'id')
+                            "
+                          >
+                            Select All
+                          </button>
+                          <button
+                            class="btn btn-link"
+                            type="button"
+                            (click)="onClearAllItems('filter_bank_id[]')"
+                          >
+                            Clear All
+                          </button>
+                        </div>
+                      </ng-template>
+                    </ng-select>
+                  </div>
+                  <div class="form-group">
+                    <label for="">Collect Type :</label>
+                    <ng-select
+                      placeholder="Collect Type"
+                      formControlName="types[]"
+                      [multiple]="true"
+                      [items]="allCollectTypes"
+                      bindValue="id"
+                      bindLabel="value"
+                    >
+                      <ng-template ng-header-tmp>
+                        <div>
+                          <button
+                            class="btn btn-link"
+                            type="button"
+                            (click)="
+                              onSelectAllItems('types[]', allCollectTypes, 'id')
+                            "
+                          >
+                            Select All
+                          </button>
+                          <button
+                            class="btn btn-link"
+                            type="button"
+                            (click)="onClearAllItems('types[]')"
+                          >
+                            Clear All
+                          </button>
+                        </div>
+                      </ng-template>
+                    </ng-select>
+                  </div>
+                  <div class="form-group">
+                    <label for="">Payment Type :</label>
+                    <ng-select
+                      placeholder="Payment Type"
+                      formControlName="filter_payment_type[]"
+                      [multiple]="true"
+                      [items]="allPaymentTypes"
+                      bindValue="id"
+                      bindLabel="value"
+                    >
+                      <ng-template ng-header-tmp>
+                        <div>
+                          <button
+                            class="btn btn-link"
+                            type="button"
+                            (click)="
+                              onSelectAllItems(
+                                'filter_payment_type[]',
+                                allPaymentTypes,
+                                'id'
+                              )
+                            "
+                          >
+                            Select All
+                          </button>
+                          <button
+                            class="btn btn-link"
+                            type="button"
+                            (click)="onClearAllItems('filter_payment_type[]')"
+                          >
+                            Clear All
+                          </button>
+                        </div>
+                      </ng-template>
+                    </ng-select>
+                  </div>
+                  <div class="form-group">
+                    <label for="">Due Date From :</label>
+                    <input
+                      type="date"
+                      name="filter_date_from"
+                      id="filter_date_from"
+                      class="form-control"
+                      formControlName="filter_date_from"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="">Due Date To :</label>
+                    <input
+                      type="date"
+                      name="filter_date_to"
+                      id="filter_date_to"
+                      class="form-control"
+                      formControlName="filter_date_to"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="">Receiving Date From :</label>
+                    <input
+                      type="date"
+                      name="filter_receiving_date_from"
+                      id="filter_receiving_date_from"
+                      class="form-control"
+                      formControlName="filter_receiving_date_from"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="">Receiving Date To :</label>
+                    <input
+                      type="date"
+                      name="filter_receiving_date_to"
+                      id="filter_receiving_date_to"
+                      class="form-control"
+                      formControlName="filter_receiving_date_to"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="">Bounce Date From :</label>
+                    <input
+                      type="date"
+                      name="filter_bounce_date_from"
+                      id="filter_bounce_date_from"
+                      class="form-control"
+                      formControlName="filter_bounce_date_from"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="">Bounce Date To :</label>
+                    <input
+                      type="date"
+                      name="filter_bounce_date_to"
+                      id="filter_bounce_date_to"
+                      class="form-control"
+                      formControlName="filter_bounce_date_to"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="">Sent To Bank Date From :</label>
+                    <input
+                      type="date"
+                      name="filter_sent_to_bank_date_from"
+                      id="filter_sent_to_bank_date_from"
+                      class="form-control"
+                      formControlName="filter_sent_to_bank_date_from"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="">Sent To Bank Date To :</label>
+                    <input
+                      type="date"
+                      name="filter_sent_to_bank_date_to"
+                      id="filter_sent_to_bank_date_to"
+                      class="form-control"
+                      formControlName="filter_sent_to_bank_date_to"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="">Collect Date From :</label>
+                    <input
+                      type="date"
+                      name="filter_collect_date_from"
+                      id="filter_collect_date_from"
+                      class="form-control"
+                      formControlName="filter_collect_date_from"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="">Collect Date To :</label>
+                    <input
+                      type="date"
+                      name="filter_collect_date_to"
+                      id="filter_collect_date_to"
+                      class="form-control"
+                      formControlName="filter_collect_date_to"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="">Recall Date From :</label>
+                    <input
+                      type="date"
+                      name="filter_recall_date_from"
+                      id="filter_recall_date_from"
+                      class="form-control"
+                      formControlName="filter_recall_date_from"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="">Recall Date To :</label>
+                    <input
+                      type="date"
+                      name="filter_recall_date_to"
+                      id="filter_recall_date_to"
+                      class="form-control"
+                      formControlName="filter_recall_date_to"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="">Action Date From :</label>
+                    <input
+                      type="date"
+                      name="filter_action_date_from"
+                      id="filter_action_date_from"
+                      class="form-control"
+                      formControlName="filter_action_date_from"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="">Action Date To :</label>
+                    <input
+                      type="date"
+                      name="filter_action_date_to"
+                      id="filter_action_date_to"
+                      class="form-control"
+                      formControlName="filter_action_date_to"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="">Delivered To Customer Date From :</label>
+                    <input
+                      type="date"
+                      name="delivered_to_customer_date_from"
+                      id="delivered_to_customer_date_from"
+                      class="form-control"
+                      formControlName="delivered_to_customer_date_from"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="">Delivered To Customer Date To :</label>
+                    <input
+                      type="date"
+                      name="delivered_to_customer_date_to"
+                      id="delivered_to_customer_date_to"
+                      class="form-control"
+                      formControlName="delivered_to_customer_date_to"
+                    />
+                  </div>
+                  <button type="submit" class="filter button c-bg">
+                    FILTER
+                  </button>
+                  <button
+                    (click)="resetFilters()"
+                    type="button"
+                    class="button bg-danger reset-filter"
+                  >
+                    RESET
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="active_tab == 'sales-status'" class="row">
+      <div class="col-md-12 d-flex">
+        <div class="sales-status-box accumlative">
+          <p class="stat-title">Total</p>
+          <div class="count-grp">
+            <!-- <i class="fa fa-usd" aria-hidden="true"></i> -->
+            <!-- <p class="count">{{sales_statuses?.Accumulative?.doneDeal?.count}}</p> -->
+          </div>
+          <p class="value">{{ stats?.all | currency : " " }}</p>
+        </div>
+
+        <div class="sales-status-box mtd">
+          <p class="stat-title">Collected</p>
+          <div class="count-grp">
+            <!-- <i class="fa fa-clock-o" aria-hidden="true"></i> -->
+            <!-- <p class="count">{{sales_statuses?.MTD?.doneDeal?.count}}</p> -->
+          </div>
+          <p class="value">{{ stats?.collected | currency : " " }}</p>
+        </div>
+
+        <div class="sales-status-box ytd">
+          <p class="stat-title">Bounced</p>
+          <div class="count-grp">
+            <!-- <i class="fa fa-calendar" aria-hidden="true"></i> -->
+            <!-- <p class="count">{{sales_statuses?.YTD?.doneDeal?.count}}</p> -->
+          </div>
+          <p class="value">{{ stats?.bounced | currency : " " }}</p>
+        </div>
+
+        <div class="sales-status-box sales">
+          <p class="stat-title">Remaining</p>
+          <div class="count-grp">
+            <!-- <i class="fa fa-usd" aria-hidden="true"></i> -->
+            <!-- <p class="count">{{sales_statuses?.Today?.doneDeal?.count}}</p> -->
+          </div>
+          <p class="value">{{ stats?.remaining | currency : " " }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ul class="nav nav-pills nav-justified">
+    <li
+      [ngClass]="{
+        active: filterForm.controls.filter_is_with_treasury.value === ''
+      }"
+      (click)="filterARTabs('')"
+    >
+      <a>All</a>
+    </li>
+    <li
+      [ngClass]="{
+        active: filterForm.controls.filter_is_with_treasury.value === 'AR'
+      }"
+      (click)="filterARTabs('AR')"
+    >
+      <a>A.R</a>
+    </li>
+    <li
+      [ngClass]="{
+        active:
+          filterForm.controls.filter_is_with_treasury.value ===
+          'Pending_Treasury_Approve'
+      }"
+      (click)="filterARTabs('Pending_Treasury_Approve')"
+    >
+      <a>Pending Treasury Approve</a>
+    </li>
+    <li
+      [ngClass]="{
+        active: filterForm.controls.filter_is_with_treasury.value === 'Treasury'
+      }"
+      (click)="filterARTabs('Treasury')"
+    >
+      <a>Treasury</a>
+    </li>
+    <li
+      [ngClass]="{
+        active:
+          filterForm.controls.filter_is_with_treasury.value ===
+          'filter_pending_request'
+      }"
+      (click)="filterARTabs('filter_pending_request')"
+    >
+      <a>Pending Requests</a>
+    </li>
+  </ul>
+
+  <div class="row">
+    <div class="col-xs-4">
+      <h3>payment collections</h3>
+    </div>
+    <div class="col-xs-8">
+      <div
+        class="d-flex justify-content-end align-items-center"
+        style="gap: 5px"
+        *ngIf="
+          userProfile.role !== 'CSO' && userProfile.role !== 'G.L Accountant'
+        "
+      >
+        <button
+          *ngIf="
+            (userProfile.role == 'Treasury Accountant' ||
+              userProfile.role == 'Admin') &&
+            !editMode
+          "
+          class="btn btn-primary"
+          (click)="enableEdit()"
+        >
+          Enable Edit
+        </button>
+        <button
+          class="btn btn-success"
+          (click)="saveEdits()"
+          *ngIf="editMode"
+          [disabled]="isSaving"
+        >
+          Save Edits
+        </button>
+        <button
+          class="btn btn-danger"
+          (click)="cancleEdit()"
+          *ngIf="editMode"
+          [disabled]="isSaving"
+        >
+          Cancl Edit
+        </button>
+        <div class="dropdown" dropdown>
+          <i class="fa fa-cog" aria-hidden="true" dropdown-open></i>
+          <ul class="dropdown-menu menu-settings">
+            <li
+              (click)="importPaymentCollectionsModal.open()"
+              *ngIf="userProfile.role == 'Admin' || userProfile.role == 'CFO'"
+            >
+              <a>
+                <span>Import Payment Collections</span>
+              </a>
+            </li>
+            <li (click)="exportTable()">
+              <a>
+                <span>Export Payment Collections</span>
+              </a>
+            </li>
+            <li
+              *ngIf="userProfile.email === 'fabricasupporterp@alqamzi.com'"
+              (click)="sendFilteredToERP()"
+            >
+              <a>
+                <span>Send Filtered To ERP</span>
+              </a>
+            </li>
+            <li (click)="bulkEditModal.open()">
+              <a>
+                <span>Send Cheques to Bank</span>
+              </a>
+            </li>
+            <li (click)="bulkChangeStatusModal.open()">
+              <a>
+                <span>Bulk Change Status</span>
+              </a>
+            </li>
+            <!-- <li (click)="recallRequestSelected()">
+              <a>
+                <span>Recall Request Selected</span>
+              </a>
+            </li> -->
+            <li
+              *ngIf="
+                userProfile.role == 'Admin' ||
+                userProfile.role == 'CFO' ||
+                userProfile.role === 'A.R Accountant'
+              "
+              (click)="sendSelectedToTreasury()"
+            >
+              <a>
+                <span>Send Selected To Treasury</span>
+              </a>
+            </li>
+            <ng-container
+              *ngIf="
+                userProfile.role == 'Admin' ||
+                userProfile.role == 'CFO' ||
+                userProfile.role === 'Treasury Accountant'
+              "
+            >
+              <li (click)="approveTreasury('bulk', 1)">
+                <a>
+                  <span>Approve</span>
+                </a>
+              </li>
+              <li (click)="approveTreasury('bulk', 0)">
+                <a>
+                  <span>Decline</span>
+                </a>
+              </li>
+              <li
+                *ngIf="list?.status === 'under-collection'"
+                (click)="makePaymentRequests('Recall Request', [list.id])"
+              >
+                <a>
+                  <span>Recall Request</span>
+                </a>
+              </li>
+              <li
+                *ngIf="
+                  list?.status === 'under-collection' ||
+                  list?.status === 'recall'
+                "
+                (click)="makePaymentRequests('Cancel Request', [list.id])"
+              >
+                <a>
+                  <span>Cancel Request</span>
+                </a>
+              </li>
+            </ng-container>
+            <li
+              *ngIf="
+                list?.status === 'redeposit' &&
+                (userProfile?.role == 'Admin' ||
+                  userProfile?.role == 'Treasury Accountant')
+              "
+              (click)="makeUnderCollection(list)"
+            >
+              <a>
+                <span>Make Under Collection</span>
+              </a>
+            </li>
+            <li
+              *ngIf="
+                list?.status === 'pending-collected' &&
+                (userProfile?.role == 'Admin' ||
+                  userProfile?.role == 'Treasury Accountant')
+              "
+              (click)="approvePendingCollect(list)"
+            >
+              <a>
+                <span>Approve Collect</span>
+              </a>
+            </li>
+            <li
+              *ngIf="
+                list?.status === 'pending-collected' &&
+                (userProfile?.role == 'Admin' ||
+                  userProfile?.role == 'Treasury Accountant')
+              "
+              (click)="rejectPendingCollect(list)"
+            >
+              <a>
+                <span>Reject Collect</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="filterData" class="col-md-12">
+      <input
+        type="checkbox"
+        class="check_all_rows"
+        [(ngModel)]="check_all_rows"
+        name="check_all_rows"
+        (ngModelChange)="onCheckAllToggle($event)"
+      />
+      All ({{ total }})
+    </div>
+    <div class="col-md-12">
+      <div class="scrollable-container">
+        <div class="scrollbar-top" #topScroll>
+          <div class="scrollbar-content"></div>
+        </div>
+        <div class="scroll-content-wrapper" #tableScroll>
+          <table>
+            <div class="table-responsive">
+              <table class="table table-bordered">
+                <tr>
+                  <th>
+                    <input
+                      type="checkbox"
+                      [(ngModel)]="check_all"
+                      name="check_all"
+                      (ngModelChange)="onCheckAllToggle($event)"
+                    />
+                  </th>
+                  <th>Stage</th>
+                  <th>Client Name</th>
+                  <th>Name</th>
+                  <th>Collect Method</th>
+                  <th>Customer Bank</th>
+                  <th>Location</th>
+                  <th>Previous Location</th>
+                  <th>Project</th>
+                  <th>RF Serial</th>
+                  <th>EOI ID</th>
+                  <th>Unit Serial</th>
+                  <th>Unit Phase</th>
+                  <th>Cheque No.</th>
+                  <th>Trans No.</th>
+                  <th>Received Amount</th>
+                  <th>Remaining Amount</th>
+                  <th>Total Amount</th>
+                  <th>Early Payment Discount</th>
+                  <th>Payment Date</th>
+                  <th>Due Date</th>
+                  <th>Bank Request Recall Date</th>
+                  <th>Status</th>
+                  <th>Payment Type</th>
+                  <th>Receiving Date</th>
+                  <th>Bounce Reason</th>
+                  <th>Bounce Date</th>
+                  <th>Sent To Bank Date</th>
+                  <th>Collection Date</th>
+                  <th>Redeposite Date</th>
+                  <th>Recall Date</th>
+                  <th>Action Date</th>
+                  <th>Reminder Status</th>
+                  <th>Reminder Reason</th>
+                  <th>Delivered To Customer Date</th>
+                  <th>Delivered To Customer</th>
+                  <th>Final Cheque Received</th>
+                  <th>Shareholder Name</th>
+                  <th>Commission Settlement User</th>
+                  <th>Vendor Code</th>
+                  <th>Request Reason</th>
+                  <th>Request Date</th>
+                  <th>Action</th>
+                </tr>
+                <tr
+                  *ngFor="let list of payment_collections; let index = index"
+                  [ngClass]="{
+                    'bg-success': list.status == 'collected',
+                    'bg-danger': list.status == 'bounced',
+                    'border-row-danger': list.is_bulk == 1
+                  }"
+                  class="payment-collections"
+                >
+                  <td>
+                    <input
+                      type="checkbox"
+                      name="checked"
+                      [(ngModel)]="list.checked"
+                      [checked]="list.checked"
+                    />
+                  </td>
+                  <td>
+                    {{
+                      list.send_to_treasury
+                        ? list.is_treasury_approve
+                          ? "Treasury"
+                          : "Pending Treasury Approve"
+                        : "AR"
+                    }}
+                  </td>
+                  <td>
+                    {{ list?.lead_name }}
+                  </td>
+                  <td>{{ list.name }}</td>
+                  <td>
+                    <div *ngIf="list.can_edit">
+                      <select
+                        class="form-control min-width-200"
+                        [(ngModel)]="list.partially_method"
+                        name="partially_method"
+                      >
+                        <option
+                          *ngFor="
+                            let method of partially_methods;
+                            let i = index
+                          "
+                          value="{{ i + 1 }}"
+                        >
+                          {{ method }}
+                        </option>
+                      </select>
+                    </div>
+                    <div *ngIf="!list.can_edit">
+                      {{
+                        list.partially_method
+                          ? partially_methods[+list.partially_method - 1]
+                          : ""
+                      }}
+                    </div>
+                  </td>
+                  <td>
+                    <div
+                      *ngIf="
+                        list.partially_method != '5' &&
+                        list.partially_method != '6' &&
+                        list.can_edit &&
+                        (userProfile.role === 'A.R Accountant'
+                          ? !list.is_treasury_approve && !list.bank
+                          : userProfile.role !== 'Treasury Accountant')
+                      "
+                    >
+                      <select
+                        class="form-control min-width-200"
+                        [(ngModel)]="list.bank_id"
+                        name="bank_id"
+                      >
+                        <option *ngFor="let bank of banks" [value]="bank.id">
+                          {{ bank.name }}
+                        </option>
+                      </select>
+                    </div>
+                    <div
+                      *ngIf="
+                        !(
+                          list.can_edit &&
+                          (userProfile.role === 'A.R Accountant'
+                            ? !list.is_treasury_approve && !list.bank
+                            : userProfile.role !== 'Treasury Accountant')
+                        )
+                      "
+                    >
+                      {{ list?.bank?.name }}
+                    </div>
+                  </td>
+                  <td>
+                    <div
+                      *ngIf="
+                        list.partially_method != '5' &&
+                        list.partially_method != '6' &&
+                        list.can_edit_location &&
+                        (userProfile.role === 'A.R Accountant'
+                          ? !list.is_treasury_approve &&
+                            list.partially_method == 4 &&
+                            !list.store_bank
+                          : true)
+                      "
+                    >
+                      <select
+                        class="form-control min-width-200"
+                        [(ngModel)]="list.store_status"
+                        name="store_bank"
+                      >
+                        <option
+                          *ngFor="let bank of store_banks"
+                          [value]="bank.id"
+                        >
+                          {{ bank.name }}
+                        </option>
+                      </select>
+                    </div>
+                    <div
+                      *ngIf="
+                        !(
+                          list.can_edit_location &&
+                          (userProfile.role === 'A.R Accountant'
+                            ? !list.is_treasury_approve &&
+                              list.partially_method == 4 &&
+                              !list.store_bank
+                            : true)
+                        )
+                      "
+                    >
+                      {{ list?.store_bank?.name }}
+                    </div>
+                  </td>
+                  <td>
+                    {{ list?.previous_store_status_text }}
+                  </td>
+                  <td>
+                    {{ list.unit?.project?.name || list.project_name || "-" }}
+                  </td>
+                  <td>{{ list.reservation_id }}</td>
+                  <td>{{ list.eoi_id }}</td>
+                  <td>{{ list.unit?.serial || list.unit_serial || "-" }}</td>
+                  <td>{{ list?.phase?.serial }}</td>
+                  <td>
+                    <div
+                      *ngIf="
+                        list.can_edit &&
+                        (userProfile.role === 'A.R Accountant'
+                          ? !list.is_treasury_approve && !list.cheque_number
+                          : userProfile.role !== 'Treasury Accountant')
+                      "
+                    >
+                      <input
+                        type="number"
+                        class="form-control"
+                        [(ngModel)]="list.cheque_number"
+                        name="cheque_number"
+                        [disabled]="list.partially_method !== '4'"
+                      />
+                    </div>
+                    <div
+                      *ngIf="
+                        !(
+                          list.can_edit &&
+                          (userProfile.role === 'A.R Accountant'
+                            ? !list.is_treasury_approve && !list.cheque_number
+                            : userProfile.role !== 'Treasury Accountant')
+                        )
+                      "
+                    >
+                      {{ list?.cheque_number }}
+                    </div>
+                  </td>
+                  <td>
+                    <div
+                      [hidden]="
+                        list.partially_method == '5' ||
+                        list.partially_method == '6'
+                      "
+                    >
+                      <div *ngIf="list.can_edit">
+                        <input
+                          type="text"
+                          class="form-control min-w-100"
+                          [(ngModel)]="list.transaction_number"
+                          name="transaction_number"
+                          [disabled]="list.partially_method === '4'"
+                        />
+                      </div>
+                      <div *ngIf="!list.can_edit">
+                        {{ list?.transaction_number }}
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    {{ list?.amount_received | currency : " " }}
+                  </td>
+                  <td>
+                    {{ list?.remaining_amount | currency : " " }}
+                  </td>
+                  <td>
+                    {{ list?.amount | currency : " " }}
+                  </td>
+                  <td>
+                    {{ list?.early_payment_discount | currency : " " }}
+                  </td>
+                  <td>
+                    {{ list?.date }}
+                  </td>
+                  <td>
+                    <div
+                      [hidden]="
+                        list.partially_method == '5' ||
+                        list.partially_method == '6'
+                      "
+                    >
+                      <ng-container
+                        *ngIf="
+                          list.can_edit &&
+                          (userProfile?.role == 'Admin' ||
+                            userProfile?.role == 'Treasury Accountant' ||
+                            userProfile?.role == 'A.R Accountant')
+                        "
+                      >
+                        <input
+                          type="date"
+                          class="table-input"
+                          [(ngModel)]="list.due_date"
+                          name="{{ list.due_date }}"
+                        />
+                      </ng-container>
+                      <ng-container *ngIf="!list.can_edit">
+                        {{ list.due_date }}
+                      </ng-container>
+                    </div>
+                  </td>
+                  <td>{{ list.bank_recall_request_date }}</td>
+                  <td>{{ list.status }}</td>
+                  <td>{{ list.installment_type }}</td>
+                  <td>
+                    <div
+                      *ngIf="
+                        list.can_edit &&
+                        (userProfile.role == 'Admin' ||
+                          userProfile.role == 'CFO' ||
+                          userProfile.role === 'Treasury Accountant') &&
+                        list.send_to_treasury &&
+                        list.is_treasury_approve
+                      "
+                    >
+                      <input
+                        type="date"
+                        class="form-control"
+                        [(ngModel)]="list.receiving_date"
+                        name="receiving_date"
+                      />
+                    </div>
+                    <div
+                      *ngIf="
+                        !(
+                          list.can_edit &&
+                          (userProfile.role == 'Admin' ||
+                            userProfile.role == 'CFO' ||
+                            userProfile.role === 'Treasury Accountant') &&
+                          list.send_to_treasury &&
+                          list.is_treasury_approve
+                        )
+                      "
+                    >
+                      {{ list?.receiving_date }}
+                    </div>
+                  </td>
+                  <td>
+                    <div
+                      *ngIf="
+                        list.can_edit &&
+                        (userProfile.role == 'Admin' ||
+                          userProfile.role == 'CFO' ||
+                          userProfile.role === 'Treasury Accountant') &&
+                        list.send_to_treasury &&
+                        list.is_treasury_approve
+                      "
+                    >
+                      <select
+                        class="form-control min-width-200"
+                        [(ngModel)]="list.reject_reason"
+                        name="store_bank"
+                      >
+                        <option
+                          *ngFor="let reason of reject_reasons"
+                          [value]="reason.reject_reason"
+                        >
+                          {{ reason.bounce_reason }}
+                        </option>
+                      </select>
+                    </div>
+                    <div
+                      *ngIf="
+                        !(
+                          list.can_edit &&
+                          (userProfile.role == 'Admin' ||
+                            userProfile.role == 'CFO' ||
+                            userProfile.role === 'Treasury Accountant') &&
+                          list.send_to_treasury &&
+                          list.is_treasury_approve
+                        )
+                      "
+                    >
+                      <span *ngIf="!list?.bounce_reason">{{
+                        list?.reject_reason
+                      }}</span>
+                      <span *ngIf="list?.bounce_reason">{{
+                        list?.bounce_reason
+                      }}</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div
+                      *ngIf="
+                        list.can_edit &&
+                        (userProfile.role == 'Admin' ||
+                          userProfile.role == 'CFO' ||
+                          userProfile.role === 'Treasury Accountant') &&
+                        list.send_to_treasury &&
+                        list.is_treasury_approve
+                      "
+                    >
+                      <input
+                        type="date"
+                        class="form-control"
+                        [(ngModel)]="list.bounce_date"
+                        name="bounce_date"
+                      />
+                    </div>
+                    <div
+                      *ngIf="
+                        !(
+                          list.can_edit &&
+                          (userProfile.role == 'Admin' ||
+                            userProfile.role == 'CFO' ||
+                            userProfile.role === 'Treasury Accountant') &&
+                          list.send_to_treasury &&
+                          list.is_treasury_approve
+                        )
+                      "
+                    >
+                      {{ list?.bounce_date }}
+                    </div>
+                  </td>
+                  <td>
+                    <div
+                      *ngIf="
+                        list.can_edit &&
+                        (userProfile.role == 'Admin' ||
+                          userProfile.role == 'CFO' ||
+                          userProfile.role === 'Treasury Accountant') &&
+                        list.send_to_treasury &&
+                        list.is_treasury_approve
+                      "
+                    >
+                      <input
+                        type="date"
+                        class="form-control"
+                        [(ngModel)]="list.sent_to_bank_date"
+                        name="sent_to_bank_date"
+                      />
+                    </div>
+                    <div
+                      *ngIf="
+                        !(
+                          list.can_edit &&
+                          (userProfile.role == 'Admin' ||
+                            userProfile.role == 'CFO' ||
+                            userProfile.role === 'Treasury Accountant') &&
+                          list.send_to_treasury &&
+                          list.is_treasury_approve
+                        )
+                      "
+                    >
+                      {{ list?.sent_to_bank_date }}
+                    </div>
+                  </td>
+                  <td>
+                    <div
+                      *ngIf="
+                        list.can_edit &&
+                        (userProfile.role == 'Admin' ||
+                          userProfile.role == 'CFO' ||
+                          (userProfile.role === 'Treasury Accountant' &&
+                            list.send_to_treasury &&
+                            list.is_treasury_approve) ||
+                          (userProfile.role === 'A.R Accountant' &&
+                            !list.is_treasury_approve))
+                      "
+                    >
+                      <input
+                        type="date"
+                        class="form-control"
+                        [(ngModel)]="list.collection_date"
+                        name="collection_date"
+                      />
+                    </div>
+                    <div
+                      *ngIf="
+                        !(
+                          list.can_edit &&
+                          (userProfile.role == 'Admin' ||
+                            userProfile.role == 'CFO' ||
+                            (userProfile.role === 'Treasury Accountant' &&
+                              list.send_to_treasury &&
+                              list.is_treasury_approve) ||
+                            (userProfile.role === 'A.R Accountant' &&
+                              !list.is_treasury_approve))
+                        )
+                      "
+                    >
+                      {{ list?.collection_date }}
+                    </div>
+                  </td>
+                  <td>
+                    <div
+                      *ngIf="
+                        list.can_edit &&
+                        (userProfile.role == 'Admin' ||
+                          userProfile.role == 'CFO' ||
+                          userProfile.role === 'Treasury Accountant') &&
+                        list.send_to_treasury &&
+                        list.is_treasury_approve
+                      "
+                    >
+                      <input
+                        type="date"
+                        class="form-control"
+                        [(ngModel)]="list.redeposit_date"
+                        name="redeposit_date"
+                      />
+                    </div>
+                    <div
+                      *ngIf="
+                        !(
+                          list.can_edit &&
+                          (userProfile.role == 'Admin' ||
+                            userProfile.role == 'CFO' ||
+                            userProfile.role === 'Treasury Accountant') &&
+                          list.send_to_treasury &&
+                          list.is_treasury_approve
+                        )
+                      "
+                    >
+                      {{ list?.redeposit_date }}
+                    </div>
+                  </td>
+                  <td>
+                    <div
+                      *ngIf="
+                        list.can_edit &&
+                        (userProfile.role == 'Admin' ||
+                          userProfile.role == 'CFO' ||
+                          userProfile.role === 'Treasury Accountant') &&
+                        list.send_to_treasury &&
+                        list.is_treasury_approve
+                      "
+                    >
+                      <input
+                        type="date"
+                        class="form-control"
+                        [(ngModel)]="list.recall_date"
+                        name="recall_date"
+                      />
+                    </div>
+                    <div
+                      *ngIf="
+                        !(
+                          list.can_edit &&
+                          (userProfile.role == 'Admin' ||
+                            userProfile.role == 'CFO' ||
+                            userProfile.role === 'Treasury Accountant') &&
+                          list.send_to_treasury &&
+                          list.is_treasury_approve
+                        )
+                      "
+                    >
+                      {{ list?.recall_date }}
+                    </div>
+                  </td>
+                  <td>
+                    {{ list?.last_action_date }}
+                  </td>
+                  <td>
+                    {{ list?.send_reminder == 0 ? "Disabled" : "Enabled" }}
+                  </td>
+                  <td>
+                    {{ list?.reminder_reason }}
+                  </td>
+                  <td>
+                    {{ list?.delivered_to_customer_date }}
+                  </td>
+                  <td>
+                    <label
+                      class="status-label"
+                      [ngClass]="{
+                        'success-label': list.delivered_to_customer
+                      }"
+                    >
+                      {{ list.delivered_to_customer ? "Yes" : "No" }}
+                    </label>
+                  </td>
+                  <td>
+                    <label
+                      class="status-label"
+                      [ngClass]="{
+                        'success-label': list.final_cheque_received
+                      }"
+                    >
+                      {{ list.final_cheque_received ? "Yes" : "No" }}
+                    </label>
+                  </td>
+                  <td>
+                    <div *ngIf="list.can_edit && list.partially_method == '6'">
+                      <select
+                        class="form-control min-width-200"
+                        [(ngModel)]="list.share_holder_name"
+                        name="{{ list.share_holder_name }}"
+                      >
+                        <option value="Eng Abdallah">Eng Abdallah</option>
+                        <option value="Eng Yasser">Eng Yasser</option>
+                        <option value="Both">Both</option>
+                      </select>
+                    </div>
+                    <div *ngIf="!list.can_edit && list.partially_method == '6'">
+                      {{ list?.share_holder_name }}
+                    </div>
+                  </td>
+                  <td>
+                    <div *ngIf="list.can_edit && list.partially_method == '5'">
+                      <select
+                        class="form-control min-width-200"
+                        name="{{ list.commission_settlement_user_id }}"
+                        [(ngModel)]="list.commission_settlement_user_id"
+                        required
+                        placeholder="Select User"
+                      >
+                        <option *ngFor="let agent of agents" [value]="agent.id">
+                          {{ agent.name }}
+                        </option>
+                      </select>
+                    </div>
+                    <div *ngIf="!list.can_edit && list.partially_method == '5'">
+                      {{ list?.commission_settlement_user?.name }}
+                    </div>
+                  </td>
+                  <td>
+                    <span *ngIf="!list.can_edit">{{ list.vendor_code }}</span>
+                    <input
+                      *ngIf="list.can_edit"
+                      (blur)="
+                        ListEdits_inputs && onChequeNumberBlur($event, index)
+                      "
+                      type="text"
+                      class="table-input"
+                      [(ngModel)]="list.vendor_code"
+                      name="{{ list.cheque_number }}"
+                      [disabled]="
+                        !list.can_edit || list.partially_method !== '7'
+                      "
+                    />
+                  </td>
+                  <td>
+                    {{ list?.request_reason }}
+                  </td>
+                  <td>
+                    {{ list?.request_date }}
+                  </td>
+                  <td>
+                    <div class="dropdown" dropdown>
+                      <img
+                        class="more-options-icon"
+                        src="assets/img/show-more-button-with-three-dots.svg"
+                        dropdown-open
+                      />
+                      <ul class="dropdown-menu">
+                        <li>
+                          <a [routerLink]="[list.id]">
+                            <span>View</span>
+                          </a>
+                        </li>
+                        <li
+                          *ngIf="
+                            list.status !== 'bounced' &&
+                            list.status !== 'fully-collected' &&
+                            list.status !== 'recall' &&
+                            userProfile.role !== 'A.R Accountant' &&
+                            !list.delivered_to_customer &&
+                            list.partially_method === '4'
+                          "
+                          (click)="
+                            onOpenRejectCheque(
+                              list.id,
+                              rejectPaymentCollectionModal
+                            )
+                          "
+                        >
+                          <a>
+                            <span>Bounce</span>
+                          </a>
+                        </li>
+                        <ng-container *ngIf="!list.delivered_to_customer">
+                          <ng-container
+                            *ngIf="
+                              (userProfile.role !== 'Treasury Accountant' ||
+                                !(
+                                  list.send_to_treasury &&
+                                  !list.is_treasury_approve
+                                )) &&
+                              list.status != 'cancelled' &&
+                              userProfile.role != 'G.L Accountant'
+                            "
+                          >
+                            <li
+                              *ngIf="list?.receipts?.length > 0"
+                              (click)="
+                                this.current_active_cheque = list;
+                                printReciptChequeModal.open()
+                              "
+                            >
+                              <a>
+                                <span>Print Receipts</span>
+                              </a>
+                            </li>
+                            <li
+                              (click)="
+                                openDelayFineModal(AddDelayFineModal, list)
+                              "
+                            >
+                              <a>
+                                <span>Add Fine</span>
+                              </a>
+                            </li>
+
+                            <ng-container
+                              *ngIf="list.status !== 'fully-collected'"
+                            >
+                              <li
+                                *ngIf="
+                                  (userProfile.role === 'Treasury Accountant' ||
+                                    userProfile?.email ===
+                                      'fabricasupport@alqamzi.com') &&
+                                  (list.status != 'bounced' ||
+                                    list.status !== 'cancelled') &&
+                                  list.store_status &&
+                                  !list.delivered_to_customer &&
+                                  list.partially_method == '4'
+                                "
+                                (click)="
+                                  onOpenCollectCheque(list, collectCheque)
+                                "
+                              >
+                                <a>
+                                  <span>Collect</span>
+                                </a>
+                              </li>
+
+                              <li
+                                *ngIf="
+                                  list.partially_method !== '4' &&
+                                  list.status != 'bounced'
+                                "
+                                (click)="
+                                  onOpenCollectCheque(list, collectCheque);
+                                  active_cheque_book_row = list
+                                "
+                              >
+                                <a>
+                                  <span>Collect</span>
+                                </a>
+                              </li>
+
+                              <!-- <li
+                        *ngIf="(userProfile.role ===
+                        'A.R Accountant' || userProfile.role ===
+                        'Admin') && list.partially_method === '4' && list?.status === 'under-collection'"
+                          (click)="onOpenCancelCheque(list.id, cancelCheque)"
+                        >
+                          <a>
+                            <span>Cancel For Discount</span>
+                          </a>
+                        </li> -->
+                            </ng-container>
+                          </ng-container>
+                          <ng-container
+                            *ngIf="
+                              (userProfile.role == 'Admin' ||
+                                userProfile.role == 'CFO' ||
+                                userProfile.role === 'Treasury Accountant') &&
+                              list.send_to_treasury &&
+                              !list.is_treasury_approve
+                            "
+                          >
+                            <li (click)="approveTreasury(list.id, 1)">
+                              <a>
+                                <span>Approve</span>
+                              </a>
+                            </li>
+                            <li (click)="approveTreasury(list.id, 0)">
+                              <a>
+                                <span>Decline</span>
+                              </a>
+                            </li>
+                          </ng-container>
+                          <li
+                            *ngIf="
+                              (list.partially_method === '4' &&
+                                !list.send_to_treasury &&
+                                list.bank_id &&
+                                list.cheque_number) ||
+                              list.partially_method !== '4'
+                            "
+                            (click)="finalChequeRecieved(list)"
+                          >
+                            <a>
+                              <span>Final Cheque Recieved</span>
+                            </a>
+                          </li>
+                          <li
+                            *ngIf="
+                              list.partially_method === '4' &&
+                              (list.status === 'bounced' ||
+                                list.status === 'recall' ||
+                                list.status === 'cancelled' ||
+                                list.status === 'bounced-cancelled' ||
+                                list.status === 'recall-cancelled') &&
+                              (userProfile.role === 'Treasury Accountant' ||
+                                userProfile.role === 'Admin') &&
+                              list.request_reason != 'Wrong Input'
+                            "
+                            (click)="
+                              openDeliveredToCustomer(
+                                list,
+                                deliveredToCustomerModal
+                              )
+                            "
+                          >
+                            <a>
+                              <span>Delivered To Customer</span>
+                            </a>
+                          </li>
+
+                          <!-- <li
+                      *ngIf="list?.status === 'under-collection'"
+                      (click)="
+                        openRecallRequest(
+                          recallRequestModal,
+                          'Recall Request',
+                          [list.id]
+                        )
+                      "
+                    >
+                      <a>
+                        <span>Recall Request</span>
+                      </a>
+                    </li> -->
+                          <li
+                            *ngIf="
+                              list?.status === 'under-collection' ||
+                              list?.status === 'recall' ||
+                              list?.status === 'bounced'
+                            "
+                            (click)="
+                              openCancelRequest(
+                                cancelRequestModal,
+                                'Cancel Request',
+                                [list.id]
+                              )
+                            "
+                          >
+                            <a>
+                              <span>Cancel Request</span>
+                            </a>
+                          </li>
+                          <ng-container
+                            *ngIf="
+                              (userProfile.role === 'Treasury Accountant' ||
+                                userProfile.role === 'Admin') &&
+                              userProfile.role !== 'A.R Accountant'
+                            "
+                          >
+                            <li
+                              *ngIf="list?.status === 'pending-cancelled'"
+                              (click)="
+                                openApproveRequestAsCancelledModal(
+                                  approveRequestAsCancelledModal,
+                                  'cancelled',
+                                  [list.id]
+                                )
+                              "
+                            >
+                              <a>
+                                <span>Approve request as cancelled</span>
+                              </a>
+                            </li>
+                            <li
+                              *ngIf="
+                                list?.status === 'pending-cancelled' &&
+                                list.partially_method === '4' &&
+                                list?.store_status &&
+                                list?.sent_to_bank_date
+                              "
+                              (click)="
+                                openApproveRequestAsBounceModal(
+                                  approveRequestAsBounceModal,
+                                  'bounced',
+                                  [list.id]
+                                )
+                              "
+                            >
+                              <a>
+                                <span>Approve request as bounced</span>
+                              </a>
+                            </li>
+                            <li
+                              *ngIf="list?.status === 'pending-cancelled'"
+                              (click)="
+                                openApproveRequestAsRecallModal(
+                                  approveRequestAsRecallModal,
+                                  'recall',
+                                  [list.id],
+                                  list
+                                )
+                              "
+                            >
+                              <a>
+                                <span>Approve request as recall</span>
+                              </a>
+                            </li>
+                            <li
+                              *ngIf="
+                                list?.status !== 'pending-cancelled' &&
+                                list?.status !== 'pending-redeposit'
+                              "
+                              (click)="
+                                list.status === 'recall-request'
+                                  ? openApproveRecallRequest(
+                                      approveRequestRecallModal,
+                                      'recall-request',
+                                      [list.id]
+                                    )
+                                  : approvePaymentRequest([list.id])
+                              "
+                            >
+                              <a>
+                                <span>Approve request</span>
+                              </a>
+                            </li>
+                            <li
+                              *ngIf="list?.status === 'pending-redeposit'"
+                              (click)="
+                                approvePaymentRequestForRedposit(
+                                  list,
+                                  approvePaymentRequestForRedpositModal
+                                )
+                              "
+                            >
+                              <a>
+                                <span>Approve request</span>
+                              </a>
+                            </li>
+                            <li
+                              *ngIf="list?.status === 'pending-recall'"
+                              (click)="
+                                approvePendingRecall(
+                                  approvePendingRecallModal,
+                                  'pending-recall',
+                                  [list.id]
+                                )
+                              "
+                            >
+                              <a>
+                                <span>recall</span>
+                              </a>
+                            </li>
+                            <li (click)="rejectPaymentRequest([list.id])">
+                              <a>
+                                <span>Reject request</span>
+                              </a>
+                            </li>
+                          </ng-container>
+                        </ng-container>
+                        <!-- start test actions-->
+                        <!-- <li
+                    (click)="
+                      openApproveRequestAsCancelledModal(
+                        approveRequestAsCancelledModal,
+                        'cancelled',
+                        [list.id]
+                      )
+                    "
+                  >
+                    <a>
+                      <span>test Approve request as cancelled</span>
+                    </a>
+                  </li> -->
+                        <!-- start test actions-->
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </table>
+        </div>
+      </div>
+      <!-- <div *ngIf="payment_collections.length == 0" class="message">
+        <h1>There is no data yet</h1>
+      </div> -->
+    </div>
+
+    <div *ngIf="current_page" class="col-xs-12 text-center">
+      <p>({{ per_page }} / {{ total }})</p>
+      <p>page {{ current_page }}</p>
+    </div>
+    <div class="col-xs-12 text-center">
+      <ngb-pagination
+        [collectionSize]="payment_collections_raw_data?.last_page * 10"
+        [(page)]="pageTest"
+        [maxSize]="5"
+        [rotate]="true"
+        [ellipses]="true"
+        [boundaryLinks]="true"
+        (pageChange)="pageChange($event)"
+        [size]="lg"
+      >
+      </ngb-pagination>
+    </div>
+  </div>
+</div>
+
+<modal
+  #printReciptChequeModal
+  title="Print Recipt"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <div class="w-100 table-responsive">
+      <table class="table table-bordered">
+        <tr>
+          <th>Slib Number</th>
+          <th>Date</th>
+          <th>Action</th>
+        </tr>
+        <ng-container *ngFor="let receipt of current_active_cheque?.receipts">
+          <ng-container *ngIf="receipt.payment_collection_id">
+            <tr>
+              <td>{{ receipt.slip_number }}</td>
+              <td>{{ receipt.created_at }}</td>
+              <td>
+                <button
+                  class="btn btn-primary"
+                  (click)="printReciptModalSubmit(receipt.id)"
+                >
+                  Print
+                </button>
+              </td>
+            </tr>
+          </ng-container>
+        </ng-container>
+      </table>
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="printReciptChequeModal.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>
+
+<modal
+  #AddDelayFineModal
+  title="Add Delay Fine"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <div class="row">
+      <form>
+        <div class="form-inline col-xs-12">
+          <label for="fine_date">Fine Date:</label>
+          <input
+            type="date"
+            style="width: 100%"
+            class="form-control"
+            name="fine_date"
+            [(ngModel)]="add_fineModal.payload.fine_date"
+          />
+        </div>
+        <div class="form-inline col-xs-12">
+          <label for="num_days_late">number days late:</label>
+          <input
+            type="number"
+            style="width: 100%"
+            class="form-control"
+            name="num_days_late"
+            [(ngModel)]="add_fineModal.payload.num_days_late"
+          />
+        </div>
+        <div class="form-inline col-xs-12">
+          <label for="amount">Amount:</label>
+          <input
+            type="number"
+            style="width: 100%"
+            class="form-control"
+            name="amount"
+            [(ngModel)]="add_fineModal.payload.amount"
+          />
+        </div>
+      </form>
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="AddDelayFineModal.close()">
+      close
+    </button>
+    <button
+      class="btn btn-success"
+      [disabled]="submitting_add_fine"
+      (click)="addDelayFineToCheque(AddDelayFineModal)"
+    >
+      Submit
+    </button>
+  </modal-footer>
+</modal>
+
+<modal
+  #rejectPaymentCollectionModal
+  title="Bounce Payments"
+  submitButtonLabel="Bounce"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="submitRejectCheque(rejectPaymentCollectionModal)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <div class="row">
+      <form>
+        <div class="form-group col-xs-12">
+          <label for="" class="price-label">Bounce Reason :</label>
+          <select
+            class="form-control"
+            [(ngModel)]="reject_reason"
+            name="reject_reason"
+          >
+            <option
+              *ngFor="let reason of reject_reasons"
+              [value]="reason.reject_reason"
+            >
+              {{ reason.reject_reason }}
+            </option>
+          </select>
+        </div>
+        <div class="form-group col-xs-12">
+          <label for="" class="price-label">Bounce Date :</label>
+          <input
+            type="date"
+            [(ngModel)]="bounce_date"
+            name="bounce_date"
+            class="form-control"
+          />
+        </div>
+        <div class="form-group col-xs-12">
+          <label for="store_status">Location</label>
+          <select
+            class="form-control"
+            [(ngModel)]="store_status"
+            name="store_status"
+            required
+          >
+            <option *ngFor="let bank of store_banks" [value]="bank.id">
+              {{ bank.name }}
+            </option>
+          </select>
+          <small class="required">* required</small>
+        </div>
+        <div class="form-group col-xs-12" *ngIf="reject_reason == 'other'">
+          <label for="" class="price-label">Comment :</label>
+          <input
+            type="text"
+            [(ngModel)]="reject_comment"
+            name="reject_comment"
+            class="form-control"
+          />
+        </div>
+      </form>
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button
+      class="btn btn-secondary"
+      (click)="rejectPaymentCollectionModal.close()"
+    >
+      close
+    </button>
+  </modal-footer>
+</modal>
+
+<modal
+  #importPaymentCollectionsModal
+  title="Import Payment Collections"
+  submitButtonLabel="submit"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onOpen)="importPaymentCollectionModalOpen()"
+  (onClose)="importPaymentCollectionModalClose()"
+  (onSubmit)="uploadExcelMethod(importPaymentCollectionsModal)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <div class="row">
+      <div class="form-group col-xs-6">
+        <form
+          class="form-group btn-group-files pull-left"
+          [formGroup]="uploadExcel"
+        >
+          <label for="">File : </label>
+          <input
+            type="file"
+            accept=".xlsx, .xls"
+            class="margin-left"
+            id="file"
+            (change)="handleUploadExcel($event)"
+          />
+        </form>
+      </div>
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button
+      class="btn btn-secondary"
+      (click)="importPaymentCollectionsModal.close()"
+    >
+      close
+    </button>
+  </modal-footer>
+</modal>
+
+<modal
+  #collectCheque
+  title="Collect Cheque"
+  submitButtonLabel="Collect"
+  modalClass="modal-lg"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="submitCollectCheque(collectCheque)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <div class="form-group">
+      <label for="collection_date">Collect Date:</label>
+      <input
+        type="date"
+        class="form-control"
+        name="collection_date"
+        [(ngModel)]="collection_date"
+      />
+    </div>
+    <div class="form-group">
+      <label for="">Type:</label>
+      <select
+        class="form-control"
+        [(ngModel)]="collect_type"
+        name="collect_type"
+        [disabled]="
+          active_cheque_book_row &&
+          active_cheque_book_row.partially_method === '4'
+        "
+      >
+        <option value="fully-collected">Fully</option>
+        <option
+          value="partially-collected"
+          [disabled]="chequeCollectType == 'multiple'"
+        >
+          Partially
+        </option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="chequeCollectCustomer">Customer:</label>
+      <select
+        class="form-control"
+        [(ngModel)]="chequeCollectCustomer"
+        name="chequeCollectCustomer"
+        [disabled]="
+          active_cheque_book_row &&
+          active_cheque_book_row.partially_method === '4'
+        "
+      >
+        <option value="" disabled hidden></option>
+        <option
+          value="{{ customer.lead_id }}"
+          *ngFor="
+            let customer of active_cheque_book_row?.reservation.sharing_leads
+          "
+        >
+          {{ customer.lead_name }}
+        </option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="">Method:</label>
+      <select
+        class="form-control"
+        [(ngModel)]="partially_method"
+        name="partially_method"
+        [disabled]="
+          active_cheque_book_row &&
+          active_cheque_book_row.partially_method === '4'
+        "
+      >
+        <option value="1">Cash</option>
+        <option value="2">Visa</option>
+        <option value="3">Bank Transfer</option>
+        <option value="4">Cheque</option>
+        <option value="5">Commission Settlement</option>
+        <option value="6">Share Holder Settlement</option>
+        <option value="7">Vendor Settlement</option>
+      </select>
+    </div>
+    <div class="form-group" *ngIf="partially_method == '7'">
+      <label for="vendor_code">Vendor Code:</label>
+      <input
+        type="text"
+        class="form-control"
+        name="vendor_code"
+        [(ngModel)]="vendor_code"
+      />
+    </div>
+    <div class="form-group" *ngIf="partially_method == '7'">
+      <label for="">Vendor Developer:</label>
+      <select
+        class="form-control"
+        name="vendor_developer_id"
+        [(ngModel)]="vendor_developer_id"
+      >
+        <option *ngFor="let developer of developers" [value]="developer.id">
+          {{ developer.name }}
+        </option>
+      </select>
+    </div>
+    <div
+      class="form-group"
+      *ngIf="partially_method == '2' || partially_method == '3'"
+    >
+      <label for="">Transaction Number:</label>
+      <input
+        type="text"
+        class="form-control"
+        name="transaction_number"
+        [(ngModel)]="transaction_number"
+      />
+    </div>
+    <div class="form-group">
+      <label for="">Amount:</label>
+      <input
+        type="text"
+        class="form-control"
+        name="cheque_amount"
+        [(ngModel)]="cheque_amount"
+      />
+    </div>
+    <div class="form-group">
+      <label for="">Currency:</label>
+      <select
+        class="form-control"
+        [(ngModel)]="currency_code"
+        name="currency_code"
+        [disabled]="
+          active_cheque_book_row &&
+          active_cheque_book_row.partially_method === '4'
+        "
+      >
+        <option *ngFor="let cur of currencies_list" [value]="cur.code">
+          {{ cur.code }} ({{ cur.value }})
+        </option>
+      </select>
+    </div>
+    <div class="form-group" *ngIf="currency_code != 'EGP'">
+      <label for="">Exchange Rate:</label>
+      <input
+        type="number"
+        class="form-control"
+        name="exchange_rate"
+        [(ngModel)]="exchange_rate"
+      />
+    </div>
+    <div class="form-group" *ngIf="partially_method == '3'">
+      <label for="">Cheque Number:</label>
+      <input
+        type="number"
+        class="form-control"
+        name="partially_data"
+        [(ngModel)]="partially_data"
+      />
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="collectCheque.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>
+
+<modal
+  #cancelCheque
+  title="Cancel Cheque"
+  submitButtonLabel="Submit"
+  modalClass="modal-lg"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="submitCancelCheque(cancelCheque)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <form #cancleForm="ngForm">
+      <div class="form-group">
+        <label for="cancel_for">Cancel For:</label>
+        <select
+          class="form-control"
+          [(ngModel)]="cancle_formdata.cancel_for"
+          required
+          name="cancel_for"
+          (ngModelChange)="
+            cancle_formdata.early_payment_discount = 0;
+            cancle_formdata.date = ''
+          "
+          #change_method_input="ngModel"
+        >
+          <option value="" selected>Change Method</option>
+          <option value="early_payment">Early Payment</option>
+          <!-- <option value="under-collection">Under Collection</option> -->
+        </select>
+      </div>
+      <ng-container *ngIf="change_method_input.value !== 'under-collection'">
+        <div
+          class="form-group"
+          *ngIf="change_method_input.value === 'early_payment'"
+        >
+          <label for="early_payment_discount">Early Payment Discount:</label>
+          <input
+            type="number"
+            name="early_payment_discount"
+            id="early_payment_discount"
+            class="form-control"
+            [(ngModel)]="cancle_formdata.early_payment_discount"
+          />
+        </div>
+        <div
+          class="form-group"
+          *ngIf="
+            change_method_input.value === 'early_payment' &&
+            userProfile.role !== 'Treasury Accountant' &&
+            userProfile.role !== 'A.R Accountant'
+          "
+        >
+          <label for="early_payment_date">Date:</label>
+          <input
+            type="date"
+            name="early_payment_date"
+            id="early_payment_date"
+            class="form-control"
+            [(ngModel)]="cancle_formdata.date"
+          />
+        </div>
+        <div class="form-group">
+          <label for="">Method:</label>
+          <select
+            class="form-control"
+            [(ngModel)]="cancle_formdata.partially_method"
+            required
+            name="partially_method"
+          >
+            <ng-container
+              *ngIf="
+                userProfile.role == 'Admin' ||
+                userProfile.role == 'CFO' ||
+                userProfile.role === 'A.R Accountant'
+              "
+            >
+              <option value="1">Cash</option>
+              <option value="2">Visa</option>
+              <option value="3">Bank Transfer</option>
+            </ng-container>
+            <option value="4">Cheque</option>
+            <option value="5">Commission Settlement</option>
+            <option value="6">Share Holder Settlement</option>
+            <option value="7">Vendor Settlement</option>
+          </select>
+        </div>
+        <div
+          class="form-group"
+          [hidden]="cancle_formdata.partially_method == '1'"
+        >
+          <label for="">Cheque No.:</label>
+          <input
+            type="text"
+            class="form-control"
+            name="cheque_number"
+            [(ngModel)]="cancle_formdata.cheque_number"
+          />
+        </div>
+        <div
+          class="form-group"
+          [hidden]="cancle_formdata.partially_method == '4'"
+        >
+          <label for="">Transaction No.:</label>
+          <input
+            type="text"
+            class="form-control min-w-100"
+            name="transaction_number"
+            [(ngModel)]="cancle_formdata.transaction_number"
+          />
+        </div>
+        <div class="form-group" *ngIf="cancle_formdata.partially_method == '4'">
+          <label for="">Due Date:</label>
+          <input
+            type="date"
+            class="form-control min-w-100"
+            name="due_date"
+            [(ngModel)]="cancle_formdata.due_date"
+          />
+        </div>
+        <div
+          class="form-group"
+          [hidden]="cancle_formdata.partially_method === '4'"
+        >
+          <label for="">Currency:</label>
+          <select
+            class="form-control"
+            [(ngModel)]="cancle_formdata.currency_code"
+            name="currency_code"
+          >
+            <option *ngFor="let cur of currencies_list" [value]="cur.code">
+              {{ cur.code }}{{ cur.value ? " (" + cur.value + ")" : "" }}
+            </option>
+          </select>
+        </div>
+        <div class="form-group" *ngIf="cancle_formdata.currency_code != 'EGP'">
+          <label for="">Exchange Rate:</label>
+          <input
+            type="number"
+            class="form-control"
+            name="exchange_rate"
+            [(ngModel)]="exchange_rate"
+          />
+        </div>
+        <div
+          class="form-group"
+          [hidden]="cancle_formdata.partially_method == '1'"
+        >
+          <label for="bank_id">Bank</label>
+          <select
+            class="form-control"
+            [(ngModel)]="cancle_formdata.bank_id"
+            name="bank_id"
+          >
+            <option *ngFor="let bank of banks" [value]="bank.id">
+              {{ bank.name }}
+            </option>
+          </select>
+        </div>
+        <div
+          class="form-group"
+          [hidden]="
+            cancle_formdata.partially_method === '4' ||
+            cancle_formdata.partially_method == '1'
+          "
+        >
+          <label for="store_status">Location</label>
+          <select
+            class="form-control"
+            [(ngModel)]="cancle_formdata.store_status"
+            name="store_status"
+            required
+          >
+            <option *ngFor="let bank of store_banks" [value]="bank.id">
+              {{ bank.name }}
+            </option>
+          </select>
+        </div>
+      </ng-container>
+    </form>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="cancelCheque.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>
+
+<modal
+  #redepositeCheque
+  title="Collect Cheque"
+  submitButtonLabel="Submit"
+  modalClass="modal-lg"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="submitRedepositeCheque(redepositeCheque)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <div class="form-group">
+      <label for="redeposit_date">Redeposit Date:</label>
+      <input
+        type="date"
+        class="form-control"
+        name="redeposit_date"
+        [(ngModel)]="redeposit_date"
+      />
+    </div>
+    <div class="form-group margin-top-5">
+      <label for="">Location</label>
+      <select
+        class="form-control"
+        style="width: 100%"
+        [(ngModel)]="location_bounce"
+        name="location_bounce"
+      >
+        <option *ngFor="let bank of store_banks" [value]="bank.id">
+          {{ bank.name }}
+        </option>
+      </select>
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="redepositeCheque.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>
+
+<modal
+  #bulkEditModal
+  title="Send Cheques to Bank"
+  modalClass="modal-lg"
+  [closeOnOutsideClick]="true"
+  (onClose)="onCloseBulkEdit(bulkEditModal)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <div
+      class="d-flex align-items-end jusify-content-between"
+      style="gap: 20px"
+    >
+      <div class="col-xs-10">
+        <label for="">Location</label>
+        <select
+          class="form-control"
+          [(ngModel)]="bulk_edit_form.store_status"
+          name="bulk_store_bank"
+        >
+          <option *ngFor="let bank of store_banks" [value]="bank.id">
+            {{ bank.name }}
+          </option>
+        </select>
+      </div>
+      <div class="col-xs-2">
+        <button
+          class="btn btn-sucess"
+          [disabled]="isSaving"
+          (click)="saveBulkEdit('store_status')"
+        >
+          Save
+        </button>
+      </div>
+    </div>
+    <hr />
+    <hr />
+    <div
+      class="d-flex align-items-end jusify-content-between"
+      style="gap: 20px"
+    >
+      <div class="col-xs-10">
+        <label for="bulk_sent_to_bank_date">Sent To Bank Date</label>
+        <input
+          type="date"
+          class="form-control"
+          [(ngModel)]="bulk_edit_form.sent_to_bank_date"
+          name="bulk_sent_to_bank_date"
+        />
+      </div>
+      <div class="col-xs-2">
+        <button
+          class="btn btn-sucess"
+          [disabled]="isSaving"
+          (click)="saveBulkEdit('sent_to_bank_date')"
+        >
+          Save
+        </button>
+      </div>
+    </div>
+    <hr />
+    <!-- <div
+      class="d-flex align-items-end jusify-content-between"
+      style="gap: 20px"
+    >
+      <div class="col-xs-10">
+        <label for="recall_date">Recall Date</label>
+        <input
+          type="date"
+          class="form-control"
+          [(ngModel)]="bulk_edit_form.recall_date"
+          name="recall_date"
+        />
+      </div>
+      <div class="col-xs-2">
+        <button
+          class="btn btn-sucess"
+          [disabled]="isSaving"
+          (click)="saveBulkEdit('recall_date')"
+        >
+          Save
+        </button>
+      </div>
+    </div> -->
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="bulkEditModal.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>
+
+<modal
+  #bulkChangeStatusModal
+  title="Change Bulk Status"
+  modalClass="modal-lg"
+  [closeOnOutsideClick]="true"
+  (onClose)="onCloseChangeBulkStatus(bulkChangeStatusModal)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <div
+      class="d-flex align-items-end jusify-content-between"
+      style="gap: 20px"
+    >
+      <div class="col-xs-12 mb-3">
+        <label for="type">Type</label>
+        <select
+          class="form-control"
+          [(ngModel)]="bulk_change_status_form.type"
+          name="type"
+        >
+          <option value="recall">Recall</option>
+          <option value="recall_request">Recall Request</option>
+          <option value="cancel_request">Cancel Request</option>
+          <option value="approve_cancel_request">Approve Cancel Request</option>
+          <option value="pending_recall">Approve Recall Request</option>
+          <option value="reject_cancel_request">Reject Cancel Request</option>
+        </select>
+      </div>
+    </div>
+    <div
+      class="d-flex align-items-end jusify-content-between"
+      style="gap: 20px"
+      *ngIf="bulk_change_status_form.type == 'approve_cancel_request'"
+    >
+      <div class="col-xs-12 mb-3">
+        <label for="approve_type">Approve Type</label>
+        <select
+          class="form-control"
+          [(ngModel)]="bulk_change_status_form.approve_type"
+          name="approve_type"
+        >
+          <option value="recall">Recall</option>
+          <option value="bounced">Bounced</option>
+          <option value="cancelled">cancelled</option>
+        </select>
+      </div>
+    </div>
+    <div
+      *ngIf="bulk_change_status_form.type == 'recall'"
+      class="d-flex align-items-end jusify-content-between mb-3"
+      style="gap: 20px"
+    >
+      <div class="col-xs-12">
+        <label for="store_status">Location</label>
+        <select
+          class="form-control"
+          [(ngModel)]="bulk_change_status_form.store_status"
+          name="store_status"
+        >
+          <option *ngFor="let bank of store_banks" [value]="bank.id">
+            {{ bank.name }}
+          </option>
+        </select>
+      </div>
+    </div>
+    <div
+      *ngIf="bulk_change_status_form.type == 'recall'"
+      class="d-flex align-items-end jusify-content-between mb-3"
+      style="gap: 20px"
+    >
+      <div class="col-xs-12">
+        <label for="recall_date">Recall Date</label>
+        <input
+          type="date"
+          class="form-control"
+          [(ngModel)]="bulk_change_status_form.recall_date"
+          name="recall_date"
+        />
+      </div>
+    </div>
+    <div
+      *ngIf="
+        bulk_change_status_form.type == 'recall_request' ||
+        bulk_change_status_form.type == 'approve_cancel_request' ||
+        bulk_change_status_form.type == 'cancel_request'
+      "
+      class="d-flex align-items-end jusify-content-between mb-3"
+      style="gap: 20px"
+    >
+      <div class="col-xs-12">
+        <label for="request_date">Request Date</label>
+        <input
+          type="date"
+          class="form-control"
+          [(ngModel)]="bulk_change_status_form.request_date"
+          name="request_date"
+        />
+      </div>
+    </div>
+    <div
+      *ngIf="bulk_change_status_form.type == 'pending_recall'"
+      class="d-flex align-items-end jusify-content-between mb-3"
+      style="gap: 20px"
+    >
+      <div class="col-xs-12">
+        <label for="bank_recall_request_date">Bank Recall Request Date</label>
+        <input
+          type="date"
+          class="form-control"
+          [(ngModel)]="bulk_change_status_form.bank_recall_request_date"
+          name="bank_recall_request_date"
+        />
+      </div>
+    </div>
+    <div
+      *ngIf="
+        bulk_change_status_form.type == 'recall_request' ||
+        bulk_change_status_form.type == 'cancel_request'
+      "
+      class="d-flex align-items-end jusify-content-between mb-3"
+      style="gap: 20px"
+    >
+      <div class="col-xs-12">
+        <label for="request_reason">Request Reason</label>
+        <select
+          *ngIf="bulk_change_status_form.type == 'recall_request'"
+          class="form-control"
+          [(ngModel)]="bulk_change_status_form.request_reason"
+          name="request_reason"
+        >
+          <option value="Postpone-Late Payment Request">
+            Postpone-Late Payment Request
+          </option>
+          <option value="Cancelation-Visa Payment">
+            Cancelation-Visa Payment
+          </option>
+          <option value="Cancelation-Cash Payment">
+            Cancelation-Cash Payment
+          </option>
+          <option value="Cancelation-Transfer Payment">
+            Cancelation-Transfer Payment
+          </option>
+          <option value="Termination">Termination</option>
+          <option value="Transfer of ownership">Transfer of ownership</option>
+          <option value="Transfer of ownership- Declaration">
+            Transfer of ownership- Declaration
+          </option>
+          <option value="Client Death">Client Death</option>
+          <option value="Legal Case">Legal Case</option>
+          <option value="Change Location">Change Location</option>
+        </select>
+        <select
+          *ngIf="bulk_change_status_form.type == 'cancel_request'"
+          class="form-control"
+          [(ngModel)]="bulk_change_status_form.request_reason"
+          name="request_reason"
+        >
+          <option value="Break Bulk Cheque">Break Bulk Cheque</option>
+          <option value="Wrong Input">Wrong Input</option>
+          <option value="Bounced change method of payment">
+            Bounced change method of payment
+          </option>
+          <option value="Change Method">Change Method</option>
+          <option value="Another Cheque">Another Cheque</option>
+          <option value="Cancel unit">Cancel unit</option>
+        </select>
+      </div>
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button
+      class="btn btn-primary"
+      (click)="submitBulkChangeStatus(); bulkChangeStatusModal.close()"
+    >
+      Submit
+    </button>
+    <button class="btn btn-secondary" (click)="bulkChangeStatusModal.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>
+
+<modal
+  #approvePaymentRequestForRedpositModal
+  title="Approve Payment Request"
+  submitButtonLabel="submit"
+  modalClass="modal-lg"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="
+    approvePaymentRequestForRedpositModalSubmit(
+      approvePaymentRequestForRedpositModal
+    )
+  "
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <div class="row">
+      <div class="form-group col-xs-12">
+        <label for="store_status">Location</label>
+        <select
+          class="form-control"
+          [(ngModel)]="store_status"
+          name="store_status"
+          required
+        >
+          <option *ngFor="let bank of store_banks" [value]="bank.id">
+            {{ bank.name }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group col-xs-12">
+        <label for="due_date">Redposite Date:</label>
+        <input
+          type="date"
+          class="form-control"
+          name="redeposit_date"
+          [(ngModel)]="redeposit_date"
+        />
+      </div>
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button
+      class="btn btn-secondary"
+      (click)="approvePaymentRequestForRedpositModal.close()"
+    >
+      close
+    </button>
+  </modal-footer>
+</modal>
+
+<modal
+  #redepositRequestModal
+  title="Redeposit Request"
+  submitButtonLabel="submit"
+  modalClass="modal-lg"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="
+    makePaymentRequests(request_type, request_ids, redepositRequestModal)
+  "
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <div class="form-group">
+      <label for="">Request Reason :</label>
+      <input type="text" class="form-control" [(ngModel)]="request_reason" />
+    </div>
+    <div class="search">
+      <label for="">Request Date :</label>
+      <input type="date" class="form-control" [(ngModel)]="request_date" />
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="redepositRequestModal.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>
+
+<modal
+  #approveRequestAsCancelledModal
+  title="Cancel Cheque"
+  submitButtonLabel="submit"
+  modalClass="modal-lg"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="
+    approvePaymentRequest(
+      request_ids,
+      request_type,
+      approveRequestAsCancelledModal
+    )
+  "
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <div class="search">
+      <label for="store_status">Location</label>
+      <select
+        class="form-control"
+        [(ngModel)]="store_status"
+        name="store_status"
+        required
+      >
+        <option *ngFor="let bank of store_banks" [value]="bank.id">
+          {{ bank.name }}
+        </option>
+      </select>
+    </div>
+    <div class="search">
+      <label for="request_date">Cancel Date :</label>
+      <input type="date" class="form-control" [(ngModel)]="request_date" />
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button
+      class="btn btn-secondary"
+      (click)="approveRequestAsCancelledModal.close()"
+    >
+      close
+    </button>
+  </modal-footer>
+</modal>
+
+<modal
+  #approvePendingRecallModal
+  title="Recall"
+  submitButtonLabel="submit"
+  modalClass="modal-lg"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="
+    approvePaymentRequest(request_ids, request_type, approvePendingRecallModal)
+  "
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <div class="search">
+      <label for="store_status">Location</label>
+      <select
+        class="form-control"
+        [(ngModel)]="store_status"
+        name="store_status"
+        required
+        disabled
+      >
+        <option *ngFor="let bank of store_banks" [value]="bank.id">
+          {{ bank.name }}
+        </option>
+      </select>
+    </div>
+    <div class="search">
+      <label for="request_date">Recall Date :</label>
+      <input type="date" class="form-control" [(ngModel)]="request_date" />
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button
+      class="btn btn-secondary"
+      (click)="approvePendingRecallModal.close()"
+    >
+      close
+    </button>
+  </modal-footer>
+</modal>
+
+<modal
+  #cancelRequestModal
+  title="Cancel Request"
+  submitButtonLabel="submit"
+  modalClass="modal-lg"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="
+    makePaymentRequests(request_type, request_ids, cancelRequestModal)
+  "
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <div class="form-group">
+      <label for="">Request Reason :</label>
+      <select
+        class="form-control"
+        [(ngModel)]="request_reason"
+        name="request_reason"
+      >
+        <option value="Break Bulk Cheque">Break Bulk Cheque</option>
+        <option value="Wrong Input">Wrong Input</option>
+        <option value="Bounced change method of payment">
+          Bounced change method of payment
+        </option>
+        <option value="Change Method">Change Method</option>
+        <option value="Another Cheque">Another Cheque</option>
+        <option value="Cancel unit">Cancel unit</option>
+      </select>
+    </div>
+    <div class="search">
+      <label for="">Request Date :</label>
+      <input type="date" class="form-control" [(ngModel)]="request_date" />
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="cancelRequestModal.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>
+
+<modal
+  #recallRequestModal
+  title="Recall Request"
+  submitButtonLabel="submit"
+  modalClass="modal-lg"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="
+    makePaymentRequests(request_type, request_ids, recallRequestModal)
+  "
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <!-- <div class="form-group">
+      <label for="">Request Reason :</label>
+      <input type="text" class="form-control" [(ngModel)]="request_reason" />
+    </div> -->
+    <div class="form-group">
+      <label for="request_reason">Request Reason</label>
+      <select
+        class="form-control"
+        [(ngModel)]="request_reason"
+        name="request_reason"
+      >
+        <option value="Postpone-Late Payment Request">
+          Postpone-Late Payment Request
+        </option>
+        <option value="Cancelation-Visa Payment">
+          Cancelation-Visa Payment
+        </option>
+        <option value="Cancelation-Cash Payment">
+          Cancelation-Cash Payment
+        </option>
+        <option value="Cancelation-Transfer Payment">
+          Cancelation-Transfer Payment
+        </option>
+        <option value="Termination">Termination</option>
+        <option value="Transfer of ownership">Transfer of ownership</option>
+        <option value="Transfer of ownership- Declaration">
+          Transfer of ownership- Declaration
+        </option>
+        <option value="Client Death">Client Death</option>
+        <option value="Legal Case">Legal Case</option>
+        <option value="Change Location">Change Location</option>
+      </select>
+    </div>
+    <div class="search">
+      <label for="">Request Date :</label>
+      <input type="date" class="form-control" [(ngModel)]="request_date" />
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="recallRequestModal.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>
+
+<modal
+  #approveRequestRecallModal
+  title="Approve Recall Request"
+  submitButtonLabel="submit"
+  modalClass="modal-lg"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="
+    approvePaymentRequest(request_ids, request_type, approveRequestRecallModal)
+  "
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <div class="search">
+      <label for="request_date">Request Recall Bank Date :</label>
+      <input type="date" class="form-control" [(ngModel)]="request_date" />
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button
+      class="btn btn-secondary"
+      (click)="approveRequestRecallModal.close()"
+    >
+      close
+    </button>
+  </modal-footer>
+</modal>
+
+<modal
+  #approveRequestAsRecallModal
+  title="Request"
+  submitButtonLabel="submit"
+  modalClass="modal-lg"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="
+    approvePaymentRequest(
+      request_ids,
+      request_type,
+      approveRequestAsRecallModal
+    )
+  "
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <div class="search">
+      <label for="request_date">Request Date :</label>
+      <input type="date" class="form-control" [(ngModel)]="request_date" />
+    </div>
+    <div class="form-group">
+      <label for="request_reason">Request Reason</label>
+      <select
+        class="form-control"
+        [(ngModel)]="request_reason"
+        name="request_reason"
+      >
+        <option value="Postpone-Late Payment Request">
+          Postpone-Late Payment Request
+        </option>
+        <option value="Cancelation-Visa Payment">
+          Cancelation-Visa Payment
+        </option>
+        <option value="Cancelation-Cash Payment">
+          Cancelation-Cash Payment
+        </option>
+        <option value="Cancelation-Transfer Payment">
+          Cancelation-Transfer Payment
+        </option>
+        <option value="Termination">Termination</option>
+        <option value="Transfer of ownership">Transfer of ownership</option>
+        <option value="Transfer of ownership- Declaration">
+          Transfer of ownership- Declaration
+        </option>
+        <option value="Client Death">Client Death</option>
+        <option value="Legal Case">Legal Case</option>
+        <option value="Change Location">Change Location</option>
+        <option value="Early Payment">Early Payment</option>
+        <option value="Change Signature">Change Signature</option>
+      </select>
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button
+      class="btn btn-secondary"
+      (click)="approveRequestAsRecallModal.close()"
+    >
+      close
+    </button>
+  </modal-footer>
+</modal>
+
+<modal
+  #approveRequestAsBounceModal
+  title="Request"
+  submitButtonLabel="submit"
+  modalClass="modal-lg"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="
+    approvePaymentRequest(
+      request_ids,
+      request_type,
+      approveRequestAsBounceModal
+    )
+  "
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <div class="form-group col-xs-12">
+      <label for="" class="price-label">Bounce Reason :</label>
+      <select
+        class="form-control"
+        [(ngModel)]="request_reason"
+        name="request_reason"
+      >
+        <option
+          *ngFor="let reason of reject_reasons"
+          [value]="reason.reject_reason"
+        >
+          {{ reason.reject_reason }}
+        </option>
+      </select>
+    </div>
+    <div class="form-group col-xs-12">
+      <label for="" class="price-label">Bounce Date :</label>
+      <input
+        type="date"
+        [(ngModel)]="request_date"
+        name="request_date"
+        class="form-control"
+      />
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button
+      class="btn btn-secondary"
+      (click)="approveRequestAsBounceModal.close()"
+    >
+      close
+    </button>
+  </modal-footer>
+</modal>
+
+<modal
+  #deliveredToCustomerModal
+  title="Delivered To Customer"
+  submitButtonLabel="submit"
+  modalClass="modal-lg"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="submitDeliveredToCustomerModal(deliveredToCustomerModal)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <div class="row">
+      <div class="form-group col-xs-12">
+        <label for="delivered_to_customer_date" class="price-label"
+          >Delivered To Customer Date :</label
+        >
+        <input
+          type="date"
+          [(ngModel)]="delivered_to_customer_date"
+          name="delivered_to_customer_date"
+          class="form-control"
+        />
+      </div>
+      <!-- <div class="form-group col-xs-12">
+        <label for="store_status">Location</label>
+        <select
+          class="form-control"
+          [(ngModel)]="store_status"
+          name="store_status"
+          required
+        >
+          <option *ngFor="let bank of store_banks" [value]="bank.id">
+            {{ bank.name }}
+          </option>
+        </select>
+      </div> -->
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button
+      class="btn btn-secondary"
+      (click)="deliveredToCustomerModal.close()"
+    >
+      close
+    </button>
+  </modal-footer>
+</modal>

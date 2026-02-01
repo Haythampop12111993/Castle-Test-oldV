@@ -1,0 +1,43 @@
+<section class="teams-table">
+  <div class="container-fluid">
+    <h2>Branches</h2>
+    <div class="proj-details">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="table table-responsive">
+            <table class="table table-bordered">
+              <tr>
+                <th>ID</th>
+                <th>Branch Name</th>
+                <!-- <th>Score</th> -->
+                <th>Action</th>
+              </tr>
+              <tr class="" *ngFor="let branch of branches">
+                <td>{{ branch?.id }}</td>
+                <td>{{ branch?.name }}</td>
+                <!-- <td *ngIf="branch?.score">{{ branch?.score }}</td> -->
+                <!-- <td *ngIf="!branch?.score">0</td> -->
+                <td>
+                  <div class="dropdown" dropdown>
+                    <img
+                      class="more-options-icon"
+                      src="assets/img/show-more-button-with-three-dots.svg"
+                      dropdown-open
+                    />
+                    <ul class="dropdown-menu">
+                      <li (click)="edit(branch.id)">
+                        <a>
+                          <span class="doc_link">Edit</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

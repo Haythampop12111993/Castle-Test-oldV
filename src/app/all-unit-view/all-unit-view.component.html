@@ -1,0 +1,996 @@
+<section class="project-inner">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-xs-12 top-header-container">
+        <div class="col-xs-10">
+          <h2>{{ current_project?.name }}</h2>
+        </div>
+        <div class="col-xs-2 import-container">
+          <!-- <div class="settings-icons pull-right">
+            <div class="dropdown" dropdown>
+              <i class="fa fa-cog" aria-hidden="true" dropdown-open></i>
+              <ul class="dropdown-menu">
+                <li [ngClass]="{'no-interaction': is_refreshing}" (click)="refresehUnits()">
+                  <a>
+                    <span>Refresh Units</span>
+                  </a>
+                </li>
+                <li (click)="manageModal.open()">
+                  <a>
+                    <span>Manage Table</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div> -->
+          <modal
+            #manageModal
+            title="Manage Table"
+            modalClass="modal-lg"
+            [hideCloseButton]="true"
+            [closeOnOutsideClick]="true"
+            (onOpen)="openManageModal()"
+            (onClose)="closeManageModal()"
+          >
+            <modal-header> </modal-header>
+            <modal-content>
+              <div class="row">
+                <div class="col-xs-6 toggle-container">
+                  <div class="col-xs-5">
+                    <p class="lato">Area</p>
+                  </div>
+                  <div class="col-xs-1">
+                    <ngx-toggle
+                      (valueChange)="toggleChange($event, 'build_area')"
+                      onColor="{{ toggle_options.onColor }}"
+                      onText="{{ toggle_options.onText }}"
+                      offColor="{{ toggle_options.offColor }}"
+                      offText="{{ toggle_options.offText }}"
+                      [size]="toggle_options.size"
+                      [(value)]="toogleManageTable.build_area"
+                    >
+                    </ngx-toggle>
+                  </div>
+                </div>
+                <div class="col-xs-6 toggle-container">
+                  <div class="col-xs-5">
+                    <p class="lato">Block</p>
+                  </div>
+                  <div class="col-xs-1">
+                    <ngx-toggle
+                      (valueChange)="toggleChange($event, 'block_num')"
+                      onColor="{{ toggle_options.onColor }}"
+                      onText="{{ toggle_options.onText }}"
+                      offColor="{{ toggle_options.offColor }}"
+                      offText="{{ toggle_options.offText }}"
+                      [size]="toggle_options.size"
+                      [(value)]="toogleManageTable.block_num"
+                    >
+                    </ngx-toggle>
+                  </div>
+                </div>
+                <div class="col-xs-6 toggle-container">
+                  <div class="col-xs-5">
+                    <p class="lato">Building</p>
+                  </div>
+                  <div class="col-xs-1">
+                    <ngx-toggle
+                      (valueChange)="toggleChange($event, 'building_num')"
+                      onColor="{{ toggle_options.onColor }}"
+                      onText="{{ toggle_options.onText }}"
+                      offColor="{{ toggle_options.offColor }}"
+                      offText="{{ toggle_options.offText }}"
+                      [size]="toggle_options.size"
+                      [(value)]="toogleManageTable.building_num"
+                    >
+                    </ngx-toggle>
+                  </div>
+                </div>
+                <div class="col-xs-6 toggle-container">
+                  <div class="col-xs-5">
+                    <p class="lato">Garden Area</p>
+                  </div>
+                  <div class="col-xs-1">
+                    <ngx-toggle
+                      (valueChange)="toggleChange($event, 'garden_area')"
+                      onColor="{{ toggle_options.onColor }}"
+                      onText="{{ toggle_options.onText }}"
+                      offColor="{{ toggle_options.offColor }}"
+                      offText="{{ toggle_options.offText }}"
+                      [size]="toggle_options.size"
+                      [(value)]="toogleManageTable.garden_area"
+                    >
+                    </ngx-toggle>
+                  </div>
+                </div>
+                <div class="col-xs-6 toggle-container">
+                  <div class="col-xs-5">
+                    <p class="lato">Type</p>
+                  </div>
+                  <div class="col-xs-1">
+                    <ngx-toggle
+                      (valueChange)="toggleChange($event, 'unit_type_name')"
+                      onColor="{{ toggle_options.onColor }}"
+                      onText="{{ toggle_options.onText }}"
+                      offColor="{{ toggle_options.offColor }}"
+                      offText="{{ toggle_options.offText }}"
+                      [size]="toggle_options.size"
+                      [(value)]="toogleManageTable.unit_type_name"
+                    >
+                    </ngx-toggle>
+                  </div>
+                </div>
+                <div class="col-xs-6 toggle-container">
+                  <div class="col-xs-5">
+                    <p class="lato">Floor</p>
+                  </div>
+                  <div class="col-xs-1">
+                    <ngx-toggle
+                      (valueChange)="toggleChange($event, 'floor_number')"
+                      onColor="{{ toggle_options.onColor }}"
+                      onText="{{ toggle_options.onText }}"
+                      offColor="{{ toggle_options.offColor }}"
+                      offText="{{ toggle_options.offText }}"
+                      [size]="toggle_options.size"
+                      [(value)]="toogleManageTable.floor_number"
+                    >
+                    </ngx-toggle>
+                  </div>
+                </div>
+                <div class="col-xs-6 toggle-container">
+                  <div class="col-xs-5">
+                    <p class="lato">Rooms</p>
+                  </div>
+                  <div class="col-xs-1">
+                    <ngx-toggle
+                      (valueChange)="toggleChange($event, 'num_rooms')"
+                      onColor="{{ toggle_options.onColor }}"
+                      onText="{{ toggle_options.onText }}"
+                      offColor="{{ toggle_options.offColor }}"
+                      offText="{{ toggle_options.offText }}"
+                      [size]="toggle_options.size"
+                      [(value)]="toogleManageTable.num_rooms"
+                    >
+                    </ngx-toggle>
+                  </div>
+                </div>
+                <div class="col-xs-6 toggle-container">
+                  <div class="col-xs-5">
+                    <p class="lato">Price</p>
+                  </div>
+                  <div class="col-xs-1">
+                    <ngx-toggle
+                      (valueChange)="toggleChange($event, 'price')"
+                      onColor="{{ toggle_options.onColor }}"
+                      onText="{{ toggle_options.onText }}"
+                      offColor="{{ toggle_options.offColor }}"
+                      offText="{{ toggle_options.offText }}"
+                      [size]="toggle_options.size"
+                      [(value)]="toogleManageTable.price"
+                    >
+                    </ngx-toggle>
+                  </div>
+                </div>
+                <div class="col-xs-6 toggle-container">
+                  <div class="col-xs-5">
+                    <p class="lato">Availability</p>
+                  </div>
+                  <div class="col-xs-1">
+                    <ngx-toggle
+                      (valueChange)="toggleChange($event, 'status')"
+                      onColor="{{ toggle_options.onColor }}"
+                      onText="{{ toggle_options.onText }}"
+                      offColor="{{ toggle_options.offColor }}"
+                      offText="{{ toggle_options.offText }}"
+                      [size]="toggle_options.size"
+                      [(value)]="toogleManageTable.status"
+                    >
+                    </ngx-toggle>
+                  </div>
+                </div>
+              </div>
+            </modal-content>
+            <modal-footer>
+              <button class="btn btn-secondary" (click)="manageModal.close()">
+                close
+              </button>
+            </modal-footer>
+          </modal>
+        </div>
+      </div>
+    </div>
+    <div class="proj-details">
+      <div class="row">
+        <div class="col-md-3">
+          <div class="filter">
+            <h3>Advanced Search</h3>
+            <form
+              [formGroup]="filterForm"
+              [ngClass]="{ 'no-interaction': is_refreshing }"
+              (ngSubmit)="filterUnits()"
+            >
+              <div class="form-group">
+                <label for="">Unit's Project :</label>
+                <ng-select
+                  placeholder="Select Project"
+                  formControlName="project"
+                  (change)="checkproject($event)"
+                >
+                  <ng-option *ngFor="let project of projects" [value]="project.id">
+                    {{ project.name }}
+                  </ng-option>
+                </ng-select>
+              </div>
+              <!-- <div class="form-group">
+                <label for="">Unit Area :</label>
+                <input type="text" name="area" id="name" class="form-control" formControlName="area" />
+              </div> -->
+              <div class="form-group">
+                <label for="">Unit Area From:</label>
+                <input
+                  type="text"
+                  name="area_from"
+                  id="name"
+                  class="form-control"
+                  formControlName="area_from"
+                />
+              </div>
+              <div class="form-group">
+                <label for="">Unit Area To:</label>
+                <input
+                  type="text"
+                  name="area_to"
+                  id="name"
+                  class="form-control"
+                  formControlName="area_to"
+                />
+              </div>
+              <div class="form-group">
+                <label for="">Unit Serial :</label>
+                <input
+                  type="text"
+                  name="serial"
+                  id="serial"
+                  class="form-control"
+                  formControlName="serial"
+                />
+              </div>
+              <div *ngIf="max_price && min_price" class="form-group">
+                <label for="" class="price-margin-bottom">Price</label>
+                <div class="w-90 center">
+                  <nouislider
+                    [config]="priceRangeSlider"
+                    [connect]="true"
+                    [min]="min_price"
+                    [max]="max_price"
+                    [step]="500000"
+                    [(ngModel)]="price"
+                    [ngModelOptions]="{ standalone: true }"
+                  >
+                  </nouislider>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="">Unit Floor :</label>
+                <ng-multiselect-dropdown
+                  [placeholder]="'Unit Floor'"
+                  [data]="floors"
+                  formControlName="floor"
+                  [settings]="dropdownSettings"
+                >
+                </ng-multiselect-dropdown>
+              </div>
+              <div class="form-group" *ngIf="phases">
+                <label for="">Phase :</label>
+                <!-- <select class="form-control" formControlName="phase_id">
+                  <option value=""></option>
+                  <option *ngFor="let phase of phases" [value]="phase.id">{{phase.serial}}</option>
+                </select> -->
+                <ng-multiselect-dropdown
+                  [placeholder]="'Phase'"
+                  [data]="phases"
+                  formControlName="phase_id"
+                  [settings]="phasesDropdownSettings"
+                >
+                </ng-multiselect-dropdown>
+              </div>
+              <div class="form-group">
+                <label for="">Unit Type :</label>
+                <ng-select placeholder="Select Unit Type" formControlName="type">
+                  <ng-option *ngFor="let type of types" [value]="type.id">
+                    {{ type.name }}
+                  </ng-option>
+                </ng-select>
+              </div>
+              <div class="form-group">
+                <label for="">Unit Status :</label>
+                <ng-select placeholder="Select Unit Status" formControlName="status">
+                  <ng-option *ngFor="let status of allStatus" [value]="status">
+                    {{ status }}
+                  </ng-option>
+                </ng-select>
+              </div>
+              <div class="form-group">
+                <label for="">Block Number :</label>
+                <input
+                  type="text"
+                  name="block_number"
+                  id="block_number"
+                  class="form-control"
+                  formControlName="block_number"
+                />
+              </div>
+              <div class="border-form text-center margin-top">
+                <button type="submit" class="button c-bg">GO</button>
+              </div>
+              <div class="border-form text-center">
+                <button
+                  (click)="resetFilters()"
+                  type="button"
+                  class="button bg-danger reset-filter"
+                >
+                  RESET ALL FILTERS
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="col-md-9" [ngClass]="{ 'no-interaction': is_refreshing }">
+          <div class="table table-responsive">
+            <table class="table table-bordered">
+              <tr>
+                <th>Unit ID</th>
+                <th *ngIf="manageTable.build_area">Area</th>
+                <th *ngIf="manageTable.block_num">Block</th>
+                <th *ngIf="manageTable.building_num">Building</th>
+                <th *ngIf="manageTable.garden_area">Garden Area</th>
+                <th *ngIf="manageTable.unit_type_name">Type</th>
+                <th *ngIf="manageTable.floor_number">Floor</th>
+                <th *ngIf="manageTable.num_rooms">Rooms</th>
+                <th *ngIf="manageTable.price">Price</th>
+                <th *ngIf="manageTable.status">Availability</th>
+                <th>Action</th>
+              </tr>
+              <ng-container *ngFor="let pu of AllUnits; let index = index">
+                <tr
+                  [ngClass]="{
+                    'bg-danger': pu.status !== 'Available',
+                    'bg-success': pu.status == 'Reserved'
+                  }"
+                >
+                  <td>{{ pu.serial }}</td>
+                  <td *ngIf="manageTable.build_area">{{ pu.build_area }}</td>
+                  <td *ngIf="manageTable.block_num">{{ pu.block_num }}</td>
+                  <td *ngIf="manageTable.building_num">
+                    {{ pu.building_num }}
+                  </td>
+                  <td *ngIf="manageTable.garden_area">{{ pu.garden_area }}</td>
+                  <td *ngIf="manageTable.unit_type_name">
+                    {{ pu.unit_type?.name }}
+                  </td>
+                  <td *ngIf="manageTable.floor_number">
+                    {{ pu.floor_number }}
+                  </td>
+                  <td *ngIf="manageTable.num_rooms">{{ pu.num_rooms }}</td>
+                  <!-- <td *ngIf="manageTable.price">{{pu.price}} <br> ( {{pu.price / pu.build_area | number : '4.0-0' }} / m )</td> -->
+                  <td>
+                    <p
+                      class="price-container-td"
+                      *ngFor="let price_type of pu?.finishing_types"
+                    >
+                      ( {{ price_type?.pivot?.price | number : "4.0-0" }} /
+                      {{ price_type?.name }} )
+                    </p>
+                  </td>
+                  <td *ngIf="manageTable.status">
+                    {{ pu.status }}
+                    <br />
+                    <span
+                      class="temp-blocked-by"
+                      *ngIf="
+                        (userInfo.role == 'Admin' ||
+                          userInfo.role == 'Super Development' ||
+                          userInfo.role == 'CCO' ||
+                          userInfo.role == 'Development Director' ||
+                          userInfo.role == 'Moderator' ||
+                          userInfo.role == 'Super Moderator') &&
+                        pu.status == 'Temp Blocked'
+                      "
+                      >by {{ pu.temp_blocked_by?.name }}</span
+                    >
+                  </td>
+                  <td class="action">
+                    <div class="dropdown" dropdown>
+                      <img
+                        class="more-options-icon"
+                        [ngClass]="{
+                          'more-options-icon-not-allowed':
+                            pu.status == 'Blocked' &&
+                            (userInfo.role == 'Property Consultant' ||
+                              userInfo.role == 'Leader' ||
+                              userInfo.role == 'Sales Manager') &&
+                            userInfo.role != 'Admin' &&
+                            userInfo.role != 'Super Development' &&
+                            userInfo.role != 'CCO' &&
+                            userInfo.role != 'Development Director'
+                        }"
+                        src="assets/img/show-more-button-with-three-dots.svg"
+                        dropdown-open
+                      />
+                      <ul class="dropdown-menu">
+                        <li
+                          *ngIf="
+                            userInfo.role == 'Sales Manager' &&
+                            pu.status == 'Available'
+                          "
+                          (click)="firstModal.open(pu.id)"
+                        >
+                          <a>
+                            <span>Request Block</span>
+                          </a>
+                        </li>
+                        <li
+                          *ngIf="pu.status == 'Available'"
+                          (click)="firstModal.open(pu.id)"
+                        >
+                          <a>
+                            <span>Block Unit</span>
+                          </a>
+                        </li>
+                        <li
+                          *ngIf="
+                            (userInfo.role != 'Contractor' &&
+                              pu.status == 'Available') ||
+                            (pu.status == 'Temp Blocked' &&
+                              pu.temp_block_by == userInfo.id)
+                          "
+                          [ngClass]="{
+                            'disable-all-intercation': stopReservation
+                          }"
+                          (click)="resrveUnit(pu.id, pu.status)"
+                        >
+                          <a>
+                            <span>Reserve Unit</span>
+                          </a>
+                        </li>
+                        <li (click)="generatePayment(pu)">
+                          <a>
+                            <span>Generate Payment</span>
+                          </a>
+                        </li>
+                        <li (click)="generateCustomPayment(pu)">
+                          <a>
+                            <span>Generate Custom Payment</span>
+                          </a>
+                        </li>
+                        <li (click)="unitDetail.open()">
+                          <a>
+                            <span>Summary</span>
+                          </a>
+                        </li>
+                        <li
+                          *ngIf="
+                            userInfo.role == 'Admin' ||
+                            userInfo.role == 'Super Development' ||
+                            userInfo.role == 'Development Director'
+                          "
+                          (click)="deleteUnit(pu.id, index)"
+                        >
+                          <a>
+                            <span>Delete unit</span>
+                          </a>
+                        </li>
+                        <li>
+                          <a>
+                            <span
+                              [routerLink]="['/pages/projects/view-unit']"
+                              [queryParams]="{
+                                project_id: project_id,
+                                unit_id: pu.id
+                              }"
+                              >View</span
+                            >
+                          </a>
+                        </li>
+                        <li
+                          *ngIf="
+                            (pu.status == 'Blocked' ||
+                              pu.status == 'Temp Blocked') &&
+                            (userInfo.role == 'Admin' ||
+                              userInfo.role == 'Super Development' ||
+                              userInfo.role == 'Moderator' ||
+                              userInfo.role == 'Super Moderator') &&
+                            userInfo.role != 'CCO' &&
+                            userInfo.role != 'Development Director' &&
+                            userInfo.role == 'Development Director'
+                          "
+                          (click)="swalBlock(pu.id)"
+                        >
+                          <a>
+                            <span>Unblock Unit</span>
+                          </a>
+                        </li>
+                        <li
+                          (click)="
+                            makeUnitAvailableOpenModal(
+                              pu.id,
+                              makeUnitAvailableModal,
+                              index
+                            )
+                          "
+                          *ngIf="
+                            pu.status == 'Not Available' ||
+                            (pu.status == 'Development Hold' &&
+                              (userInfo.role == 'Admin' ||
+                                userInfo.role == 'Super Development' ||
+                                userInfo.role == 'Development Director' ||
+                                userInfo.role == 'Moderator' ||
+                                userInfo.role == 'Super Moderator'))
+                          "
+                        >
+                          <span>Make Unit Available</span>
+                        </li>
+                        <li
+                          *ngIf="
+                            pu.status == 'Available' &&
+                            (userInfo.role == 'Admin' ||
+                              userInfo.role == 'Super Development' ||
+                              userInfo.role == 'Moderator' ||
+                              userInfo.role == 'Super Moderator') &&
+                            userInfo.role != 'CCO' &&
+                            userInfo.role != 'Development Director'
+                          "
+                          (click)="makeUnitNotAvailable(pu.id)"
+                        >
+                          <span>Make Unit Not Available</span>
+                        </li>
+                        <li
+                          *ngIf="
+                            pu.status == 'Available' &&
+                            (userInfo.role == 'Admin' ||
+                              userInfo.role == 'Super Development' ||
+                              userInfo.role == 'Moderator' ||
+                              userInfo.role == 'Super Moderator' ||
+                              userInfo.role == 'Development Director')
+                          "
+                          (click)="makeUnitDevelopmentHold(pu.id)"
+                        >
+                          <span>Make Unit Development Hold</span>
+                        </li>
+                        <li
+                          *ngIf="
+                            pu.status == 'Blocked' &&
+                            (userInfo.role == 'Admin' ||
+                              userInfo.role == 'Super Development' ||
+                              userInfo.role == 'Moderator' ||
+                              userInfo.role == 'Super Moderator') &&
+                            userInfo.role != 'CCO' &&
+                            userInfo.role != 'Development Director'
+                          "
+                          (click)="blockReason.open()"
+                        >
+                          <span>Block Reason</span>
+                        </li>
+                        <li
+                          *ngIf="
+                            (userInfo?.role == 'Admin' ||
+                              userInfo.role == 'Super Development' ||
+                              userInfo.role == 'Moderator' ||
+                              userInfo.role == 'Super Moderator') &&
+                            userInfo.role != 'CCO' &&
+                            userInfo.role != 'Development Director'
+                          "
+                          (click)="commentModal.open(pu)"
+                        >
+                          <a>
+                            <span>Add Comment</span>
+                          </a>
+                        </li>
+                        <li
+                          *ngIf="pu?.comment"
+                          (click)="viewCommentModal.open(pu)"
+                        >
+                          <a>
+                            <span>View comment</span>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </td>
+                  <modal
+                    #unitDetail
+                    title="Unit Summary"
+                    modalClass="modal-lg"
+                    [hideCloseButton]="true"
+                    [closeOnOutsideClick]="true"
+                    (onOpen)="unitOnOpen(pu)"
+                    (onClose)="unitModalOnClose()"
+                  >
+                    <modal-header> </modal-header>
+                    <modal-content>
+                      <div class="row">
+                        <div *ngIf="pu?.layout_image" class="col-xs-12">
+                          <img src="pu.layout_image.url" alt="" />
+                        </div>
+                        <div class="col-xs-4">
+                          <h6>
+                            Build Area :
+                            <small>{{ pu.build_area }}</small>
+                          </h6>
+                          <h6>
+                            Serial :
+                            <small>{{ pu.serial }}</small>
+                          </h6>
+                          <h6>
+                            Garden Area :
+                            <small>{{ pu.garden_area }}</small>
+                          </h6>
+                          <h6>
+                            Garden Price :
+                            <small>{{ pu.garden_price }}</small>
+                          </h6>
+                          <h6>
+                            Unit Number :
+                            <small>{{ pu?.number }}</small>
+                          </h6>
+                          <h6>
+                            Unit Type :
+                            <small>{{ pu?.unit_type?.name }}</small>
+                          </h6>
+                        </div>
+                        <div class="col-xs-4">
+                          <h6>
+                            Delivery Date :
+                            <small>{{ pu.delivery_date }}</small>
+                          </h6>
+                          <h6>
+                            Number of Rooms :
+                            <small>{{ pu.num_rooms }}</small>
+                          </h6>
+                          <h6>
+                            Number of Bathrooms :
+                            <small>{{ pu.num_bathrooms }}</small>
+                          </h6>
+                          <h6>
+                            Floor Number :
+                            <small>{{ pu.floor_number }}</small>
+                          </h6>
+
+                          <h6>
+                            Building :
+                            <small>{{ pu.building_num }}</small>
+                          </h6>
+                          <h6>
+                            Block :
+                            <small>{{ pu.block_num }}</small>
+                          </h6>
+                        </div>
+                        <div class="col-xs-4">
+                          <h6>
+                            Price :
+                            <small>{{ pu.price }}</small>
+                          </h6>
+                        </div>
+                      </div>
+                      <div
+                        class="row"
+                        *ngIf="
+                          pu.status == 'Reserved' &&
+                          units_reservation_modal_data &&
+                          units_reservation_modal_data.reservation
+                        "
+                      >
+                        <div class="col-xs-12">
+                          <h4>Transaction</h4>
+                        </div>
+                        <div class="col-xs-4">
+                          <h6>
+                            Sales Person Name:
+                            <small>
+                              {{
+                                units_reservation_modal_data.reservation.user
+                                  .name
+                              }}
+                            </small>
+                          </h6>
+                        </div>
+                        <div class="col-xs-4">
+                          <h6>
+                            Client Name:
+                            <small>
+                              {{
+                                units_reservation_modal_data.reservation
+                                  .lead_name
+                              }}
+                            </small>
+                          </h6>
+                        </div>
+                        <div class="col-xs-4">
+                          <h6>
+                            Client Phone:
+                            <small>
+                              {{
+                                units_reservation_modal_data.reservation
+                                  .lead_phone
+                              }}
+                            </small>
+                          </h6>
+                        </div>
+
+                        <div class="col-xs-4">
+                          <h6>
+                            Date Time:
+                            <small>
+                              {{
+                                units_reservation_modal_data.reservation
+                                  .created_at
+                              }}
+                            </small>
+                          </h6>
+                        </div>
+                        <div
+                          class="col-xs-4"
+                          *ngIf="units_reservation_modal_data.reservation"
+                        >
+                          <h6>
+                            Status:
+                            <span
+                              class="label label-success"
+                              *ngIf="
+                                units_reservation_modal_data.reservation
+                                  .is_accountant_approved
+                              "
+                            >
+                              Approved
+                            </span>
+                            <span
+                              class="label label-warning"
+                              *ngIf="
+                                !units_reservation_modal_data.reservation
+                                  .is_accountant_approved
+                              "
+                            >
+                              Pending
+                            </span>
+                          </h6>
+                        </div>
+                      </div>
+                    </modal-content>
+                    <modal-footer>
+                      <button
+                        class="btn btn-secondary"
+                        (click)="unitDetail.close()"
+                      >
+                        close
+                      </button>
+                    </modal-footer>
+                  </modal>
+                  <modal
+                    #blockReason
+                    title="Block Reason"
+                    modalClass="modal-lg"
+                    [hideCloseButton]="true"
+                    [closeOnOutsideClick]="true"
+                    (onOpen)="reasonModalOpen(pu.id)"
+                    (onClose)="unitModalOnClose()"
+                  >
+                    <modal-header> </modal-header>
+                    <modal-content>
+                      <div class="row">
+                        <div class="col-xs-6">
+                          <h6>
+                            Blocked By :
+                            <small>{{ blockReasonData?.user.name }}</small>
+                          </h6>
+                        </div>
+                        <div class="col-xs-6">
+                          <h6>
+                            Reason:
+                            <small>{{ blockReasonData?.reason }}</small>
+                          </h6>
+                        </div>
+                        <div class="col-xs-6">
+                          <h6>
+                            Creation Time:
+                            <small>{{ blockReasonData?.created_at }}</small>
+                          </h6>
+                        </div>
+                        <div class="col-xs-6">
+                          <h6>
+                            End Time:
+                            <small>{{ blockReasonData?.time }}</small>
+                          </h6>
+                        </div>
+                      </div>
+                    </modal-content>
+                    <modal-footer>
+                      <button
+                        class="btn btn-secondary"
+                        (click)="blockReason.close()"
+                      >
+                        close
+                      </button>
+                    </modal-footer>
+                  </modal>
+                  <modal
+                    #firstModal
+                    title="Block Unit"
+                    submitButtonLabel="submit"
+                    modalClass="modal-md"
+                    [hideCloseButton]="true"
+                    [closeOnOutsideClick]="true"
+                    (onOpen)="actionOnOpen(pu.id)"
+                    (onClose)="actionOnClose(pu.id)"
+                    (onSubmit)="requestBlockUnit(pu.id, firstModal)"
+                  >
+                    <modal-header> </modal-header>
+                    <modal-content>
+                      <form [formGroup]="blockForm">
+                        <div class="row">
+                          <div class="form-group col-xs-6">
+                            <label for="">Time :</label>
+                            <input
+                              type="datetime-local"
+                              formControlName="time"
+                              class="form-control"
+                              name="time"
+                              id="time"
+                            />
+                          </div>
+                          <div class="form-group col-xs-6">
+                            <label for="">Reason :</label>
+                            <ng-select
+                              placeholder="Select Reason"
+                              id="reason"
+                              formControlName="reason"
+                              name="reason"
+                              required
+                            >
+                              <ng-option
+                                *ngFor="let reason of reasons"
+                                [value]="reason"
+                              >
+                                {{ reason }}
+                              </ng-option>
+                            </ng-select>
+                          </div>
+                          <div
+                            *ngIf="blockForm.get('reason').value == 'Other'"
+                            class="form-group col-xs-6"
+                          >
+                            <label for="">Other reason :</label>
+                            <input
+                              class="form-control"
+                              type="text"
+                              id="other"
+                              name="other"
+                              formControlName="other"
+                            />
+                          </div>
+                        </div>
+                      </form>
+                    </modal-content>
+                    <modal-footer>
+                      <button
+                        class="btn btn-secondary"
+                        (click)="firstModal.close()"
+                      >
+                        close
+                      </button>
+                    </modal-footer>
+                  </modal>
+                  <modal
+                    #commentModal
+                    title="Add Unit comment"
+                    submitButtonLabel="submit"
+                    modalClass="modal-lg"
+                    [hideCloseButton]="true"
+                    [closeOnOutsideClick]="true"
+                    (onOpen)="openCommentModal(pu)"
+                    (onClose)="closeCommentModal()"
+                    (onSubmit)="submitCommentModal(pu.id, commentModal)"
+                  >
+                    <modal-header> </modal-header>
+                    <modal-content>
+                      <div class="search">
+                        <label for="">Comment :</label>
+                        <textarea
+                          type="text"
+                          class="form-control"
+                          [(ngModel)]="unitComment"
+                        ></textarea>
+                      </div>
+                    </modal-content>
+                    <modal-footer>
+                      <button
+                        class="btn btn-secondary"
+                        (click)="commentModal.close()"
+                      >
+                        close
+                      </button>
+                    </modal-footer>
+                  </modal>
+                  <modal
+                    #viewCommentModal
+                    title="Reservation Comment"
+                    modalClass="modal-lg"
+                    [hideCloseButton]="true"
+                    [closeOnOutsideClick]="true"
+                    (onOpen)="openViewCommentModal(r)"
+                    (onClose)="closeViewCommentModal()"
+                  >
+                    <modal-header> </modal-header>
+                    <modal-content>
+                      <div class="search">
+                        <p>{{ pu?.comment }}</p>
+                      </div>
+                    </modal-content>
+                    <modal-footer>
+                      <button
+                        class="btn btn-secondary"
+                        (click)="viewCommentModal.close()"
+                      >
+                        close
+                      </button>
+                    </modal-footer>
+                  </modal>
+                </tr>
+              </ng-container>
+            </table>
+          </div>
+          <div *ngIf="current_page" class="col-xs-12 text-center">
+            <p>({{ units_raw_data?.to }} / {{ total }})</p>
+            <p>page {{ current_page }}</p>
+          </div>
+          <div class="col-xs-12 text-center">
+            <ngb-pagination
+              [collectionSize]="units_raw_data?.last_page * 10"
+              [(page)]="pageTest"
+              [maxSize]="5"
+              [rotate]="true"
+              [ellipses]="true"
+              [boundaryLinks]="true"
+              (pageChange)="pageChange($event)"
+              [size]="lg"
+            >
+            </ngb-pagination>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<modal
+  #makeUnitAvailableModal
+  title="Make Unit Available"
+  submitButtonLabel="submit"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onOpen)="openMakeUnitAvailableModal()"
+  (onClose)="closeMakeUnitAvailableModal()"
+  (onSubmit)="submitMakeUnitAvailableModal(makeUnitAvailableModal)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <div class="row">
+      <form>
+        <div class="form-group col-xs-6">
+          <label for="">Comment</label>
+          <input
+            type="text"
+            class="form-control"
+            name="comment"
+            [(ngModel)]="comment"
+          />
+        </div>
+      </form>
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="makeUnitAvailableModal.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>

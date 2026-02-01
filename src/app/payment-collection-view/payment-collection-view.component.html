@@ -1,0 +1,208 @@
+<ng-container *ngIf="payment_collection">
+  <section class="unit">
+    <div class="container-fluid">
+      <h2>Payment Collection</h2>
+      <div class="row">
+        <div class="col-xs-12"></div>
+        <div class="col-xs-12">
+          <div class="card-section">
+            <div class="header-section">
+              <div class="row">
+                <div class="col-md-9">
+                  <div class="media">
+                    <div class="media-left">
+                      <a>
+                        {{ payment_collection?.status?.substr(0, 6) }}
+                      </a>
+                    </div>
+                    <div class="media-body">
+                      <h3>
+                        Payment Collection
+                        <span>#{{ payment_collection?.id }}</span>
+                      </h3>
+                      <div class="row">
+                        <div class="col-xs-4">
+                          <ul class="list-unstyled">
+                            <li>
+                              Reservation Serial:
+                              <a
+                                [routerLink]="[
+                                  '/',
+                                  'pages',
+                                  'project',
+                                  'view-reservation',
+                                  payment_collection?.reservation_id
+                                ]"
+                                ># {{ payment_collection?.reservation_id }}</a
+                              >
+                            </li>
+                            <li>
+                              Unit Serial:
+                              <a
+                                [routerLink]="[
+                                  '/',
+                                  'pages',
+                                  'project',
+                                  'view-unit'
+                                ]"
+                                [queryParams]="{
+                                  unit_id: payment_collection?.unit?.id
+                                }"
+                                ># {{ payment_collection?.unit?.serial }}</a
+                              >
+                            </li>
+                            <li>
+                              Client Name: {{ payment_collection?.lead?.name }}
+                            </li>
+                            <li>
+                              Collect Method:
+                              {{
+                                partially_methods[
+                                  payment_collection?.partially_method
+                                ]
+                              }}
+                            </li>
+                            <li>
+                              Payment Type:
+                              {{ payment_collection?.installment_type }}
+                            </li>
+                          </ul>
+                        </div>
+                        <div class="col-xs-4">
+                          <ul class="list-unstyled">
+                            <li>
+                              Customer Bank:
+                              {{ payment_collection?.bank?.name }}
+                            </li>
+                            <li>
+                              Location:
+                              {{ payment_collection?.store_bank?.name }}
+                            </li>
+                            <li>
+                              Cheque Number:
+                              {{ payment_collection?.cheque_number }}
+                            </li>
+                            <li>
+                              Payment Date: {{ payment_collection?.date }}
+                            </li>
+                            <li>Status: {{ payment_collection?.status }}</li>
+                          </ul>
+                        </div>
+                        <div class="col-xs-4">
+                          <ul class="list-unstyled">
+                            <li>
+                              Received Amount:
+                              {{
+                                payment_collection?.amount_received
+                                  | currency : " "
+                              }}
+                            </li>
+                            <li>
+                              Remaining Amount:
+                              {{
+                                payment_collection?.remaining_amount
+                                  | currency : " "
+                              }}
+                            </li>
+                            <li>
+                              Total Amount:
+                              {{ payment_collection?.amount | currency : " " }}
+                            </li>
+                            <li>
+                              Reminder Status:
+                              {{
+                                payment_collection?.send_reminder == 0
+                                  ? "Disabled"
+                                  : "Enabled"
+                              }}
+                            </li>
+                            <li>
+                              Reminder Reason:
+                              {{ payment_collection?.reminder_reason }}
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-3 operation-container"></div>
+              </div>
+            </div>
+            <hr />
+            <div class="log-section">
+              <!-- Nav tabs -->
+              <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active">
+                  <a
+                    href="#logs"
+                    aria-controls="logs"
+                    role="tab"
+                    data-toggle="tab"
+                  >
+                    Log
+                  </a>
+                </li>
+                <li role="presentation">
+                  <a
+                    href="#payments"
+                    aria-controls="payments"
+                    role="tab"
+                    data-toggle="tab"
+                    >Payments</a
+                  >
+                </li>
+              </ul>
+
+              <!-- Tab panes -->
+              <div class="tab-content">
+                <div role="tabpanel" class="tab-pane fade in active" id="logs">
+                  <div class="time-line">
+                    <ul class="list-unstyled">
+                      <li *ngFor="let item of payment_collection?.logs">
+                        <span class="crcle-t"></span>
+                        <div class="tm-content">
+                          <div class="dateformat">
+                            {{ item?.created_at | date : "medium" }}
+                          </div>
+                          <div class="activity-details">
+                            {{ item?.details }}
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="payments">
+                  <div class="time-line">
+                    <ul class="list-unstyled">
+                      <li *ngFor="let rate of payment_collection?.rates">
+                        <span class="crcle-t"></span>
+                        <div class="tm-content">
+                          <div class="dateformat">
+                            {{ rate?.created_at | date : "medium" }}
+                          </div>
+                          <div class="activity-details">
+                            <p>
+                              Amount In EGP:
+                              {{ rate.amount_received | currency : " " }} EGP
+                            </p>
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xs-12 margin-top">
+          <button class="btn btn-default btn-black" [routerLink]="['..']">
+            BACK
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+</ng-container>

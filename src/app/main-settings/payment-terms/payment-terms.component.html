@@ -1,0 +1,299 @@
+<ng-container
+  *ngIf="userData.role != 'Moderator' && userData.role != 'Super Moderator'"
+>
+  <mat-card>
+    <mat-card-content>
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="search-form-inputs">
+              <div class="form-group">
+                <div class="row filter-outer-container">
+                  <div class="col-md-12">
+                    <div class="col-md-2">
+                      <h3 class="search__title">Advanced Search</h3>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-12 col-xs-4">
+                        <form class="search-form" [formGroup]="filterForm">
+                          <div class="search-form-inputs">
+                            <div *ngIf="projects" class="form-group col-md-4">
+                              <label for="">Project :</label>
+                              <select
+                                class="form-control"
+                                formControlName="project_id"
+                                id="project"
+                                (change)="onProjectChange()"
+                              >
+                                <option value="" [selected]="true">
+                                  Select
+                                </option>
+                                <option
+                                  *ngFor="let p of projects"
+                                  [value]="p.id"
+                                >
+                                  {{ p.name }}
+                                </option>
+                              </select>
+                            </div>
+                            <div class="form-group col-md-4">
+                              <label for="">Status :</label>
+                              <select
+                                class="form-control"
+                                formControlName="status"
+                                id="contractStatus"
+                              >
+                                <option value="" [selected]="true">
+                                  Select
+                                </option>
+                                <option value="0">Disabled</option>
+                                <option value="1">Enabled</option>
+                              </select>
+                            </div>
+
+                            <div class="form-group col-md-4">
+                              <label for="">Finishing Types :</label>
+                              <ng-multiselect-dropdown
+                                [placeholder]="'Finishing Types'"
+                                [data]="finishing_types"
+                                [(ngModel)]="selectedFinishingTypes"
+                                [ngModelOptions]="{ standalone: true }"
+                                [settings]="statusesDropdownSettings"
+                                (onSelect)="onItemSelect($event)"
+                                (onSelectAll)="onSelectAll($event)"
+                              >
+                              </ng-multiselect-dropdown>
+                            </div>
+
+                            <div class="form-group col-md-4">
+                              <label for="">Phases :</label>
+                              <ng-multiselect-dropdown
+                                [placeholder]="'Phases'"
+                                [data]="phacesOptions"
+                                [(ngModel)]="selectedPhases"
+                                [ngModelOptions]="{ standalone: true }"
+                                [settings]="phasesDropdownSettings"
+                                (onSelect)="onItemSelect($event)"
+                                (onSelectAll)="onSelectAll($event)"
+                              >
+                              </ng-multiselect-dropdown>
+                            </div>
+
+                            <div
+                              class="search-buttons col-md-4 d-flex justify-content-between"
+                            >
+                              <button
+                                (click)="filterPaymentTerms(1)"
+                                class="button filter_btn"
+                              >
+                                FILTER
+                              </button>
+                              <button
+                                (click)="resetFilters()"
+                                type="button"
+                                class="button bg-danger reset_filter"
+                              >
+                                RESET
+                              </button>
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-10 top-header-container">
+            <h3 class="card__title">Manage Payment Terms</h3>
+          </div>
+          <div class="col-xs-2 import-container">
+            <div class="settings-icons pull-right">
+              <div class="dropdown" dropdown>
+                <i class="fa fa-cog" aria-hidden="true" dropdown-open></i>
+                <ul class="dropdown-menu">
+                  <li (click)="exportPaymentTerms()">
+                    <a>
+                      <span>Export Payment Terms</span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <table>
+        <tr>
+          <th class="status-box">
+            <div class="enabled-disabled-checkbox">
+              <div class="enabled"></div>
+              <div class="disabled"></div>
+            </div>
+          </th>
+          <th>Payment Option</th>
+          <th>Project</th>
+          <th>Finishing Type</th>
+          <th>Payment Phase</th>
+          <th>Status</th>
+          <th>Disbale/Enable</th>
+          <th>Actions</th>
+        </tr>
+        <tr
+          class="data"
+          *ngFor="let payment of paymentTerms; let index = index"
+        >
+          <td class="status-box">
+            <div
+              [ngClass]="{
+                disabled: payment?.is_active == 0,
+                enabled: payment?.is_active == 1
+              }"
+            ></div>
+          </td>
+          <td>{{ payment?.plan_name }}</td>
+          <td>
+            <ng-multiselect-dropdown
+              [placeholder]="'Assign Project'"
+              [data]="projects || []"
+              [ngModel]="payment.projects"
+              [settings]="projectsDropdownSettings"
+              (ngModelChange)="
+                select_project($event, payment.projects, payment.id, payment)
+              "
+            >
+            </ng-multiselect-dropdown>
+          </td>
+          <td>
+            <select
+              class="form-control"
+              [(ngModel)]="payment.finishing_type.id"
+              name="finishing_types"
+              (change)="onFinishingTypeChange($event.target.value, payment)"
+            >
+              <option
+                *ngFor="let finishing_type of finishing_types"
+                [value]="finishing_type.id"
+              >
+                {{ finishing_type?.name }}
+              </option>
+            </select>
+          </td>
+          <td>
+            <ng-multiselect-dropdown
+              [placeholder]="'Phases'"
+              [data]="payment.all_phases"
+              [(ngModel)]="payment.phases"
+              [settings]="dropdownSettings"
+              (ngModelChange)="
+                onDropDownClose($event, payment.phases, payment.id, payment)
+              "
+            >
+            </ng-multiselect-dropdown>
+          </td>
+          <!-- <td>
+                      {{getFinishingType(payment?.phases)}}
+                  </td> -->
+          <td *ngIf="payment?.is_active == 0">Disabled</td>
+          <td *ngIf="payment?.is_active == 1">Enabled</td>
+          <td>
+            <ui-switch
+              defaultBgColor="#c6cbd4"
+              color="gray"
+              [checked]="payment.is_active == 1 ? true : false"
+              (change)="onChange($event, index, payment.id)"
+            ></ui-switch>
+          </td>
+          <td>
+            <div class="dropdown" dropdown>
+              <img
+                class="more-options-icon"
+                src="assets/img/show-more-button-with-three-dots.svg"
+                dropdown-open
+              />
+              <ul class="dropdown-menu">
+                <!-- <li>
+                  <a
+                    (click)="
+                      generateRandomPayment(payment, generatePaymentRandom)
+                    "
+                  >
+                    <span class="doc_link">Generate Random Payment</span>
+                  </a>
+                </li> -->
+                <li>
+                  <a
+                    (click)="
+                      editPaymentTermName(payment, changePaymentTermModal)
+                    "
+                    >Edit Payment Term Name</a
+                  >
+                </li>
+                <li>
+                  <a (click)="deletePayment(payment.id, index)">Delete</a>
+                </li>
+                <li>
+                  <a (click)="cloneAnnual(payment)">Clone annual</a>
+                </li>
+                <li>
+                  <a (click)="cloneSemiAnnual(payment)">Clone semi-annual</a>
+                </li>
+              </ul>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </mat-card-content>
+  </mat-card>
+  <div class="col-xs-12 text-center">
+    <ngb-pagination
+      [collectionSize]="raw_data?.last_page * 10"
+      [(page)]="pageTest"
+      [maxSize]="5"
+      [rotate]="true"
+      [ellipses]="true"
+      [boundaryLinks]="true"
+      (pageChange)="pageChange($event)"
+    >
+    </ngb-pagination>
+  </div>
+
+  <modal
+    #changePaymentTermModal
+    title="Change Payment Term Name"
+    submitButtonLabel="submit"
+    modalClass="modal-lg"
+    [hideCloseButton]="true"
+    [closeOnOutsideClick]="true"
+    (onSubmit)="changePaymentTermNameSubmit(changePaymentTermModal)"
+    (onClose)="changePaymentTermModalOnClose()"
+  >
+    <modal-header> </modal-header>
+    <modal-content>
+      <form>
+        <div class="row">
+          <div class="form-group col-md-12">
+            <label for="">Payment Term Name</label>
+            <input
+              type="text"
+              name="payment_term_name"
+              class="form-control"
+              [(ngModel)]="payment_term_name"
+            />
+          </div>
+        </div>
+      </form>
+    </modal-content>
+    <modal-footer>
+      <button
+        class="btn btn-secondary"
+        (click)="changePaymentTermModal.close()"
+      >
+        close
+      </button>
+    </modal-footer>
+  </modal>
+</ng-container>

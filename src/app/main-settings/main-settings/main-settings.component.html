@@ -1,0 +1,15 @@
+<div class="main-container overflow-auto">
+  <h2>Settings</h2>
+  <div class="content-wrapper">
+    <div class="side-menu">
+      <p-panelMenu
+        [model]="settingsMenuItems"
+        [multiple]="false"
+        [style]="{ width: '300px' }"
+      ></p-panelMenu>
+    </div>
+    <div class="settings-content">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

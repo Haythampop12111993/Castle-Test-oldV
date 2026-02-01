@@ -1,0 +1,33 @@
+.sales-charts,
+.inventory-charts {
+  margin: 32px 0;
+}
+
+.sales-charts__wrapper,
+.inventory-charts__wrapper {
+  margin-bottom: -16px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.sales-charts__single,
+.inventory-charts__single {
+  border: 1px solid lightgray;
+  border-radius: 5px;
+  width: 85%;
+  /* margin-bottom: 16px; */
+  margin: 0 auto;
+}
+
+@media (max-width: 1100px) {
+  .sales-charts__wrapper,
+  .inventory-charts__wrapper {
+    display: block;
+  }
+
+  .sales-charts__single,
+  .inventory-charts__single {
+    width: 100%;
+  }
+}

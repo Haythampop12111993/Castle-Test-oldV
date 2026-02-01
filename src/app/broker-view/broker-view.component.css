@@ -1,0 +1,239 @@
+.no-interaction {
+  opacity: 0.3;
+  cursor: wait;
+}
+
+.disable-all-intercation {
+  pointer-events: none;
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.list-unstyled.edit-spam li {
+  cursor: pointer;
+}
+
+.unit .lead-details .edit-spam li {
+  width: 100%;
+}
+
+.operation-container {
+  border-left: 1px solid #cbcbcb;
+  padding-left: 40px;
+}
+.cursor-pointer {
+  cursor: pointer;
+}
+.margin-top {
+  margin-top: 10px;
+}
+
+.dateformat {
+  font-size: 10px;
+  position: absolute;
+  left: -132px;
+  top: -6px;
+  /*font-weight: bold;*/
+}
+
+.vertical-align-center {
+  vertical-align: middle !important;
+}
+/* .carousel-cell {
+  position: relative;
+}
+::ng-deep carousel {
+  z-index: 9000 !important;
+}
+::ng-deep .carousel-cells .carousel-cell img {
+  object-fit: cover !important;
+  border-radius: 8px;
+}
+.for__deleteImg {
+  position: absolute;
+  background-color: #cccccc;
+  color: #fff;
+  border-radius: 50%;
+  height: 30px;
+  width: 30px;
+  top: 5px;
+  right: 5px;
+  border: none;
+  font-size: 25px;
+  line-height: 1;
+  z-index: 989898;
+  transition: 0.3s;
+}
+.for__deleteImg:hover {
+  transition: 0.3s;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.4);
+}
+
+::ng-deep .custom-dropzone-class {
+  height: 200px !important;
+}
+
+::ng-deep .ng-image-fullscreen-view {
+  z-index: 9031 !important;
+}
+
+.images-container {
+
+} */
+
+/* .slider {
+  width: 100%;
+  padding-bottom: 25%;
+}
+.slider img {
+  width: 100%;
+}
+.wrapper {
+  width: 100%;
+  margin: 0;
+}
+@media only screen and (min-width: 1024px) {
+  .wrapper {
+    width: 1024px;
+    margin: auto;
+  }
+}
+
+::ng-deep .slider {
+  min-height: 1000px;
+} */
+
+.unit-slider-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.unit-slider-container .prev {
+  font-size: 50px;
+  text-decoration: none;
+  padding: 0px 10px;
+  cursor: pointer;
+}
+
+.unit-slider-container .next {
+  font-size: 50px;
+  text-decoration: none;
+  padding: 0px 10px;
+  cursor: pointer;
+}
+
+.print-btn {
+  position: absolute;
+  z-index: 999;
+  top: 0;
+  right: 0;
+}
+
+.delete-btn {
+  position: absolute;
+  z-index: 999;
+  top: 0;
+  left: 0;
+  background-color: red;
+  color: #fff;
+}
+
+::ng-deep .swal2-container {
+  z-index: 100000060 !important;
+}
+
+.header-lead {
+  padding-bottom: 2.5rem;
+}
+
+.max-h-auto {
+  max-height: none !important;
+}
+
+/* ---------- */
+.new-unit-slider {
+  max-width: 100%;
+  position: relative;
+  margin: auto;
+}
+
+.new-unit-slider .slide {
+  display: none;
+  animation-name: fade;
+  animation-duration: 1.5s;
+}
+.new-unit-slider .slide.active {
+  display: block;
+}
+
+.new-unit-slider .action {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  width: auto;
+  margin-top: -46px;
+  padding: 40px;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  transition: 0.6s ease;
+  border-radius: 0 3px 3px 0;
+  user-select: none;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.new-unit-slider .action:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.new-unit-slider .action.next {
+  right: 0;
+  border-radius: 3px 0 0 3px;
+}
+
+.new-unit-slider .numbertext {
+  color: #f2f2f2;
+  font-size: 12px;
+  padding: 8px 12px;
+  position: absolute;
+  top: 0;
+}
+
+.new-unit-slider-dots {
+  text-align: center;
+}
+
+.new-unit-slider-dots .dot {
+  cursor: pointer;
+  height: 15px;
+  width: 15px;
+  margin: 0 2px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+  transition: background-color 0.6s ease;
+}
+
+.new-unit-slider-dots .active,
+.new-unit-slider-dots .dot:hover {
+  background-color: #717171;
+}
+
+@keyframes fade {
+  from {
+    opacity: 0.4;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.btn-group-100 {
+  width: 100;
+  display: flex;
+}
+
+.btn-group-100 .btn {
+  flex-grow: 1;
+}

@@ -1,0 +1,73 @@
+<mat-card class="option-card">
+  <mat-card-content>
+    <h3 class="card__title">Case Side</h3>
+    <div class="row">
+      <div class="col-xs-12 margin-bottom">
+        <form #form="ngForm" class="form-inline">
+          <div class="form-group">
+            <label for="">Side Name :</label>
+            <input
+              name="add_side"
+              [(ngModel)]="add_side"
+              type="text"
+              class="form-control"
+              required
+            />
+          </div>
+
+          <button
+            *ngIf="!current_selected_side"
+            (click)="addSide()"
+            class="btn btn-primary"
+            type="submit"
+            [disabled]="!form.form.valid"
+          >
+            Add
+          </button>
+          <button
+            *ngIf="current_selected_side"
+            (click)="updateSide()"
+            class="btn btn-primary"
+            type="submit"
+            [disabled]="!form.form.valid"
+          >
+            Update
+          </button>
+          <button
+            *ngIf="current_selected_side"
+            (click)="cancelUpdate()"
+            class="btn btn-default"
+            type="button"
+          >
+            Cancel
+          </button>
+        </form>
+      </div>
+      <div class="col-xs-12 margin-bottom">
+        <table>
+          <tr>
+            <th>Name</th>
+            <th>Actions</th>
+          </tr>
+          <tr class="data" *ngFor="let side of Sides">
+            <td>
+              {{ side?.name }}
+            </td>
+
+            <td>
+              <button
+                class="btn btn-danger delete"
+                (click)="deleteSide(side.id)"
+              >
+                Delete
+              </button>
+              <button class="btn btn-primary primary" (click)="editSide(side)">
+                Edit
+              </button>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

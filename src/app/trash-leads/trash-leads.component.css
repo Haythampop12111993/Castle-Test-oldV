@@ -1,0 +1,22 @@
+.table-responsive {
+  margin-top: 15px;
+  overflow-x: unset;
+}
+
+.table-responsive th,
+.table-responsive tr {
+  text-align: center;
+}
+
+h3 {
+  text-transform: uppercase;
+}
+
+.action {
+  width: 10%;
+}
+
+.dropdown-menu {
+  left: unset;
+  right: 0;
+}

@@ -1,0 +1,47 @@
+.add-new-team {
+  padding-top: 0px;
+}
+
+.form-group:first-child {
+  margin-top: 0px;
+}
+
+.form-group {
+  margin-top: 35px;
+}
+
+.col-md-4.align-top {
+  margin-top: 35px;
+}
+
+select,
+input {
+  color: #333;
+  font-weight: bold;
+}
+
+@media (min-width: 992px) {
+  .eoi .border-sec .col-md-4 {
+    height: auto;
+  }
+}
+
+.tabs-group {
+  margin-bottom: 20px;
+}
+
+.tabs-group .tab-grp-btn {
+  margin-right: 20px;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 12px;
+}
+
+.active_grp_btn {
+  background-color: #333;
+  color: #fff;
+}
+
+.add-name-btn {
+    margin-top: 25px;
+}

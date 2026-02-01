@@ -1,0 +1,17 @@
+.form-group:first-child{
+  margin-top: 0px;
+}
+
+.form-group{
+  margin-top: 35px;
+}
+
+.col-md-4.align-top{
+  margin-top: 35px;
+}
+
+@media (min-width: 992px) {
+  .eoi .border-sec .col-md-4{
+    height: auto;
+  }
+}

@@ -1,0 +1,226 @@
+<ng-container *ngIf="true">
+  <section class="projects">
+    <div class="container-fluid">
+      <h2>Payment Generator</h2>
+      <div class="box">
+        <form #paymentForm="ngForm" (ngSubmit)="getInstallments(paymentForm)">
+          <div class="border-sec">
+            <div class="row">
+              <div class="col-xs-6">
+                <div class="form-group">
+                  <label for="unit_serial">Unit Serial</label>
+                  <div class="search-btn-container">
+                    <div>
+                      <input ng2-auto-complete autocomplete="off" placeholder="Search for available unit by serial "
+                        [source]="observableSource.bind(this)" class="form-control" name="unit_serial"
+                        [(ngModel)]="new_paymentForm.unit_serial" (ngModelChange)="valueChanged($event)" required />
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="finishing_type_id">Finish Type</label>
+                  <select class="form-control" name="finishing_type_id" id="finishing_type_id"
+                    [(ngModel)]="new_paymentForm.finishing_type_id" (ngModelChange)="onFinishTypePriceChange($event)"
+                    required>
+                    <option value="">None</option>
+                    <option *ngFor="let finishing_type of unit_details?.finishing_types" [value]="finishing_type?.id">
+                      {{ finishing_type?.name }}
+                    </option>
+                  </select>
+                </div>
+                <div class="form-group" *ngIf="new_paymentForm.project_type">
+                  <label for="type">Payment Method Type :</label>
+                  <select class="form-control" [(ngModel)]="new_paymentForm.type"
+                    (ngModelChange)="changePaymentMethod($event)" name="type" required>
+                    <option value="" disabled="true" [selected]="!type">
+                      Year...
+                    </option>
+                    <option *ngFor="let method of methods" value="{{ method.id }}" [disabled]="method.is_active == 0">
+                      {{ method.plan_name }}
+                    </option>
+                  </select>
+                </div>
+                <div class="form-group" *ngIf="
+                    (userProfile.role == 'Admin' ||
+                      userProfile.role == 'Super Development' ||
+                      userProfile.role == 'Moderator' ||
+                      userProfile.role == 'Super Moderator' ||
+                      userProfile.role == 'A.R Accountant' ||
+                      userProfile.role == 'Treasury Accountant' ||
+                      userProfile.role == 'Contractor') &&
+                    unit_serial &&
+                    (new_paymentForm.type ==
+                      'Down Town Port Said 20 perc DP with finishing' ||
+                      new_paymentForm.type ==
+                        'Down Town Port Said 20 perc DP over 5 years with finishing' ||
+                      new_paymentForm.type ==
+                        'Down Town Port Said 20 perc DP over 6 years with finishing')
+                  ">
+                  <label for="generated_view">Generated View :</label>
+                  <select class="form-control" [(ngModel)]="new_paymentForm.generated_view" name="generated_view"
+                    required>
+                    <option value="Total" selected>Total</option>
+                    <option value="Detalied">Detalied</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="price">Unit Price</label>
+                  <input type="number" class="form-control req" [(ngModel)]="new_paymentForm.price" name="price"
+                    [disabled]="
+                      !(
+                        userProfile.role == 'Admin' ||
+                        userProfile.role == 'Super Development' ||
+                        userProfile.role == 'Moderator' ||
+                        userProfile.role == 'Super Moderator'
+                      )
+                    " [required]="
+                      !(
+                        userProfile.role == 'Admin' ||
+                        userProfile.role == 'Super Development' ||
+                        userProfile.role == 'Moderator' ||
+                        userProfile.role == 'Super Moderator'
+                      )
+                    " />
+                </div>
+                <div class="form-group" *ngIf="
+                    userProfile.role == 'Admin' ||
+                    userProfile.role == 'Super Development' ||
+                    userProfile.role == 'Moderator' ||
+                    userProfile.role == 'Super Moderator' ||
+                    userProfile.role == 'A.R Accountant' ||
+                    userProfile.role == 'Treasury Accountant'
+                  ">
+                  <label for="status">Unit Status</label>
+                  <input type="text" class="form-control req" [(ngModel)]="new_paymentForm.status" name="status"
+                    disabled />
+                </div>
+                <div class="form-group" *ngIf="
+                    userProfile.role == 'Admin' ||
+                    userProfile.role == 'Super Development' ||
+                    userProfile.role == 'Moderator' ||
+                    userProfile.role == 'Super Moderator' ||
+                    userProfile.role == 'A.R Accountant' ||
+                    userProfile.role == 'Treasury Accountant'
+                  ">
+                  <input type="checkbox" [(ngModel)]="new_paymentForm.has_basement"
+                    (change)="hasBasementChangeHandler($event)" name="has_basement" />
+                  <label for="has_basement">Has Basement</label>
+                </div>
+              </div>
+
+              <div class="col-xs-6">
+                <div *ngIf="new_paymentForm.project_type" class="form-group">
+                  <label>Down Payment Percentage %</label>
+                  <input type="number" class="form-control req" [(ngModel)]="new_paymentForm.percentage"
+                    name="percentage" disabled required />
+                </div>
+                <div class="form-group">
+                  <label for="slots">Number of parking Slots</label>
+                  <select class="form-control" [(ngModel)]="new_paymentForm.slots" name="slots" required>
+                    <option value="0">Without Parking Slots</option>
+                    <option value="1">One Parking Slots</option>
+                    <option value="2">Two Parking Slots</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-xs-6">
+                <div class="form-group">
+                  <label for="starting_date">Starting Date</label>
+                  <input type="date" class="form-control req" [(ngModel)]="new_paymentForm.starting_date"
+                    name="starting_date" />
+                </div>
+              </div>
+              <div class="col-xs-6" *ngIf="unit_details?.project?.available_storage_slots">
+                <div class="form-group">
+                  <label for="storage_slots">Storage Slots</label>
+                  <input type="text" class="form-control req" [(ngModel)]="new_paymentForm.storage_slots"
+                    name="storage_slots" (keyup)="validateNumberStorageSlots($event)" />
+                </div>
+              </div>
+              <div class="col-xs-6" *ngIf="unit_details?.project?.available_extra_outdoor_meters">
+                <div class="form-group">
+                  <label for="extra_outdoor_meters">Extra Outdoor Meter</label>
+                  <input type="text" class="form-control req" [(ngModel)]="new_paymentForm.extra_outdoor_meters"
+                    (keyup)="validateExtraOutdoorMeter($event)" name="extra_outdoor_meters" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <button class="btn btn-default pull-right btn-black" [disabled]="!paymentForm.valid">
+              Generate
+            </button>
+          </div>
+        </form>
+      </div>
+      <div *ngIf="installments" class="container-fluid">
+        <div class="row generate-btns-container" *ngIf="installments.length > 0">
+          <div class="col-md-12 d-flex align-items-center justify-content-end gap-4">
+            <button class="btn btn-default pull-right btn-black" (click)="pdf()">
+              PDF
+            </button>
+            <button class="btn btn-default pull-right btn-black ms-3" (click)="printPdf()" [disabled]="generating_pdf">
+              View Offer
+            </button>
+            <button class="btn btn-default pull-right btn-black" (click)="excel()">
+              Excel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="installments" class="container-fluid">
+      <div class="box" *ngIf="installments">
+        <div class="row">
+          <div class="col-md-12" *ngIf="installments.length > 0">
+            <div class="row">
+              <div class="col-md-12">
+                <h2>Total</h2>
+              </div>
+            </div>
+            <div class="table table-responsive">
+              <table class="table table-bordered">
+                <tr>
+                  <th>Installment</th>
+                  <th>Date</th>
+                  <th>Amount</th>
+                  <th>Percentage</th>
+                </tr>
+                <tr *ngFor="let installment of installments">
+                  <td>{{ installment.Installment }}</td>
+                  <td>{{ installment.Date }}</td>
+                  <td>{{ installment.Amount }}</td>
+                  <td>{{ installment.Percentage }}%</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <hr *ngIf="separated.length > 0" />
+          <div class="col-md-12" *ngIf="separated.length > 0">
+            <div class="row">
+              <div class="col-md-12">
+                <h2>Finishing Fees :</h2>
+              </div>
+            </div>
+            <div class="table table-responsive">
+              <table class="table table-bordered">
+                <tr>
+                  <th>Installment</th>
+                  <th>Date</th>
+                  <th>Amount</th>
+                  <th>Percentage</th>
+                </tr>
+                <tr *ngFor="let separat of separated">
+                  <td>{{ separat.Installment }}</td>
+                  <td>{{ separat.Date }}</td>
+                  <td>{{ separat.Amount }}</td>
+                  <td>{{ installment.Percentage }}%</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</ng-container>

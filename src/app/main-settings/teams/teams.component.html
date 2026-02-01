@@ -1,0 +1,224 @@
+<section class="teams-table">
+  <div class="container-fluid">
+    <h2 class="teams-title">TEAMS</h2>
+    <div class="proj-details">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="table table-responsive">
+            <table class="table table-bordered">
+              <tr>
+                <th>ID</th>
+                <th>Team Name</th>
+                <th>Team Level</th>
+                <th>Parent Team</th>
+                <th>Branch</th>
+                <th>Action</th>
+              </tr>
+              <tr *ngFor="let team of inteams" [ngClass]="{ 'bg-danger': team.is_active == 0 }">
+                <td>#{{ team.id }}</td>
+                <td>{{ team.name }}</td>
+                <td *ngIf="team?.team_level == 'sub_team'">Sub Team</td>
+                <td *ngIf="team?.team_level != 'sub_team'">Team</td>
+                <td>{{ team?.parent?.name }}</td>
+                <td>{{ team?.branch?.name }}</td>
+                <td>
+                  <div class="dropdown" dropdown>
+                    <img
+                      class="more-options-icon"
+                      src="assets/img/show-more-button-with-three-dots.svg"
+                      dropdown-open
+                    />
+                    <ul class="dropdown-menu">
+                      <li (click)="edit(team.id)">
+                        <a>
+                          <span class="doc_link">Edit</span>
+                        </a>
+                      </li>
+                      <li (click)="team_tree.open()">
+                        <a>
+                          <span class="doc_link">Team Tree</span>
+                        </a>
+                      </li>
+                      <li
+                        (click)="disableTeam(team.id, team.name)"
+                        *ngIf="team.is_active"
+                      >
+                        <a>
+                          <span class="doc_link">Disable</span>
+                        </a>
+                      </li>
+                      <li
+                        (click)="activeTeam(team.id, team.name)"
+                        *ngIf="!team.is_active"
+                      >
+                        <a>
+                          <span class="doc_link">Active</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </td>
+                <modal
+                  #team_tree
+                  title="Team Tree"
+                  modalClass="modal-md"
+                  [hideCloseButton]="true"
+                  [closeOnOutsideClick]="true"
+                  (onOpen)="onOpenTeamTreeModalOpen(team.id)"
+                  (onClose)="onCloseTeamTreeModalModalClose()"
+                >
+                  <modal-header> </modal-header>
+                  <modal-content>
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="row">
+                          <div class="col-md-12">
+                            <p class="branch-title text-center">Branch Info</p>
+                          </div>
+                          <div class="col-md-4">
+                            <p class="text-start branch-name-title">Branch Name :</p>
+                          </div>
+                          <div class="col-md-6">
+                            <p class="text-start">
+                              {{ team_tree_branch_name }}
+                            </p>
+                          </div>
+                          <div class="col-md-2"></div>
+                          <div class="col-md-4">
+                            <p class="text-start">Branch Users :</p>
+                          </div>
+                          <div class="col-md-8">
+                            <div class="branch-users">
+                              <div
+                                class="branch-user"
+                                *ngFor="let user of team_tree_branch_users"
+                              >
+                                <div class="row">
+                                  <div class="col-md-6">
+                                    <p class="text-start">{{ user?.name }}</p>
+                                  </div>
+                                  <div class="col-md-6">
+                                    <p class="role text-start">
+                                      {{ user?.role }}
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <hr />
+                      <div class="col-md-12">
+                        <div class="row">
+                          <div class="col-md-12">
+                            <p class="branch-title parent-team text-center">
+                              Team Info
+                            </p>
+                          </div>
+                          <div class="col-md-4">
+                            <p class="text-start branch-name-title">Team Name :</p>
+                          </div>
+                          <div class="col-md-6">
+                            <p class="text-start">
+                              {{ team_tree_name }}
+                            </p>
+                          </div>
+                          <div class="col-md-2"></div>
+                          <div class="col-md-4">
+                            <p class="text-start">Team Users :</p>
+                          </div>
+                          <div class="col-md-8">
+                            <div class="branch-users">
+                              <div
+                                class="branch-user"
+                                *ngFor="let user of team_tree_users"
+                              >
+                                <div class="row">
+                                  <div class="col-md-6">
+                                    <p class="text-start">{{ user?.name }}</p>
+                                  </div>
+                                  <div class="col-md-6">
+                                    <p class="role text-start">{{ user?.role }}</p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <hr />
+                      <div class="col-md-12" *ngFor="let sub_team of team_tree_sub_users">
+                        <div class="row">
+                          <div class="col-md-12">
+                            <p class="branch-title parent-team text-center">
+                              Sub Team Info
+                            </p>
+                          </div>
+                          <div class="col-md-4">
+                            <p class="text-start branch-name-title">Sub Team Name :</p>
+                          </div>
+                          <div class="col-md-6">
+                            <p class="text-start">
+                              {{ sub_team?.name }}
+                            </p>
+                          </div>
+                          <div class="col-md-2"></div>
+                          <div class="col-md-4">
+                            <p class="text-start">Sub Team Users :</p>
+                          </div>
+                          <div class="col-md-8">
+                            <div class="branch-users">
+                              <div
+                                class="branch-user"
+                                *ngFor="let user of sub_team?.users"
+                              >
+                                <div class="row">
+                                  <div class="col-md-6">
+                                    <p class="text-start">{{ user?.name }}</p>
+                                  </div>
+                                  <div class="col-md-6">
+                                    <p class="role text-start">{{ user?.role }}</p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </modal-content>
+                  <modal-footer>
+                    <button
+                      class="btn btn-secondary"
+                      (click)="team_tree.close()"
+                    >
+                      close
+                    </button>
+                  </modal-footer>
+                </modal>
+              </tr>
+            </table>
+          </div>
+          <div class="col-xs-12">
+            <div class="col-md-12 text-center">
+              <ngb-pagination
+                [collectionSize]="raw_teams?.last_page * 10"
+                [(page)]="pageTest"
+                [maxSize]="5"
+                [rotate]="true"
+                [ellipses]="true"
+                [boundaryLinks]="true"
+                (pageChange)="pageChange($event)"
+                [size]="'lg'"
+              >
+              </ngb-pagination>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- <p>{{ team_tree?.branch?.name }}</p> -->

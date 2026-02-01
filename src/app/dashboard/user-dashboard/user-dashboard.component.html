@@ -1,0 +1,285 @@
+<section class="dashboard">
+  <div>
+    <div class="dashboard-sales">
+      <h1>DASHBOARD</h1>
+      <div class="dashboard-header">
+        <div class="dashboard-header__user">
+          <span>Welcome back, {{ userData?.name }}</span>
+          <a>
+            <i class="fa fa-map-marker" aria-hidden="true"></i> Cairo, Egypt</a
+          >
+        </div>
+        <div class="dashboard-header__inputs">
+          <div
+            class="channel-dropdown"
+            *ngIf="
+              userData?.role != 'A.R Accountant' &&
+              userData?.role != 'G.L Accountant' &&
+              userData?.role != 'Treasury Accountant' &&
+              userData?.role != 'Contractor'
+            "
+          >
+            <p-dropdown
+              [style]="{ width: '196px' }"
+              [options]="channels"
+              [(ngModel)]="selectedChannel"
+              (onChange)="onChannelChange($event)"
+              [filter]="true"
+              [autoWidth]="false"
+              placeholder="Select Channel"
+              [showClear]="true"
+              optionLabel="name"
+            ></p-dropdown>
+          </div>
+          <div class="calendar-container">
+            <p-calendar
+              [(ngModel)]="rangeDates"
+              selectionMode="range"
+              [readonlyInput]="true"
+              (onSelect)="onChangeDatePicker()"
+              yearRange="2000:2040"
+              [monthNavigator]="true"
+              [yearNavigator]="true"
+              showButtonBar="true"
+              [showIcon]="true"
+            ></p-calendar>
+          </div>
+        </div>
+      </div>
+      <div
+        class="sales-container"
+        *ngIf="
+          userData?.role != 'A.R Accountant' &&
+          userData?.role != 'G.L Accountant' &&
+          userData?.role != 'Treasury Accountant' &&
+          userData?.role != 'Contractor'
+        "
+      >
+        <div class="sales-pipeline">
+          <span class="sales-pipeline__title">Sales Pipeline</span>
+          <div class="sales-pipeline__bar"></div>
+        </div>
+        <div class="sales-stats">
+          <div class="sales-stats__wrapper">
+            <div
+              *ngFor="let leadStatus of statsData?.leads_status"
+              class="sales-states__card"
+              (click)="onLeadStatusClicked(leadStatus)"
+            >
+              <div class="card-number">{{ leadStatus.count }}</div>
+              <!-- <div class="card-number">0</div> -->
+              <div class="card-title">{{ leadStatus.status }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="project-dropdown">
+      <p-dropdown
+        name="year"
+        [style]="{ width: '196px', margin: '0 10px', padding: '3px 0' }"
+        [options]="getYears()"
+        [(ngModel)]="selectedYear"
+        (onChange)="onChangeFilter($event.value, selectedMonth, selectedUser)"
+        [filter]="true"
+        [autoWidth]="false"
+        placeholder="Select Year"
+        [showClear]="true"
+        optionLabel="name"
+      ></p-dropdown>
+      <p-dropdown
+        name="month"
+        [style]="{ width: '196px', margin: '0 10px', padding: '3px 0' }"
+        [options]="getMonths()"
+        [(ngModel)]="selectedMonth"
+        (onChange)="onChangeFilter(selectedYear, $event.value, selectedUser)"
+        [filter]="true"
+        [autoWidth]="false"
+        placeholder="Select Month"
+        [showClear]="true"
+        optionLabel="name"
+      ></p-dropdown>
+      <p-dropdown
+        name="userId"
+        [style]="{ width: '196px', margin: '0 10px', padding: '3px 0' }"
+        [options]="users"
+        [(ngModel)]="selectedUser"
+        (onChange)="onChangeFilter(selectedYear, selectedMonth, $event.value)"
+        [filter]="true"
+        [autoWidth]="false"
+        placeholder="Select User"
+        [showClear]="true"
+        optionLabel="name"
+      ></p-dropdown>
+    </div>
+    <div class="wallet-pipeline">
+      <span class="wallet-pipeline__title">My Wallet</span>
+      <div class="wallet-pipeline__bar"></div>
+    </div>
+    <div class="wallet-stats">
+      <div class="wallet-stats__wrapper">
+        <div class="total-commissions">
+          <div class="total-commissions__stats">
+            <div class="wallet-stats__number">
+              <!-- {{ statsData?.wallet?.total_commissions | number }} -->
+              {{waletTarget?.my_target || 0}}
+            </div>
+            <div class="wallet-stats__title">MY TARGET</div>
+          </div>
+          <div class="total-commissions__icon">
+            <img src="assets/img/dashboard/total-units-icon.png" alt="total commissions icon" />
+          </div>
+        </div>
+        <div class="commissioned">
+          <div class="commissioned__stats">
+            <div class="wallet-stats__number">
+              <!-- {{ statsData?.wallet?.commissioned }} -->
+              {{waletTarget?.achieved_from_target || 0}}
+            </div>
+            <div class="wallet-stats__title">ACHIEVED FROM TARGET</div>
+          </div>
+          <div class="commissioned__icon">
+            <img src="assets/img/dashboard/available-units-icon.png" alt="commissioned icon" />
+          </div>
+        </div>
+        <div class="wallet-pending">
+          <div class="pending__stats">
+            <div class="wallet-stats__number">
+              <!-- {{ statsData?.wallet?.pending }} -->
+              {{waletTarget?.total_commission || 0}}
+            </div>
+            <div class="wallet-stats__title">TOTAL COMMISSION</div>
+          </div>
+          <div class="pending__icon">
+            <img src="assets/img/dashboard/contracted-units-icon.png" alt="pending icon" />
+          </div>
+        </div>
+        <div class="wallet-pending acheivement-percentage">
+          <div class="pending__stats">
+            <div class="wallet-stats__number">
+              <!-- 25% -->
+              {{waletTarget && waletTarget?.achievement_percentage > 0 ? waletTarget?.achievement_percentage : 0 }}%
+            </div>
+            <div class="wallet-stats__title">ACHIEVEMENT PERCENTAGE</div>
+          </div>
+          <div class="pending__icon">
+            <img src="https://cdn.discordapp.com/attachments/762679290059292702/787983898377584681/icon.png"
+              alt="pending icon" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="dashboard-activities"
+      *ngIf="
+        userData?.role != 'Marketing' &&
+        userData?.role != 'A.R Accountant' &&
+        userData?.role != 'G.L Accountant' &&
+        userData?.role != 'Treasury Accountant' &&
+        userData?.role != 'Contractor'
+      "
+    >
+      <div class="dashboard-activities__wrapper">
+        <div class="activities-schedule">
+          <h1 class="activities-schedule__header">ACTIVITIES SCHEDULE</h1>
+          <div class="list-group__activities">
+            <a
+              href="#"
+              *ngFor="let item of statsData?.leads_activity"
+              class="activities-item list-group__item"
+              (click)="goToLeadsWithActivity(item)"
+            >
+              <div class="list-item__container">
+                <div>
+                  <i class="list-item__bullet"></i>
+                  <span class="list-item__name">{{ item.title }}</span>
+                </div>
+                <div class="item-number__container">
+                  <span class="item-number">{{ item.count }}</span>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+        <div class="latest-activities">
+          <h1 class="latest-activities__header">LATEST ACTIVITIES</h1>
+          <div class="activities-timeline">
+            <div
+              class="timeline-container"
+              *ngFor="let timeline of statsData?.activities_list"
+            >
+              <span class="timeline">{{ timeline.created_at }}</span>
+              <div class="bullet-container">
+                <i class="timeline-bullet"></i>
+              </div>
+              <div class="timeline-details">
+                <span class="timeline-details__title">{{
+                  timeline.title
+                }}</span>
+                <p>{{ timeline.details }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- <div class="sales-charts">
+            <div class="sales-charts__wrapper">
+                <div class="sales-charts__single">
+                    <h1 class="sales-chart__header">SALES ACTIVITY</h1>
+                    <div *ngIf="
+                lineChartsData.salesActivity.length > 0 &&
+                  lineChartsLabels.salesActivity.length > 0;
+                else salesActivitySpinner
+              ">
+                        <canvas baseChart width="300" height="300" [datasets]="lineChartsData.salesActivity" [labels]="lineChartsLabels.salesActivity" [options]="lineChartsOptions.salesActivity" [colors]="lineChartsColors.salesActivity" [legend]="true" [chartType]="'line'"></canvas>
+                    </div>
+                    <ng-template #salesActivitySpinner>
+                        <div class="chart-spinner">
+                            <div class="lds-ripple">
+                                <div></div>
+                                <div></div>
+                            </div>
+                        </div>
+                    </ng-template>
+                </div>
+                <div class="sales-charts__single">
+                    <h1 class="sales-chart__header">MONTHLY SALES CHART</h1>
+                    <div *ngIf="
+                lineChartsData.monthlySales.length > 0 &&
+                  lineChartsLabels.monthlySales.length > 0;
+                else monthlySalesSpinner
+              ">
+                        <canvas baseChart width="300" height="300" [datasets]="lineChartsData.monthlySales" [labels]="lineChartsLabels.monthlySales" [options]="lineChartsOptions.monthlySales" [colors]="lineChartsColors.monthlySales" [legend]="true" [chartType]="'line'"></canvas>
+                    </div>
+                    <ng-template #monthlySalesSpinner>
+                        <div class="chart-spinner">
+                            <div class="lds-ripple">
+                                <div></div>
+                                <div></div>
+                            </div>
+                        </div>
+                    </ng-template>
+                </div>
+            </div>
+        </div> -->
+  </div>
+
+  <div class="footer">
+    <div class="footer-copyrights">
+      &copy; {{ currentYear }} {{ envStatics.projectName }}
+    </div>
+    <div class="footer-upbutton">
+      <a (click)="onGoPageTop()"><i class="fa fa-arrow-circle-up"></i> UP</a>
+    </div>
+  </div>
+</section>
+
+<!-- <div class="box">
+  <div>
+    Under Maintainance !
+  </div>
+  <p><span>Stay Tuned !</span> we`re working on a new dashboard</p>
+</div> -->

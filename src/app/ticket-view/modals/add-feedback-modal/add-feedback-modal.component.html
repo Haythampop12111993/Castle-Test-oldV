@@ -1,0 +1,25 @@
+
+<modal #modal title="Add Feedback" submitButtonLabel="submit" modalClass="modal-md"
+[hideCloseButton]="true" [closeOnOutsideClick]="true" (onSubmit)="
+  submitAddFeedBackModal(modal)
+">
+<modal-header> </modal-header>
+<modal-content>
+  <div class="row">
+    <div class="form-group col-xs-6">
+      <label for="">Feedback Description<span class="required"> *</span>: </label>
+      <textarea name="addFeedbackDescription" [(ngModel)]="addFeedback.description" cols="25" rows="5"></textarea>
+    </div>
+    <div class="form-group col-xs-6">
+      <label for="">Feedback Attachments: </label>
+      <input type="file" class="form-control" id="addFeedbackFileInputDoc" multiple #addFeedbackFileInput
+        (change)="onAssignAddFeedbackFilesChange($event)" required />
+    </div>
+  </div>
+</modal-content>
+<modal-footer>
+  <button class="btn btn-secondary" (click)="modal.close()">
+    close
+  </button>
+</modal-footer>
+</modal>

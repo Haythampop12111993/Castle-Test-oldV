@@ -1,0 +1,845 @@
+<section
+  class="new-reservation"
+  [ngClass]="{ 'disable-intercation': loadingData }"
+>
+  <form class="container-fluid">
+    <div class="border-sec">
+      <div class="row">
+        <div class="line">
+          <form #form="ngForm">
+            <div class="col-md-12">
+              <h2>Unit Serial : {{ unit_serial }}</h2>
+            </div>
+            <div class="col-md-6 search-top-container">
+              <div class="col-md-7">
+                <div *ngIf="!isHold" class="form-group">
+                  <label>Search leads :</label>
+                  <div class="search-btn-container">
+                    <div>
+                      <input
+                        ngui-auto-complete
+                        [source]="observableSource.bind(this)"
+                        placeholder="Search for lead by name "
+                        class="form-control"
+                        name="chosen_lead"
+                        [(ngModel)]="chosenLead"
+                      />
+                      <small class="required">* required</small>
+                    </div>
+                    <button
+                      class="btn btn-default pull-right btn-black"
+                      type="button"
+                      [disabled]="!chosenLead"
+                      (click)="getLeadDetails()"
+                    >
+                      GET INFO
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div *ngIf="blockTimer" class="col-md-12 text-center">
+                  <div class="countdown-timer" *ngIf="blockTimer >= 0">
+                    <timer
+                      [value]="blockTimer"
+                      (onComplete)="blocktimeEnd()"
+                    ></timer>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <section class="eoi">
+    <form
+      [formGroup]="documentForm"
+      (ngSubmit)="submit()"
+      class="container-fluid"
+    >
+      <div class="border-sec">
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group">
+              <h4>LEAD INFORMATION</h4>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="">Lead Name :</label>
+              <input
+                [ngClass]="{
+                  errmsg:
+                    !documentForm.controls['lead_name'].valid &&
+                    !documentForm.controls['lead_name'].pristine
+                }"
+                type="name"
+                id="lead_name"
+                formControlName="lead_name"
+                placeholder=""
+                class="form-control req"
+              />
+              <small class="required">* required</small>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="">Lead Address :</label>
+              <input
+                [ngClass]="{
+                  errmsg:
+                    !documentForm.controls['lead_address'].valid &&
+                    !documentForm.controls['lead_address'].pristine
+                }"
+                type="text"
+                id="lead_address"
+                placeholder=""
+                formControlName="lead_address"
+                class="form-control"
+              />
+              <small class="required">* required</small>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="">Lead Home Phone :</label>
+              <input
+                type="tel"
+                id="lead_home_phone"
+                placeholder=""
+                formControlName="lead_home_phone"
+                class="form-control"
+              />
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="">Lead Nationality :</label>
+              <input
+                [ngClass]="{
+                  errmsg:
+                    !documentForm.controls['lead_nationality'].valid &&
+                    !documentForm.controls['lead_nationality'].pristine
+                }"
+                type="text"
+                id="lead_nationality"
+                placeholder=""
+                formControlName="lead_nationality"
+                class="form-control"
+              />
+              <small class="required">* required</small>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="">Lead Gender :</label>
+              <ng-select
+                [ngClass]="{
+                  errmsg:
+                    !documentForm.controls['lead_gender'].valid &&
+                    !documentForm.controls['lead_gender'].pristine
+                }"
+                type="text"
+                id="lead_gender"
+                placeholder="Select Gender"
+                formControlName="lead_gender"
+              >
+                <ng-option value="Male">Male</ng-option>
+                <ng-option value="Female">Female</ng-option>
+              </ng-select>
+              <small class="required">* required</small>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="">Lead Countery :</label>
+              <ng-select
+                [ngClass]="{
+                  errmsg:
+                    !documentForm.controls['lead_country'].valid &&
+                    !documentForm.controls['lead_country'].pristine
+                }"
+                type="text"
+                id="lead_country"
+                placeholder="Select Countery"
+                formControlName="lead_country"
+              >
+                <ng-option *ngFor="let country of counteries" [value]="country.country">
+                  {{ country.country }}
+                </ng-option>
+              </ng-select>
+              <small class="required">* required</small>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="">Lead Religion :</label>
+              <ng-select
+                [ngClass]="{
+                  errmsg:
+                    !documentForm.controls['lead_religion'].valid &&
+                    !documentForm.controls['lead_religion'].pristine
+                }"
+                id="lead_religion"
+                placeholder="Select Religion"
+                formControlName="lead_religion"
+              >
+                <ng-option value="Muslim">Muslim</ng-option>
+                <ng-option value="Christian">Christian</ng-option>
+              </ng-select>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="">Lead National ID :</label>
+              <input
+                [ngClass]="{
+                  errmsg:
+                    !documentForm.controls['lead_national_id'].valid &&
+                    !documentForm.controls['lead_national_id'].pristine
+                }"
+                type="text"
+                id="lead_national_id"
+                placeholder=""
+                formControlName="lead_national_id"
+                class="form-control"
+              />
+              <small class="required">* required</small>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="">Lead id address :</label>
+              <input
+                type="text"
+                id="lead_work_address"
+                placeholder=""
+                formControlName="lead_work_address"
+                class="form-control"
+              />
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="">Lead Other Phone :</label>
+              <input
+                type="tel"
+                id="lead_other_phone"
+                placeholder=""
+                formControlName="lead_other_phone"
+                class="form-control"
+              />
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="">Lead Birthday :</label>
+
+              <input
+                type="date"
+                id="lead_birthday"
+                placeholder=""
+                formControlName="lead_birthday"
+                class="form-control"
+              />
+              <small class="required">* required</small>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="">Lead Email :</label>
+              <input
+                type="email"
+                id="lead_email"
+                placeholder=""
+                formControlName="lead_email"
+                class="form-control"
+              />
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="">Lead Phone :</label>
+              <input
+                [ngClass]="{
+                  errmsg:
+                    !documentForm.controls['lead_phone'].valid &&
+                    !documentForm.controls['lead_phone'].pristine
+                }"
+                type="tel"
+                id="lead_phone"
+                placeholder=""
+                formControlName="lead_phone"
+                class="form-control"
+              />
+              <small class="required">* required</small>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="">Lead District :</label>
+              <input
+                [ngClass]="{
+                  errmsg:
+                    !documentForm.controls['lead_district'].valid &&
+                    !documentForm.controls['lead_district'].pristine
+                }"
+                type="text"
+                id="lead_district"
+                placeholder=""
+                formControlName="lead_district"
+                class="form-control"
+              />
+              <small class="required">* required</small>
+            </div>
+          </div>
+
+          <ng-container
+            *ngIf="
+              userProfile.role == 'Admin' ||
+              userProfile.role == 'Super Development' ||
+              userProfile.role == 'Moderator' ||
+              userProfile.role == 'Super Moderator'
+            "
+          >
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="">Division</label>
+                <ng-select
+                  name="deal_type"
+                  formControlName="deal_type"
+                  placeholder="Select Deal Type"
+                >
+                  <ng-option *ngFor="let type of deal_types" [value]="type">
+                    {{ type }}
+                  </ng-option>
+                </ng-select>
+                <small class="required">* required</small>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div
+                class="form-group"
+                *ngIf="documentForm.get('deal_type').value == 'Direct'"
+              >
+                <label for="">Division Type</label>
+                <ng-select
+                  name="deal_category"
+                  formControlName="deal_category"
+                  #dd
+                >
+                  <ng-option
+                    *ngFor="let division of leadSources"
+                    [value]="division.name"
+                  >
+                    {{ division.name }}
+                  </ng-option>
+                </ng-select>
+                <small class="required">* required</small>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div
+                class="form-group"
+                *ngIf="documentForm.get('deal_type').value == 'In-Direct'"
+              >
+                <label for="">Lead Source</label>
+                <ng-select
+                  type="text"
+                  placeholder="Select Lead Source"
+                  formControlName="lead_source"
+                  name="leadSource"
+                  required
+                >
+                  <!-- <option value="-1" disabled>Lead Source</option> -->
+                  <!-- <option *ngFor="let leadSource of leadSources; let i = index" value="{{ leadSource.name }}">
+                    {{ leadSource.name }}
+                  </option> -->
+                  <ng-option value="Broker">Broker</ng-option>
+                  <ng-option value="Ambassador">Ambassador</ng-option>
+                </ng-select>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div
+                class="form-group"
+                *ngIf="
+                  documentForm.get('lead_source').value == 'Ambassador' &&
+                  documentForm.get('deal_type').value == 'In-Direct'
+                "
+              >
+                <label for="">Ambassador</label>
+                <ng-select
+                  placeholder="Select Ambassador"
+                  name="ambassador"
+                  formControlName="ambassador_id"
+                >
+                  <ng-option
+                    *ngFor="let ambassador of ambassadors"
+                    value="{{ ambassador.id }}"
+                  >
+                    {{ ambassador.name }}
+                  </ng-option>
+                </ng-select>
+                <small class="required">* required</small>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div
+                class="form-group"
+                *ngIf="
+                  documentForm.get('lead_source').value == 'Broker' &&
+                  documentForm.get('deal_type').value == 'In-Direct'
+                "
+              >
+                <label for="">Broker</label>
+                <!-- <select class="form-control" name="broker" formControlName="broker_id">
+                    <option value="" disabled="true" [selected]="!Broker_id">Name...</option>
+                    <option *ngFor="let broker of brokers" value={{broker.id}}>{{broker.name}}</option>
+                  </select> -->
+                <ng-select name="broker_id" formControlName="broker_id" #df>
+                  <ng-option
+                    *ngFor="let broker of brokers"
+                    [value]="broker.id"
+                    >{{ broker.name }}</ng-option
+                  >
+                </ng-select>
+                <small class="required">* required</small>
+              </div>
+            </div>
+            <div class="clear-fix"></div>
+            <div class="col-md-4">
+              <div
+                class="form-group"
+                *ngIf="
+                  documentForm.get('lead_source').value == 'Broker' &&
+                  documentForm.get('deal_type').value == 'In-Direct'
+                "
+              >
+                <label for="">Broker Incentive</label>
+                <ng-select
+                  name="broker_incentive_id"
+                  formControlName="broker_incentive_id"
+                  #df
+                >
+                  <ng-option
+                    *ngFor="let brokerIncentive of incentive_users"
+                    [value]="brokerIncentive.id"
+                    >{{ brokerIncentive.name }}</ng-option
+                  >
+                </ng-select>
+                <small class="required">* required</small>
+              </div>
+            </div>
+          </ng-container>
+
+          <div class="col-md-4"></div>
+
+          <div class="col-md-4"></div>
+        </div>
+      </div>
+
+      <div class="d-flex flex-wrap gap-1">
+        <div class="border-sec w-100 w-md-50">
+          <div>
+            <div>
+              <h4>Unit Information</h4>
+            </div>
+            <div class="form-group">
+              <label for="">Finishing Type</label>
+              <select
+                (change)="onFinishTypePriceChange($event.target.value)"
+                class="form-control"
+                name="finishing_type_id"
+                id="finishing_type_id"
+                formControlName="finishing_type_id"
+              >
+                <option value="">None</option>
+                <option
+                  *ngFor="let finishing_type of unit_details?.finishing_types"
+                  [value]="finishing_type?.id"
+                >
+                  {{ finishing_type?.name }}
+                </option>
+              </select>
+              <small class="required">* required</small>
+            </div>
+            <div class="form-group">
+              <label for="">Parking Slots</label>
+              <input
+                type="text"
+                id="unit_garage_price"
+                (keyup)="validateNumberParkingSlots($event)"
+                formControlName="unit_garage_price"
+                class="form-control"
+              />
+            </div>
+            <div class="form-group">
+              <label for="">Storage Slots</label>
+              <input
+                type="text"
+                id="storage_slots"
+                (keyup)="validateNumberStorageSlots($event)"
+                formControlName="storage_slots"
+                class="form-control"
+              />
+            </div>
+            <div class="form-group">
+              <label for="">Extra Outdoor Meters</label>
+              <input
+                type="text"
+                id="extra_outdoor_meters"
+                (keyup)="validateExtraOutdoorMeter($event)"
+                formControlName="extra_outdoor_meters"
+                class="form-control"
+              />
+            </div>
+            <div class="form-group">
+              <label for="has_basement">Has Basement</label>
+              <input
+                type="checkbox"
+                id="has_basement"
+                formControlName="has_basement"
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-12 col-md-6" *ngIf="documentForm.value.unit_id">
+              Unit : {{ documentForm.value.unit_id }}
+            </div>
+            <div
+              class="col-xs-12 col-md-6"
+              *ngIf="documentForm.value.unit_building"
+            >
+              Building NUmber : {{ documentForm.value.unit_building }}
+            </div>
+            <div
+              class="col-xs-12 col-md-6"
+              *ngIf="documentForm.value.unit_location"
+            >
+              Location : {{ documentForm.value.unit_location }}
+            </div>
+            <div
+              class="col-xs-12 col-md-6"
+              *ngIf="documentForm.value.unit_price"
+            >
+              Price : {{ documentForm.value.unit_price }}<sup>EGP</sup>
+            </div>
+            <div
+              class="col-xs-12 col-md-6"
+              *ngIf="documentForm.value.project_type"
+            >
+              Project Type : {{ documentForm.value.project_type }}
+            </div>
+            <div
+              class="col-xs-12 col-md-6"
+              *ngIf="documentForm.value.unit_phase"
+            >
+              Phase : {{ documentForm.value.unit_phase }}
+            </div>
+            <div
+              class="col-xs-12 col-md-6"
+              *ngIf="documentForm.value.unit_land_area"
+            >
+              Land Area : {{ documentForm.value.unit_land_area }} m<sup>2</sup>
+            </div>
+            <div
+              class="col-xs-12 col-md-6"
+              *ngIf="documentForm.value.unit_basement_area"
+            >
+              Basement Area : {{ documentForm.value.unit_basement_area }} m<sup
+                >2</sup
+              >
+            </div>
+            <div
+              class="col-xs-12 col-md-6"
+              *ngIf="documentForm.value.unit_roof_area"
+            >
+              Roof Area : {{ documentForm.value.unit_roof_area }} m<sup>2</sup>
+            </div>
+            <div
+              class="col-xs-12 col-md-6"
+              *ngIf="documentForm.value.unit_garage_area"
+            >
+              Garage Area : {{ documentForm.value.unit_garage_area }} m<sup
+                >2</sup
+              >
+            </div>
+            <div
+              class="col-xs-12 col-md-6"
+              *ngIf="documentForm.value.unit_extra_area"
+            >
+              Extra Area : {{ documentForm.value.unit_extra_area }} m<sup
+                >2</sup
+              >
+            </div>
+            <div
+              class="col-xs-12 col-md-6"
+              *ngIf="documentForm.value.unit_building_area"
+            >
+              Gross Area : {{ documentForm.value.unit_building_area }} m<sup
+                >2</sup
+              >
+            </div>
+            <div
+              class="col-xs-12 col-md-6"
+              *ngIf="unit_details?.available_parking_slots"
+            >
+              Available Parking Slots :
+              {{ unit_details?.available_parking_slots }}
+            </div>
+            <div
+              class="col-xs-12 col-md-6"
+              *ngIf="unit_details?.project?.available_storage_slots"
+            >
+              Available Storage Slots :
+              {{ unit_details?.project?.available_storage_slots }}
+            </div>
+            <div
+              class="col-xs-12 col-md-6"
+              *ngIf="documentForm.value.unit_garden_area"
+            >
+              Garden Area : {{ documentForm.value.unit_garden_area }} m<sup
+                >2</sup
+              >
+            </div>
+            <div
+              class="col-xs-12 col-md-6"
+              *ngIf="documentForm.value.unit_garden_price"
+            >
+              Garden Price : {{ documentForm.value.unit_garden_price
+              }}<sup>EGP</sup>
+            </div>
+            <div
+              class="col-xs-12 col-md-6"
+              *ngIf="documentForm.value.unit_extra_price"
+            >
+              Extra Garden Price : {{ documentForm.value.unit_extra_price
+              }}<sup>EGP</sup>
+            </div>
+            <div
+              class="col-xs-12 col-md-6"
+              *ngIf="documentForm.value.unit_penthouse_area"
+            >
+              Penthouse Area :
+              {{ documentForm.value.unit_penthouse_area }} m<sup>2</sup>
+            </div>
+            <div
+              class="col-xs-12 col-md-6"
+              *ngIf="documentForm.value.unit_maintenance_price"
+            >
+              Maintenance Percentage :
+              {{ documentForm.value.unit_maintenance_price }}%
+            </div>
+          </div>
+        </div>
+
+        <div class="border-sec w-100 w-md-50">
+          <div class="row">
+            <div class="line">
+              <div class="col-md-12">
+                <div>
+                  <h4>Payment Method</h4>
+                </div>
+                <div class="form-group">
+                  <label for="">Contract Type</label>
+                  <select
+                    class="form-control"
+                    name="contract_type"
+                    id="contract_type"
+                    formControlName="contract_type"
+                  >
+                    <option value="sale">Sale</option>
+                  </select>
+                  <small class="required">* required</small>
+                </div>
+                <div
+                  *ngIf="
+                    current_contract_type == 'sale' &&
+                    ready_to_add_contract_sale
+                  "
+                >
+                  <!-- <div class="form-group">
+                    <label for="">Payment Type :</label>
+                    <select class="form-control" formControlName="payment_type">
+                      <option
+                        value=""
+                        disabled="true"
+                        [selected]="!payment_type"
+                      >
+                        Type...
+                      </option>
+                      <option value="Installment">Installment</option>
+                      <option value="Cash">Cash</option>
+                    </select>
+                    <small class="required">* required</small>
+                  </div> -->
+                  <div class="form-group">
+                    <label for="">Overseas :</label>
+                    <select
+                      (change)="onOverSeaChange($event)"
+                      class="form-control"
+                      formControlName="is_overseas"
+                    >
+                      <option
+                        value=""
+                        disabled="true"
+                        [selected]="!is_overseas"
+                      >
+                        Is overseas...
+                      </option>
+                      <option value="0">No</option>
+                      <option value="1">Yes</option>
+                    </select>
+                    <small class="required">* required</small>
+                  </div>
+                  <div class="form-group" *ngIf="can_add_residence">
+                    <label for="">Upload Residence</label>
+                    <input
+                      type="file"
+                      id="is_residence"
+                      #is_residence
+                      (change)="onResidenceChange($event)"
+                      required
+                    />
+                  </div>
+                  <div
+                    class="form-group"
+                    *ngIf="documentForm.value.payment_type == 'Installment'"
+                  >
+                    <label for="">Payment Plan :</label>
+                    <select
+                      class="form-control"
+                      formControlName="installment_years"
+                      (change)="changePaymentMethod($event.target.value)"
+                    >
+                      <option
+                        value=""
+                        disabled="true"
+                        [selected]="!installment_years"
+                      >
+                        Year...
+                      </option>
+                      <option
+                        *ngFor="let method of methods"
+                        value="{{ method.id }}"
+                      >
+                        {{ method.plan_name }}
+                      </option>
+                    </select>
+                    <small class="required">* required</small>
+                  </div>
+
+                  <div class="form-group" *ngIf="project_type == 'Residential'">
+                    <label for="">Down Payment Percentage :</label>
+                    <input
+                      type="number"
+                      id="reservation_fees"
+                      placeholder=""
+                      [(ngModel)]="reservation_fees"
+                      formControlName="reservation_fees"
+                      class="form-control"
+                      readonly
+                    />
+                    <small class="required">* required</small>
+                  </div>
+                  <!-- <div class="form-group">
+                    <label for="">Installment Fees :</label>
+                    <input
+                      type="text"
+                      id="installment_fees"
+                      placeholder=""
+                      formControlName="installment_fees"
+                      class="form-control"
+                    />
+                    <small class="required">* required</small>
+                  </div> -->
+                </div>
+                <div
+                  *ngIf="
+                    current_contract_type == 'rent' &&
+                    ready_to_add_contract_rent
+                  "
+                >
+                  <div class="form-group">
+                    <label for="">Rent Value :</label>
+                    <input
+                      type="number"
+                      id="rent_value"
+                      placeholder=""
+                      formControlName="rent_value"
+                      class="form-control"
+                    />
+                    <small class="required">* required</small>
+                  </div>
+                  <div class="form-group">
+                    <label for="">Rent Start Date :</label>
+                    <input
+                      type="date"
+                      id="rent_start_date"
+                      placeholder=""
+                      formControlName="rent_start_date"
+                      class="form-control"
+                    />
+                    <small class="required">* required</small>
+                  </div>
+                  <div class="form-group">
+                    <label for="">Rent End Date :</label>
+                    <input
+                      type="date"
+                      id="rent_end_date"
+                      placeholder=""
+                      formControlName="rent_end_date"
+                      class="form-control"
+                    />
+                    <small class="required">* required</small>
+                  </div>
+                  <div class="form-group">
+                    <label for="">Number of Rent Years :</label>
+                    <input
+                      type="number"
+                      id="rent_years_num"
+                      placeholder=""
+                      formControlName="rent_years_num"
+                      class="form-control"
+                    />
+                    <small class="required">* required</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <button
+          class="btn btn-default btn-black pull-right"
+          type="submit"
+          [disabled]="disabledSubmitWhileSending"
+        >
+          Submit
+        </button>
+      </div>
+    </form>
+  </section>
+</section>

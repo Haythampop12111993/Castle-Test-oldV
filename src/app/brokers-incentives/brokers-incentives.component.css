@@ -1,0 +1,134 @@
+.card__title {
+  margin-bottom: 20px;
+}
+
+.margin-top {
+  margin-top: 10px;
+}
+
+.edit-mode-active {
+  border-bottom: 3px solid lightblue !important;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0px;
+}
+
+ul li {
+  margin: 10px 0px;
+  padding: 10px 0px;
+  border-bottom: 1px solid #cecece;
+}
+
+ul li input {
+  border: 0px;
+  cursor: default;
+  background: #fff;
+  box-shadow: none;
+  font-size: 1.6rem;
+}
+
+.settings-icons .fa-cog {
+  font-size: 3rem;
+  margin: 10px;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.dropdown i {
+  font-family: FontAwesome !important;
+}
+
+.dropdown-menu {
+  left: -133px !important;
+}
+
+::ng-deep .modal {
+  z-index: 4000;
+}
+
+.buttons {
+  margin: 0 20px;
+}
+
+ngb-pagination {
+  margin-top: 40px;
+  display: block;
+}
+
+.ng-select-w {
+  min-width: 200px;
+}
+
+.max-w-600 {
+  width: calc(100% - 400px);
+}
+
+.flex {
+  display: flex;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.gap-3 {
+  gap: 30px;
+}
+
+.search-field {
+  width: 450px;
+}
+
+.search-buttons {
+  height: 50px;
+  margin-top: 11px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.filter_btn,
+.reset_filter {
+  border: none;
+  padding: 12px;
+  font-size: 18px;
+  width: 131px;
+}
+.filter_btn {
+  color: black;
+  background-color: gray;
+}
+.reset_filter {
+  background-color: black;
+  color: gray;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.filter-wrapper .form-group,
+.search-buttons button {
+  margin-right: 15px;
+  margin-bottom: 10px;
+}
+
+.filter_btn,
+.reset_filter {
+  margin-right: 2rem;
+  border-radius: 3px;
+}
+
+.search-buttons {
+  padding-bottom: 20px;
+}
+
+.add-btn {
+  border: none;
+  outline: none;
+  padding: 8px 20px;
+  border-radius: 3px;
+}

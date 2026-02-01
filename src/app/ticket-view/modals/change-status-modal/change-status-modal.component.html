@@ -1,0 +1,22 @@
+
+<modal #modal title="Change Status" submitButtonLabel="submit" modalClass="modal-md"
+[hideCloseButton]="true" [closeOnOutsideClick]="true" (onSubmit)="
+submitChangeStatusModal(modal)
+">
+<modal-header> </modal-header>
+<modal-content>
+  <div class="row">
+    <div class="form-group" class="col-xs-12">
+      <label for="">Status: </label>
+      <select class="form-control" name="change_status" id="change_status" [(ngModel)]="changeStatus.status_id">
+        <option *ngFor="let status of statuses" [value]="status.id">{{status.name}}</option>
+      </select>
+    </div>
+  </div>
+</modal-content>
+<modal-footer>
+  <button class="btn btn-secondary" (click)="modal.close()">
+    close
+  </button>
+</modal-footer>
+</modal>

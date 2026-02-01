@@ -1,0 +1,81 @@
+<section class="add-new-proj" *ngIf="blocklist">
+  <div class="container-fluid">
+    <div class="flex">
+      <h2 *ngIf="mode === 'add'">ADD Blocklist user</h2>
+      <h2 *ngIf="mode === 'edit'">EDIT Blocklist user</h2>
+    </div>
+    <div class="border-sec">
+      <div class="row">
+        <form [formGroup]="blocklist" class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="">Name :</label>
+              <input
+                type="text"
+                id="name"
+                formControlName="name"
+                placeholder=""
+                class="form-control req"
+              />
+            </div>
+            <div class="form-group">
+              <label for="">ID Number :</label>
+              <input
+                type="text"
+                id="id_number"
+                formControlName="id_number"
+                placeholder=""
+                class="form-control req"
+              />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="">Phone 1 :</label>
+              <input
+                type="tel"
+                id="phone1"
+                formControlName="phone1"
+                placeholder=""
+                class="form-control req"
+              />
+            </div>
+            <div class="form-group">
+              <label for="">Phone 2 :</label>
+              <input
+                type="tel"
+                id="phone2"
+                formControlName="phone2"
+                placeholder=""
+                class="form-control req"
+              />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="">Phone 3 :</label>
+              <input
+                type="tel"
+                id="phone3"
+                formControlName="phone3"
+                placeholder=""
+                class="form-control req"
+              />
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="form-group">
+      <button
+        (click)="save()"
+        type="submit"
+        [ngClass]="{ 'no-interaction': is_submitting }"
+        class="btn btn-default pull-right btn-black"
+      >
+        {{ mode === "add" ? "add" : "edit" }}
+      </button>
+      <button class="btn btn-default btn-black" (click)="back()">BACK</button>
+    </div>
+  </div>
+</section>

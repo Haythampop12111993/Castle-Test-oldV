@@ -1,0 +1,357 @@
+<section class="eoi-table">
+  <div class="container-fluid">
+    <!-- <h2>EOI</h2> -->
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="col-xs-7">
+          <h2>HOLD</h2>
+        </div>
+        <div class="col-xs-5 import-container">
+          <!-- <div class="import-inner-container">
+            <button class="btn btn-default pull-right import-btn" (click)="holdModal.open()">Import Eoi</button>
+          </div>
+          <div class="import-inner-container">
+            <a class="btn btn-default pull-right import-btn" [href]="export_eoi">Export Eoi</a>
+          </div> -->
+          <!-- <div class="import-inner-container">
+            <button class="btn btn-default pull-right import-btn" (click)="holdModal.open()">Import Hold</button>
+          </div> -->
+          <div
+            *ngIf="
+              (userProfile.role == 'Admin' ||
+                userProfile.role == 'Super Development') &&
+              userProfile.is_full_access
+            "
+            class="import-inner-container"
+          >
+            <a
+              class="btn btn-default pull-right import-btn"
+              (click)="exportHold()"
+              >Export All Hold</a
+            >
+          </div>
+          <div
+            *ngIf="
+              (userProfile.role == 'Admin' ||
+                userProfile.role == 'Super Development') &&
+              userProfile.is_full_access
+            "
+            class="import-inner-container"
+          >
+            <a
+              class="btn btn-default pull-right import-btn"
+              (click)="exportTable()"
+              >Export Filtered Hold</a
+            >
+          </div>
+          <div class="import-inner-container">
+            <button
+              class="btn btn-default pull-right import-btn"
+              *ngIf="
+                userProfile?.role == 'Admin' ||
+                userProfile.role == 'Super Development' ||
+                userProfile?.role == 'Moderator' ||
+                userProfile?.role == 'Super Moderator' ||
+                userProfile?.is_sales_team
+              "
+              [routerLink]="['/pages/add-hold', 0]"
+            >
+              Add Hold
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="proj-details">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="filter">
+            <h3>Advanced Search</h3>
+            <form
+              class="filter-form"
+              [formGroup]="filterForm"
+              (ngSubmit)="filterHold()"
+            >
+              <div class="search-form-inputs">
+                <div class="form-group filter-inputs">
+                  <label for="">HOLD Number :</label>
+                  <input
+                    type="text"
+                    name="hold_number"
+                    id="hold_number"
+                    class="form-control"
+                    formControlName="hold_number"
+                  />
+                </div>
+                <div class="form-group filter-inputs">
+                  <label for="">Lead Name / Phone :</label>
+                  <input
+                    type="text"
+                    name="lead_search"
+                    id="lead_search"
+                    class="form-control"
+                    formControlName="lead_search"
+                  />
+                </div>
+                <div class="form-group filter-inputs">
+                  <label for="">Status :</label>
+                  <select
+                    class="form-control"
+                    formControlName="status"
+                    id="status"
+                  >
+                    <option value="" disabled="true" [selected]="true">
+                      Status
+                    </option>
+                    <option value="">All</option>
+                    <option
+                      *ngFor="let status of hold_statuses"
+                      [value]="status.id"
+                    >
+                      {{ status.name }}
+                    </option>
+                  </select>
+                </div>
+                <div class="form-group filter-inputs agents">
+                  <label for="">Agent :</label>
+                  <p-dropdown
+                    formControlName="user_id"
+                    class="p-ddl"
+                    [options]="agents"
+                    [filter]="true"
+                    placeholder="Select Agents"
+                    [autoWidth]="false"
+                    [showClear]="true"
+                    optionLabel="name"
+                  >
+                  </p-dropdown>
+                  <!-- <select class="form-control" formControlName="user_id" id="user_id">
+                    <option value="" disabled="true" [selected]="true">Agent</option>
+                    <option *ngFor="let agent of agents" [value]="agent.id">{{agent.name}}</option>
+                  </select> -->
+                </div>
+                <div *ngIf="projects" class="form-group filter-inputs">
+                  <label for="">Project :</label>
+                  <select
+                    class="form-control"
+                    formControlName="project_id"
+                    id="project"
+                    placeholder="select project"
+                  >
+                    <option value="" disabled="true" [selected]="true">
+                      Project...
+                    </option>
+                    <option *ngFor="let p of projects" [value]="p.id">
+                      {{ p.name }}
+                    </option>
+                  </select>
+                </div>
+                <div *ngIf="projects" class="form-group filter-inputs">
+                  <label for="">Units :</label>
+                  <select
+                    class="form-control"
+                    formControlName="unit_id"
+                    id="unit_id"
+                    placeholder="select Unit"
+                  >
+                    <option value="" disabled="true" [selected]="true">
+                      Unit...
+                    </option>
+                    <option *ngFor="let unit of units" [value]="unit.id">
+                      {{ unit.serial }}
+                    </option>
+                  </select>
+                </div>
+                <button type="submit" class="button c-bg">GO</button>
+                <button
+                  (click)="resetFilters()"
+                  type="button"
+                  class="button reset-por"
+                >
+                  RESET
+                </button>
+                <!-- <div class="border-form text-center margin-top">
+                </div>
+                <div class="border-form text-center">
+                </div> -->
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div class="table table-responsive">
+            <div
+              *ngIf="isLoading"
+              class="spinner-border text-center"
+              role="status"
+            >
+              <img src="./../../../assets/images/loading.gif" alt="" />
+            </div>
+            <table *ngIf="holdData && !isLoading" class="table table-bordered">
+              <tr>
+                <th>HOLD Serial</th>
+                <th>HOLD Number</th>
+                <th>Lead Name</th>
+                <th>Agent</th>
+                <!-- <th>Interested Type</th>
+                <th>Interested Area From</th>
+                <th>Interested Area To</th> -->
+                <th>Phase</th>
+                <th>Payment Type</th>
+                <th>Unit Serial</th>
+                <th>Project Name</th>
+                <th>HOLD fees</th>
+                <th>HOLD Status</th>
+                <th>Reservation status</th>
+                <th>Expiration date</th>
+                <th>Cash Collected</th>
+                <th>Created At</th>
+                <th class="action">Action</th>
+              </tr>
+              <tr
+                [ngClass]="{
+                  'bg-success': hold.status == 1,
+                  'bg-rent-success ': hold.status == 3,
+                  'bg-danger':
+                    hold.status == -1 || hold.status == 2 || hold.status == -2
+                }"
+                *ngFor="let hold of holdData"
+              >
+                <td>#{{ hold.id }}</td>
+                <td>{{ hold.serial }}</td>
+                <td>
+                  <a
+                    class="pointer"
+                    (click)="redirectToLeadDetails(hold?.lead_id)"
+                    >{{ hold.lead_name }}</a
+                  >
+                </td>
+                <td>{{ hold.user.name }}</td>
+                <!-- <td>{{hold.interested_type}}</td>
+                <th>{{hold.interested_area_from}}</th>
+                <th>{{hold.interested_area_to}}</th> -->
+                <th>{{ hold.phase }}</th>
+                <td>{{ hold.payment_type }}</td>
+                <td>{{ hold.unit?.serial }}</td>
+                <td>{{ hold.project?.name }}</td>
+                <td>
+                  {{ hold.hold_value | currency : " " : false : "1.0-0" }}
+                </td>
+                <td>{{ hold.status_text }}</td>
+                <td>{{ hold.linked_reservation_status_text }}</td>
+                <td>{{ hold.expiration_date | date : "mediumDate" }}</td>
+                <td>{{ hold?.approved }}</td>
+                <td>{{ hold.created_at | date : "mediumDate" }}</td>
+                <td class="action">
+                  <div class="dropdown" dropdown>
+                    <img
+                      class="more-options-icon"
+                      src="assets/img/show-more-button-with-three-dots.svg"
+                      dropdown-open
+                    />
+                    <ul class="dropdown-menu">
+                      <li (click)="goToHoldView(hold.id)">
+                        <a>View</a>
+                      </li>
+                      <li
+                        *ngIf="
+                          (userProfile?.role == 'Admin' ||
+                            userProfile.role == 'Super Development' ||
+                            userProfile?.role == 'Moderator' ||
+                            userProfile?.role == 'Super Moderator') &&
+                          hold.status == 1
+                        "
+                        (click)="reserveHold(hold.id)"
+                      >
+                        <a>Reserve</a>
+                      </li>
+                      <li
+                        *ngIf="
+                          (userProfile.role == 'Admin' ||
+                            userProfile.role == 'Super Development' ||
+                            userProfile?.role == 'Accoutant') &&
+                          hold.status == 0
+                        "
+                        (click)="cashCollected(hold.id)"
+                      >
+                        <a>Cash Collected</a>
+                      </li>
+                      <li
+                        *ngIf="
+                          ((userProfile?.role == 'Admin' ||
+                            userProfile.role == 'Super Development' ||
+                            userProfile?.role == 'Moderator' ||
+                            userProfile?.role == 'Super Moderator') &&
+                            hold.status == 0) ||
+                          hold.status == 1
+                        "
+                        (click)="cancelHold(hold.id)"
+                      >
+                        <a>Cancel</a>
+                      </li>
+                      <!-- <li *ngIf="userProfile.role == 'Admin'" (click)="deleteHold(hold.id)">
+                        <a>Delete</a>
+                      </li> -->
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div class="col-xs-12 text-center">
+            <ngb-pagination
+              [collectionSize]="hold_raw_data?.last_page * 10"
+              [(page)]="pageTest"
+              [maxSize]="5"
+              [rotate]="true"
+              [ellipses]="true"
+              [boundaryLinks]="true"
+              (pageChange)="pageChange($event)"
+              [size]="'lg'"
+            >
+            </ngb-pagination>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<modal
+  #holdModal
+  title="Import Hold"
+  submitButtonLabel="submit"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="uploadExcelMethod(holdModal)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <div class="row">
+      <div class="form-group col-xs-6">
+        <form
+          class="form-group btn-group-files pull-right"
+          [formGroup]="uploadExcel"
+        >
+          <input
+            type="file"
+            accept=".xlsx, .xls"
+            class="margin-left"
+            id="file"
+            (change)="handleUploadExcel($event)"
+          />
+        </form>
+      </div>
+      <!-- <div class="form-group col-xs-6">
+        <div class="form-group">
+          <a class="btn btn-default pull-right"
+            href="https://api.equity.com.eg/uploads/eois/example/eoi_example.xlsx">Download Import Example</a>
+        </div>
+      </div> -->
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="holdModal.close()">close</button>
+  </modal-footer>
+</modal>

@@ -1,0 +1,332 @@
+<section class="user-profile">
+  <div class="container-fluid">
+    <div class="row user-container">
+      <div class="col-sm-12 col-md-4">
+        <div class="user-data">
+          <div class="cover-user-profile">
+            <!-- <img class="cover-photo" src="assets/img/cover-new2.png" alt="" /> -->
+            <!-- <img class="user-profile-image" src="https://upload.wikimedia.org/wikipedia/commons/4/40/Kevin_De_Bruyne_201807091.jpg" alt=""> -->
+            <img
+              *ngIf="!user_picture"
+              (click)="changeAvatarModal.open()"
+              class="user-profile-image"
+              src="assets/images/img_avatar2.png"
+              alt=""
+            />
+            <img
+              *ngIf="user_picture"
+              class="user-profile-image"
+              (click)="changeAvatarModal.open()"
+              [src]="user_picture"
+              alt=""
+            />
+          </div>
+        </div>
+        <div class="user-info">
+          <p class="user-name">{{ userProfile?.name }}</p>
+          <p class="user-title">{{ userProfile?.role_display }}</p>
+          <!-- <div class="info">
+            <div class="info-label">Phone:</div>
+            <div class="info-value"></div>
+          </div> -->
+          <div class="row info-container">
+            <div class="col-xs-2 info-label">Phone:</div>
+            <div class="col-xs-10 info-value">{{ userProfile?.phone }}</div>
+          </div>
+          <div class="row info-container">
+            <div class="col-xs-2 info-label">E-mail:</div>
+            <div class="col-xs-10 info-value">{{ userProfile?.email }}</div>
+          </div>
+          <div class="social-links">
+            <span>
+              <a [href]="userProfile?.facebook_url">
+                <i class="fa fa-facebook" aria-hidden="true"></i>
+              </a>
+            </span>
+            <span>
+              <a [href]="userProfile?.twitter_url">
+                <i class="fa fa-twitter" aria-hidden="true"></i>
+              </a>
+            </span>
+            <span>
+              <a [href]="userProfile?.instagram_url">
+                <i class="fa fa-instagram" aria-hidden="true"></i>
+              </a>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-12 col-md-8">
+        <div class="user-tabs">
+          <div class="tabs-button-container">
+            <button
+              class="tab-button"
+              [ngClass]="{ active: active_tab == 'about' }"
+              (click)="setActiveTab('about')"
+            >
+              About
+            </button>
+            <button
+              class="tab-button"
+              [ngClass]="{ active: active_tab == 'change-password' }"
+              (click)="setActiveTab('change-password')"
+            >
+              Change Password
+            </button>
+            <button
+              class="tab-button"
+              [ngClass]="{ active: active_tab == 'my-wallet' }"
+              (click)="setActiveTab('my-wallet')"
+            >
+              My Wallet
+            </button>
+          </div>
+          <div class="line-container"></div>
+          <div class="tabs-sections-container">
+            <div *ngIf="active_tab == 'about'">
+              <p class="about-us">{{ userProfile?.about }}</p>
+            </div>
+            <div *ngIf="active_tab == 'change-password'">
+              <form [formGroup]="changePasswordForm">
+                <div class="form-group">
+                  <label for="">Current Password</label>
+                  <input
+                    type="password"
+                    class="form-control"
+                    formControlName="old_password"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="">New Password</label>
+                  <input
+                    type="password"
+                    class="form-control"
+                    formControlName="new_password"
+                  />
+                </div>
+              </form>
+              <div class="button-container">
+                <button
+                  class="submit-btn"
+                  (click)="changePasswordMethod()"
+                  [ngClass]="{ 'no-interaction': is_changing_password }"
+                >
+                  Update
+                </button>
+                <!-- <button class="cancel-btn">Cancel</button> -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--
+  <div class="profile-images">
+    <div class="profile-cover">
+      <div class="overlay"></div>
+      <img src="assets/img/cover.jpg" alt="">
+    </div>
+    <div class="profile-pic">
+      <img (click)="changeAvatarModal.open()" [src]="userPic" alt="">
+    </div>
+  </div>
+  <div class="person text-center">
+    <h3>{{userProfile?.name}}</h3>
+    <span>{{userProfile?.role}}</span>
+    <div class="row">
+      <div class="col-xs-2 text-center col-xs-offset-5">
+        <button class="btn btn-primary update-profile text-center" (click)="updateProfileModal.open()">update profile</button>
+      </div>
+    </div>
+  </div>
+  <div class="profile-contents">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-3">
+          <div class="up-line">
+            <ul class="list-unstyled info">
+              <li>User Type:
+                <span>{{userProfile?.role}}</span>
+              </li>
+              <li *ngIf="userProfile?.team_id">User Team:
+                <span>#{{userProfile?.team_id}}</span>
+              </li>
+              <li>E-mail:
+                <span>{{userProfile?.email}}</span>
+              </li>
+              <li>Phone Number:
+                <span>{{userProfile?.phone}}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="up-line">
+            <ul class="list-unstyled social">
+              <li>
+                <span class="">Facebook Profile</span>
+                <span>
+                  <a [href]="userProfile?.facebook_url">
+                    <i class="fa fa-facebook" aria-hidden="true"></i>
+                  </a>
+                </span>
+              </li>
+              <li>
+                <span class="">Twitter Profile</span>
+                <span>
+                  <a [href]="userProfile?.twitter_url">
+                    <i class="fa fa-twitter" aria-hidden="true"></i>
+                  </a>
+                </span>
+              </li>
+              <li>
+                <span class="">Instagram Profile</span>
+                <span>
+                  <a [href]="userProfile?.instagram_url">
+                    <i class="fa fa-instagram" aria-hidden="true"></i>
+                  </a>
+                </span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="up-line">
+            <h3>About Me:</h3>
+            <p></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> -->
+</section>
+
+<modal
+  #changeAvatarModal
+  title="Import Reservations"
+  submitButtonLabel="submit"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onOpen)="changeAvatarModalOpen()"
+  (onClose)="changeAvatarModalClose()"
+  (onSubmit)="changeAvatarModalSubmit(changeAvatarModal)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <div class="row">
+      <div class="form-group col-xs-6">
+        <form
+          class="form-group btn-group-files pull-left"
+          [formGroup]="changeAvatarForm"
+        >
+          <label for="">Avatar : </label>
+          <input
+            type="file"
+            accept="image/*"
+            class="margin-left"
+            id="image"
+            (change)="handleUploadImage($event)"
+          />
+        </form>
+      </div>
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="changeAvatarModal.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>
+
+<modal
+  #updateProfileModal
+  title="Update Profile"
+  submitButtonLabel="submit"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onOpen)="updateProfileModalOpen()"
+  (onClose)="updateProfileModalClose()"
+  (onSubmit)="updateProfileModalSubmit(updateProfileModal)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <div class="row">
+      <form [formGroup]="updateProfileForm">
+        <div class="col-xs-6 form-group">
+          <label>Name : </label>
+          <input
+            type="text"
+            class="form-control"
+            name="name"
+            formControlName="name"
+          />
+        </div>
+        <div class="col-xs-6 form-group">
+          <label>Phone : </label>
+          <input
+            type="text"
+            class="form-control"
+            name="phone"
+            formControlName="phone"
+          />
+        </div>
+        <div class="col-xs-6 form-group">
+          <label>Other Phone : </label>
+          <input
+            type="text"
+            class="form-control"
+            name="other_phone"
+            formControlName="other_phone"
+          />
+        </div>
+        <div class="col-xs-6 form-group">
+          <label>Facebook Url : </label>
+          <input
+            type="text"
+            class="form-control"
+            name="facebook_url"
+            formControlName="facebook_url"
+          />
+        </div>
+        <div class="col-xs-6 form-group">
+          <label>Twitter Url : </label>
+          <input
+            type="text"
+            class="form-control"
+            name="twitter_url"
+            formControlName="twitter_url"
+          />
+        </div>
+        <div class="col-xs-6 form-group">
+          <label>Instagram Url : </label>
+          <input
+            type="text"
+            class="form-control"
+            name="instagram_url"
+            formControlName="instagram_url"
+          />
+        </div>
+        <div class="col-xs-12 form-group">
+          <label>About : </label>
+          <textarea
+            name="about"
+            class="form-control"
+            formControlName="about"
+            id=""
+            cols="30"
+            rows="10"
+          ></textarea>
+        </div>
+      </form>
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="updateProfileModal.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>

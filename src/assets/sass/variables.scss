@@ -1,0 +1,81 @@
+//=======VARIABLES========
+
+//LEADS COLORS
+$new: #6fc0b2;
+$follow_up: #eb547b;
+$not_qualify: #fdbd33;
+$closed:#1cc4e1;
+$on_going: #b53dfd;
+
+
+
+.s{
+  background-color:$new ;
+}
+.f-bg{
+  background-color:$follow_up ;
+}
+.q-bg{
+  background-color:$not_qualify ;
+}
+.c-bg{
+  background-color:$closed ;
+}
+.g-bg{
+  background-color:$on_going ;
+}
+//==========================
+.n-color{
+  color:$new ;
+}
+.f-color{
+  color:$follow_up ;
+}
+.q-color{
+  color:$not_qualify ;
+}
+.c-color{
+  color:$closed ;
+}
+.g-color{
+  color:$on_going ;
+}
+//===========================
+.n-border{
+  border-color:$new ;
+}
+.f-border{
+  border-color:$follow_up ;
+}
+.q-border{
+  border-color:$not_qualify ;
+}
+.c-border{
+  border-color:$closed ;
+}
+.g-border{
+  border-color:$on_going ;
+}
+
+//==============================
+.btn.btn-default.btn-black{
+  margin-bottom: 11px;
+  background-color: #555;
+  color: white;
+  border-color: #555;
+  font-weight: 500;
+  font-size: 13px;
+}
+input, select, textarea{
+  border-radius: 0 !important;
+}
+button:focus{
+  outline: none !important;
+}
+
+input:focus, textarea:focus, select:focus{
+  color:#333;
+}
+
+
+

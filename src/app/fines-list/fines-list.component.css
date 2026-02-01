@@ -1,0 +1,438 @@
+.table-responsive {
+  margin-top: 15px;
+}
+.table-responsive th,
+.table-responsive tr {
+  text-align: center;
+}
+h3 {
+  text-transform: uppercase;
+}
+.dropdown-menu {
+  left: unset;
+  right: 0;
+}
+.dropdown-menu li {
+  border-bottom: 1px solid #eee;
+  padding: 5px 0px;
+}
+.dropdown-menu li:last-child {
+  border: 0px;
+}
+@media only screen and (max-width: 926px) {
+  ::ng-deep .dropdown-menu {
+    position: initial !important;
+  }
+}
+td {
+  color: #000;
+}
+.message {
+  text-align: center;
+}
+i.fa.fa-cog {
+  font-size: 3rem;
+  cursor: pointer;
+  margin: 10px;
+}
+.action {
+  width: 10%;
+}
+.dropdown-menu {
+  left: unset;
+  right: 0;
+}
+.menu-settings {
+  top: 87% !important;
+}
+.table-responsive {
+  overflow-x: auto;
+}
+.reset-filter {
+  background-color: #dc3838;
+}
+.form-group {
+  width: 90%;
+  margin: 0 auto;
+}
+.status-info {
+  display: flex;
+  justify-content: space-around;
+}
+.status-info p {
+  margin: 0px;
+}
+.status-info .declined {
+  display: flex;
+  flex-direction: column;
+}
+.status-info .timer-btn {
+  margin: 0px;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  border: none;
+  padding: 3px;
+  border-radius: 50%;
+  background-color: #0f0 33;
+}
+.project-inner .filter label,
+.add-new-project .filter label,
+.eoi-table .filter label,
+.unit-types-table .filter label,
+.payment-plans-table .filter label,
+.rf-tble .filter label,
+.users-table .filter label,
+.teams-table .filter label {
+  margin-left: 0px;
+  margin-bottom: 0px !important;
+}
+.form-group {
+  margin-bottom: 15px;
+}
+h6 {
+  text-align: left;
+  margin-bottom: 1.5rem;
+}
+h6 small {
+  font-size: 90%;
+}
+.label-left {
+  display: block !important;
+  text-align: left;
+}
+.no-interaction {
+  opacity: 0.3;
+  cursor: wait;
+}
+textarea {
+  resize: none;
+}
+.leadname {
+  cursor: pointer;
+}
+.flex-end {
+  display: flex;
+  justify-content: flex-end;
+}
+.filter-form {
+  display: flex;
+  flex-direction: column;
+}
+.search__title,
+h3,
+.project-inner .filter h3,
+.add-new-project .filter h3,
+.eoi-table .filter h3,
+.unit-types-table .filter h3,
+.payment-plans-table .filter h3,
+.rf-tble .filter h3,
+.users-table .filter h3,
+.teams-table .filter h3 {
+  text-align: left;
+  margin-left: 5px;
+}
+.project-inner .filter h3:after,
+.add-new-project .filter h3:after,
+.eoi-table .filter h3:after,
+.unit-types-table .filter h3:after,
+.payment-plans-table .filter h3:after,
+.rf-tble .filter h3:after,
+.users-table .filter h3:after,
+.teams-table .filter h3:after {
+  left: 47%;
+}
+.filter-outer-container {
+  margin-top: 25px !important;
+  margin-bottom: 25px !important;
+}
+.search-container {
+  width: 100%;
+}
+.search-container .search-form {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.search-container .search-form .search-form-inputs {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.search-container .search-form .search-form-inputs .form-group {
+  margin: 10px;
+  width: 180px;
+}
+.search-container .search-form .search-form-inputs .filter,
+.search-container .search-form .search-form-inputs .reset-filter {
+  width: 180px;
+  margin: 29px 10px 0;
+  height: 45px;
+  color: white;
+  font-weight: 700;
+  border: none;
+}
+.search-buttons {
+  flex-basis: 20%;
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+}
+.search-buttons div {
+  width: 200px;
+}
+.project-inner .filter .border-form button.button,
+.add-new-project .filter .border-form button.button,
+.eoi-table .filter .border-form button.button,
+.unit-types-table .filter .border-form button.button,
+.payment-plans-table .filter .border-form button.button,
+.rf-tble .filter .border-form button.button,
+.users-table .filter .border-form button.button,
+.teams-table .filter .border-form button.button {
+  padding: 10px;
+  font-size: 14px;
+}
+.c-bg {
+  background-color: #7d704f !important;
+}
+.reset-filter {
+  background-color: #414f5b !important;
+}
+.project-inner .filter h3,
+.add-new-project .filter h3,
+.eoi-table .filter h3,
+.unit-types-table .filter h3,
+.payment-plans-table .filter h3,
+.rf-tble .filter h3,
+.users-table .filter h3,
+.teams-table .filter h3 {
+  font-size: 17px;
+}
+.edit-btn.export-unit.btn.btn-default.pull-right {
+  margin-bottom: 25px;
+  border-radius: 0px !important;
+}
+i.fa.fa-cog {
+  font-size: 3rem;
+  cursor: pointer;
+  margin: 10px;
+}
+.dropdown-menu li {
+  border-bottom: 1px solid #eee;
+  padding: 5px 0px;
+}
+.dropdown-menu li:last-child {
+  border: 0px;
+}
+.toggle-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.toggle-container p {
+  margin: 0px;
+}
+.price-row .form-inline {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+.price-row .form-inline label {
+  margin-right: 20px;
+}
+.price-label {
+  margin-right: 40px !important;
+}
+.price-row .form-inline input {
+  margin-right: 10px;
+}
+.cfo_pin_wrapper {
+  margin-top: 25px;
+}
+.search-btn-container {
+  display: flex;
+}
+.search-btn-container button {
+  margin-left: 10px;
+}
+label {
+  display: block;
+  text-align: left;
+}
+@media only screen and (max-width: 926px) {
+  ::ng-deep .dropdown-menu {
+    position: initial !important;
+  }
+}
+.contract-types-color-guide {
+  display: flex;
+  justify-content: flex-end;
+  margin: 20px;
+}
+.contract-types-color-guide-inner {
+  display: inline-flex;
+  flex-direction: column;
+  border: 1px solid #e0e0e0;
+  padding: 10px 20px;
+  width: 700px;
+}
+.contract-types-color-guide-inner h5 {
+  font-size: 18px;
+  font-weight: bold;
+}
+.contract-types-color-guide-inner .color-guide-label {
+  color: #333;
+  font-size: 15px;
+}
+.contract-types-color-guide-inner .color-guide-value {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 1px solid black;
+}
+.contract-types-color-guide-inner .color-guide-value.sale-approved {
+  background-color: #78ce7b 47;
+}
+.contract-types-color-guide-inner .color-guide-value.sale-decline {
+  background-color: #ffb7b7 61;
+}
+.contract-types-color-guide-inner .color-guide-value.rent-approved,
+.bg-rent-success {
+  background-color: #7883ce 94;
+}
+.contract-types-color-guide-inner .color-guide-value.sale-declined {
+  background-color: #fae3e4;
+}
+.contract-types-color-guide-inner .color-guide-value.rent-declined,
+.bg-rent-declined {
+  background: #f22 bd;
+}
+.no-padding {
+  padding: 0px !important;
+}
+.extension-time-input {
+  display: flex;
+  flex-direction: row;
+}
+.extension-time-input label {
+  margin-right: 20px;
+}
+.px-3 {
+  padding-right: 30px;
+  padding-left: 30px;
+}
+tr.bg-is-deposit {
+  background-color: #305bfb 47 !important;
+}
+.pointer {
+  cursor: pointer;
+}
+.btn-grps {
+  margin-top: 20px;
+}
+.btn-grps .adv-search {
+  border-radius: 0;
+  width: 198px;
+  margin-right: 10px;
+  border: none;
+  padding: 11px 0px;
+  color: #fff;
+  background-color: #777;
+}
+.active-tab {
+  background-color: #7c704f !important;
+}
+.sales-status-box {
+  justify-content: center;
+  background-color: #602044;
+  width: 250px;
+  height: 100px;
+  margin-top: 15px;
+  color: #fff;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center !important;
+  margin-right: 20px;
+}
+.sales-status-box.accumlative {
+  background-color: #602044;
+}
+.sales-status-box.mtd {
+  background-color: #377d41;
+}
+.sales-status-box.ytd {
+  background-color: #64809c;
+}
+.sales-status-box.sales {
+  background-color: #a7861a;
+}
+.sales-status-box .stat-title {
+  font-size: 16px;
+}
+.sales-status-box .count-grp {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+}
+.sales-status-box .count-grp i {
+  margin-right: 10px;
+  font-size: 18px;
+}
+.sales-status-box .count-grp div {
+  font-size: 18px;
+}
+.sales-status-box .value {
+  font-size: 20px;
+  margin-bottom: 0;
+  font-size: bold;
+}
+.sales-status-box p {
+  margin: 0 0 3px;
+}
+.d-flex {
+  display: flex;
+}
+.modal {
+  z-index: 10 !important;
+}
+::ng-deep .swal2-container {
+  z-index: 999999999999 !important;
+}
+::ng-deep .comment .modal {
+  z-index: 11068 !important;
+}
+
+.check_all_rows {
+  margin-left: 10px;
+}
+
+.nav-pills {
+  margin: 10px 0;
+}
+.nav-pills li a {
+  border: 1px solid #337ab7;
+  border-radius: 0;
+}
+
+.border-row-danger td {
+  border-top-width: 2px;
+  border-top-color: #f22;
+  border-bottom-color: #f22;
+}
+
+.border-row-danger:not(:has(+ .border-row-danger)) td {
+  border-bottom-width: 2px;
+}
+
+.border-row-danger td:first-of-type {
+  border-left-width: 2px;
+  border-left-color: #f22;
+}
+
+.border-row-danger td:last-of-type {
+  border-right-width: 2px;
+  border-right-color: #f22;
+}

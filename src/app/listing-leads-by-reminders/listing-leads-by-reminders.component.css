@@ -1,0 +1,56 @@
+.table-responsive {
+    margin-top: 15px;
+    overflow-x: unset;
+}
+
+.table-responsive th,
+.table-responsive tr {
+    text-align: center;
+}
+
+h3 {
+    text-transform: uppercase;
+}
+
+.dropdown-menu{
+    left: unset;
+    right: 0;
+}
+
+.dropdown-menu li {
+    border-bottom: 1px solid #eee;
+    padding: 5px 0px;
+}
+
+.dropdown-menu li:last-child {
+    border: 0px;
+}
+
+@media only screen and (max-width: 926px) {
+    ::ng-deep .dropdown-menu {
+      position: initial !important;
+    }
+}
+
+td {
+    color: #000;
+}
+
+.buttons-group {
+    display: flex;
+}
+
+.buttons-group .btn-tab {
+    background-color: #fff;
+    padding: 5px 20px;
+    margin-right: 10px;
+    outline: none;
+    border: 1px solid #000;
+    border-radius: 4px;
+    font-size: 17px;
+}
+
+.buttons-group .btn-tab.active-btn {
+    background-color: #2b2b2b;
+    color: #fff;
+}

@@ -1,0 +1,46 @@
+<div class="row">
+  <div class="col-xs-12">
+      <div class="import-container">
+          <div class="import-inner-container flex-space">
+              <h2 class="title">Developers</h2>
+          </div>
+      </div>
+  </div>
+  <div class="col-xs-12">
+      <div class="table table-responsive">
+          <table class="table table-bordered">
+              <thead class="card-head">
+                  <tr>
+                      <th class="status-box">#</th>
+                      <th>Developer Name</th>
+                      <th>Created At</th>
+                      <th>Updated At</th>
+                      <th>Actions</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr *ngFor="let developer of developers; let i = index">
+                      <td>{{developer.id}}</td>
+                      <td>{{developer.name}}</td>
+                      <td>{{developer.created_at | date}}</td>
+                      <td>{{developer.updated_at | date}}</td>
+                      <td>
+                          <div class="dropdown" dropdown>
+                              <img class="more-options-icon" src="assets/img/show-more-button-with-three-dots.svg"
+                                  dropdown-open />
+                              <ul class="dropdown-menu actions">
+                              <li (click)="edit_developer(developer.id, i)">
+                                  <a>
+                                  <span>Edit Developer</span>
+                                  </a>
+                              </li>
+                              </ul>
+                          </div>
+                      </td>
+                  </tr>
+              </tbody>
+          </table>
+          
+      </div>
+  </div>
+</div>

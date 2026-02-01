@@ -1,0 +1,62 @@
+.add-team__wrapper {
+  border: 1px solid #bfbfbf;
+  padding: 25px;
+  background-color: white;
+  border-radius: 5px;
+  margin-bottom: 30px;
+}
+
+::ng-deep .add-team__wrapper .ui-multiselect:not(.ui-state-disabled):hover {
+  border: 1px solid #d6d6d6;
+  background: #ffffff;
+  color: #212121;
+}
+
+.add-team__wrapper label {
+  font-weight: bold;
+}
+
+.page-title {
+  margin-top: 0;
+}
+
+.members {
+  margin-top: 26px;
+}
+
+.role-container {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+label {
+  color: #555;
+  font-weight: bold;
+}
+
+input.ui-inputtext.ui-widget.ui-state-default.ui-corner-all {
+  margin-bottom: 0px !important;
+}
+
+.my-panel .ui-multiselect {
+  width: 100% !important;
+}
+
+.ui-multiselect {
+  width: 100% !important;
+}
+
+.ui-multiselect-label-container {
+  width: 100% !important;
+}
+
+.ui-multiselect-panel {
+  width: 100% !important;
+}
+
+.form-group.width {
+  /* width: 44%; */
+  width: 82%;
+}

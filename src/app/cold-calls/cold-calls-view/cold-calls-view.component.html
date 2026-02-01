@@ -1,0 +1,391 @@
+<div class="row m-0">
+  <ng-container *ngIf="openedScreen == 'card'">
+    <div
+      class="col-xs-12"
+      *ngFor="let contact of contactsElements | slice : 0 : 1"
+    >
+      <h2 class="mt-0">
+        Card Name: <span class="card_name">{{ contact.card.name }}</span>
+      </h2>
+    </div>
+
+    <div class="section-border col-xs-12 p-15 mb-3">
+      <h2>Assign User</h2>
+
+      <form [formGroup]="assignForm" class="row">
+        <div class="form-group col-xs-6">
+          <ng-select
+            [multiple]="true"
+            [items]="users"
+            [virtualScroll]="true"
+            [searchable]="true"
+            bindLabel="name"
+            bindValue="id"
+            placeholder="Select User *"
+            formControlName="users"
+            [clearSearchOnAdd]="true"
+          >
+            <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+              <div class="ng-value" *ngFor="let item of items | slice : 0 : 1">
+                <span class="ng-value-label">{{ item.name }}</span>
+                <span
+                  class="ng-value-icon right"
+                  (click)="clear(item)"
+                  aria-hidden="true"
+                  >×</span
+                >
+              </div>
+              <div class="ng-value" *ngIf="items.length > 1">
+                <span class="ng-value-label"
+                  >{{ items.length - 1 }} more...</span
+                >
+              </div>
+            </ng-template>
+          </ng-select>
+        </div>
+        <div class="form-group col-xs-4">
+          <input
+            type="number"
+            class="form-control"
+            formControlName="number"
+            placeholder="Assign Number *"
+          />
+        </div>
+        <div class="form-group col-xs-2">
+          <button
+            type="submit"
+            class="btn m-0"
+            (click)="submit()"
+            [ngClass]="{ is_loading: is_submitting }"
+            [disabled]="!assignForm.valid"
+          >
+            Submit
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="col-xs-12 text-right mb-3">
+      <button class="btn" (click)="export()">
+        <i class="fa fa-download"></i> Export Excel
+      </button>
+    </div>
+
+    <div class="section-border col-xs-12 p-15">
+      <div class="mb-3">
+        <input
+          type="text"
+          class="form-control"
+          ngModel
+          (ngModelChange)="fetchContactDetails($event)"
+          placeholder="search by name, email or phone"
+        />
+      </div>
+
+      <div *ngIf="contactsElements.length != 0; else noReusltFound">
+        <table class="table table-responsive">
+          <tr>
+            <th class="text-center">ID</th>
+            <th class="text-center">Name</th>
+            <th class="text-center">Email</th>
+            <th class="text-center">Phones</th>
+            <th class="text-center">Date</th>
+            <th class="text-center">Agent</th>
+            <th class="text-center">Status</th>
+            <th class="text-center">Comment</th>
+            <th class="text-center">Action</th>
+          </tr>
+          <ng-container *ngFor="let contact of contactsElements; let i = index">
+            <tr
+              class="accordion-toggle"
+              [ngClass]="{
+                'cursor-pointer':
+                  userData.role === 'Admin' ||
+                  userData.role == 'Super Development' ||
+                  userData.role === 'Sales Manager'
+              }"
+              (click)="
+                (userData.role === 'Admin' ||
+                  userData.role == 'Super Development' ||
+                  userData.role === 'Sales Manager') &&
+                  toggleAccordion(i)
+              "
+            >
+              <td class="text-center">{{ contact?.id }}</td>
+              <td class="text-center">{{ contact?.name || "-" }}</td>
+              <td class="text-center">{{ contact?.email || "-" }}</td>
+              <td class="text-center">
+                <p *ngFor="let phone of contact.phones">
+                  {{ phone.full_phone }}
+                </p>
+                <span *ngIf="!contact.phones || contact.phones.length == 0"
+                  >-</span
+                >
+              </td>
+              <td class="text-center">
+                {{ contact.created_at | date }}
+              </td>
+              <td class="text-center">
+                {{ contact.user?.name || "-" }}
+              </td>
+              <td class="text-center">
+                {{ contact.status?.name }}
+              </td>
+              <td class="text-center">
+                {{ contact.comment || "-" }}
+              </td>
+              <td
+                class="text-center cursor-default"
+                (click)="$event.stopPropagation()"
+              >
+                <ng-container *ngIf="contact.status_id != 2">
+                  <button
+                    mat-icon-button
+                    [matMenuTriggerFor]="contactsActionsMenu"
+                  >
+                    <img
+                      class="more-options-icon"
+                      src="assets/img/show-more-button-with-three-dots.svg"
+                    />
+                  </button>
+                  <mat-menu #contactsActionsMenu="matMenu">
+                    <button mat-menu-item (click)="checkBeforeConvert(contact)">
+                      Interested
+                    </button>
+                    <ng-container *ngFor="let status of statuses_list">
+                      <button
+                        *ngIf="status.can_deleted"
+                        mat-menu-item
+                        (click)="convertStatusAction(contact.id, status)"
+                      >
+                        {{ status.name }}
+                      </button>
+                    </ng-container>
+                    <button mat-menu-item (click)="deleteAction(contact.id)">
+                      Delete
+                    </button>
+                  </mat-menu>
+                </ng-container>
+              </td>
+            </tr>
+            <tr
+              *ngIf="
+                userData.role === 'Admin' ||
+                userData.role == 'Super Development' ||
+                userData.role === 'Sales Manager'
+              "
+            >
+              <td colspan="9" class="hiddenRow">
+                <div
+                  class="accordian-body"
+                  [ngClass]="{ open: activeAccordionIndex === i }"
+                >
+                  <div class="time-line p-15">
+                    <ul class="list-unstyled">
+                      <li *ngFor="let log of contact.logs">
+                        <span class="crcle-t"></span>
+                        <div class="tm-content">
+                          <div class="date">
+                            {{ log.created_at | date : "medium" }}
+                          </div>
+                          <h5>{{ log.type }}</h5>
+                          <p>
+                            {{ log.details }}
+                          </p>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </ng-container>
+        </table>
+      </div>
+
+      <div class="text-center mt-3" *ngIf="contactsElementsRaw">
+        <ngb-pagination
+          [collectionSize]="contactsElementsRaw?.last_page * 10"
+          [(page)]="currentPage"
+          [maxSize]="5"
+          [rotate]="true"
+          [ellipses]="true"
+          [boundaryLinks]="true"
+          (pageChange)="pageChange($event)"
+          [size]="'lg'"
+        >
+        </ngb-pagination>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="openedScreen == 'agent'">
+    <div
+      class="col-xs-12 mb-3"
+      *ngFor="let agent of agentContacts | slice : 0 : 1"
+    >
+      <h2>
+        Agent Name: <span class="card_name">{{ agent.user?.name }}</span>
+      </h2>
+    </div>
+
+    <div class="col-xs-12 text-right mb-3">
+      <button class="btn" (click)="export()">
+        <i class="fa fa-download"></i> Export Excel
+      </button>
+    </div>
+
+    <div class="section-border col-xs-12 p-15">
+      <div class="mb-3">
+        <input
+          type="text"
+          class="form-control"
+          ngModel
+          (ngModelChange)="fetchAgentContacts($event)"
+          placeholder="search by name, email or phone"
+        />
+      </div>
+
+      <div
+        class="col-xs-12"
+        *ngIf="agentContacts.length != 0; else noReusltFound"
+      >
+        <table class="table table-responsive">
+          <tr>
+            <th class="text-center">ID</th>
+            <th class="text-center">Name</th>
+            <th class="text-center">Email</th>
+            <th class="text-center">Phones</th>
+            <th class="text-center">Date</th>
+            <th class="text-center">Status</th>
+            <th class="text-center">Card</th>
+            <th class="text-center">Comment</th>
+            <th class="text-center">Action</th>
+          </tr>
+          <ng-container *ngFor="let contact of agentContacts; let i = index">
+            <tr
+              class="accordion-toggle"
+              [ngClass]="{
+                'cursor-pointer':
+                  userData.role === 'Admin' ||
+                  userData.role == 'Super Development' ||
+                  userData.role === 'Sales Manager'
+              }"
+              (click)="
+                (userData.role === 'Admin' ||
+                  userData.role == 'Super Development' ||
+                  userData.role === 'Sales Manager') &&
+                  agentToggleAccordion(i)
+              "
+            >
+              <td class="text-center">{{ contact?.id }}</td>
+              <td class="text-center">{{ contact?.name || "-" }}</td>
+              <td class="text-center">{{ contact?.email || "-" }}</td>
+              <td class="text-center">
+                <p *ngFor="let phone of contact.phones">
+                  {{ phone.full_phone }}
+                </p>
+                <span *ngIf="!contact.phones || contact.phones.length == 0"
+                  >-</span
+                >
+              </td>
+              <td class="text-center">
+                {{ contact.created_at | date }}
+              </td>
+              <td class="text-center">
+                {{ contact.status?.name }}
+              </td>
+              <td class="text-center">
+                {{ contact.card.name || "-" }}
+              </td>
+              <td class="text-center">
+                {{ contact.comment || "-" }}
+              </td>
+              <td class="text-center">
+                <ng-container *ngIf="contact.status_id != 2">
+                  <button
+                    mat-icon-button
+                    [matMenuTriggerFor]="agentContactsActionsMenu"
+                  >
+                    <img
+                      class="more-options-icon"
+                      src="assets/img/show-more-button-with-three-dots.svg"
+                    />
+                  </button>
+                  <mat-menu #agentContactsActionsMenu="matMenu">
+                    <button mat-menu-item (click)="checkBeforeConvert(contact)">
+                      Interested
+                    </button>
+                    <ng-container *ngFor="let status of statuses_list">
+                      <button
+                        *ngIf="status.can_deleted"
+                        mat-menu-item
+                        (click)="convertStatusAction(contact.id, status)"
+                      >
+                        {{ status.name }}
+                      </button>
+                    </ng-container>
+                    <button mat-menu-item (click)="deleteAction(contact.id)">
+                      Delete
+                    </button>
+                  </mat-menu>
+                </ng-container>
+              </td>
+            </tr>
+            <tr
+              *ngIf="
+                userData.role === 'Admin' ||
+                userData.role == 'Super Development' ||
+                userData.role === 'Sales Manager'
+              "
+            >
+              <td colspan="9" class="hiddenRow">
+                <div
+                  class="accordian-body"
+                  [ngClass]="{ open: agentActiveAccordionIndex === i }"
+                >
+                  <div class="time-line p-15">
+                    <ul class="list-unstyled">
+                      <li *ngFor="let log of contact.logs">
+                        <span class="crcle-t"></span>
+                        <div class="tm-content">
+                          <div class="date">
+                            {{ log.created_at | date : "medium" }}
+                          </div>
+                          <h5>{{ log.type }}</h5>
+                          <p>
+                            {{ log.details }}
+                          </p>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </ng-container>
+        </table>
+      </div>
+
+      <div class="text-center mt-3" *ngIf="agentsElementsRaw">
+        <ngb-pagination
+          [collectionSize]="agentsElementsRaw?.last_page * 10"
+          [(page)]="currentPage"
+          [maxSize]="5"
+          [rotate]="true"
+          [ellipses]="true"
+          [boundaryLinks]="true"
+          (pageChange)="agentPageChange($event)"
+          [size]="'lg'"
+        >
+        </ngb-pagination>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #noReusltFound>
+  <div class="col-xs-12 d-flex justify-content-center align-items-center h-100">
+    <h2 class="text-capitalize text-warning">no results found</h2>
+  </div>
+</ng-template>

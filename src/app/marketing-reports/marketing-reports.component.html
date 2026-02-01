@@ -1,0 +1,38 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="sales-charts" *ngIf="lineChartsData.salesActivity.length > 0">
+      <div class="sales-charts__wrapper">
+        <div class="sales-charts__single">
+          <!-- <h1 class="sales-chart__header">SALES ACTIVITY</h1> -->
+          <div
+            *ngIf="
+              lineChartsData.salesActivity.length > 0 &&
+                lineChartsLabels.salesActivity.length > 0;
+              else salesActivitySpinner
+            "
+          >
+            <canvas
+              baseChart
+              width="300"
+              height="300"
+              [datasets]="lineChartsData.salesActivity"
+              [labels]="lineChartsLabels.salesActivity"
+              [options]="lineChartsOptions.salesActivity"
+              [colors]="lineChartsColors.salesActivity"
+              [legend]="true"
+              [chartType]="'line'"
+            ></canvas>
+          </div>
+          <!-- <ng-template #salesActivitySpinner>
+            <div class="chart-spinner">
+              <div class="lds-ripple">
+                <div></div>
+                <div></div>
+              </div>
+            </div>
+          </ng-template> -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

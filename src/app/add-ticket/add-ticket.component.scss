@@ -1,0 +1,68 @@
+@import '../styles/helpdesk.scss';
+
+.no-interaction-on-btn {
+  pointer-events: none;
+  opacity: .3;
+  cursor: progress;
+}
+
+label {
+  small {
+    color: red;
+  }
+}
+
+.searchBy {
+  margin-bottom: 10px;
+}
+
+.chip {
+  display: inline-flex;
+  flex-direction: row;
+  background-color: #e5e5e5;
+  border: none;
+  cursor: default;
+  height: 36px;
+  outline: none;
+  padding: 0;
+  font-size: 14px;
+  color: #333333;
+  font-family: "Open Sans", sans-serif;
+  white-space: nowrap;
+  align-items: center;
+  border-radius: 16px;
+  vertical-align: middle;
+  text-decoration: none;
+  justify-content: center;
+  cursor: pointer;
+
+  .chip-content {
+    cursor: inherit;
+    display: flex;
+    align-items: center;
+    user-select: none;
+    white-space: nowrap;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  &.selected-chip {
+    background-color: gray;
+    color: white;
+  }
+
+}
+
+.unselect_lead {
+  margin-inline-start: 5px;
+  font-size: 18px;
+
+  &:hover {
+    color: red;
+    cursor: pointer;
+  }
+}
+
+.disabled {
+  cursor: not-allowed !important;
+}

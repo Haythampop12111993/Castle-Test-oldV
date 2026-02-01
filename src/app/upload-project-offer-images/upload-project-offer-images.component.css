@@ -1,0 +1,11 @@
+.submit-btn-wrapper {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.img-responsive {
+  width: 100%;
+}
+.mt-5 {
+  margin-top: 5px;
+}

@@ -1,0 +1,41 @@
+.form-control{
+  height: auto !important;
+  /* min-height: 48px; */
+}
+
+.box{
+  margin: 0 1%;
+}
+
+.search-btn-container {
+  display: flex;
+}
+
+.search-btn-container > div, div.ngui-auto-complete-wrapper {
+  width: 100% !important;
+}
+
+.form-container{
+  padding: 0 29px;
+}
+
+.clear-fix{
+ clear: both;
+}
+
+.c-btn.form-control{
+  min-height: 48px;
+}
+
+input[type="date"].form-control, input[type="time"].form-control, input[type="datetime-local"].form-control, input[type="month"].form-control{
+  line-height: inherit !important;
+}
+
+.selected-list .c-btn{
+  height: auto;
+}
+
+
+.height-auto{
+  height: auto;
+}

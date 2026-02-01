@@ -1,0 +1,173 @@
+.action {
+  width: 10%;
+}
+
+.dropdown-menu {
+  left: unset;
+  right: 0;
+}
+
+.table-responsive {
+  overflow-x: unset;
+}
+
+h6 {
+  text-align: left;
+  margin-bottom: 1.5rem;
+}
+
+h6 small {
+  font-size: 90%;
+}
+
+.dropdown span {
+  display: block;
+  text-align: center;
+}
+
+.margin-top {
+  margin-top: 20px;
+}
+
+.form-group {
+  width: 90%;
+  margin: 0 auto;
+}
+
+.project-inner .filter label,
+.add-new-project .filter label,
+.eoi-table .filter label,
+.unit-types-table .filter label,
+.payment-plans-table .filter label,
+.rf-tble .filter label,
+.users-table .filter label,
+.teams-table .filter label {
+  margin-left: 0px;
+  margin-bottom: 0px !important;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.reset-filter {
+  background-color: #dc3838;
+}
+
+.disable-all-intercation {
+  pointer-events: none;
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.import-container {
+  display: flex;
+  align-items: center;
+}
+
+.import-btn {
+  margin-top: 22px;
+}
+
+.import-inner-container {
+  width: 90%;
+  margin: 0 auto;
+}
+
+.no-interaction {
+  opacity: 0.3;
+  cursor: wait;
+}
+
+.temp-blocked-by {
+  font-size: 1.2rem;
+}
+
+textarea {
+  resize: none;
+}
+
+.top-header-container {
+  display: flex;
+  align-items: center;
+}
+
+i.fa.fa-cog {
+  font-size: 3rem;
+  cursor: pointer;
+  margin: 10px;
+}
+
+.dropdown-menu li {
+  border-bottom: 1px solid #eee;
+  padding: 5px 0px;
+}
+
+.dropdown-menu li:last-child {
+  border: 0px;
+}
+
+.toggle-container {
+  display: flex;
+  align-items: center;
+}
+
+.toggle-container p {
+  margin: 0px;
+}
+
+.import-container {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.action-button {
+  border: none;
+  color: #fff;
+  padding: 8px 30px;
+  outline: none;
+  font-weight: bold !important;
+  font-size: 1.5rem !important;
+}
+
+.action-button.approve {
+  background-color: #a0d468;
+}
+
+.action-button.decline {
+  background-color: #ed5565;
+}
+
+.decline-list-item {
+  background-color: indianred;
+}
+
+.decline-list-item:hover,
+.decline-list-item a:hover {
+  background-color: #c95050;
+}
+
+.grow {
+  transition: all 0.2s ease-in-out;
+}
+.grow:hover {
+  transform: scale(1.1);
+}
+
+.check_all_button_action {
+  margin-bottom: 20px !important;
+  margin-left: 10px;
+}
+
+.check_all_button_action button:first-child {
+  margin-right: 30px;
+}
+
+.table-bordered > thead > tr > th,
+.table-bordered > tbody > tr > th,
+.table-bordered > tfoot > tr > th,
+.table-bordered > thead > tr > td,
+.table-bordered > tbody > tr > td,
+.table-bordered > tfoot > tr > td {
+  vertical-align: middle;
+}

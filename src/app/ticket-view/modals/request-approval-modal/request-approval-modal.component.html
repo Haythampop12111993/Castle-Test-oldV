@@ -1,0 +1,42 @@
+
+<modal #modal title="Request Approval" submitButtonLabel="submit" modalClass="modal-md"
+  [hideCloseButton]="true" [closeOnOutsideClick]="true" (onSubmit)="
+  submitRequestApprovalModal(modal)
+  ">
+  <modal-header> </modal-header>
+  <modal-content>
+    <div class="row">
+      <div class="form-group col-xs-6">
+        <label for="">Time to Next Action: </label>
+        <select class="form-control" name="request_approval_time_to_next_action"
+          id="request_approval_time_to_next_action" [(ngModel)]="requestApproval.time_to_next_action">
+          <option *ngFor="let time of time_to_actions" [value]="time">{{time}} day</option>
+        </select>
+      </div>
+      <div class="form-group col-xs-6">
+        <label for="">Department<span style="color: red;"> *</span>: </label>
+        <select class="form-control" name="request_approval_department_id" id="request_approval_department_id"
+          [(ngModel)]="requestApproval.department_id">
+          <option *ngFor="let department of departments" [value]="department.id">{{department.name}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="row marign-top-10">
+      <div class="form-group col-xs-6">
+        <label for="">Feedback Description<span style="color: red;"> *</span>: </label>
+        <textarea name="requestApprovalFeedBackDescription" [(ngModel)]="requestApproval.feedback.description" cols="25"
+          rows="5"></textarea>
+      </div>
+      <div class="form-group col-xs-6">
+        <label for="">Feedback Attachments: </label>
+        <input type="file" class="form-control" id="document" multiple #requestApprovalFileInput
+          (change)="onRequestApprovalFilesChange($event)" required />
+      </div>
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="modal.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>

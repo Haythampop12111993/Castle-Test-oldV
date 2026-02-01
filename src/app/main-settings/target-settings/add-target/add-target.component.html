@@ -1,0 +1,29 @@
+<section class="add-new-team">
+  <div class="container-fluid">
+    <h2>Add Target Year</h2>
+    <div>
+      <form [formGroup]="targetForm" (ngSubmit)="createTarget()">
+        <div class="border-sec">
+          <div class="row">
+            <div class="col-xs-3">
+              <div class="form-group">
+                <label>Year :</label>
+                <select class="form-control" name="start" formControlName="start">
+                  <option *ngFor="let target of target_years" value="{{ target }}">{{ target }}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <button class="btn btn-default pull-right btn-black" [disabled]="targetForm.invalid">
+            SAVE
+          </button>
+          <button class="btn btn-default btn-black " [routerLink]="['/pages/targets']">
+            BACK
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>

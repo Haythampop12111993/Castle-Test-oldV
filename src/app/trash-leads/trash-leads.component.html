@@ -1,0 +1,80 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <h3>Trashed Leads</h3>
+    </div>
+    <br>
+    <div class="col-md-12">
+      <div class="table table-responsive">
+
+        <table class="table table-bordered">
+          <tr>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Phone 2</th>
+            <th>Email</th>
+            <th>Comment</th>
+            <th>Date</th>
+            <th>Actions</th>
+          </tr>
+          <tr *ngFor="let lead of trashed_leads">
+            <td>{{lead.name}}</td>
+            <td>{{lead.phone}}</td>
+            <td>{{lead.phone_2}}</td>
+            <td>{{lead.email}}</td>
+            <td>{{lead.comment}}</td>
+            <td>{{lead.deleted_at}}</td>
+            <td class="action">
+              <div class="dropdown" dropdown>
+                <img class="more-options-icon" src="assets/img/show-more-button-with-three-dots.svg" dropdown-open />
+                <ul class="dropdown-menu">
+                  <li (click)="restorLeadModal.open()">
+                    <a>restore lead</a>
+                  </li>
+                </ul>
+              </div>
+              <modal #restorLeadModal title="Restore Lead" submitButtonLabel="send" modalClass="modal-lg"
+                [hideCloseButton]="true" [closeOnOutsideClick]="true" (onClose)="restorLeadModalOnClose()"
+                (onSubmit)="restorLeadSubmit(lead.id, restorLeadModal)">
+                <modal-header> </modal-header>
+                <modal-content>
+                  <form>
+                    <div class="row">
+                      <div class="col-md-12 form-group">
+                        <label for="">Assign To Agent</label>
+                        <select class="form-control" name="agent_id" id="agnet_id" [(ngModel)]="agent_id">
+                          <option *ngFor="let agent of agents" [value]="agent.id">{{agent?.name}}</option>
+                        </select>
+                      </div>
+                    </div>
+                  </form>
+                </modal-content>
+                <modal-footer>
+                  <button class="btn btn-secondary" (click)="restorLeadModal.close()">
+                    close
+                  </button>
+                </modal-footer>
+              </modal>
+
+            </td>
+          </tr>
+        </table>
+
+      </div>
+    </div>
+
+    <div *ngIf="current_page" class="col-xs-12 text-center">
+      <p>
+        ({{per_page}} / {{total}})
+      </p>
+      <p>
+        page {{current_page}}
+      </p>
+    </div>
+    <div class="col-xs-12 text-center">
+      <ngb-pagination [collectionSize]="trashed_raw_data?.last_page * 10" [(page)]="pageTest" [maxSize]="5"
+        [rotate]="true" [ellipses]="true" [boundaryLinks]="true" (pageChange)="pageChange($event)" [size]="lg">
+      </ngb-pagination>
+    </div>
+  </div>
+</div>

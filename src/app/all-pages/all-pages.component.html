@@ -1,0 +1,116 @@
+<section class="users-table">
+  <div class="container-fluid">
+    <h2>Pages</h2>
+    <div class="proj-details">
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="settings-icons pull-right">
+            <div class="dropdown" dropdown>
+              <i class="fa fa-cog" aria-hidden="true" dropdown-open></i>
+              <ul class="dropdown-menu">
+                <li (click)="pageModal.open()">
+                  <a>
+                    <span class="doc_link">Add Page</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="col-md-12">
+          <div class="table table-responsive">
+            <table class="table table-bordered">
+              <tr>
+                <th>ID</th>
+                <th>Logo</th>
+                <th>Page Name</th>
+                <th>Type</th>
+                <th>Category</th>
+                <th>Link</th>
+                <th>Action</th>
+              </tr>
+              <tr *ngFor="let page of pages">
+                <td>{{ page?.external_page_id }}</td>
+                <td>
+                  <img [src]="page?.logo" alt="logo" style="width: 50px; height: 50px; border-radius: 50%;" />
+                </td>
+                <td>{{ page?.name }}</td>
+                <td>{{ page?.type }}</td>
+                <td>{{ page?.category }}</td>
+                <td>
+                  <a class="btn btn-primary" [href]="page?.link" target="_blank">
+                    Link
+                  </a>
+                </td>
+                <td>
+                  <div class="dropdown" dropdown>
+                    <img
+                      class="more-options-icon"
+                      src="assets/img/show-more-button-with-three-dots.svg"
+                      dropdown-open
+                    />
+                    <ul class="dropdown-menu">
+                      <li (click)="editPage(page, pageModal)">
+                        <a>
+                          <span class="doc_link">Edit</span>
+                        </a>
+                      </li>
+                      <!-- <li (click)="showPage(page)">
+                        <a>
+                          <span class="doc_link">Show</span>
+                        </a>
+                      </li> -->
+                      <li (click)="deletePage(page.id)">
+                        <a>
+                          <span class="doc_link">Delete</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<modal
+  #pageModal
+  title="Add Page"
+  submitButtonLabel="submit"
+  modalClass="modal-lg"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="addPageSubmit(pageModal)"
+  (onClose)="addPageModalOnClose()"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <form [formGroup]="pageForm">
+      <div class="row">
+        <div class="form-group col-md-12">
+          <label for="">External Page Id</label>
+          <input
+            type="text"
+            name="external_page_id"
+            class="form-control"
+            formControlName="external_page_id"
+          />
+        </div>
+      </div>
+    </form>
+  </modal-content>
+  <modal-footer>
+    <button
+      [ngClass]="{ 'disable, disabled': disableAddCampaign }"
+      class="btn btn-secondary"
+      (click)="pageModal.close()"
+    >
+      close
+    </button>
+  </modal-footer>
+</modal>

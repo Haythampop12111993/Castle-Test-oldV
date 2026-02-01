@@ -1,0 +1,76 @@
+<mat-card class="option-card">
+  <mat-card-content>
+    <h3 class="card__title">Case Courts</h3>
+    <div class="row">
+      <div class="col-xs-12 margin-bottom">
+        <form #form="ngForm" class="form-inline">
+          <div class="form-group">
+            <label for="">Court Name :</label>
+            <input
+              name="add_court"
+              [(ngModel)]="add_court"
+              type="text"
+              class="form-control"
+              required
+            />
+          </div>
+
+          <button
+            *ngIf="!current_selected_court"
+            (click)="addCourt()"
+            class="btn btn-primary"
+            type="submit"
+            [disabled]="!form.form.valid"
+          >
+            Add
+          </button>
+          <button
+            *ngIf="current_selected_court"
+            (click)="updateCourt()"
+            class="btn btn-primary"
+            type="submit"
+            [disabled]="!form.form.valid"
+          >
+            Update
+          </button>
+          <button
+            *ngIf="current_selected_court"
+            (click)="cancelUpdate()"
+            class="btn btn-default"
+            type="button"
+          >
+            Cancel
+          </button>
+        </form>
+      </div>
+      <div class="col-xs-12 margin-bottom">
+        <table>
+          <tr>
+            <th>Name</th>
+            <th>Actions</th>
+          </tr>
+          <tr class="data" *ngFor="let court of courts">
+            <td>
+              {{ court?.name }}
+            </td>
+
+            <td>
+              <button
+                class="btn btn-danger delete"
+                (click)="deleteCourt(court.id)"
+              >
+                Delete
+              </button>
+              <button
+                class="btn btn-primary primary"
+                (click)="editCourt(court)"
+              >
+                Edit
+              </button>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

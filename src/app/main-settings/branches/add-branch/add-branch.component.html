@@ -1,0 +1,117 @@
+<section class="add-new-team">
+  <div class="container-fluid">
+    <h2 *ngIf="is_edit">Edit branch</h2>
+    <h2 *ngIf="!is_edit">Add branch</h2>
+    <div class="box" *ngIf="page_loaded">
+      <form [formGroup]="documentForm">
+        <div class="border-sec">
+          <div class="row">
+            <div class="col-xs-6">
+              <div class="form-group">
+                <label>Branch NAME :</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="name"
+                  name="name"
+                />
+              </div>
+            </div>
+            <div class="col-xs-6 members">
+              <div>
+                <label for="">Teams :</label>
+              </div>
+              <div>
+                <angular2-multiselect
+                  [data]="dropdownList"
+                  formControlName="teams_ids"
+                  (onSelect)="onItemSelect($event)"
+                  (onDeSelect)="OnItemDeSelect($event)"
+                  (onSelectAll)="onSelectAll($event)"
+                  (onDeSelectAll)="onDeSelectAll($event)"
+                ></angular2-multiselect>
+              </div>
+            </div>
+          </div>
+          <!-- <div class="row">
+            <div class="col-xs-6">
+              <div class="ui-g-12 ui-md-12">
+                <div class="ui-inputgroup">
+                  <div class="form-group">
+                    <div class="role-container">
+                      <label>Head Of Sales</label>
+                      <p-multiSelect [options]="headOfSales" [panelStyle]="{ minWidth: '15em' }"
+                        [style]="{ minWidth: '15em' }" optionLabel="name" formControlName="selectedHeadOfSales">
+                      </p-multiSelect>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-xs-6">
+              <div class="ui-g-12 ui-md-12">
+                <div class="ui-inputgroup">
+                  <div class="form-group">
+                    <div class="role-container">
+                      <label>Deputy Head Of Sales</label>
+                      <p-multiSelect [options]="deputyHeadOfSales" [panelStyle]="{ minWidth: '15em' }"
+                        [style]="{ minWidth: '15em' }" optionLabel="name" formControlName="selectedDeputyHeadOfSales">
+                      </p-multiSelect>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div> -->
+          <!-- <div class="row">
+            <div class="col-xs-6">
+              <div class="ui-g-12 ui-md-12">
+                <div class="ui-inputgroup">
+                  <div class="form-group">
+                    <div class="role-container">
+                      <label>Sales Director</label>
+                      <p-multiSelect [options]="salesDirector" [panelStyle]="{ minWidth: '15em' }"
+                        [style]="{ minWidth: '15em' }" optionLabel="name" formControlName="selectedSalesDirector">
+                      </p-multiSelect>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-xs-6">
+              <div class="ui-g-12 ui-md-12">
+                <div class="ui-inputgroup">
+                  <div class="form-group">
+                    <div class="role-container">
+                      <label>Deputy Sales Director</label>
+                      <p-multiSelect [options]="deputySalesDirector" [panelStyle]="{ minWidth: '15em' }"
+                        [style]="{ minWidth: '15em' }" optionLabel="name" formControlName="selectedDeputySalesDirector">
+                      </p-multiSelect>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div> -->
+          <!-- <div class="row">
+            <div class="col-xs-6">
+              <div class="form-group">
+                <label>Branch Color :</label>
+                <input type="color" class="form-control" formControlName="branch_color" value="#000" name="branch_color" />
+              </div>
+            </div>
+          </div> -->
+        </div>
+      </form>
+      <div class="form-group">
+        <button
+          (click)="save()"
+          class="btn btn-default pull-right btn-black"
+          [disabled]="!documentForm.valid"
+        >
+          Submit
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

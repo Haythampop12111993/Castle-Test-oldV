@@ -1,0 +1,45 @@
+<div class="row">
+  <div class="col-xs-12">
+    <div class="import-container">
+      <div class="import-inner-container flex-space">
+        <h2 class="title">Call Center Scripts</h2>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xs-12">
+    <form #form="ngForm">
+      <div class="form-group col-xs-12">
+        <label for="">Call Center Script :</label>
+        <editor
+          [init]="editorConfig"
+          id="call_center_script"
+          name="call_center_script"
+          [(ngModel)]="scripts.call_center_script"
+        >
+        </editor>
+      </div>
+      <div class="form-group col-xs-12">
+        <label for="">Sales Script :</label>
+        <editor
+          [init]="editorConfig"
+          id="sales_script"
+          name="sales_script"
+          [(ngModel)]="scripts.sales_script"
+        >
+        </editor>
+      </div>
+      <div class="form-group col-xs-12 center-btn text-right">
+        <button
+          mat-button
+          type="submit"
+          class="btn"
+          (click)="save()"
+          [disabled]="!form.form.valid"
+        >
+          SAVE
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

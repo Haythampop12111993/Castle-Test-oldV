@@ -1,0 +1,76 @@
+<section class="teams-table">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-xs-11">
+        <h2 class="teams-title">System Occasions</h2>
+      </div>
+      <div class="col-xs-1">
+        <div class="settings-icons pull-right">
+          <div class="dropdown" dropdown>
+            <i class="fa fa-cog" aria-hidden="true" dropdown-open></i>
+            <ul class="dropdown-menu">
+              <!-- <li (click)="addOccasion()">
+                <a>
+                  <span>Add Occasion</span>
+                </a>
+              </li> -->
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="proj-details">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="table table-responsive">
+            <table class="table table-bordered">
+              <tr>
+                <th>ID</th>
+                <th>Type</th>
+                <th>title</th>
+                <th>Message</th>
+                <th>Date</th>
+                <th>Action</th>
+              </tr>
+              <tr *ngFor="let occasion of occasions" [ngClass]="{
+                'bg-success': occasion.is_active == 1,
+                'bg-danger': occasion.is_active == 0
+                }">
+                <td>#{{ occasion.id }}</td>
+                <td>{{ occasion.type }}</td>
+                <td>{{ occasion.title }}</td>
+                <td>{{ occasion.message }}</td>
+                <td>{{ occasion.datetime }}</td>
+                <td>
+                  <div class="dropdown" dropdown>
+                    <img class="more-options-icon" src="assets/img/show-more-button-with-three-dots.svg"
+                      dropdown-open />
+                    <ul class="dropdown-menu">
+                      <li (click)="edit(occasion.id)">
+                        <a>
+                          <span class="doc_link">Edit</span>
+                        </a>
+                      </li>
+                      <li (click)="disableOccasion(occasion.id)" *ngIf="occasion.is_active == 1">
+                        <a>
+                          <span>Disable</span>
+                        </a>
+                      </li>
+                      <li (click)="enableOccasion(occasion.id)" *ngIf="occasion.is_active == 0">
+                        <a>
+                          <span>Enable</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- <p>{{ team_tree?.branch?.name }}</p> -->

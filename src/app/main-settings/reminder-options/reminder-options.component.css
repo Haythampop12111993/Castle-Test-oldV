@@ -1,0 +1,118 @@
+.card__title {
+  margin-bottom: 20px;
+}
+
+.margin-bottom {
+  margin-bottom: 15px;
+}
+
+.action__name {
+  font-size: 17px;
+  display: inline-block;
+  margin-bottom: 15px;
+  min-height: 50px;
+}
+
+.reservation-option-container {
+  display: flex;
+  justify-content: center;
+}
+
+.card__title {
+  margin-bottom: 20px;
+}
+
+.margin-bottom {
+  margin-bottom: 15px;
+}
+
+.table-head {
+  font-weight: bold;
+}
+
+.table-head.status,
+.table-head.action,
+.status-value-container {
+  text-align: center;
+}
+
+.action__name {
+  font-size: 17px;
+  display: inline-block;
+  margin-bottom: 15px;
+  min-height: 50px;
+}
+
+table {
+  width: 100%;
+}
+
+.enabled-disabled-checkbox {
+  width: 40px;
+  height: 20px;
+  display: flex;
+}
+
+.enabled-disabled-checkbox .enabled {
+  width: 20px;
+  background-color: gray;
+}
+
+.enabled-disabled-checkbox .disabled {
+  width: 20px;
+  background-color: #c6cbd4;
+}
+
+td,
+th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+.data:nth-child(even) {
+  background-color: #f1f3f5;
+}
+
+.status-box {
+  width: 50px;
+}
+
+.data .enabled {
+  width: 20px;
+  height: 20px;
+  background-color: gray;
+  margin: 0 auto;
+}
+
+.data .disabled {
+  width: 20px;
+  height: 20px;
+  background-color: #c6cbd4;
+  margin: 0 auto;
+}
+
+.settings-icons i {
+  font-size: 3rem;
+  cursor: pointer;
+  margin: 10px;
+}
+
+.dropdown-menu {
+  right: 0 !important;
+  left: unset !important;
+}
+
+.padding-horizontal {
+  padding: 0 20px !important;
+}
+
+.form-inline {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.form-inline div,
+.form-inline button {
+  margin-right: 10px;
+}

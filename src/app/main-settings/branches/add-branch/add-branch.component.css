@@ -1,0 +1,51 @@
+input.ui-inputtext.ui-widget.ui-state-default.ui-corner-all {
+  margin-bottom: 0px !important;
+}
+
+.my-panel .ui-multiselect{
+  width: 100%;
+}
+
+.my-panel .ui-multiselect, .ui-multiselect.ui-widget.ui-state-default.ui-corner-all{
+  width: 100% !important;
+}
+
+.ui-multiselect{
+  width: 100% !important;
+}
+
+.ui-multiselect-label-container{
+  width: 100% !important;
+}
+
+.ui-multiselect-panel	{
+  width: 100% !important;
+}
+
+.dropdown-list .arrow-up,
+.dropdown-list .arrow-down{
+  display: none;
+}
+
+.ui-md-1, .ui-md-2, .ui-md-3, .ui-md-4, .ui-md-5, .ui-md-6, .ui-md-7, .ui-md-8, .ui-md-9, .ui-md-10, .ui-md-11, .ui-md-12 {
+  padding: 0px !important;
+}
+
+.role-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group,
+.role-container,
+::ng-deep .ui-multiselect-panel.ui-widget.ui-widget-content.ui-corner-all.ui-shadow,
+::ng-deep .ui-multiselect {
+  width: 100% !important;
+}
+
+
+input[type="color"] {
+	-webkit-appearance: none;
+	width: 100%;
+	height: 50px;
+}

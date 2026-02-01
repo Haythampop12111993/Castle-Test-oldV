@@ -1,0 +1,24 @@
+<section class="add-new-team">
+  <div class="container-fluid">
+    <h2>Add System Version</h2>
+    <div>
+      <form [formGroup]="form" (ngSubmit)="saveVersion()">
+        <div class="border-sec">
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="form-group">
+                <label>Version :</label>
+                <input type="text" class="form-control" formControlName="version" name="version" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <button class="btn btn-default pull-right btn-black" [disabled]="form.invalid">
+            SAVE
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>

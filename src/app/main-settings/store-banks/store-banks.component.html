@@ -1,0 +1,50 @@
+<div class="row">
+  <div class="col-xs-12">
+    <div class="import-container">
+      <div class="import-inner-container flex-space">
+        <h2 class="title">Store Banks</h2>
+      </div>
+    </div>
+  </div>
+  <div class="col-xs-12">
+    <div class="table table-responsive">
+      <table class="table table-bordered">
+        <thead class="card-head">
+          <tr>
+            <th class="status-box">#</th>
+            <th>Bank Name</th>
+            <th>Account Number</th>
+            <th>Created At</th>
+            <th>Updated At</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let bank of banks; let i = index">
+            <td>{{ bank.id }}</td>
+            <td>{{ bank.name }}</td>
+            <td>{{ bank.account_number }}</td>
+            <td>{{ bank.created_at | date }}</td>
+            <td>{{ bank.updated_at | date }}</td>
+            <td>
+              <div class="dropdown" dropdown>
+                <img
+                  class="more-options-icon"
+                  src="assets/img/show-more-button-with-three-dots.svg"
+                  dropdown-open
+                />
+                <ul class="dropdown-menu actions">
+                  <li (click)="editBank(bank.id, i)">
+                    <a>
+                      <span>Edit Bank</span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

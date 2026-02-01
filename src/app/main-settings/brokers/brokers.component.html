@@ -1,0 +1,451 @@
+<div class="">
+  <div class="row">
+    <div class="col-xs-8">
+      <h3 class="card__title lato">Brokers Table</h3>
+    </div>
+    <div class="col-xs-4">
+      <div class="settings-icons pull-right">
+        <div class="dropdown" dropdown>
+          <i class="fa fa-cog" aria-hidden="true" dropdown-open></i>
+          <ul class="dropdown-menu menu-settings">
+            <li>
+              <a [href]="broker_export_url">
+                <span>Export Brokers</span>
+              </a>
+            </li>
+            <li (click)="importBrokerModal.open()">
+              <a>
+                <span>Import Brokers</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-12 col-md-5 margin-top">
+      <div class="form-group">
+        <label for="">Search Brokers</label>
+        <input
+          (keyup)="searchBrokers($event)"
+          name="search_brokers_keyword"
+          [(ngModel)]="search_brokers_keyword"
+          type="text"
+          class="form-control"
+          placeholder="Enter Broker (name or phone) / Property Consultant number"
+        />
+      </div>
+    </div>
+
+    <div class="table table-responsive">
+      <div class="col-sm-12">
+        <table class="table table-bordered">
+          <tr>
+            <th class="text-center">Broker Name</th>
+            <th class="text-center">Contact Person</th>
+            <th class="text-center">Contact Email</th>
+            <th class="text-center">Contact Phone</th>
+            <th class="text-center">Contact Address</th>
+            <th class="text-center">Tax Number</th>  
+            <th class="text-center">Agent</th>
+            <th class="text-center">Actions</th>
+          </tr>
+
+          <ng-container *ngIf="brokers">
+            <tr *ngFor="let broker of brokers; let i = index">
+              <td class="text-center">
+                <span *ngIf="!broker.edit_mode">
+                  {{ broker.name }}
+                </span>
+                <div class="form-inline" *ngIf="broker.edit_mode">
+                  <input
+                    type="text"
+                    class="form-control lato"
+                    name="name"
+                    [ngClass]="{ 'edit-mode-active': broker.edit_mode }"
+                    [(ngModel)]="broker.name"
+                  />
+                </div>
+              </td>
+              <td class="text-center">
+                <span *ngIf="!broker.edit_mode">
+                  {{ broker.contact_person }}
+                </span>
+                <div class="form-inline" *ngIf="broker.edit_mode">
+                  <input
+                    type="text"
+                    class="form-control lato"
+                    name="contact_person"
+                    [ngClass]="{ 'edit-mode-active': broker.edit_mode }"
+                    [(ngModel)]="broker.contact_person"
+                  />
+                </div>
+              </td>
+              <td class="text-center">
+                <span *ngIf="!broker.edit_mode">
+                  {{ broker.contact_email }}
+                </span>
+                <div class="form-inline" *ngIf="broker.edit_mode">
+                  <input
+                    type="text"
+                    class="form-control lato"
+                    name="contact_person"
+                    [ngClass]="{ 'edit-mode-active': broker.edit_mode }"
+                    [(ngModel)]="broker.contact_email"
+                  />
+                </div>
+              </td>
+              <td class="text-center">
+                <span *ngIf="!broker.edit_mode">
+                  {{ broker.contact_phone }}
+                </span>
+                <div class="form-inline" *ngIf="broker.edit_mode">
+                  <input
+                    type="text"
+                    class="form-control lato"
+                    name="contact_phone"
+                    [ngClass]="{ 'edit-mode-active': broker.edit_mode }"
+                    [(ngModel)]="broker.contact_phone"
+                  />
+                </div>
+              </td>
+              <td class="text-center">
+                <span *ngIf="!broker.edit_mode">
+                  {{ broker.contact_address }}
+                </span>
+                <div class="form-inline" *ngIf="broker.edit_mode">
+                  <input
+                    type="text"
+                    class="form-control lato"
+                    name="contact_address"
+                    [ngClass]="{ 'edit-mode-active': broker.edit_mode }"
+                    [(ngModel)]="broker.contact_address"
+                  />
+                </div>
+              </td>
+              <td class="text-center">
+                <span *ngIf="!broker.edit_mode">
+                  {{ broker.tax_number }}
+                </span>
+                <div class="form-inline" *ngIf="broker.edit_mode">
+                  <input
+                    type="text"
+                    class="form-control lato"
+                    name="tax_number"
+                    [ngClass]="{ 'edit-mode-active': broker.edit_mode }"
+                    [(ngModel)]="broker.tax_number"
+                  />
+                </div>
+              </td>
+              <td class="text-center">
+                <ng-container *ngIf="!broker.edit_mode">
+                  <span
+                    class="badge badge-secoundry"
+                    *ngFor="let user of broker.users_arr"
+                  >
+                    {{ user?.name }}
+                  </span>
+                </ng-container>
+                <div class="form-inline" *ngIf="broker.edit_mode">
+                  <ng-select
+                    placeholder="agents"
+                    class="form-control ng-select-w"
+                    name="agent"
+                    [multiple]="true"
+                    [(ngModel)]="broker.users"
+                  >
+                    <!-- [multiple]="true" -->
+                    <ng-option *ngFor="let agent of agents" [value]="agent.id">
+                      {{ agent.name }}
+                    </ng-option>
+                  </ng-select>
+                </div>
+              </td>
+              <td class="text-center">
+                <div class="buttons">
+                  <ng-container
+                    *ngIf="
+                      userData.role === 'A.R Accountant' ||
+                        userData.role === 'G.L Accountant' ||
+                        userData.role === 'Treasury Accountant';
+                      else default_actions
+                    "
+                  >
+                    <button
+                      class="btn btn-primary"
+                      style="margin-block-end: 10px"
+                      (click)="showBrokerDocumentsModal.open(broker)"
+                    >
+                      Show Document
+                    </button>
+                  </ng-container>
+
+                  <ng-template #default_actions>
+                    <button
+                      class="btn"
+                      style="margin-block-end: 10px"
+                      [ngClass]="{
+                        'btn-secondary': !broker.is_active,
+                        'btn-danger': broker.is_active
+                      }"
+                      *ngIf="!broker.edit_mode"
+                      (click)="deactivate_broker(i)"
+                    >
+                      {{ broker.is_active ? "Deactivate" : "Active" }}
+                    </button>
+                    <button
+                      class="btn btn-primary"
+                      style="margin-block-end: 10px"
+                      *ngIf="!broker.edit_mode"
+                      (click)="edit_broker(i)"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      class="btn btn-success"
+                      style="margin-block-end: 10px"
+                      *ngIf="broker.edit_mode"
+                      (click)="save_broker(i)"
+                    >
+                      Save
+                    </button>
+                    <button
+                      class="btn btn-danger"
+                      style="margin-block-end: 10px"
+                      *ngIf="broker.edit_mode"
+                      (click)="cancelBroker(i)"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      class="btn btn-primary"
+                      style="margin-block-end: 10px"
+                      *ngIf="broker.edit_mode"
+                      (click)="commissionsModal.open(broker)"
+                    >
+                      Commissions
+                    </button>
+                    <button
+                      class="btn btn-primary"
+                      style="margin-block-end: 10px"
+                      *ngIf="broker.edit_mode"
+                      (click)="uploadBrokerDocumentModal.open(broker)"
+                    >
+                      Upload Document
+                    </button>
+                    <button
+                      class="btn btn-primary"
+                      style="margin-block-end: 10px"
+                      (click)="showBrokerDocumentsModal.open(broker)"
+                    >
+                      Show Document
+                    </button>
+                  </ng-template>
+                </div>
+
+                <modal
+                  #uploadBrokerDocumentModal
+                  title="Upload Broker document"
+                  submitButtonLabel="upload"
+                  modalClass="modal-md"
+                  [hideCloseButton]="true"
+                  [closeOnOutsideClick]="true"
+                  (onOpen)="uploadBrokerDocumentModalOpen(broker)"
+                  (onSubmit)="uploadBrokerDocument(uploadBrokerDocumentModal)"
+                  (onClose)="uploadBrokerDocumentModalClose()"
+                >
+                  <modal-content>
+                    <div class="row">
+                      <div class="form-group col-xs-12">
+                        <form class="form-group btn-group-files">
+                          <label for="">Broker document: </label>
+                          <input
+                            type="file"
+                            class="margin-left"
+                            #documentFile
+                            multiple
+                            (change)="handleDocumentUpload($event)"
+                          />
+
+                          <!-- <label for="" style="margin-top: 20px;">File description: </label> -->
+                          <!-- <input class="margin-left" style="border: 1px solid;" [formControl]="brokerDocumentForm.controls['name']"> -->
+                        </form>
+                      </div>
+                    </div>
+                  </modal-content>
+                  <modal-footer>
+                    <button
+                      class="btn btn-secondary"
+                      (click)="uploadBrokerDocumentModal.close()"
+                    >
+                      Cancel
+                    </button>
+                  </modal-footer>
+                </modal>
+                <modal
+                  #commissionsModal
+                  title="Edit Broker Commissions"
+                  submitButtonLabel="Save"
+                  modalClass="modal-md"
+                  [hideCloseButton]="true"
+                  [closeOnOutsideClick]="true"
+                  (onOpen)="commissionsModalOpen(broker.id)"
+                  (onSubmit)="submitCommissions(broker.id, commissionsModal)"
+                  (onClose)="commissionsModalClose()"
+                >
+                  <modal-content>
+                    <div class="row">
+                      <div class="form-group col-xs-12">
+                        <form class="form-group btn-group-files">
+                          <div
+                            *ngFor="let project of projects; let first = first"
+                            class="d-flex"
+                            [ngClass]="{ 'margin-top': !first }"
+                          >
+                            <div class="col-xs-3">
+                              <label for="">{{ project.name }}</label>
+                            </div>
+                            <div class="col-xs-9">
+                              <input
+                                type="text"
+                                class="form-control lato edit-mode-active"
+                                [(ngModel)]="
+                                  brokerCommissionData[project.id].value
+                                "
+                                [ngModelOptions]="{ standalone: true }"
+                              />
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </modal-content>
+                  <modal-footer>
+                    <button
+                      class="btn btn-secondary"
+                      (click)="commissionsModal.close()"
+                    >
+                      Cancel
+                    </button>
+                  </modal-footer>
+                </modal>
+
+                <modal
+                  #showBrokerDocumentsModal
+                  title="Broker documents"
+                  modalClass="modal-md"
+                  [hideCloseButton]="true"
+                  [closeOnOutsideClick]="true"
+                  (onOpen)="showBrokerDocumentsModalOpen(broker)"
+                >
+                  <modal-content>
+                    <div class="row">
+                      <div
+                        class="form-group col-xs-12 documentsContainer"
+                        [ngClass]="{
+                          _flex: !brokerDocuments || brokerDocuments.length == 0
+                        }"
+                      >
+                        <div
+                          *ngFor="let doc of brokerDocuments"
+                          class="documentImage"
+                          [id]="doc.id"
+                        >
+                          <div class="col">
+                            <button
+                              type="button"
+                              class="close"
+                              aria-label="Close"
+                              (click)="deleteBrokerDocument(broker.id, doc.id)"
+                              *ngIf="
+                                userData.role !== 'A.R Accountant' &&
+                                userData.role !== 'G.L Accountant' &&
+                                userData.role !== 'Treasury Accountant'
+                              "
+                            >
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <a [href]="doc.full_url" target="_blank"
+                            ><img
+                              [src]="doc.full_url"
+                              width="200"
+                              height="200"
+                              alt=""
+                          /></a>
+                          <h6>{{ doc.name }}</h6>
+                        </div>
+                        <h4
+                          class="text-center"
+                          *ngIf="
+                            !brokerDocuments || brokerDocuments.length == 0
+                          "
+                        >
+                          No Related Documents
+                        </h4>
+                      </div>
+                    </div>
+                  </modal-content>
+                  <modal-footer>
+                    <button
+                      class="btn btn-secondary"
+                      (click)="showBrokerDocumentsModal.close()"
+                    >
+                      Ok
+                    </button>
+                  </modal-footer>
+                </modal>
+              </td>
+            </tr>
+          </ng-container>
+        </table>
+      </div>
+      <div class="col-xs-12 text-center">
+        <ngb-pagination
+          [collectionSize]="brokers_raw_data?.last_page * 10"
+          [(page)]="current_page"
+          [maxSize]="5"
+          [rotate]="true"
+          [ellipses]="true"
+          [boundaryLinks]="true"
+          (pageChange)="pageChange($event)"
+          [size]="'lg'"
+        >
+        </ngb-pagination>
+      </div>
+    </div>
+  </div>
+</div>
+
+<modal
+  #importBrokerModal
+  title="Import Brokers"
+  submitButtonLabel="submit"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onOpen)="importBrokersModalOpen()"
+  (onClose)="importBrokersModalClose()"
+  (onSubmit)="uploadBrokerExcelMethod(importBrokerModal)"
+>
+  <modal-content>
+    <div class="row">
+      <div class="form-group col-xs-6">
+        <form class="form-group btn-group-files pull-left">
+          <label for="">Brokers File : </label>
+          <input
+            type="file"
+            accept=".xlsx, .xls"
+            class="margin-left"
+            id="brokerExcelFile"
+            (change)="handleBrokerUploadExcel($event)"
+          />
+        </form>
+      </div>
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="importBrokerModal.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>

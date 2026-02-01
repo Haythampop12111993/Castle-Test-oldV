@@ -1,0 +1,96 @@
+<mat-card>
+  <mat-card-content>
+    <div class="row">
+      <div class="col-xs-12">
+        <h3 class="card__title lato">Manage Broker Incentives</h3>
+      </div>
+    </div>
+    <div class="row h-screen" *ngIf="mode">
+      <div class="col-xs-12 margin-bottom">
+        <form #brokerForm="ngForm" class="form-group">
+          <div class="row">
+            <div class="form-group col-xs-4">
+              <label for="name">Name :</label>
+              <input
+                name="name"
+                [(ngModel)]="add_broker.name"
+                type="text"
+                class="form-control"
+                required
+              />
+            </div>
+            <div class="col-xs-4 form-group">
+              <label for="phone">Phone :</label>
+              <input
+                name="phone"
+                [(ngModel)]="add_broker.phone"
+                type="tel"
+                class="form-control"
+                required
+              />
+            </div>
+            <div class="col-xs-4 form-group">
+              <label for="email">Email :</label>
+              <input
+                name="email"
+                [(ngModel)]="add_broker.email"
+                type="text"
+                class="form-control"
+                required
+              />
+            </div>
+            <div class="col-xs-4 form-group" *ngIf="mode == 'add'">
+              <label for="password">Password :</label>
+              <input
+                name="password"
+                [(ngModel)]="add_broker.password"
+                type="password"
+                class="form-control"
+                required
+              />
+            </div>
+            <div class="col-xs-4 form-group">
+              <label for="job_title">Job Title :</label>
+              <input
+                name="job_title"
+                [(ngModel)]="add_broker.job_title"
+                type="text"
+                class="form-control"
+                required
+              />
+            </div>
+            <div class="col-xs-4 form-group">
+              <label for="broker_id">Broker :</label>
+              <ng-select name="broker_id" [(ngModel)]="add_broker.broker_id">
+                <ng-option *ngFor="let broker of brokers" [value]="broker.id">{{
+                  broker.name
+                }}</ng-option>
+              </ng-select>
+            </div>
+            <div class="col-xs-4 form-group">
+              <label for="">National ID :</label>
+              <input
+                name="national_id"
+                [(ngModel)]="add_broker.national_id"
+                type="text"
+                class="form-control"
+                required
+              />
+            </div>
+          </div>
+          <div
+            class="col-xs-12 d-flex justify-content-end form-group margin-top"
+          >
+            <button
+              (click)="submitBroker()"
+              class="btn btn-primary add-btn"
+              type="submit"
+            >
+              {{ mode == "add" ? "Add" : "Update" }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

@@ -1,0 +1,1451 @@
+<!-- THIS SECTION REPRESENTS THE STRUCTURE/SKELETON OF THE PAGE AND WHERE EACH PART IS LAID OUT -->
+<!-- USE Fold level 1 command in vs code for clear visualization of the page -->
+<section class="unit">
+  <div class="container-fluid">
+    <h2>EOI</h2>
+    <div class="row">
+      <div class="col-xs-12" *ngIf="eoi_details">
+        <div class="lead-details">
+          <ng-template [ngTemplateOutlet]="eoiSummary"></ng-template>
+
+          <div class="lead-content-section">
+            <ng-template [ngTemplateOutlet]="tabButtons"></ng-template>
+
+            <div>
+              <div class="tab-content">
+                <ng-template [ngTemplateOutlet]="customerInfoTab"></ng-template>
+                <ng-template [ngTemplateOutlet]="dealTypeTab"></ng-template>
+                <ng-template
+                  [ngTemplateOutlet]="accountantInformationTab"
+                ></ng-template>
+                <ng-template [ngTemplateOutlet]="pcInfoTab"></ng-template>
+                <ng-template [ngTemplateOutlet]="commentTab"></ng-template>
+                <ng-template [ngTemplateOutlet]="activityLogTab"></ng-template>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Random divs go here -->
+
+<ng-template #eoiSummary>
+  <div class="header-lead">
+    <div class="row">
+      <div class="col-md-9">
+        <div class="media">
+          <div class="media-left">
+            <a>
+              {{ eoi_details?.status_text.substring(0, 5) }}
+            </a>
+          </div>
+          <div class="media-body">
+            <h3>
+              EOI [{{ eoi_details?.serial }}]
+              <span *ngIf="userProfile.role !== 'Down Town Account'"
+                >#{{ eoi_details?.id }}</span
+              >
+            </h3>
+            <div class="row">
+              <div class="col-xs-4">
+                <ul class="list-unstyled">
+                  <li>Status: {{ eoi_details?.status_text }}</li>
+                  <li>
+                    Lead Name:
+                    <a (click)="redirectToLeadDetails(eoi_details?.lead_id)">{{
+                      eoi_details?.lead?.name
+                    }}</a>
+                  </li>
+                  <li>Lead Phone: {{ eoi_details?.lead_phone }}</li>
+                  <li>Lead Address: {{ eoi_details?.lead_address }}</li>
+                  <li>Lead Phone: {{ eoi_details?.lead_phone }}</li>
+                  <li>Lead Other Phone: {{ eoi_details?.lead_other_phone }}</li>
+                  <li>Lead Issue Date: {{ eoi_details?.lead_issue_date }}</li>
+                  <li>Arabic Name: {{ eoi_details?.lead_arabic_name }}</li>
+                  <li>Job: {{ eoi_details?.lead_job_title }}</li>
+                  <li>Issue Date: {{ eoi_details?.lead_issue_date }}</li>
+                  <li>Workplace: {{ eoi_details?.lead_workplace }}</li>
+                  <li>Phase: {{ eoi_details?.phase }}</li>
+                </ul>
+              </div>
+              <div class="col-xs-4">
+                <ul class="list-unstyled">
+                  <li>Agent: {{ eoi_details?.user?.name }}</li>
+                  <li>Payment Type: {{ eoi_details?.payment_type }}</li>
+                  <li>
+                    EOI Fees:
+                    {{
+                      eoi_details?.eoi_value | currency : " " : false : "1.0-0"
+                    }}
+                  </li>
+                  <li>Project Name: {{ eoi_details?.project?.name }}</li>
+                  <li>
+                    Linked reservation status:
+                    {{ eoi_details?.linked_reservation_status_text }}
+                  </li>
+                  <li>Interested Type: {{ eoi_details?.interested_type }}</li>
+                  <li>
+                    Interested Area From:
+                    {{ eoi_details?.interested_area_from }}
+                  </li>
+                  <li>
+                    Interested Area To: {{ eoi_details?.interested_area_to }}
+                  </li>
+                  <li>EOI Value: {{ eoi_details?.eoi_value }}</li>
+                  <li *ngIf="eoi_details.reservation">
+                    Linked Reservation serial: #
+                    {{ eoi_details?.reservation?.id }}
+                  </li>
+                </ul>
+              </div>
+              <div class="col-xs-4"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 operation-container"></div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #tabButtons>
+  <ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active">
+      <a
+        href="#customerInfoTab"
+        aria-controls="customerInfoTab"
+        role="tab"
+        data-toggle="tab"
+      >
+        Customer Information
+      </a>
+    </li>
+
+    <li role="presentation" *ngIf="userProfile.role !== 'Down Town Account'">
+      <a
+        href="#dealTypeTab"
+        aria-controls="dealTypeTab"
+        role="tab"
+        data-toggle="tab"
+        >Deal Type</a
+      >
+    </li>
+
+    <li role="presentation" *ngIf="userProfile.role !== 'Down Town Account'">
+      <a
+        href="#accountantInformationTab"
+        aria-controls="accountantInformationTab"
+        role="tab"
+        data-toggle="tab"
+        >Accountant Information</a
+      >
+    </li>
+
+    <li role="presentation" *ngIf="userProfile.role !== 'Down Town Account'">
+      <a
+        href="#pcInfoTab"
+        aria-controls="pcInfoTab"
+        role="tab"
+        data-toggle="tab"
+      >
+        P.C Info
+      </a>
+    </li>
+
+    <li
+      role="presentation"
+      *ngIf="
+        userProfile.role == 'Admin' || userProfile.role == 'Super Development'
+      "
+    >
+      <a
+        href="#commentTab"
+        aria-controls="commentTab"
+        role="tab"
+        data-toggle="tab"
+      >
+        Comment
+      </a>
+    </li>
+
+    <li role="presentation" *ngIf="userProfile.role !== 'Down Town Account'">
+      <a
+        href="#activityLogTab"
+        aria-controls="activityLogTab"
+        role="tab"
+        data-toggle="tab"
+      >
+        Activity Log
+      </a>
+    </li>
+  </ul>
+</ng-template>
+
+<!-- Tabs Start Here -->
+
+<ng-template #customerInfoTab>
+  <div role="tabpanel" class="tab-pane fade in active" id="customerInfoTab">
+    <div class="box-mrg">
+      <div class="row">
+        <div class="col-xs-4">
+          <ul class="list-unstyled">
+            <li class="row">
+              <div class="col-xs-6">Customer Name :</div>
+              <div class="col-xs-6">
+                {{ eoi_details?.lead_name }}
+              </div>
+            </li>
+
+            <li class="row">
+              <div class="col-xs-6">Lead Nationality :</div>
+              <div class="col-xs-6">
+                {{ eoi_details?.lead_nationality }}
+              </div>
+            </li>
+            <li class="row">
+              <div class="col-xs-6">Lead National ID :</div>
+              <div class="col-xs-6">
+                {{ eoi_details?.lead_national_id }}
+              </div>
+            </li>
+            <li class="row">
+              <div class="col-xs-6">Lead Email :</div>
+              <div class="col-xs-6">
+                {{ eoi_details?.lead_email }}
+              </div>
+            </li>
+
+            <ng-container *ngIf="eoi_details?.admin_confirmation_date">
+              <li class="row">
+                <div class="col-xs-6">Admin Confirmation :</div>
+                <div class="col-xs-6">
+                  {{ eoi_details?.admin_confirmation }}
+                </div>
+              </li>
+              <li class="row">
+                <div class="col-xs-6">Admin Confirmation Date :</div>
+                <div class="col-xs-6">
+                  {{ eoi_details?.admin_confirmation_date }}
+                </div>
+              </li>
+              <li class="row">
+                <div class="col-xs-6">Admin Confirmation By :</div>
+                <div class="col-xs-6">
+                  {{ eoi_details?.admin_confirmation_by }}
+                </div>
+              </li>
+            </ng-container>
+
+            <ng-container *ngIf="eoi_details?.refund_date">
+              <li class="row">
+                <div class="col-xs-6">Refund Date :</div>
+                <div class="col-xs-">
+                  {{ eoi_details?.refund_date }}
+                </div>
+              </li>
+              <li class="row">
+                <div class="col-xs-6">Refund Reason :</div>
+                <div class="col-xs-6">
+                  {{ eoi_details?.refund_reason }}
+                </div>
+              </li>
+            </ng-container>
+          </ul>
+        </div>
+        <div class="col-xs-4">
+          <ul class="list-unstyled">
+            <li class="row">
+              <div class="col-xs-6">Lead Address :</div>
+              <div class="col-xs-6">
+                {{ eoi_details?.lead_address }}
+              </div>
+            </li>
+            <li class="row">
+              <div class="col-xs-6">Lead Birthday :</div>
+              <div class="col-xs-6">
+                {{ eoi_details?.lead_birthday }}
+              </div>
+            </li>
+            <li class="row">
+              <div class="col-xs-6">Lead District :</div>
+              <div class="col-xs-6">
+                {{ eoi_details?.lead_district }}
+              </div>
+            </li>
+
+            <li class="row">
+              <div class="col-xs-6">Lead Channel :</div>
+              <div class="col-xs-6">
+                {{ eoi_details?.lead_channel }}
+              </div>
+            </li>
+            <li class="row">
+              <div class="col-xs-6">Lead Source :</div>
+              <div class="col-xs-6">
+                {{ eoi_details?.lead_source }}
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="col-xs-3 col-xs-offset-1 operation-buttons">
+          <button
+            class="btn btn-primary"
+            (click)="downloadEoiDocument()"
+            *ngIf="
+              userProfile?.role == 'Admin' ||
+              userProfile.role == 'Super Development' ||
+              userProfile?.role == 'Moderator' ||
+              userProfile?.role == 'Super Moderator'
+            "
+          >
+            Download
+          </button>
+
+          <button
+            class="btn btn-secondary"
+            *ngIf="
+              userProfile?.role == 'Admin' ||
+              userProfile.role == 'Super Development'
+            "
+            (click)="changeConfirmationDateModal.open()"
+          >
+            Change Confirmation Date
+          </button>
+
+          <button
+            class="btn btn-danger"
+            *ngIf="eoi_details.authorization.can_delete_eoi == 1"
+            (click)="swalDelete(eoi_details.id)"
+          >
+            Delete Eoi
+          </button>
+
+          <button
+            class="btn btn-secondary"
+            *ngIf="userProfile.role !== 'Down Town Account'"
+            (click)="openEditLead(); editLead.open()"
+          >
+            Edit Customer Info
+          </button>
+
+          <button
+            class="btn btn-secondary"
+            *ngIf="
+              userProfile.role !== 'Down Town Account' &&
+              eoi_details?.authorization?.can_edit_eoi_value
+            "
+            (click)="openEditEOi(); editEoi.open()"
+          >
+            Edit Eoi Info
+          </button>
+
+          <button
+            class="btn btn-secondary"
+            *ngIf="
+              userProfile.role == 'Admin' ||
+              userProfile.role == 'Super Development'
+            "
+            (click)="changeChannelAndSourceModal.open()"
+          >
+            Change Channel and Source
+          </button>
+
+          <button
+            class="btn btn-success"
+            *ngIf="
+              (userProfile.role == 'Admin' ||
+                userProfile.role == 'Super Development') &&
+              (eoi_details.cancelled_by || eoi_details.refunded_by)
+            "
+            (click)="reactivateEoi()"
+          >
+            Re-activate Eoi
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #dealTypeTab>
+  <div role="tabpanel" class="tab-pane fade" id="dealTypeTab">
+    <div class="box-mrg">
+      <div class="row">
+        <div class="col-xs-4">
+          <ul class="list-unstyled">
+            <li class="row">
+              <div class="col-xs-6">Is Overseas :</div>
+              <div class="col-xs-6" *ngIf="eoi_details?.is_overseas == 1">
+                Yes
+              </div>
+              <div class="col-xs-6" *ngIf="eoi_details?.is_overseas == 0">
+                No
+              </div>
+            </li>
+            <li class="row">
+              <div class="col-xs-6">AMB :</div>
+              <div class="col-xs-6" *ngIf="eoi_details?.ambassador">Yes</div>
+              <div class="col-xs-6" *ngIf="!eoi_details?.ambassador">No</div>
+            </li>
+            <li class="row">
+              <div class="col-xs-6">Broker :</div>
+              <div class="col-xs-6" *ngIf="eoi_details?.broker">Yes</div>
+              <div class="col-xs-6" *ngIf="!eoi_details?.broker">No</div>
+            </li>
+            <li
+              class="row"
+              *ngIf="
+                (userProfile?.role == 'Admin' ||
+                  userProfile.role == 'Super Development') &&
+                eoi_details?.deal_type == 'In-Direct'
+              "
+            >
+              <div class="col-xs-6">Change P.C in charge :</div>
+              <div class="col-xs-6">
+                <div class="form-group">
+                  <p-dropdown
+                    [(ngModel)]="agent_in_charge"
+                    name="agent_in_charge"
+                    [options]="agents"
+                    [filter]="true"
+                    class="p-ddl"
+                    [autoWidth]="false"
+                    [showClear]="true"
+                    optionLabel="name"
+                    (onChange)="onAgentInChargeSelected($event)"
+                    placeholder="Select agent"
+                  >
+                  </p-dropdown>
+
+                  <!-- <select (change)="onAgentInChargeSelected($event)" class="form-control" [(ngModel)]="agent_in_charge"
+                    name="agent_in_charge">
+                    <option *ngFor="let agent of agents" value="{{ agent.id }}">{{ agent.name }}</option>
+                  </select> -->
+                </div>
+              </div>
+            </li>
+            <li class="row">
+              <div class="col-xs-6">Division :</div>
+              <div class="col-xs-6">
+                {{ eoi_details?.deal_type }}
+              </div>
+            </li>
+            <li class="row">
+              <div class="col-xs-6">Project :</div>
+              <div class="col-xs-6">
+                <div class="form-group">
+                  <ng-select
+                    name="project_id"
+                    (change)="onProjectChange($event)"
+                    [(ngModel)]="eoi_details.project_id"
+                    id="project_id"
+                  >
+                    <ng-option
+                      *ngFor="let project of projects"
+                      [value]="project.id"
+                    >
+                      {{ project.name }}
+                    </ng-option>
+                  </ng-select>
+                </div>
+              </div>
+            </li>
+            <li class="row">
+              <div class="col-xs-6">Link To Reservation :</div>
+              <div class="col-xs-6">
+                <div class="form-group">
+                  <ng-select
+                    name="reservation_id"
+                    (change)="onReservationLink($event)"
+                    [(ngModel)]="eoi_details.reservation_id"
+                    id="reservation_id"
+                  >
+                    <ng-option
+                      *ngFor="
+                        let reservation of eoi_details?.lead?.reservations
+                      "
+                      [value]="reservation.id"
+                    >
+                      {{ reservation?.unit?.serial }}
+                    </ng-option>
+                  </ng-select>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="col-xs-4">
+          <ul class="list-unstyled">
+            <li class="row" *ngIf="eoi_details?.ambassador?.name">
+              <div class="col-xs-6">Ambassador Name :</div>
+              <div class="col-xs-6">
+                {{ eoi_details?.ambassador?.name }}
+              </div>
+            </li>
+            <li class="row" *ngIf="eoi_details?.broker?.name">
+              <div class="col-xs-6">Broker Name :</div>
+              <div class="col-xs-6">
+                {{ eoi_details?.broker?.name }}
+              </div>
+            </li>
+            <li class="row" *ngIf="eoi_details?.broker_incentive">
+              <div class="col-xs-6">Broker Incentive :</div>
+              <div class="col-xs-6">
+                {{ eoi_details?.broker_incentive?.name }}
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="col-xs-3 col-xs-offset-1 operation-buttons"></div>
+        <div class="col-xs-3 col-xs-offset-1 operation-buttons">
+          <button
+            class="btn btn-secondary"
+            (click)="divisionModal.open()"
+            (click)="openChangeDealType(divisionModal)"
+          >
+            Change Deal Type
+          </button>
+          <button class="btn btn-secondary" (click)="overseasModal.open()">
+            Change Overseas
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #accountantInformationTab>
+  <div role="tabpanel" class="tab-pane fade" id="accountantInformationTab">
+    <div class="box-mrg">
+      <div class="col-xs-4">
+        <ul class="list-unstyled">
+          <li class="row">
+            <div class="col-xs-6">Payment Type :</div>
+            <div class="col-xs-6">
+              {{ eoi_details?.payment_type }}
+            </div>
+          </li>
+
+          <ng-container *ngIf="eoi_details?.refunded_date">
+            <li class="row">
+              <div class="col-xs-6">Refund Date :</div>
+              <div class="col-xs-6">
+                {{ eoi_details?.refunded_date }}
+              </div>
+            </li>
+            <li class="row">
+              <div class="col-xs-6">Refund by :</div>
+              <div class="col-xs-6">
+                {{ eoi_details?.refunded_by?.name }}
+              </div>
+            </li>
+            <li class="row">
+              <div class="col-xs-6">Refund Reason :</div>
+              <div class="col-xs-6">
+                {{ eoi_details?.refund_reason }}
+              </div>
+            </li>
+          </ng-container>
+
+          <ng-container *ngIf="eoi_details?.approved_by">
+            <li class="row">
+              <div class="col-xs-6">Approved by :</div>
+              <div class="col-xs-6">
+                {{ eoi_details?.approved_by }}
+              </div>
+            </li>
+
+            <li class="row">
+              <div class="col-xs-6">Approved Date :</div>
+              <div class="col-xs-6">
+                {{ eoi_details?.approved_date }}
+              </div>
+            </li>
+          </ng-container>
+
+          <ng-container *ngIf="eoi_details?.cancelled_by">
+            <li class="row">
+              <div class="col-xs-6">Cancelled Date :</div>
+              <div class="col-xs-6">
+                {{ eoi_details?.cancelled_date }}
+              </div>
+            </li>
+            <li class="row">
+              <div class="col-xs-6">Cancelled by :</div>
+              <div class="col-xs-6">
+                {{ eoi_details?.cancelled_by?.name }}
+              </div>
+            </li>
+          </ng-container>
+        </ul>
+      </div>
+
+      <div class="col-xs-4">
+        <ul class="list-unstyled">
+          <li class="row">
+            <div class="col-xs-6">Eoi Price :</div>
+            <div class="col-xs-6">
+              {{ eoi_details?.eoi_value | currency : " " : false : "1.0-0" }}
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="col-xs-4 operation-buttons">
+        <button
+          class="btn btn-secondary decline-btn"
+          *ngIf="
+            eoi_details?.can_change_status &&
+            eoi_details.actions_authorization.can_refund
+          "
+          (click)="refundAdminDeclineModal.open()"
+        >
+          Refund EOI
+        </button>
+
+        <button
+          class="btn btn-secondary approve-btn"
+          *ngIf="
+            eoi_details?.can_change_status &&
+            eoi_details.actions_authorization.can_approve
+          "
+          (click)="accountantApprove()"
+        >
+          Approve EOI
+        </button>
+
+        <button
+          class="btn btn-secondary decline-btn"
+          *ngIf="
+            eoi_details?.can_change_status &&
+            eoi_details.actions_authorization.can_cancel
+          "
+          (click)="cancel()"
+        >
+          Cancel EOI
+        </button>
+
+        <button class="btn btn-secondary" (click)="paymentTypeModal.open()">
+          Change Payment Type
+        </button>
+
+        <button
+          *ngIf="
+            userProfile?.role != 'Moderator' &&
+            userProfile?.role != 'Super Moderator' &&
+            eoi_details?.authorization.can_edit_selling_price == 1
+          "
+          (click)="editSellingPriceModal.open()"
+          class="btn btn-secondary"
+        >
+          Edit EOI Price
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #pcInfoTab>
+  <div role="tabpanel" class="tab-pane" id="pcInfoTab">
+    <div class="box-mrg">
+      <div class="row">
+        <div class="col-xs-4">
+          <ul class="list-unstyled">
+            <li class="row">
+              <div class="col-xs-6">Owner :</div>
+              <div class="col-xs-6">
+                {{ eoi_details?.user?.name }}
+              </div>
+            </li>
+            <li class="row">
+              <div class="col-xs-6">Branch :</div>
+              <div class="col-xs-6">
+                {{ eoi_details?.branch?.name }}
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="col-xs-4">
+          <ul class="list-unstyled">
+            <li class="row">
+              <div class="col-xs-6">Team :</div>
+              <div class="col-xs-6">
+                {{ eoi_details?.team?.name }}
+              </div>
+            </li>
+
+            <li class="row">
+              <div class="col-xs-6">EOI Date :</div>
+              <div class="col-xs-6">
+                {{ eoi_details?.selling_date }}
+              </div>
+            </li>
+
+            <li class="row">
+              <div class="col-xs-6">Creation Date :</div>
+              <div class="col-xs-6">
+                {{ eoi_details?.created_at }}
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="col-xs-3 col-xs-offset-1 operation-buttons">
+          <button
+            class="btn btn-secondary first-btn"
+            (click)="assignModal.open(eoi_details?.id)"
+            *ngIf="
+              userProfile?.role == 'Admin' ||
+              userProfile?.role == 'Super Development' ||
+              userProfile.role == 'Moderator' ||
+              userProfile.role == 'Super Moderator'
+            "
+          >
+            Assign to Agent
+          </button>
+
+          <button
+            class="btn btn-secondary"
+            *ngIf="
+              userProfile?.role == 'Admin' ||
+              userProfile?.role == 'Super Development' ||
+              userProfile.role == 'Moderator' ||
+              userProfile.role == 'Super Moderator'
+            "
+            (click)="changeSellingDateModal.open()"
+          >
+            Change EOI Date
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #commentTab>
+  <div role="tabpanel" class="tab-pane" id="commentTab">
+    <div class="box-mrg">
+      <div class="row">
+        <div class="col-xs-8">
+          <ul class="list-unstyled">
+            <li class="row">
+              <div class="col-xs-6">Comment :</div>
+              <div *ngIf="eoi_details?.comment" class="col-xs-6">
+                {{ eoi_details?.comment }}
+              </div>
+              <div *ngIf="!eoi_details?.comment" class="col-xs-6">
+                No Comment Available.
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="col-xs-3 col-xs-offset-1 operation-buttons">
+          <button
+            class="btn btn-secondary"
+            *ngIf="eoi_details.authorization.can_add_comment == 1"
+            (click)="commentModal.open(eoi_details)"
+          >
+            Add Comment
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #activityLogTab>
+  <div role="tabpanel" class="tab-pane" id="activityLogTab">
+    <div class="col-md-8">
+      <div class="time-line">
+        <ul class="list-unstyled">
+          <li *ngFor="let item of eoi_details?.logs">
+            <span class="crcle-t"></span>
+            <div class="tm-content">
+              <div class="dateformat">
+                {{ item?.created_at | date : "medium" }}
+              </div>
+              <div class="activity-details">
+                {{ item?.details }}
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- MODALS start here -->
+
+<modal
+  #refundAdminDeclineModal
+  title="Refund EOI"
+  submitButtonLabel="Refund"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="refundAdminDeclineModalSubmit(refundAdminDeclineModal)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <form>
+      <div class="row">
+        <div class="col-xs-6">
+          <div class="form-group">
+            <label for="">Refund Reason</label>
+            <ng-select placeholder="Select Refund Reason" name="refundReason" [(ngModel)]="refundReason">
+              <ng-option *ngFor="let reason of refundReasons" [value]="reason">
+                {{ reason }}
+              </ng-option>
+            </ng-select>
+          </div>
+        </div>
+      </div>
+    </form>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="refundAdminDeclineModal.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>
+
+<modal
+  #changeConfirmationDateModal
+  title="Change Confirmation Date"
+  submitButtonLabel="submit"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="
+    submitConfirmationDateModal(eoi_details, changeConfirmationDateModal)
+  "
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <div class="row">
+      <form>
+        <div class="form-group" class="col-xs-6">
+          <label for="">Confirmation Date</label>
+          <input
+            type="date"
+            class="form-control"
+            name="confirmation_date"
+            [(ngModel)]="confirmation_date"
+          />
+        </div>
+      </form>
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button
+      class="btn btn-secondary"
+      (click)="changeConfirmationDateModal.close()"
+    >
+      close
+    </button>
+  </modal-footer>
+</modal>
+
+<modal
+  #editLead
+  title="Edit Custmer Info"
+  submitButtonLabel="save"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="editLeadModalSubmit(editLead)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <div class="row">
+      <div class="col-md-6">
+        <label for="">Lead Name</label>
+        <input
+          type="text"
+          name="lead_name"
+          [(ngModel)]="edit_lead_data.lead_name"
+          class="form-control"
+        />
+      </div>
+      <div class="col-md-6">
+        <label for="">Lead District</label>
+        <input
+          type="text"
+          name="lead_district"
+          [(ngModel)]="edit_lead_data.lead_district"
+          class="form-control"
+        />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="">Lead Nationality</label>
+          <input
+            type="text"
+            name="lead_nationality"
+            [(ngModel)]="edit_lead_data.lead_nationality"
+            class="form-control"
+          />
+        </div>
+      </div>
+      <div class="col-md-6">
+        <label for="">Lead National ID</label>
+        <input
+          type="text"
+          name="lead_national_id"
+          [(ngModel)]="edit_lead_data.lead_national_id"
+          class="form-control"
+        />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <label for="">Lead Address</label>
+        <input
+          type="text"
+          name="lead_address"
+          [(ngModel)]="edit_lead_data.lead_address"
+          class="form-control"
+        />
+      </div>
+      <div class="col-md-6">
+        <label for="">Lead Birthday</label>
+        <input
+          type="date"
+          name="lead_birthday"
+          [(ngModel)]="edit_lead_data.lead_birthday"
+          class="form-control"
+        />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <label for="">Lead Email</label>
+        <input
+          type="email"
+          name="lead_email"
+          [(ngModel)]="edit_lead_data.lead_email"
+          class="form-control"
+        />
+      </div>
+      <div class="col-md-6">
+        <label for="">Lead Arabic Name</label>
+        <input
+          type="text"
+          name="lead_arabic_name"
+          [(ngModel)]="edit_lead_data.lead_arabic_name"
+          class="form-control"
+        />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <label for="">National Issue Date</label>
+        <input
+          type="date"
+          name="national_issue_date"
+          [(ngModel)]="edit_lead_data.lead_issue_date"
+          class="form-control"
+        />
+      </div>
+      <div class="col-md-6">
+        <label for="">Job Title</label>
+        <input
+          type="text"
+          name="job_title"
+          [(ngModel)]="edit_lead_data.lead_job_title"
+          class="form-control"
+        />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <label for="">Workplace</label>
+        <input
+          type="text"
+          name="workplace"
+          [(ngModel)]="edit_lead_data.lead_workplace"
+          class="form-control"
+        />
+      </div>
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="editLead.close()">close</button>
+  </modal-footer>
+</modal>
+
+<modal
+  #editEoi
+  title="Edit Eoi Info"
+  submitButtonLabel="save"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="editEoiModalSubmit(editEoi)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <div class="row">
+      <div class="col-md-6">
+        <label for="serial">Serial</label>
+        <input
+          type="text"
+          name="serial"
+          [(ngModel)]="edit_eoi_data.serial"
+          class="form-control"
+        />
+      </div>
+      <div class="col-md-6">
+        <label for="">Interested Type</label>
+        <input
+          type="text"
+          name="interested_type"
+          [(ngModel)]="edit_eoi_data.interested_type"
+          class="form-control"
+        />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <label for="">Phase</label>
+        <input
+          type="text"
+          name="phase"
+          [(ngModel)]="edit_eoi_data.phase"
+          class="form-control"
+        />
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="">Interested Area From</label>
+          <input
+            type="text"
+            name="interested_area_from"
+            [(ngModel)]="edit_eoi_data.interested_area_from"
+            class="form-control"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="">Interested Area To</label>
+          <input
+            type="text"
+            name="interested_area_to"
+            [(ngModel)]="edit_eoi_data.interested_area_to"
+            class="form-control"
+          />
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="">Eoi Value</label>
+          <input
+            type="text"
+            name="eoi_value"
+            [(ngModel)]="edit_eoi_data.eoi_value"
+            class="form-control"
+          />
+        </div>
+      </div>
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="editEoi.close()">close</button>
+  </modal-footer>
+</modal>
+
+<modal
+  #changeChannelAndSourceModal
+  title="Change Channel and Source"
+  submitButtonLabel="submit"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="changeChannelAndSourceModalSubmit(changeChannelAndSourceModal)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <div class="row">
+      <form>
+        <div class="form-group" class="col-xs-6">
+          <label for="">Channel</label>
+          <ng-select
+            (change)="channelChange($event)"
+            name="lead_channel"
+            id="lead_channel"
+            [(ngModel)]="lead_channel"
+            placeholder="Select Channel"
+          >
+            <ng-option
+              *ngFor="let channel of channels; let i = index"
+              [value]="channel.name"
+            >
+              {{ channel.name }}
+            </ng-option>
+          </ng-select>
+        </div>
+        <div class="form-group" class="col-xs-6">
+          <label for="">Source</label>
+          <ng-select
+            name="lead_source"
+            id="lead_source"
+            [(ngModel)]="lead_source"
+            placeholder="Select Source"
+          >
+            <ng-option
+              *ngFor="let leadSource of leadSources; let i = index"
+              [value]="leadSource.name"
+            >
+              {{ leadSource.name }}
+            </ng-option>
+          </ng-select>
+        </div>
+      </form>
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button
+      class="btn btn-secondary"
+      (click)="changeChannelAndSourceModal.close()"
+    >
+      close
+    </button>
+  </modal-footer>
+</modal>
+
+<modal
+  #divisionModal
+  title="Change Division"
+  submitButtonLabel="submit"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onOpen)="divisionModalOpen()"
+  (onClose)="divisionModalClose()"
+  (onSubmit)="divisionModalSubmit(divisionModal)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <form action="">
+      <div class="row search">
+        <div class="col-xs-6 form-group">
+          <label for="deal_type">Division</label>
+          <ng-select
+            placeholder="Select Deal Type"
+            name="deal_type"
+            [(ngModel)]="divisionForm.deal_type"
+            (change)="channelChange($event)"
+          >
+            <ng-option *ngFor="let channel of channels" [value]="channel.name">
+              {{ channel.name }}
+            </ng-option>
+          </ng-select>
+        </div>
+        <div
+          class="col-xs-6 form-group"
+          *ngIf="divisionForm.deal_type == 'Direct'"
+        >
+          <label for="deal_category">Division Type</label>
+          <ng-select
+            placeholder="Select Deal Category"
+            name="deal_category"
+            [(ngModel)]="divisionForm.deal_category"
+          >
+            <ng-option
+              *ngFor="let division of leadSources"
+              [value]="division.name"
+            >
+              {{ division.name }}
+            </ng-option>
+          </ng-select>
+        </div>
+        <div
+          class="col-xs-6 form-group"
+          *ngIf="divisionForm.deal_type == 'In-Direct'"
+        >
+          <label for="deal_source">Source</label>
+          <ng-select
+            name="deal_source"
+            [(ngModel)]="divisionForm.deal_source"
+            placeholder="Select Source"
+          >
+            <ng-option
+              *ngFor="let leadSource of leadSources; let i = index"
+              [value]="leadSource.name"
+            >
+              {{ leadSource.name }}
+            </ng-option>
+          </ng-select>
+        </div>
+        <div
+          class="col-xs-6 form-group"
+          *ngIf="divisionForm.deal_category == 'Ambassador'"
+        >
+          <label for="ambassador_id">Ambassador</label>
+          <ng-select
+            placeholder="Select Ambassador"
+            name="ambassador_id"
+            [(ngModel)]="divisionForm.ambassador_id"
+          >
+            <ng-option
+              *ngFor="let ambassador of ambassadors"
+              [value]="ambassador.id"
+            >
+              {{ ambassador?.name }}
+            </ng-option>
+          </ng-select>
+        </div>
+        <div
+          class="col-xs-6 form-group"
+          *ngIf="
+            divisionForm.deal_type == 'In-Direct' &&
+            (divisionForm.deal_source == 'Broker' ||
+              divisionForm.deal_source == 'Broker ARM')
+          "
+        >
+          <label for="broker">Broker</label>
+          <ng-select
+            placeholder="Select Broker"
+            name="broker"
+            [(ngModel)]="divisionForm.broker_id"
+          >
+            <ng-template ng-header-tmp>
+              <input
+                class="form-control"
+                type="text"
+                placeholder="Search Broker"
+                (keyup)="searchBroker($event.target.value)"
+              />
+            </ng-template>
+            <ng-option *ngFor="let broker of searchedBrokers" value="{{ broker.id }}">
+              {{ broker?.name }}
+            </ng-option>
+          </ng-select>
+        </div>
+        <div
+          class="col-xs-6 form-group"
+          *ngIf="
+            divisionForm.deal_type == 'In-Direct' &&
+            divisionForm.deal_source == 'Broker'
+          "
+        >
+          <label for="broker_incentive_id">Broker Incentive</label>
+          <ng-select
+            placeholder="Select Broker Incentive"
+            name="broker_incentive_id"
+            [(ngModel)]="divisionForm.broker_incentive_id"
+            (change)="getIncentiveUsers(divisionForm.broker_id)"
+          >
+            <ng-option *ngFor="let user of incentive_users" [value]="user.id">
+              {{ user?.name }}
+            </ng-option>
+          </ng-select>
+        </div>
+      </div>
+    </form>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="divisionModal.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>
+
+<modal
+  #overseasModal
+  title="Change Overseas"
+  submitButtonLabel="submit"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="overseasModalSubmit(overseasModal)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <div class="form-group">
+      <label for="">Overseas</label>
+      <ng-select placeholder="Is Overseas" [(ngModel)]="is_overseas">
+        <ng-option value="0">No</ng-option>
+        <ng-option value="1">Yes</ng-option>
+      </ng-select>
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="overseasModal.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>
+
+<modal
+  #paymentTypeModal
+  title="Change Payment Type"
+  submitButtonLabel="submit"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="paymentTypeSubmit(paymentTypeModal)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <div class="form-group">
+      <label for="">Payment Type</label>
+      <ng-select placeholder="Select Payment Type" [(ngModel)]="last_payment_type">
+        <ng-option *ngFor="let payment of payment_types" [value]="payment.name">
+          {{ payment.name }}
+        </ng-option>
+      </ng-select>
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="paymentTypeModal.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>
+
+<modal
+  #editSellingPriceModal
+  title="Change Selling Price"
+  submitButtonLabel="submit"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="submiteditSellingPriceModal(eoi_details, editSellingPriceModal)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <div class="row">
+      <form>
+        <div class="form-inline col-xs-12">
+          <label for="" class="price-label">Selling Price :</label>
+          <input
+            type="number"
+            class="form-control"
+            name="price"
+            [(ngModel)]="selling_price_in_modal"
+          />
+        </div>
+        <div class="form-inline col-xs-12 cfo_pin_wrapper margin-top">
+          <div class="col-xs-6">
+            <div class="form-inline">
+              <label for="">Reason</label>
+              <input
+                type="text"
+                class="form-control"
+                name="reason"
+                [(ngModel)]="reason"
+              />
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="editSellingPriceModal.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>
+
+<modal
+  #changeSellingDateModal
+  title="Change EOI Date"
+  submitButtonLabel="submit"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="submitChangeSellingDateModal(eoi_details, changeSellingDateModal)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <div class="row">
+      <form>
+        <div class="form-group" class="col-xs-6">
+          <label for="">Eoi Date</label>
+          <input
+            type="date"
+            class="form-control"
+            name="selling_date"
+            [(ngModel)]="selling_date"
+          />
+        </div>
+      </form>
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="changeSellingDateModal.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>
+
+<modal
+  #assignModal
+  title="Assign Eoi to Agent"
+  submitButtonLabel="submit"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="submitAssignModal(eoi_details?.id, assignModal)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <div class="search">
+      <label for="">Search for Property Consultant :</label>
+      <input
+        ngui-auto-complete
+        [source]="filterLeadObservable.bind(this)"
+        placeholder=""
+        [ngModelOptions]="{ standalone: true }"
+        (valueChanged)="valueChanged($event)"
+        class="form-control"
+        name="filterAgentByWordText"
+        [(ngModel)]="filterAgentByWordText"
+      />
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="assignModal.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>
+
+<modal
+  #commentModal
+  title="Add reservation comment"
+  submitButtonLabel="submit"
+  modalClass="modal-lg"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="submitCommentModal(eoi_details.id, commentModal)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <div class="search">
+      <label for="">Comment :</label>
+      <textarea
+        type="text"
+        class="form-control"
+        [(ngModel)]="commentEoi"
+      ></textarea>
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="commentModal.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>

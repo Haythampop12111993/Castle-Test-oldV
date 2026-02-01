@@ -1,0 +1,136 @@
+<div class="container-fluid">
+  <div class="proj-details">
+    <div class="row filter-oute.r-container">
+      <div class="col-md-12" [ngClass]="{ 'no-interaction': is_refreshing }">
+        <div class="filter">
+          <div class="row">
+            <div class="col-md-12">
+              <h3 class="search__title">Advanced Search</h3>
+            </div>
+            <div class="search-container col-md-12">
+              <form
+                class="search-form"
+                [formGroup]="filterForm"
+                (ngSubmit)="getBrokers(true)"
+              >
+                <div class="search-form-inputs">
+                  <div class="form-group">
+                    <label class="keyword" for="">Search:</label>
+                    <input
+                      type="text"
+                      name="keyword"
+                      id="keyword"
+                      class="form-control unit-serial-input"
+                      formControlName="keyword"
+                    />
+                  </div>
+                  <button type="submit" class="filter button c-bg">
+                    FILTER
+                  </button>
+                  <button
+                    (click)="resetFilters()"
+                    type="button"
+                    class="button bg-danger reset-filter"
+                  >
+                    RESET
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-4">
+      <h3>Brokers</h3>
+    </div>
+
+    <div class="col-xs-8"></div>
+    <div class="col-md-12">
+      <div class="table table-responsive">
+        <table class="table table-bordered">
+          <tr>
+            <th class="text-center">Broker Name</th>
+            <th class="text-center">Contact Person</th>
+            <th class="text-center">Contact Email</th>
+            <th class="text-center">Contact Phone</th>
+            <th class="text-center">Contact Address</th>
+            <th class="text-center">Agents</th>
+            <th class="text-center">Action</th>
+          </tr>
+          <tr
+            *ngFor="let broker of brokers_list; let index = index"
+            class="payment-collections"
+          >
+            <td>
+              {{ broker.name }}
+            </td>
+            <td>
+              {{ broker.contact_person }}
+            </td>
+            <td>
+              {{ broker.contact_email }}
+            </td>
+            <td>
+              {{ broker.contact_phone }}
+            </td>
+            <td>{{ broker.contact_address }}</td>
+            <td class="text-center">
+              <span
+                class="badge badge-secoundry"
+                *ngFor="let user of broker.users"
+              >
+                {{ user?.name }}
+              </span>
+            </td>
+            <td>
+              <div class="dropdown" dropdown>
+                <img
+                  class="more-options-icon"
+                  src="assets/img/show-more-button-with-three-dots.svg"
+                  dropdown-open
+                />
+                <ul class="dropdown-menu">
+                  <li>
+                    <a
+                      [routerLink]="[
+                        '/',
+                        'pages',
+                        'brokers',
+                        'view',
+                        broker.id
+                      ]"
+                    >
+                      <span>View</span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <div *ngIf="current_page" class="col-xs-12 text-center">
+      <p>({{ per_page }} / {{ total }})</p>
+      <p>page {{ current_page }}</p>
+    </div>
+    <div class="col-xs-12 text-center">
+      <ngb-pagination
+        [collectionSize]="pagination_meta.totalPages * 10"
+        [(page)]="pagination_meta.page"
+        [maxSize]="5"
+        [rotate]="true"
+        [ellipses]="true"
+        [boundaryLinks]="true"
+        (pageChange)="pageChange($event)"
+        [size]="lg"
+      >
+      </ngb-pagination>
+    </div>
+  </div>
+</div>

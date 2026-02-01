@@ -1,0 +1,11 @@
+*,
+::ng-deep .ngx-option-v1,
+div {
+  direction: rtl;
+  text-align: right;
+  font-family: "Cairo", sans-serif;
+}
+
+.text-center {
+  text-align: center;
+}

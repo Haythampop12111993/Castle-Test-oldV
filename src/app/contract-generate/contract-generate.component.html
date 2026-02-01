@@ -1,0 +1,247 @@
+<section class="projects">
+  <div class="container-fluid">
+    <h2>Contract Generator</h2>
+    <div class="box">
+      <form
+        #form="ngForm"
+        (ngSubmit)="form.form.valid && generateContract()"
+        [ngClass]="{ 'no-interaction': is_loading }"
+      >
+        <div
+          class="border-sec leads-prs"
+          *ngFor="let contract of contractForm; let i = index; let last = last"
+        >
+          <h2>Customer {{ i + 1 }}</h2>
+          <div class="row">
+            <div class="col-xs-6">
+              <div class="form-group">
+                <label>Client Name AR</label>
+                <input
+                  type="name"
+                  class="form-control req"
+                  id="client_name_ar_{{ i }}"
+                  name="client_name_ar_{{ i }}"
+                  [(ngModel)]="contract.client_name_ar"
+                />
+                <!-- required -->
+              </div>
+            </div>
+            <div class="col-xs-6">
+              <div class="form-group">
+                <label>Client Address AR</label>
+                <input
+                  type="name"
+                  class="form-control req"
+                  id="client_address_ar_{{ i }}"
+                  name="client_address_ar_{{ i }}"
+                  [(ngModel)]="contract.client_address_ar"
+                />
+                <!-- required -->
+              </div>
+            </div>
+            <div class="col-xs-6">
+              <div class="form-group">
+                <label>Client Mailing Address AR</label>
+                <input
+                  type="name"
+                  class="form-control req"
+                  id="client_mailing_address_ar_{{ i }}"
+                  name="client_mailing_address_ar_{{ i }}"
+                  [(ngModel)]="contract.client_mailing_address_ar"
+                />
+                <!-- required -->
+              </div>
+            </div>
+            <div class="col-xs-6">
+              <div class="form-group">
+                <label>Client Nationality AR</label>
+                <input
+                  type="name"
+                  class="form-control req"
+                  id="client_nationality_ar_{{ i }}"
+                  name="client_nationality_ar_{{ i }}"
+                  [(ngModel)]="contract.client_nationality_ar"
+                />
+                <!-- required -->
+              </div>
+            </div>
+            <div class="col-xs-6">
+              <div class="form-group">
+                <label>Client Nationality ID</label>
+                <input
+                  type="name"
+                  class="form-control req"
+                  id="client_nationality_id_{{ i }}"
+                  name="client_nationality_id_{{ i }}"
+                  [(ngModel)]="contract.client_nationality_id"
+                />
+                <!-- required -->
+              </div>
+            </div>
+            <div class="col-xs-6">
+              <div class="form-group">
+                <label>Client Email</label>
+                <input
+                  type="name"
+                  class="form-control req"
+                  id="client_email_{{ i }}"
+                  name="client_email_{{ i }}"
+                  [(ngModel)]="contract.client_email"
+                />
+                <!-- required -->
+              </div>
+            </div>
+            <div class="col-xs-6">
+              <div class="form-group">
+                <label>Client Phone</label>
+                <input
+                  type="name"
+                  class="form-control req"
+                  id="client_phone_{{ i }}"
+                  name="client_phone_{{ i }}"
+                  [(ngModel)]="contract.client_phone"
+                />
+                <!-- required -->
+              </div>
+            </div>
+            <div class="col-xs-6">
+              <div class="form-group">
+                <label>Client WhatsApp</label>
+                <input
+                  type="name"
+                  class="form-control req"
+                  id="client_whatsapp_{{ i }}"
+                  name="client_whatsapp_{{ i }}"
+                  [(ngModel)]="contract.client_whatsapp"
+                />
+                <!-- required -->
+              </div>
+            </div>
+          </div>
+          <hr *ngIf="!last" />
+        </div>
+        <hr />
+        <div class="border-sec leads-prs">
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="form-group">
+                <label>Signer Of Delegation Of Management</label>
+                <ng-select
+                  class="req"
+                  placeholder="Select Signer Of Delegation Of Management"
+                  name="delegation_of_management_id"
+                  id="delegation_of_management_id"
+                  [(ngModel)]="formData.delegation_of_management_id"
+                >
+                  <ng-option
+                    [value]="lead.lead_id"
+                    *ngFor="let lead of contractForm"
+                  >
+                    {{ lead.client_name_ar }}
+                  </ng-option>
+                </ng-select>
+              </div>
+            </div>
+            <div class="col-xs-6">
+              <div class="form-group">
+                <label>Initial Delivery Date</label>
+                <input
+                  type="date"
+                  class="form-control req"
+                  id="initial_delivery_date"
+                  name="initial_delivery_date"
+                  [(ngModel)]="formData.initial_delivery_date"
+                />
+              </div>
+            </div>
+            <div class="col-xs-6">
+              <div class="form-group">
+                <label>Final Delivery Date</label>
+                <input
+                  type="date"
+                  class="form-control req"
+                  id="final_delivery_date"
+                  name="final_delivery_date"
+                  [(ngModel)]="formData.final_delivery_date"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-6" *ngIf="reservation?.slots">
+              <div class="form-group">
+                <label
+                  >Parking Numbers <span>({{ reservation.slots }})</span></label
+                >
+                <input
+                  type="text"
+                  class="form-control req"
+                  id="parking_numbers"
+                  name="parking_numbers"
+                  [(ngModel)]="formData.parking_numbers"
+                />
+              </div>
+            </div>
+            <div class="col-xs-6" *ngIf="reservation?.storage_slots">
+              <div class="form-group">
+                <label
+                  >Storage Numbers
+                  <span>({{ reservation.storage_slots }})</span></label
+                >
+                <input
+                  type="text"
+                  class="form-control req"
+                  id="storage_numbers"
+                  name="storage_numbers"
+                  [(ngModel)]="formData.storage_numbers"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="form-group">
+                <label>Additional Section</label>
+                <editor
+                  [init]="editorConfig"
+                  id="additional_section"
+                  name="additional_section"
+                  [(ngModel)]="formData.additional_section"
+                >
+                </editor>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <button
+            class="btn btn-default pull-right btn-black"
+            [disabled]="form.form.invalid"
+          >
+            Generate
+          </button>
+        </div>
+      </form>
+
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="print-contract-buttons-container">
+            <button
+              class="btn btn-default pull-right btn-black"
+              (click)="printContract()"
+            >
+              Print
+            </button>
+            <button
+              class="btn btn-default pull-right btn-black"
+              *ngFor="let contract of contracts; let index = index"
+              (click)="openContract(contract?.url)"
+            >
+              Download Contract {{ index + 1 }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

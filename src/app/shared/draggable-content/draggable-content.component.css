@@ -1,0 +1,15 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  overflow: hidden;
+}
+
+.dragging {
+  cursor: grap;
+  user-select: none;
+}
+
+:host /deep/ .dragging * {
+  pointer-events: none;
+}

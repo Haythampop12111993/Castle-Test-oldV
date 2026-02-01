@@ -1,0 +1,12 @@
+.action{
+  width: 10%;
+}
+
+.dropdown-menu{
+  left: unset;
+  right: 0;
+}
+
+.table-responsive{
+  overflow-x: unset;
+}

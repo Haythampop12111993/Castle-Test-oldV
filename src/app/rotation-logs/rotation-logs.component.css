@@ -1,0 +1,43 @@
+.rotation{
+    width: 98%;
+    max-width: 98%;
+    margin: 10px auto;
+    border-radius: 10px;
+    min-width: 98%;
+    background: #dfe6e8;
+    height: 100%;
+    position: relative;
+    cursor: pointer;
+  }
+  
+  .rotation .highlight{
+    display: inline-block;
+    width: .5%;
+    position: absolute;
+    height: 100%;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+  }
+  
+  .reservation{
+    background-color: #b34444;
+  }
+  
+  .lead{
+    background-color: #8bc34a;
+  }
+  
+  .rotation{
+    widows: 99.5%;
+  }
+  
+  .rotation-date{
+    padding-top: 10px;
+    color: #666;
+  }
+  
+  .rotation-text{
+    font-size: 1.7rem;
+    font-family: lato;
+  }
+  

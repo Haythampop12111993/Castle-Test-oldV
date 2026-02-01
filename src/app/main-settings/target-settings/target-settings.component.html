@@ -1,0 +1,168 @@
+<section class="payment-plans-table">
+  <div class="container-fluid">
+    <div class="proj-details">
+      <!-- <div class="row filter-outer-container">
+        <div class="col-md-12">
+          <div class="cog-container">
+            <div class="settings-icons pull-right">
+              <div class="dropdown" dropdown>
+                <i class="fa fa-cog" aria-hidden="true" dropdown-open></i>
+                <ul class="dropdown-menu menu-settings">
+                  <li>
+                    <a (click)="exportTargets()">
+                      <span>Export Targets</span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div class="filter">
+            <div class="row">
+              <div class="col-md-2">
+                <h3 class="search__title">Advanced Search</h3>
+              </div>
+              <div class="col-md-10">
+                <form
+                  class="search-form"
+                  [formGroup]="filterForm"
+                  (ngSubmit)="filterTargets()"
+                >
+                  <div class="search-form-inputs">
+                    <div class="form-group">
+                      <label for="">Project :</label>
+                      <select
+                        class="form-control"
+                        formControlName="project_id"
+                        id="project_id"
+                      >
+                        <option
+                          *ngFor="let project of projects?.data"
+                          [value]="project.id"
+                          >{{ project.name }}</option
+                        >
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="">User :</label>
+                      <select
+                        class="form-control"
+                        formControlName="user_id"
+                        id="user_id"
+                      >
+                        <option *ngFor="let user of agents" [value]="user.id">{{
+                          user.name
+                        }}</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="">Month :</label>
+                      <select
+                        class="form-control"
+                        formControlName="month"
+                        id="month"
+                      >
+                        <option *ngFor="let month of months" [value]="month">{{
+                          month
+                        }}</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="">Year :</label>
+                      <select
+                        class="form-control"
+                        formControlName="year"
+                        id="year"
+                      >
+                        <option *ngFor="let year of years" [value]="year">{{
+                          year
+                        }}</option>
+                      </select>
+                    </div>
+                    <div class="search-buttons">
+                      <div class="border-form text-center margin-top">
+                        <button type="submit" class="button c-bg">
+                          FILTER
+                        </button>
+                      </div>
+                      <div class="border-form text-center">
+                        <button
+                          (click)="resetFilter()"
+                          type="button"
+                          class="button bg-danger reset-filter"
+                        >
+                          RESET
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> -->
+      <div class="row">
+        <div class="col-xs-4">
+          <h3>Targets</h3>
+        </div>
+        <div class="col-md-12">
+          <div class="table table-responsive">
+            <table class="table table-bordered">
+              <tr>
+                <th>ID</th>
+                <th>Target Year</th>
+                <th>Action</th>
+              </tr>
+              <tr *ngFor="let target of targets;let index = index">
+                <td>{{index}}</td>
+                <td>{{target}}</td>
+                <td>
+                  <div class="dropdown" dropdown>
+                    <img class="more-options-icon" src="assets/img/show-more-button-with-three-dots.svg"
+                      dropdown-open />
+                    <ul class="dropdown-menu">
+                      <li (click)="exportTarget(target)">
+                        <a>
+                          <span>Export Target</span>
+                        </a>
+                      </li>
+                      <li (click)="uploadTargetModal.open()">
+                        <a>
+                          <span>Import Target</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </td>
+                <modal #uploadTargetModal submitButtonLabel="submit" title="Upload Target Modal" modalClass="modal-md"
+                  [hideCloseButton]="true" [closeOnOutsideClick]="true" (onSubmit)="
+              submitTargetModal(target, uploadTargetModal)
+            ">
+                  <modal-header> </modal-header>
+                  <modal-content>
+                    <form [formGroup]="filesForm">
+                      <div class="form-group flex-column">
+                        <label for="">Target Sheet Excel:</label>
+                        <input
+                          accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                          type="file" id="excel" (change)="handleTargetExcel($event)" />
+                      </div>
+                    </form>
+                  </modal-content>
+                  <modal-footer>
+                    <button class="btn btn-secondary" (click)="uploadComissionModal.close()">
+                      close
+                    </button>
+                  </modal-footer>
+                </modal>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

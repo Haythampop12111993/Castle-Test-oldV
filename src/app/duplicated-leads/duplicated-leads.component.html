@@ -1,0 +1,270 @@
+<div class="container-fluid" *ngIf="!file_opened">
+  <div class="row">
+    <h3>Duplicated Files</h3>
+    <div class="col-xs-12 file-manager-container flex-wrap">
+      <div
+        class="col-xs-4 folder d-flex flex-wrap justify-content-between align-items-center gap-15"
+        *ngFor="let file of files" (click)="search_form.file_id = file.id; getDuplicatedLeads(); file_opened = true"
+      >
+        <div class="col-xs-12 d-flex align-items-center gap-15">
+          <div
+            class="icon d-flex justify-content-center align-items-center flex-column"
+          >
+            <i class="fa fa-2x fa-folder" aria-hidden="true"></i>
+          </div>
+          <div class="folder-data">
+            <p class="p-0 m-0">{{ file.name }}</p>
+          </div>
+        </div>
+        <div class="col-xs-12 grid grid-cols-2 gap-4">
+          <div class="d-flex align-items-center justify-content-start gap-4">
+            <span class="w-max">Duplicated Leads:</span>
+            <span>{{ file.duplicate_count }}</span>
+          </div>
+          <div class="d-flex align-items-center justify-content-start gap-4">
+            <span class="w-max">New Leads:</span>
+            <span>{{ file.new_count }}</span>
+          </div>
+          <div class="d-flex align-items-center justify-content-start gap-4">
+            <span class="w-max">Returned Leads:</span>
+            <span>{{ file.returned_count }}</span>
+          </div>
+          <div class="d-flex align-items-center justify-content-start gap-4">
+            <span class="w-max">Block List Leads:</span>
+            <span>{{ file.block_count }}</span>
+          </div>
+          <div class="d-flex align-items-center justify-content-start gap-4">
+            <span class="w-max">Total Leads:</span>
+            <span>{{ file.total }}</span>
+          </div>
+          <div class="d-flex align-items-center justify-content-start gap-4">
+            <span class="w-max">Uploaded By:</span>
+            <span>{{ file.user.name }}</span>
+          </div>
+          <div class="d-flex align-items-center justify-content-start gap-4">
+            <span class="w-max">Date:</span>
+            <span>{{ file.created_at }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-container *ngIf="file_opened">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="row">
+        <div class="col-md-12 d-flex align-items-center justify-content-between">
+          <div class="d-flex align-items-center gap-15">
+            <h3>Duplicated Leads</h3>
+            <button class="btn btn-primary" (click)="search_form.file_id = null; file_opened = false">Reset Duplicates</button>
+          </div>
+          <div class="col-md-3" *ngIf="dublicated_leads?.length > 0">
+            <ng-select
+              name="actions"
+              placeholder="Select Actions"
+              class="form-control padding-none border-none"
+              (change)="actionChange($event, null)"
+            >
+              <ng-option value="reassign">Re-assign</ng-option>
+              <ng-option value="merge">Merge Data</ng-option>
+              <ng-option value="delete">Delete Duplicated Lead</ng-option>
+            </ng-select>
+          </div>
+        </div>
+      </div>
+      <br />
+      <div class="row">
+        <div class="col-md-12 px-44">
+          <form class="filter">
+            <div class="d-flex flex-wrap" *ngIf="true">
+              <div class="form-group col-md-4">
+                <label for="name">Name</label>
+                <input type="text" class="form-control" name="name" [(ngModel)]="search_form.name"
+                  placeholder="Enter Lead Name" />
+              </div>
+              <div class="form-group col-md-4">
+                <label for="phone">Phone</label>
+                <input type="text" class="form-control" name="phone" [(ngModel)]="search_form.phone"
+                  placeholder="Enter Lead Phone" />
+              </div>
+              <div class="form-group col-md-4">
+                <label for="email">Email</label>
+                <input type="text" class="form-control" name="email" [(ngModel)]="search_form.email"
+                  placeholder="Enter Lead Email" />
+              </div>
+              <div class="form-group col-md-4">
+                <label for="projects">Projects</label>
+                <ng-select name="projects" placeholder="Select project" class="padding-none border-none"
+                  [items]="projects" bindLabel="name" bindValue="id" [(ngModel)]="search_form.project_id">
+                </ng-select>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="lead_source">Lead Source</label>
+                <ng-select name="lead_source" placeholder="Select Lead Source" class="padding-none border-none"
+                  [items]="sources" bindLabel="name" bindValue="name" [(ngModel)]="search_form.lead_source">
+                </ng-select>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="lead_channel">Lead Channel</label>
+                <ng-select name="lead_channel" placeholder="Select Lead Channel" class="padding-none border-none"
+                  [items]="channels" bindLabel="name" bindValue="id" (change)="getSources()"
+                  [(ngModel)]="search_form.lead_channel_id">
+                </ng-select>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="brokers">Brokers</label>
+                <ng-select name="brokers" placeholder="Select Broker" class="padding-none border-none"
+                  [items]="brokers" bindLabel="name" bindValue="id" [(ngModel)]="search_form.broker_id">
+                </ng-select>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="ambassadors">Ambassadors</label>
+                <ng-select name="ambassadors" placeholder="Select Ambassador" class="padding-none border-none"
+                  [items]="ambassadors" bindLabel="name" bindValue="id" [(ngModel)]="search_form.ambassador_id">
+                </ng-select>
+              </div>
+            </div>
+            <div class="d-flex align-items-center justify-content-end gap-2">
+              <button type="submit" class="btn btn-primary button c-bg" (click)="getDuplicatedLeads()">
+                Search
+              </button>
+              <button type="submit" class="btn btn-secondary button bg-danger reset-filter" (click)="resetFilter()">
+                Reset
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card col-md-6 mb-3" *ngFor="let duplicated_lead of dublicated_leads">
+            <div class="row duplicated_lead-container py-8">
+              <div class="col-md-12 d-flex align-items-center justify-content-between">
+                <div class="col-md-2">
+                  <input type="checkbox" name="lead" class="rounded padding-none border-none"
+                    (change)="selectedLeads.push(duplicated_lead)" [checked]="duplicated_lead.checked"
+                    [(ngModel)]="duplicated_lead.checked" />
+                </div>
+                <div class="col-md-4 py-8">
+                  <ng-select name="actions" placeholder="Select Actions" class="form-control padding-none border-none"
+                    (change)="actionChange($event, duplicated_lead)">
+                    <ng-option value="reassign">Re-assign</ng-option>
+                    <ng-option value="merge">Merge Data</ng-option>
+                    <ng-option value="delete">Delete Duplicated Lead</ng-option>
+                  </ng-select>
+                </div>
+              </div>
+              <div class="col-md-6 right-boundary">
+                <span class="headline">New Record</span>
+                <hr />
+                <p>Name: {{ duplicated_lead?.name }}</p>
+                <p>Phone Number: {{ duplicated_lead?.phone }}</p>
+                <p>Interested Project: {{ duplicated_lead?.project?.name }}</p>
+                <p>Agent: {{ duplicated_lead?.agent?.name || "_" }}</p>
+                <p>Channel: {{ duplicated_lead?.lead_channel?.name }}</p>
+                <p>Lead Source: {{ duplicated_lead?.lead_source }}</p>
+                <p *ngIf="duplicated_lead?.broker">
+                  Broker: {{ duplicated_lead?.broker?.name }}
+                </p>
+                <p *ngIf="duplicated_lead?.ambassador">
+                  Ambassador: {{ duplicated_lead?.ambassador?.name }}
+                </p>
+                <p>
+                  Date:
+                  {{ duplicated_lead?.created_at | date : "dd MMM yyyy hh:mm:aa" }}
+                </p>
+              </div>
+              <div class="col-md-6">
+                <span class="headline">Original Record</span>
+                <hr />
+                <p>Name: {{ duplicated_lead?.lead?.name }}</p>
+                <p>Phone Number: {{ duplicated_lead?.lead?.phone }}</p>
+                <p>
+                  Interested Project: {{ duplicated_lead?.lead?.project?.name }}
+                </p>
+                <p>Agent: {{ duplicated_lead?.lead?.agent?.name || "_" }}</p>
+                <p>Channel: {{ duplicated_lead?.lead?.lead_channel?.name }}</p>
+                <p>Lead Source: {{ duplicated_lead?.lead?.lead_source }}</p>
+                <p *ngIf="duplicated_lead?.lead?.broker">
+                  Broker: {{ duplicated_lead?.lead?.broker?.name }}
+                </p>
+                <p *ngIf="duplicated_lead?.lead?.ambassador">
+                  Ambassador: {{ duplicated_lead?.lead?.ambassador?.name }}
+                </p>
+                <p>
+                  Date:
+                  {{
+                  duplicated_lead?.lead?.created_at
+                  | date : "dd MMM yyyy hh:mm:aa"
+                  }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <div *ngIf="current_page" class="col-xs-12 text-center">
+        <p>({{ per_page }} / {{ total }})</p>
+        <p>page {{ current_page }}</p>
+      </div>
+      <div class="col-xs-12 text-center">
+        <ngb-pagination
+          [collectionSize]="dublicated_raw_data?.last_page * 10"
+          [(page)]="page"
+          [maxSize]="5"
+          [rotate]="true"
+          [ellipses]="true"
+          [boundaryLinks]="true"
+          (pageChange)="pageChange($event)"
+          [size]="lg"
+        >
+        </ngb-pagination>
+      </div>
+    </div>
+  </div>
+
+
+
+<modal
+  #assignModal
+  title="Assign Lead to Agent"
+  submitButtonLabel="submit"
+  modalClass="modal-lg"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="reAssignDuplicateLeads(assignModal)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <form>
+      <div class="row">
+        <div class="form-group col-md-12">
+          <label for="">Assign To Agent</label>
+          <ng-select
+            placeholder="Select Agent"
+            [ngModelOptions]="{ standalone: true }"
+            [(ngModel)]="agent_id"
+          >
+            <ng-option *ngFor="let agent of agents" [value]="agent.id">
+              {{ agent.name }}
+            </ng-option>
+          </ng-select>
+        </div>
+      </div>
+    </form>
+  </modal-content>
+  <modal-footer>
+    <button
+      [ngClass]="{ 'disable, disabled': disableAddCampaign }"
+      class="btn btn-secondary"
+      (click)="pageModal.close()"
+    >
+      close
+    </button>
+  </modal-footer>
+</modal>
+</ng-container>

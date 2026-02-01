@@ -1,0 +1,58 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12 mb-3">
+      <h2>{{isEdit?'Edit':"Add"}} Department <span *ngIf="isEdit">:{{addDepartmentForm.get('name').value}}</span> </h2>
+    </div>
+  </div>
+  <form [formGroup]="addDepartmentForm" class="row">
+    <div class="col-md-6 form-group">
+      <label for="">
+        Department Name
+        <span class="text-danger">*</span>
+      </label>
+      <input type="text" class="form-control" formControlName="name" palceholder="Department Name">
+    </div>
+    <div class="col-md-6 form-group">
+      <label for="">
+        Head of Department
+        <span class="text-danger">*</span>
+      </label>
+      <ng-select
+        name="head_user_id"
+        id="head_user_id"
+        placeholder="Select Head Of Sales"
+        formControlName="head_user_id"
+        [items]="headUsers"
+        bindLabel="name"
+        bindValue="id"
+      >
+      </ng-select>
+    </div>
+    <div *ngIf="users" class="col-md-6 form-group">
+      <label for="">
+        Users
+        <span class="text-danger">*</span>
+      </label>
+      <ng-multiselect-dropdown
+        [placeholder]="'Users'"
+        [data]="users"
+        formControlName="users"
+        [settings]="dropdownSettings"
+        (onSelect)="onItemSelect($event)"
+        (onSelectAll)="onSelectAll($event)"
+      >
+      </ng-multiselect-dropdown>
+    </div>
+    <div class="col-md-12 d-end">
+      <button class="btn btn-primary" (click)="submitForm()">{{isEdit?'Update':"Add"}}</button>
+      <button class="btn btn-danger" (click)="cancel()">Cancel</button>
+    </div>
+    <!-- <div class="form-group">
+      <label for="">Project</label>
+      <ng-multiselect-dropdown [placeholder]="'Projects'" [data]="projects" formControlName="project_id"
+        [settings]="projectsDropdownSettings" (onSelect)="onItemSelect($event)"
+        (onSelectAll)="onSelectAll($event)">
+      </ng-multiselect-dropdown>
+    </div> -->
+  </form>
+</div>

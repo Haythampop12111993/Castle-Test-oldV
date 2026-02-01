@@ -1,0 +1,243 @@
+<section id="legal-mission-view" dir="rtl" *ngIf="mission">
+  <div class="container-fluid">
+    <div class="d-flex justify-content-between">
+      <h2>تفاصيل معاملة خارجية</h2>
+      <div class="d-flex justify-content-center align-items-center gap-15">
+        <div class="btn-group" role="group">
+          <button
+            type="button"
+            class="btn btn-warning"
+            (click)="addActivityModal.open(mission.id)"
+          >
+            اضافة حركات
+          </button>
+          <button
+            type="button"
+            class="btn btn-success"
+            (click)="addNoteModal.open(mission.id)"
+            *ngIf="
+              userData.role == 'Admin' ||
+              userData.role == 'Super Development' ||
+              userData.role == 'Legal Head'
+            "
+          >
+            إضافة ملاحظة
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="changeStatusModal.open(mission.id, mission.status_id)"
+          >
+            تغيير الحالة
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="missionsFilesModal.open(mission)"
+          >
+            المرفقات
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-9">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <ng-container *ngIf="mission.description">
+              <h3 class="text-center">وصف المعاملة</h3>
+              <p [innerHTML]="mission.description"></p>
+            </ng-container>
+
+            <ng-container *ngIf="mission.logs?.length">
+              <hr class="hr" />
+              <div class="d-flex align-items-stretch">
+                <div class="col-md-6">
+                  <h3 class="text-center">الحركات</h3>
+                  <div
+                    class="activity-logs d-flex flex-column justify-content-center"
+                  >
+                    <div
+                      class="log-row d-flex justify-content-start align-items-start"
+                      *ngFor="let log of mission.logs"
+                    >
+                      <div class="time-line"></div>
+                      <div class="log-data">
+                        <p class="h4 text-muted p-0 m-0">
+                          {{
+                            log.created_at
+                              | date : "medium" : undefined : "ar-EG"
+                          }}
+                        </p>
+                        <div class="row-content h4 p-0 m-0">
+                          <p>{{ log.details }}</p>
+                          <div
+                            class="files-container d-flex justify-content-center"
+                          >
+                            <div
+                              class="file d-flex justify-content-between align-items-center"
+                              *ngFor="let file of log.files"
+                            >
+                              <div class="data text-nowrap">
+                                <i class="fa fa-file" aria-hidden="true"></i>
+                                {{ file.name }}
+                              </div>
+                              <div class="actions">
+                                <div
+                                  class="btn-group folder-actions"
+                                  role="group"
+                                  aria-label="Basic example"
+                                >
+                                  <button
+                                    type="button"
+                                    class="btn btn-danger"
+                                    (click)="deleteFile(file.id)"
+                                  >
+                                    <i
+                                      class="fa fa-trash"
+                                      aria-hidden="true"
+                                    ></i>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    class="btn btn-primary"
+                                    (click)="openFile(file.full_url)"
+                                  >
+                                    <i
+                                      class="fa fa-download"
+                                      aria-hidden="true"
+                                    ></i>
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 border-left">
+                  <h3 class="text-center">الملاحظات</h3>
+                  <div
+                    class="activity-logs d-flex flex-column justify-content-center"
+                  >
+                    <div
+                      class="log-row d-flex justify-content-start align-items-start"
+                      *ngFor="let note of mission.notes"
+                    >
+                      <div class="time-line"></div>
+                      <div class="log-data">
+                        <p class="h4 text-muted p-0 m-0">
+                          {{
+                            note.created_at
+                              | date : "medium" : undefined : "ar-EG"
+                          }}
+                        </p>
+                        <div class="row-content h4 p-0 m-0">
+                          <p>{{ note.details }}</p>
+                          <div
+                            class="files-container d-flex justify-content-center"
+                          >
+                            <div
+                              class="file d-flex justify-content-between align-items-center"
+                              *ngFor="let file of note.files"
+                            >
+                              <div class="data text-nowrap">
+                                <i class="fa fa-file" aria-hidden="true"></i>
+                                {{ file.name }}
+                              </div>
+                              <div class="actions">
+                                <div
+                                  class="btn-group folder-actions"
+                                  role="group"
+                                  aria-label="Basic example"
+                                >
+                                  <button
+                                    type="button"
+                                    class="btn btn-danger"
+                                    (click)="deleteFile(file.id)"
+                                  >
+                                    <i
+                                      class="fa fa-trash"
+                                      aria-hidden="true"
+                                    ></i>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    class="btn btn-primary"
+                                    (click)="openFile(file.full_url)"
+                                  >
+                                    <i
+                                      class="fa fa-download"
+                                      aria-hidden="true"
+                                    ></i>
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+      <div class="col-xs-3">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <h3 class="text-center mt-0">بيانات المعاملة</h3>
+            <div>
+              {{ mission.name }}
+              <div class="table-row">
+                <b>اسم المعاملة</b>
+                <span>{{ mission.name }}</span>
+              </div>
+              <div class="table-row">
+                <b>نوع المعاملة</b>
+                <span>{{ mission.category?.name || "" }}</span>
+              </div>
+              <div class="table-row">
+                <b>حالة المعاملة</b>
+                <span>{{ mission.status?.name || "" }}</span>
+              </div>
+              <div class="table-row">
+                <b>الجهة</b>
+                <span>{{ mission.side?.name || "" }}</span>
+              </div>
+              <div class="table-row">
+                <b>تاريخ المعاملة</b>
+                <span>{{
+                  mission.date | date : "mediumDate" : undefined : "ar-EG"
+                }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<app-change-mission-status
+  #changeStatusModal
+  (onSave)="getMission()"
+></app-change-mission-status>
+
+<app-mission-activity-form
+  #addActivityModal
+  (onSave)="getMission()"
+></app-mission-activity-form>
+
+<app-mission-note-form
+  #addNoteModal
+  (onSave)="getMission()"
+></app-mission-note-form>
+
+<app-mission-files
+  #missionsFilesModal
+  (onSave)="getMission()"
+></app-mission-files>

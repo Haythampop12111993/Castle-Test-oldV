@@ -1,0 +1,79 @@
+<section class="payment-plans-table">
+  <div class="container-fluid">
+    <div class="proj-details">
+      <div class="row">
+        <div class="col-xs-4">
+          <h3>Transactions</h3>
+        </div>
+        <div class="col-xs-8">
+          <div class="settings-icons pull-right">
+            <div class="dropdown" dropdown>
+              <i class="fa fa-cog" aria-hidden="true" dropdown-open></i>
+              <ul class="dropdown-menu menu-settings">
+                <li>
+                  <a>
+                    <span>Print</span>
+                  </a>
+                </li>
+                <li [routerLink]="['/pages/finance/transaction/add']">
+                  <a>
+                    <span>Add Transaction</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12" [ngClass]="{'no-interaction': is_refreshing}">
+          <div class="table table-responsive">
+            <table class="table table-bordered">
+              <tr>
+                <th>ID</th>
+                <th>Transaction Date</th>
+                <th>Type</th>
+                <th>From Acc</th>
+                <th>To Acc</th>
+                <th>Amount</th>
+                <th>Value Date</th>
+                <th>From Balance</th>
+                <th>To Balance</th>
+                <th>Description</th>
+                <th>Action</th>
+              </tr>
+              <tr *ngFor="let t of transactions;let i = index" [ngClass]="{'bg-success': t?.type == 'Income', 'bg-danger': t?.type == 'Expense'}">
+                <td>{{t?.id}}</td>
+                <td>{{t?.date}}</td>
+                <td>{{t?.type}}</td>
+                <td>{{t?.from_account?.name}}</td>
+                <td>{{t?.to_account?.name}}</td>
+                <td>{{t?.amount}}</td>
+                <td *ngIf="t.type == 'cheque'">{{t?.value_date}}</td>
+                <td *ngIf="t.type != 'cheque'">NA</td>
+                <td class="balance">{{t?.from_account_balance}}</td>
+                <td class="balance">{{t?.to_account_balance}}</td>
+                <td>{{t?.description}}</td>
+                <td>
+                  <div class="dropdown" dropdown>
+                    <img class="more-options-icon" src="assets/img/show-more-button-with-three-dots.svg" dropdown-open/>
+                    <!-- <ul class="dropdown-menu">
+                      <li [routerLink]="['/pages/finance/accounts/add/', account?.id]">
+                        <a>
+                          <span>Print</span>
+                        </a>
+                      </li>
+                    </ul> -->
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div class="col-xs-12 text-center">
+              <ngb-pagination [collectionSize]="transaction_raw_data?.last_page * 10" [(page)]="pageTest" [maxSize]="5" [rotate]="true"
+                [ellipses]="true" [boundaryLinks]="true" (pageChange)="pageChange($event)" [size]="lg">
+              </ngb-pagination>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

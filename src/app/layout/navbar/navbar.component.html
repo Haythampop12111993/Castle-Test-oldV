@@ -1,0 +1,791 @@
+<nav
+  id="sidebar"
+  [ngClass]="{ active: menuOpen }"
+  *ngIf="userData.role != 'Broker Incentive'"
+>
+  <div
+    class="sidebar-header"
+    [ngClass]="{ whiteLogoBg: envStatics.whiteLogoBg }"
+  >
+    <span>
+      <img
+        [src]="
+          envStatics.whiteLogoBg
+            ? 'assets/logos/cred_logo.png'
+            : 'assets/logos/cred_logo.png'
+        "
+        style="width: 100px; margin-right: 25px"
+        [alt]="envStatics.projectName + ' Logo'"
+        class="logo"
+      />
+    </span>
+    <img
+      id="sidebarCollapse"
+      (click)="sidebarCollapse('ham')"
+      src="assets/img/collapse-but.svg"
+      alt=""
+    />
+  </div>
+  <div class="color-bg">
+    <div class="media">
+      <div class="media-left">
+        <a>
+          <img
+            *ngIf="!userPic"
+            class="media-object"
+            src="assets/images/img_avatar2.png"
+            alt="avatar"
+          />
+          <img
+            *ngIf="userPic"
+            class="media-object"
+            onerror="this.onerror=null; this.src='assets/images/img_avatar2.png'"
+            [src]="userPic"
+            alt="user pic"
+          />
+        </a>
+      </div>
+      <div class="media-body">
+        <h4 class="media-heading">
+          {{ userData?.name }}
+          <!-- <i (click)="logout()" class="fa fa-power-off" aria-hidden="true"></i>  -->
+        </h4>
+        <ul class="list-unstyled list-inline" style="margin-bottom: 0">
+          <li>
+            <span></span>
+          </li>
+          <li
+            class="status-availability"
+            style="font-size: 12px; font-weight: bold"
+          >
+            ONLINE
+          </li>
+        </ul>
+        <UL
+          class="list-unstyled list-inline"
+          style="margin-bottom: 0; margin-top: 10px"
+        >
+          <li>Version:</li>
+          <li class="version">
+            {{ userService.version }}
+          </li>
+        </UL>
+      </div>
+    </div>
+    <hr />
+    <!-- <div class="form-group text-center">
+            <button class="btn btn-primary n-bg" (click)="addLead()">ADD NEW</button>
+        </div> -->
+
+    <ul
+      class="list-unstyled components"
+      *ngIf="userData.role != 'Broker Incentive'"
+    >
+      <li
+        class=""
+        [hidden]="
+          userData.role == 'Call Center' ||
+          userData.role == 'Legal and Technical' ||
+          userData.role == 'Facility' ||
+          userData.role == 'Legal Head' ||
+          userData.role == 'Engineer' ||
+          userData.role == 'Call Center'
+        "
+        *ngIf="!isProjectsViewer()"
+      >
+        <a (click)="sidebarCollapse('li')" [routerLink]="['/pages/dashboard']">
+          <i class="fa fa-line-chart" aria-hidden="true"></i>
+          <span>DASHBOARD</span>
+        </a>
+      </li>
+      <li
+        *ngIf="
+          (userData.role != 'A.R Accountant' &&
+            userData.role != 'G.L Accountant' &&
+            userData.role != 'Treasury Accountant' &&
+            !isHelpDeskUser() &&
+            role != 'Call Center' &&
+            userData.role != 'Legal and Technical' &&
+            userData.role != 'Facility' &&
+            userData.role != 'Call Center') ||
+          isProjectsViewer()
+        "
+        (click)="sidebarCollapse('li')"
+      >
+        <a
+          #projects_a
+          href="#projectsSubmenu"
+          data-toggle="collapse"
+          aria-expanded="false"
+        >
+          <i class="fa fa-home" aria-hidden="true"></i>
+          <span>PROJECTS</span>
+        </a>
+        <ul
+          #projects_ul
+          class="collapse list-unstyled"
+          id="projectsSubmenu"
+          *ngIf="!isHelpDeskUser()"
+        >
+          <!-- <li><a [routerLink]="['/pages/projects/import-units']">Import Units</a></li> -->
+          <!-- <li>
+                        <a [routerLink]="['/pages/projects/view-all-units']">View All Units</a>
+                    </li> -->
+          <!-- <a [routerLink]="['/pages/projects/units/1']" [queryParams]="{ masterplan: false }">View All Units</a> -->
+          <li *ngIf="userData?.role != 'MD'">
+            <a [routerLink]="['/pages/projects']">View Projects</a>
+          </li>
+          <li *ngIf="userData?.role != 'MD' && userData.role != 'Broker'">
+            <a
+              [routerLink]="['/pages/projects/units/0']"
+              [queryParams]="{ masterplan: 'false' }"
+              >View All Units</a
+            >
+          </li>
+          <li
+            *ngIf="
+              userData.role == 'Admin' ||
+              userData.role == 'Super Development' ||
+              userData.role == 'Moderator' ||
+              userData.role == 'Super Moderator' ||
+              (userData.role == 'Development Director' &&
+                userData.role != 'CCO')
+            "
+          >
+            <a [routerLink]="['/pages/projects/add/0']">New Project</a>
+          </li>
+          <li
+            *ngIf="
+              userData.role == 'Admin' ||
+              userData.role == 'Moderator' ||
+              userData.role == 'Super Moderator'
+            "
+          >
+            <a [routerLink]="['projects/block-requests-list']"
+              >Block Requests List</a
+            >
+          </li>
+          <!-- <li *ngIf="userData.role == 'Admin'">
+                        <a [routerLink]="['/pages/availability-request']">Availability Request</a>
+                    </li> -->
+          <li
+            *ngIf="
+              userData.role == 'Admin' ||
+              userData.email == 'a.asaad@cred-eg.com'
+            "
+          >
+            <a [routerLink]="['/pages/price-control']">Price Control</a>
+          </li>
+          <li
+            *ngIf="
+              userData.role == 'Admin' ||
+              userData.email == 'm.maher@cred-eg.con'
+            "
+          >
+            <a [routerLink]="['/pages/price-control/requests']"
+              >Price Control Requests &amp; History</a
+            >
+          </li>
+          <li
+            *ngIf="
+              userData?.role != 'MD' &&
+              userData?.role != 'Super Development' &&
+              userData.role != 'CCO' &&
+              userData.role != 'Engineer' &&
+              userData.role != 'Marketing' &&
+              userData.role != 'Broker'
+            "
+            class="hover-to-a"
+          >
+            <a [routerLink]="['/pages/upload-layout']">Upload Layout</a>
+          </li>
+        </ul>
+      </li>
+      <li
+        [hidden]="
+          userData.role == 'MD' ||
+          userData.role == 'Engineer' ||
+          userData.role == 'Call Center' ||
+          isProjectsViewer()
+        "
+        (click)="sidebarCollapse('li')"
+      >
+        <a
+          #crm_a
+          href="#crmSubmenu"
+          data-toggle="collapse"
+          aria-expanded="false"
+        >
+          <i class="fa fa-users" aria-hidden="true"></i>
+          <span>CRM</span>
+        </a>
+        <ul #crm_ul class="collapse list-unstyled" id="crmSubmenu">
+          <!--<li><a href="#">Pre Lead</a></li>-->
+          <li
+            *ngIf="
+              userData.role != 'Accountant' &&
+              role != 'Call Center' &&
+              userData?.role != 'Super Development' &&
+              userData.role != 'Facility' &&
+              userData.role != 'Development Director'
+            "
+            class="hover-to-a"
+          >
+            <a [routerLink]="['/pages/leads']">Leads</a>
+          </li>
+          <li
+            class="hover-to-a"
+            *ngIf="
+              userData.role == 'Admin' || userData.role == 'Super Moderator'
+            "
+          >
+            <a [routerLink]="['/pages/blocklist']">Blocklist</a>
+          </li>
+          <li
+            *ngIf="
+              userData.role != 'Accountant' &&
+              userData.role != 'Contractor' &&
+              role != 'Call Center' &&
+              userData?.role != 'Super Development' &&
+              userData.role != 'Legal and Technical' &&
+              userData.role != 'Facility' &&
+              userData.role != 'Development Director'
+            "
+            class="hover-to-a"
+          >
+            <a [routerLink]="['/pages/leads-listing-reminders']"
+              >Leads Listing by Reminders</a
+            >
+          </li>
+          <li
+            *ngIf="
+              (userData.role == 'Admin' ||
+                userData.role == 'Moderator' ||
+                userData.role == 'Super Moderator' ||
+                userData.role == 'Marketing' ||
+                userData.role == 'CCO') &&
+              userData.role != 'Legal and Technical'
+            "
+            class="hover-to-a"
+          >
+            <a [routerLink]="['/pages/duplicated-leads']">Duplicated Leads</a>
+          </li>
+          <li
+            *ngIf="
+              (userData.role == 'Admin' ||
+                userData.role == 'Moderator' ||
+                userData.role == 'Super Moderator' ||
+                userData.role == 'CCO') &&
+              userData.role != 'Legal and Technical' &&
+              userData.role != 'Facility'
+            "
+            class="hover-to-a"
+          >
+            <a [routerLink]="['/pages/trash-leads']">Trash Leads</a>
+          </li>
+          <li class="hover-to-a" *ngIf="userData.role == 'Admin'">
+            <a [routerLink]="['/pages/clients-statements']"
+              >Clients Statements</a
+            >
+          </li>
+          <li
+            *ngIf="
+              userData.role != 'Marketing' &&
+              userData.role != 'Legal and Technical' &&
+              userData.role != 'Facility'
+            "
+          >
+            <a [routerLink]="['/pages/eoi-table']">EOIs</a>
+          </li>
+          <li>
+            <a [routerLink]="['/pages/hold-list']">Hold</a>
+          </li>
+          <li *ngIf="userData.role != 'Marketing'">
+            <a [routerLink]="['/pages/reservations']">Reservations</a>
+          </li>
+          <!-- <li>
+                        <a [routerLink]="['/pages/cils']">
+                            <span>CILS</span>
+                        </a>
+                    </li> -->
+          <li
+            *ngIf="
+              userData.role != 'Marketing' &&
+              role != 'Call Center' &&
+              userData?.role != 'Super Development' &&
+              userData.role != 'Legal and Technical' &&
+              userData.role != 'Facility'
+            "
+          >
+            <a [routerLink]="['/pages/payment-generator']">Payment Generator</a>
+          </li>
+          <li *ngIf="userData?.role != 'Super Development'">
+            <a [routerLink]="['/pages/custom-payment-generator']">
+              <i class="fa fa-gg" aria-hidden="true"></i>
+              Custom Payment Generator
+            </a>
+          </li>
+          <li *ngIf="userData?.role != 'Super Development'">
+            <a [routerLink]="['/pages/list-custom-payments']">
+              <i class="fa fa-gg" aria-hidden="true"></i>
+              List Custom Payments
+            </a>
+          </li>
+          <li
+            *ngIf="
+              (userData.role == 'Accountant' ||
+                userData.role == 'Admin' ||
+                userData.role == 'AR Manager' ||
+                userData.role == 'Moderator' ||
+                userData.role == 'Super Moderator') &&
+              userData.role != 'CCO' &&
+              userData.role != 'Development Director' &&
+              userData.role != 'Legal and Technical' &&
+              userData.role != 'Facility'
+            "
+          >
+            <a [routerLink]="['/pages/payment-collections']"
+              >Payment Collections</a
+            >
+          </li>
+          <li
+            *ngIf="
+              userData.role == 'A.R Accountant' ||
+              userData.role == 'G.L Accountant' ||
+              userData.role == 'Treasury Accountant' ||
+              userData.role == 'Admin' ||
+              userData.role == 'CFO' ||
+              userData.role == 'Moderator' ||
+              userData.role == 'Super Moderator'
+            "
+          >
+            <a [routerLink]="['/pages/fines-list']">Fines</a>
+          </li>
+          <li
+            *ngIf="
+              (userData.role == 'Accountant' ||
+                userData.role == 'Admin' ||
+                userData.role == 'Moderator' ||
+                userData.role == 'Super Moderator') &&
+              userData.role != 'CCO' &&
+              userData.role != 'Development Director' &&
+              userData.role != 'Legal and Technical' &&
+              userData.role != 'Facility'
+            "
+          >
+            <a [routerLink]="['/pages/bank-cheque-listing']"
+              >Banks Cheques Templates</a
+            >
+          </li>
+          <a
+            *ngIf="userData?.role != 'Super Development'"
+            #cold_calls_a
+            href="#coldCallsSubmenu"
+            data-toggle="collapse"
+            aria-expanded="false"
+          >
+            <i class="fa fa-envelope-open" aria-hidden="true"></i>
+            <span>Cold Calls</span>
+          </a>
+        </ul>
+      </li>
+      <li
+        [hidden]="
+          userData.role == 'Development Director' ||
+          isHelpDeskUser() ||
+          role == 'Call Center' ||
+          userData.role == 'MD' ||
+          userData.role == 'Legal and Technical' ||
+          userData.role == 'Facility' ||
+          userData?.role == 'Super Development' ||
+          isProjectsViewer()
+        "
+        (click)="sidebarCollapse('li')"
+      >
+        <a
+          #crm_a
+          href="#marketingSubmenu"
+          data-toggle="collapse"
+          aria-expanded="false"
+        >
+          <i class="fa fa-envelope-open" aria-hidden="true"></i>
+          <span>Marketing</span>
+        </a>
+        <ul
+          #marketing_ul
+          class="collapse list-unstyled"
+          id="marketingSubmenu"
+          *ngIf="!isHelpDeskUser()"
+        >
+          <!--<li><a href="#">Pre Lead</a></li>-->
+          <a
+            *ngIf="
+              userData.role == 'Marketing' ||
+              userData?.role == 'Admin' ||
+              userData.role == 'Super Development' ||
+              userData.role == 'CCO' ||
+              userData.role == 'Development Director' ||
+              userData.role == 'Moderator' ||
+              userData.role == 'Super Moderator'
+            "
+            [routerLink]="['/pages/marketing']"
+          >
+            <span>Marketing</span>
+          </a>
+          <a
+            *ngIf="
+              userData.role == 'Marketing' ||
+              userData?.role == 'Admin' ||
+              userData.role == 'Super Development' ||
+              userData.role == 'CCO' ||
+              userData.role == 'Development Director' ||
+              userData.role == 'Moderator' ||
+              userData.role == 'Super Moderator'
+            "
+            [routerLink]="['/pages/campaigns']"
+          >
+            <span>Campaigns</span>
+          </a>
+          <a
+            *ngIf="
+              userData.role == 'Marketing' ||
+              userData?.role == 'Admin' ||
+              userData?.role == 'CFO' ||
+              userData.role == 'CCO'
+            "
+            [routerLink]="['/pages/all-pages']"
+          >
+            <span>Pages</span>
+          </a>
+          <li
+            *ngIf="
+              ((userData?.role == 'Admin' ||
+                userData.role == 'Super Development') &&
+                userData.role != 'CCO' &&
+                userData.role != 'Development Director') ||
+              userData.role == 'Moderator' ||
+              userData.role == 'Super Moderator'
+            "
+          >
+            <a [routerLink]="['/pages/rotations']">
+              <span>All Rotations</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li
+        (click)="sidebarCollapse('li')"
+        *ngIf="
+          userData?.role != 'Super Development' &&
+          userData.role != 'Development Director' &&
+          userData.role != 'Facility' &&
+          !isProjectsViewer()
+        "
+      >
+        <a
+          #crm_a
+          href="#ticketsSubmenu"
+          data-toggle="collapse"
+          aria-expanded="false"
+        >
+          <i class="fa fa-envelope-open" aria-hidden="true"></i>
+          <span>Customer Care</span>
+        </a>
+        <ul #marketing_ul class="collapse list-unstyled" id="ticketsSubmenu">
+          <li
+            *ngIf="
+              userData.role == 'Helpdesk Supervisor' ||
+              userData.role == 'Super Moderator' ||
+              userData.role == 'Moderator' ||
+              userData.role == 'Departmen Head' ||
+              userData.role == 'Admin' ||
+              userData.role == 'Super Development' ||
+              userData.role == 'CCO' ||
+              userData.role == 'Development Director' ||
+              userData.role == 'Helpdesk Agent' ||
+              userData.role == 'Call Center' ||
+              userData.role == 'Legal and Technical' ||
+              userData.role == 'A.R Manager'
+            "
+          >
+            <a [routerLink]="['/pages/tickets']">
+              <span>Tickets</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li
+        (click)="sidebarCollapse('li')"
+        *ngIf="userData.role != 'Marketing' && !isProjectsViewer()"
+      >
+        <!-- <a
+          #crm_a
+          href="#legal_affairs"
+          data-toggle="collapse"
+          aria-expanded="false"
+          *ngIf="
+            userData.role == 'Legal Head' ||
+            userData.role == 'Admin' ||
+            userData.role == 'Legal and Technical' ||
+            userData.role == 'Facility' || 
+            userData.role == 'Contractor'
+          "
+        >
+          <i class="fa fa-university" aria-hidden="true"></i>
+          <span>Legal Affairs</span>
+        </a> -->
+        <ul class="collapse list-unstyled" id="legal_affairs">
+          <li>
+            <a [routerLink]="['/pages/legal-affairs/documents']">
+              <span>Documents</span>
+            </a>
+          </li>
+          <li>
+            <a [routerLink]="['/pages/legal-affairs/contract-archives']">
+              <span>Contract Archive</span>
+            </a>
+          </li>
+          <li>
+            <a [routerLink]="['/pages/legal-affairs/cases']">
+              <span>Cases</span>
+            </a>
+          </li>
+          <li>
+            <a [routerLink]="['/pages/legal-affairs/missions']">
+              <span>Missions</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <!-- <li *ngIf="userData.role == 'Accountant' || userData.role == 'CFO' || userData.role == 'Admin'" (click)="sidebarCollapse('li')">
+        <a #finance_a href="#financeSubmenu" data-toggle="collapse" aria-expanded="false">
+          <i class="fa fa-money" aria-hidden="true"></i>
+          <span>FINANCE</span>
+        </a>
+        <ul #finance_ul class="collapse list-unstyled" id="financeSubmenu">
+          <li class="hover-to-a" [routerLink]="['/pages/finance/accounts']">
+            <a>Accounts</a>
+          </li>
+          <li class="hover-to-a" [routerLink]="['/pages/finance/transaction']">
+            <a>Transactions</a>
+          </li>
+        </ul>
+      </li> -->
+      <!-- <li *ngIf="userData.role == 'Admin'">
+        <a [routerLink]="['/pages/marketing']">
+          <i class="fa fa-envelope-open" aria-hidden="true"></i>
+          <span>Marketing</span>
+        </a>
+      </li> -->
+      <li
+        *ngIf="
+          (userData.role == 'Admin' ||
+            userData.role == 'Super Development' ||
+            userData.role == 'Marketing' ||
+            userData.is_sales_team) &&
+          !isProjectsViewer()
+        "
+      >
+        <a [routerLink]="['/pages/brokers']">
+          <i class="fa fa-handshake-o" aria-hidden="true"></i>
+          <span>Brokers</span>
+        </a>
+      </li>
+      <li
+        *ngIf="
+          (userData.role == 'Admin' ||
+            userData.role == 'Super Development' ||
+            userData.role == 'Super Moderator' ||
+            userData.role == 'Moderator' ||
+            userData.role == 'Marketing') &&
+          !isProjectsViewer()
+        "
+      >
+        <a [routerLink]="['/pages/brokers/incentives']">
+          <i class="fa fa-handshake-o" aria-hidden="true"></i>
+          <span>Brokers Incentives</span>
+        </a>
+      </li>
+      <li
+        *ngIf="
+          (userData.role == 'Admin' ||
+            userData.role == 'Super Development' ||
+            userData.role == 'CCO' ||
+            userData.role == 'Moderator' ||
+            userData.role == 'Super Moderator' ||
+            userData?.is_sales_team ||
+            (!isHelpDeskUser() && role != 'Call Center')) &&
+          userData.role != 'Legal and Technical' &&
+          userData.role != 'Facility' &&
+          userData.role != 'Development Director' &&
+          userData.role != 'Call Center' &&
+          !isProjectsViewer()
+        "
+      >
+        <a
+          [routerLink]="['/pages/wallet']"
+          *ngIf="userData?.role != 'Super Development'"
+        >
+          <i class="fa fa-google-wallet" aria-hidden="true"></i>
+          <span>Wallet</span>
+        </a>
+      </li>
+      <li
+        (click)="sidebarCollapse('li')"
+        *ngIf="userData.role != 'Call Center' && !isProjectsViewer()"
+      >
+        <a
+          #crm_a
+          href="#reportsSubmenu"
+          data-toggle="collapse"
+          aria-expanded="false"
+        >
+          <i class="fa fa-stack-exchange" aria-hidden="true"></i>
+          <span>Reports</span>
+        </a>
+        <ul #reports_ul class="collapse list-unstyled" id="reportsSubmenu">
+          <li
+            *ngIf="
+              userData.role == 'Admin' ||
+              userData.role == 'MD' ||
+              userData.role == 'Super Moderator' ||
+              userData.role == 'Moderator' ||
+              userData.role == 'Super Development' ||
+              userData.role == 'Development Director' ||
+              userData.role == 'Head Of Sales'
+            "
+          >
+            <a [routerLink]="['/pages/daily-report']">
+              <i class="fa fa-stack-exchange" aria-hidden="true"></i>
+              <span>Sales Reports</span>
+            </a>
+          </li>
+          <li
+            *ngIf="
+              userData.role == 'Admin' ||
+              userData.role == 'MD' ||
+              userData.role == 'Development Director' ||
+              userData.role == 'Marketing'
+            "
+          >
+            <a [routerLink]="['/pages/marketing-report']">
+              <i class="fa fa-stack-exchange" aria-hidden="true"></i>
+              <span>Marketing Reports</span>
+            </a>
+          </li>
+          <li *ngIf="userData.role == 'Admin' || userData.role == 'MD' || userData.role == 'Development Director'">
+            <a [routerLink]="['/pages/financial-report']">
+              <i class="fa fa-stack-exchange" aria-hidden="true"></i>
+              <span>Financial Reports</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <!-- <li
+        [hidden]="(userData.role == 'MD'|| isHelpDeskUser() || role=='Call Center' || userData.role == 'Legal and Technical') ">
+        <a [routerLink]="['/pages/reports']">
+          <i class="fa fa-pie-chart" aria-hidden="true"></i>
+          <span>REPORTS</span>
+        </a>
+      </li> -->
+      <!-- <li [hidden]="userData.role == 'MD'|| isHelpDeskUser()">
+                <a [routerLink]="['/pages/logs']">
+                    <i class="fa fa-align-left" aria-hidden="true"></i>
+                    <span>Logs</span>
+                </a>
+            </li> -->
+      <!-- <li [routerLink]="['/pages/master-plan']">
+        <a>
+          <i class="fa fa-align-left" aria-hidden="true"></i>
+          <span>Master Plan</span>
+        </a>
+      </li> -->
+      <!-- <li [routerLink]="['/pages/availability-request']">
+        <a>
+          <i class="fa fa-align-left" aria-hidden="true"></i>
+          <span>AVA REQUESTS</span>
+        </a>
+      </li> -->
+      <!-- <li>
+        <a [routerLink]="['/pages/profile']">
+          <i class="fa fa-id-card" aria-hidden="true"></i>
+          <span>PROFILE</span>
+        </a>
+      </li> -->
+      <!-- <li
+        [hidden]="
+          userData.role == 'MD' ||
+          isHelpDeskUser() ||
+          role == 'Call Center' ||
+          userData.role == 'Legal and Technical'
+        "
+      >
+        <a [routerLink]="['/pages/chat']">
+          <i class="fa fa-comments" aria-hidden="true"></i>
+          <span>CHAT</span>
+        </a>
+      </li> -->
+      <li
+        [hidden]="
+          userData.role == 'MD' ||
+          role == 'Call Center' ||
+          userData.role == 'Legal and Technical' ||
+          userData.role == 'Facility' ||
+          userData.role == 'Engineer' ||
+          isProjectsViewer()
+        "
+      >
+        <a [routerLink]="['/pages/notifications']">
+          <i class="fa fa-envelope-open" aria-hidden="true"></i>
+          <span>Notifications</span>
+        </a>
+      </li>
+      <li
+        [hidden]="
+          userData.role == 'MD' ||
+          userData.role == 'Legal and Technical' ||
+          userData.role == 'Facility' ||
+          userData.role == 'Engineer' ||
+          isProjectsViewer()
+        "
+      >
+        <a
+          [routerLink]="['/pages/reminder']"
+          *ngIf="userData?.role != 'Super Development'"
+        >
+          <i class="fa fa-bell" aria-hidden="true"></i>
+          <span>Reminder</span>
+        </a>
+      </li>
+      <li
+        *ngIf="
+          (userData.role == 'Moderator' ||
+            userData.role == 'Super Moderator' ||
+            userData.role == 'Admin' ||
+            userData.role == 'Super Development' ||
+            userData.role == 'Helpdesk Supervisor' ||
+            (userData.is_c_level == 1 && userData.role == 'Accountant') ||
+            userData.can_manage_payment_plan) &&
+          userData.role != 'Legal and Technical' &&
+          userData.role != 'Facility' &&
+          userData.role != 'CCO' &&
+          userData.role != 'Development Director' &&
+          !isProjectsViewer()
+        "
+        class="margin-bottom-50"
+      >
+        <a [routerLink]="['/pages/settings/general']">
+          <i class="fa fa-cog" aria-hidden="true"></i>
+          <span>Settings</span>
+        </a>
+      </li>
+      <!-- <li *ngIf="userData.role == 'Admin' || userData.role == 'Marketing'">
+        <a [routerLink]="['/pages/rotation']">
+          <i class="fa fa-cog" aria-hidden="true"></i>
+          <span>Rotation</span>
+        </a>
+      </li> -->
+    </ul>
+  </div>
+</nav>
+<simple-notifications></simple-notifications>

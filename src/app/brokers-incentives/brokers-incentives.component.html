@@ -1,0 +1,130 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-xs-12 flex justify-between">
+      <h3 class="card__title">Brokers Incentives</h3>
+      <div class="settings-icons d-flex align-items-center">
+        <button class="btn-primary add-btn" (click)="addBroker()">
+          <i class="fa fa-plus"></i>
+          Add Broker Incentive
+        </button>
+        <!-- <div class="dropdown" dropdown>
+          <i
+            class="fa fa-cog cursor-pointer"
+            aria-hidden="true"
+            dropdown-open
+          ></i>
+          <ul class="dropdown-menu menu-settings">
+            <li>
+              <a [href]="broker_export_url">
+                <span>Export Brokers</span>
+              </a>
+            </li>
+            <li (click)="importBrokerModal.open()">
+              <a>
+                <span>Import Brokers</span>
+              </a>
+            </li>
+          </ul>
+        </div> -->
+      </div>
+    </div>
+    <div class="col-xs-12">
+      <div class="flex flex-wrap align-items-center filter-wrapper">
+        <div class="form-group">
+          <label for="">Search Brokers Incentives</label>
+          <input
+            name="keyword"
+            [(ngModel)]="keyword"
+            type="text"
+            class="form-control search-field"
+            placeholder="Keyword"
+          />
+        </div>
+        <div class="d-flex justify-between">
+          <button (click)="filter()" class="button filter_btn">FILTER</button>
+          <button
+            (click)="resetFilters()"
+            type="button"
+            class="button bg-danger reset_filter"
+          >
+            RESET
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="table table-responsive scrollable-div">
+      <div class="col-sm-12">
+        <table class="table table-bordered">
+          <tr>
+            <th class="text-center">Name</th>
+            <th class="text-center">Phone</th>
+            <th class="text-center">Email</th>
+            <th class="text-center">Job Title</th>
+            <th class="text-center">National ID</th>
+            <th class="text-center">Broker</th>
+            <th class="text-center">Actions</th>
+          </tr>
+
+          <ng-container *ngIf="brokers">
+            <tr *ngFor="let broker of brokers; let i = index">
+              <td class="text-center">
+                <span>
+                  {{ broker.name }}
+                </span>
+              </td>
+              <td class="text-center">
+                <span>
+                  {{ broker.phone }}
+                </span>
+              </td>
+              <td class="text-center">
+                <span>
+                  {{ broker.email }}
+                </span>
+              </td>
+              <td class="text-center">
+                <span>
+                  {{ broker.job_title }}
+                </span>
+              </td>
+              <td class="text-center">
+                <span>
+                  {{ broker.national_id }}
+                </span>
+              </td>
+              <td class="text-center">
+                <span>
+                  {{ broker.broker?.name }}
+                </span>
+              </td>
+              <td class="text-center">
+                <button mat-icon-button [matMenuTriggerFor]="menu">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                  <button mat-menu-item (click)="edit_broker(broker)">
+                    Edit
+                  </button>
+                </mat-menu>
+              </td>
+            </tr>
+          </ng-container>
+        </table>
+      </div>
+      <div class="col-xs-12 text-center">
+        <ngb-pagination
+          [collectionSize]="brokers_raw_data?.last_page * 10"
+          [(page)]="current_page"
+          [maxSize]="5"
+          [rotate]="true"
+          [ellipses]="true"
+          [boundaryLinks]="true"
+          (pageChange)="pageChange($event)"
+          [size]="'lg'"
+        >
+        </ngb-pagination>
+      </div>
+    </div>
+  </div>
+</div>

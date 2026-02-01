@@ -1,0 +1,83 @@
+.hover-to-a {
+  cursor: pointer;
+}
+
+.fa-power-off {
+  cursor: pointer;
+}
+.components a {
+  cursor: pointer;
+}
+
+.announcement {
+  font-weight: bold;
+  /* -webkit-animation: color-change 3s infinite;
+  -moz-animation: color-change 3s infinite;
+  -o-animation: color-change 3s infinite;
+  -ms-animation: color-change 3s infinite;
+  animation: color-change 3s infinite; */
+}
+
+@-webkit-keyframes color-change {
+  0% {
+    color: white;
+  }
+  50% {
+    color: #d04c4c;
+  }
+  100% {
+    color: white;
+  }
+}
+@-moz-keyframes color-change {
+  0% {
+    color: white;
+  }
+  50% {
+    color: #d04c4c;
+  }
+  100% {
+    color: white;
+  }
+}
+@-ms-keyframes color-change {
+  0% {
+    color: white;
+  }
+  50% {
+    color: #d04c4c;
+  }
+  100% {
+    color: white;
+  }
+}
+@-o-keyframes color-change {
+  0% {
+    color: white;
+  }
+  50% {
+    color: #d04c4c;
+  }
+  100% {
+    color: white;
+  }
+}
+@keyframes color-change {
+  0% {
+    color: white;
+  }
+  50% {
+    color: #d04c4c;
+  }
+  100% {
+    color: white;
+  }
+}
+
+.margin-bottom-50 {
+  margin-bottom: 50px;
+}
+
+.whiteLogoBg {
+  background: #fff !important;
+}

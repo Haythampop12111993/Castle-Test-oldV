@@ -1,0 +1,77 @@
+<section class="payment-plans-table">
+  <div class="container-fluid">
+    <div class="proj-details">
+      <div class="row">
+        <div class="col-xs-4">
+          <h3>Accounts</h3>
+        </div>
+        <div class="col-xs-8">
+          <div class="settings-icons pull-right">
+            <div class="dropdown" dropdown>
+              <i class="fa fa-cog" aria-hidden="true" dropdown-open></i>
+              <ul class="dropdown-menu menu-settings">
+                <li>
+                  <a>
+                    <span>Export Accounts</span>
+                  </a>
+                </li>
+                <li [routerLink]="['/pages/finance/accounts/add/0']">
+                  <a>
+                    <span>Add Account</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12" [ngClass]="{'no-interaction': is_refreshing}">
+          <div class="table table-responsive">
+            <table class="table table-bordered">
+              <tr>
+                <th>RF Serial</th>
+                <th>Name</th>
+                <th>Parent Acc</th>
+                <th>Description</th>
+                <th>Type</th>
+                <th>Initial Balance</th>
+                <th>Balance</th>
+                <th>Action</th>
+              </tr>
+              <tr *ngFor="let account of accounts?.data ;let i = index">
+                <td>{{account?.id}}</td>
+                <td>{{account?.name}}</td>
+                <td>{{account?.parent?.name}}</td>
+                <td>{{account?.description}}</td>
+                <td>{{account?.type}}</td>
+                <td>{{account?.initial_balance}}</td>
+                <td class="balance">{{account?.balance}}</td>
+                <td>
+                  <div class="dropdown" dropdown>
+                    <img class="more-options-icon" src="assets/img/show-more-button-with-three-dots.svg" dropdown-open/>
+                    <ul class="dropdown-menu">
+                      <li [routerLink]="['/pages/finance/accounts/add/', account?.id]">
+                        <a>
+                          <span>Edit</span>
+                        </a>
+                      </li>
+                      <li (click)="addBalanceSheetId(account?.id)" [routerLink]="['/pages/finance/balance-sheet']">
+                        <a>
+                          <span>Balance Sheet</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+            <div class="col-md-12 text-center">
+              <ngb-pagination [collectionSize]="accounts?.last_page * 10" [(page)]="pageTest" [maxSize]="5" [rotate]="true"
+              [ellipses]="true" [boundaryLinks]="true" (pageChange)="pageChange($event)" [size]="lg">
+            </ngb-pagination>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

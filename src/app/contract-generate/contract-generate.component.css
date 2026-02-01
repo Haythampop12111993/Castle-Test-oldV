@@ -1,0 +1,9 @@
+.print-contract-buttons-container {
+    margin-top: 15px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.print-contract-buttons-container button {
+    margin-right: 15px;
+}

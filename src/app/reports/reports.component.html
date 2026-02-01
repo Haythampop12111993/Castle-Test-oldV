@@ -1,0 +1,242 @@
+<section class="projects">
+  <div class="container-fluid">
+    <h2>Reports</h2>
+    <div class="box">
+      <div class="row">
+        <div class="col-xs-4">
+          <div class="form-group">
+            <label for="">Report On</label>
+            <select class="form-control" [(ngModel)]="report_on" (change)="onChange($event)">
+              <option value="null" disabled="true">Type...</option>
+              <option value="Leads">Leads</option>
+              <option value="Reservations">Reservations</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="row" *ngIf="report_on == 'Leads'">
+        <form class="form-container" [formGroup]="reportForm">
+          <div class="row">
+            <div class="col-md-4 form-group">
+              <label for="">Report Type</label>
+              <select formControlName="report_type" (change)="reportTypeChange($event)" class="form-control">
+                <option disabled="true" [selected]="!report_type">type...</option>
+                <option value="Summary">Summary</option>
+                <option value="Detailed">Detailed</option>
+              </select>
+            </div>
+            <div class="col-md-4 form-group">
+              <label for="">From</label>
+              <input type="date" formControlName="from" placeholder="from date ..." class="form-control">
+            </div>
+            <div class="col-md-4 form-group">
+              <label for="">To</label>
+              <input type="date" formControlName="to" placeholder="to date ..." class="form-control">
+            </div>
+            <div class="col-md-4 form-group">
+              <label for="">Generate Type</label>
+              <select formControlName="generate_type" class="form-control">
+                <option value="PDF" selected>PDF</option>
+                <option value="Excel">Excel</option>
+                <option value="Table">Table</option>
+              </select>
+            </div>
+            <!-- <div class="clear-fix"></div>
+            <div class="clear-fix"></div> -->
+            <div class="col-md-4 form-group">
+              <label for="">Channel</label>
+              <angular2-multiselect [settings]="dropdownSettings" class="form-control" [data]="channelDropDownList"
+                formControlName="channel" (onSelect)="onChannelSelect($event)" (onDeSelect)="OnChannelDeSelect($event)"
+                (onSelectAll)="onChannelSelectAll($event)" (onDeSelectAll)="onChannelDeSelectAll($event)">
+              </angular2-multiselect>
+            </div>
+            <div class="col-md-4 form-group">
+              <label for="">Sources</label>
+              <angular2-multiselect [settings]="dropdownSettings" class="form-control" [data]="dropdownList"
+                formControlName="sources" (onSelect)="onItemSelect($event)" (onDeSelect)="OnItemDeSelect($event)"
+                (onSelectAll)="onSelectAll($event)" (onDeSelectAll)="onDeSelectAll($event)">
+              </angular2-multiselect>
+            </div>
+            <div class="col-md-4 form-group">
+              <label for="">Status</label>
+              <angular2-multiselect [settings]="dropdownSettings" class="form-control" [data]="statusList"
+                formControlName="status" (onSelect)="onItemSelect($event)" (onDeSelect)="OnItemDeSelect($event)"
+                (onSelectAll)="onSelectAll($event)" (onDeSelectAll)="onDeSelectAll($event)">
+              </angular2-multiselect>
+            </div>
+            <div *ngIf="reportForm.get('report_type').value == 'Detailed'" class="col-md-4 form-group">
+              <label for="">Columns</label>
+              <angular2-multiselect [settings]="dropdownSettings" class="form-control" [data]="columnsList"
+                formControlName="columns_ids" (onSelect)="onItemSelect($event)" (onDeSelect)="OnItemDeSelect($event)"
+                (onSelectAll)="onSelectAll($event)" (onDeSelectAll)="onDeSelectAll($event)">
+              </angular2-multiselect>
+            </div>
+            <div class="col-md-4 form-group">
+              <label for="">Filter By</label>
+              <select formControlName="filter_by" class="form-control">
+                <option value="" [selected]="!filter_by">...</option>
+                <option value="Property Consultant">Property Consultant</option>
+                <option value="Team">Team</option>
+                <option value="Manager">Manager</option>
+              </select>
+            </div>
+            <!-- <div class="clear-fix"></div> -->
+            <div *ngIf="reportForm.get('filter_by').value" class="col-md-4 form-group">
+              <label for="">{{reportForm.get('filter_by').value}}</label>
+              <div class="search-btn-container">
+                <div>
+                  <input ngui-auto-complete [source]="observableSource.bind(this)" placeholder="Search... " class="form-control"
+                    name="chosen_lead" (valueChanged)="filterBy($event)" formControlName="chosenType" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-2 col-xs-offset-10">
+              <button (click)="generate()" class="btn btn-default pull-right btn-black">generate</button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="row" *ngIf="report_on == 'Reservations'">
+        <form class="form-container" [formGroup]="reportForm">
+          <div class="row">
+            <div class="col-md-4 form-group">
+              <label for="">Report Type</label>
+              <select formControlName="report_type" (change)="reportTypeChange($event)" class="form-control">
+                <option disabled="true" [selected]="!report_type">type...</option>
+                <option value="Summary">Summary</option>
+                <option value="Detailed">Detailed</option>
+              </select>
+            </div>
+            <div class="col-md-4 form-group">
+              <label for="">Project</label>
+              <select formControlName="project_id" class="form-control">
+                <option disabled="true" [selected]="!project_id">project...</option>
+                <option *ngFor="let project of projects" value="{{project.id}}">{{project.name}}</option>
+              </select>
+            </div>
+            <div class="col-md-4 form-group">
+              <label for="">From</label>
+              <input type="date" formControlName="from" placeholder="from date ..." class="form-control">
+            </div>
+            <div class="col-md-4 form-group">
+              <label for="">To</label>
+              <input type="date" formControlName="to" placeholder="to date ..." class="form-control">
+            </div>
+            <div class="col-md-4 form-group">
+              <label for="">Generate Type</label>
+              <select formControlName="generate_type" class="form-control">
+                <option value="PDF" selected>PDF</option>
+                <option value="Excel">Excel</option>
+                <option value="Table">Table</option>
+              </select>
+            </div>
+            <div class="col-md-4 form-group">
+              <label for="">Filter By</label>
+              <select formControlName="filter_by" class="form-control">
+                <option value="" [selected]="!filter_by">...</option>
+                <option value="Broker">Broker</option>
+                <option value="Property Consultant">Property Consultant</option>
+                <option value="Team">Team</option>
+                <option value="Indirect Deals">Indirect Deals</option>
+                <option value="Direct Deals">Direct Deals</option>
+                <option value="Ambassador">Ambassador</option>
+              </select>
+            </div>
+            <div class="clear-fix"></div>
+            <div *ngIf="reportForm.get('filter_by').value && reportForm.get('filter_by').value != 'Indirect Deals' && reportForm.get('filter_by').value != 'Direct Deals'"
+              class="col-md-4 form-group">
+              <label for="">{{reportForm.get('filter_by').value}}</label>
+              <div class="search-btn-container">
+                <div>
+                  <input ngui-auto-complete [source]="observableSource.bind(this)" placeholder="Search... " class="form-control"
+                    name="chosen_lead" (valueChanged)="filterBy($event)" formControlName="chosenType" />
+                </div>
+              </div>
+            </div>
+            <!-- <div class="clear-fix"></div> -->
+            <div class="col-md-4 form-group">
+              <label for="">Accountant Approved</label>
+              <select formControlName="is_accountant_approved" class="form-control">
+                <option selected value="Not Important">Not Important</option>
+                <option selected value="Yes">Yes</option>
+                <option selected value="No">No</option>
+              </select>
+            </div>
+            <div class="col-md-4 form-group">
+              <label for="">Contractor Approved</label>
+              <select formControlName="is_contractor_approved" class="form-control">
+                <option selected value="Not Important">Not Important</option>
+                <option selected value="Yes">Yes</option>
+                <option selected value="No">No</option>
+              </select>
+            </div>
+            <div class="col-md-4 form-group">
+              <label for="">Cheque Recieved</label>
+              <select formControlName="cheque_recieved" class="form-control">
+                <option selected value="Not Important">Not Important</option>
+                <option selected value="Yes">Yes</option>
+                <option selected value="No">No</option>
+              </select>
+            </div>
+            <div class="col-md-4 form-group">
+              <label for="">Client Signature</label>
+              <select formControlName="client_signature" class="form-control">
+                <option selected value="Not Important">Not Important</option>
+                <option selected value="Yes">Yes</option>
+                <option selected value="No">No</option>
+              </select>
+            </div>
+            <!-- <div class="col-md-4 form-group">
+              <label for="">Accountant Approved</label>
+              <select formControlName="is_accountant_approved" class="form-control">
+                <option selected value="Not Important">Not Important</option>
+                <option selected value="Yes">Yes</option>
+                <option selected value="No">No</option>
+              </select>
+            </div> -->
+            <div class="col-md-4 form-group">
+              <label for="">Refunded</label>
+              <select formControlName="is_refunded" class="form-control">
+                <option selected value="Not Important">Not Important</option>
+                <option selected value="Yes">Yes</option>
+                <option selected value="No">No</option>
+              </select>
+            </div>
+            <div *ngIf="reportForm.get('report_type').value == 'Detailed'" class="col-md-4 form-group">
+              <label for="">Columns</label>
+              <angular2-multiselect [settings]="dropdownSettings" class="form-control" [data]="columnsList"
+                formControlName="columns_ids" (onSelect)="onItemSelect($event)" (onDeSelect)="OnItemDeSelect($event)"
+                (onSelectAll)="onSelectAll($event)" (onDeSelectAll)="onDeSelectAll($event)">
+              </angular2-multiselect>
+            </div>
+            <!-- <div class="clear-fix"></div> -->
+          </div>
+          <div class="row">
+            <div class="col-xs-2 col-xs-offset-10">
+              <button (click)="generate()" class="btn btn-default pull-right btn-black">generate</button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="col-md-12">
+        <div *ngIf="tableReadyToRendered" class="table table-responsive">
+          <table class="table table-bordered">
+            <tr>
+              <th *ngFor="let head of tableHead">{{head}}</th>
+            </tr>
+            <tr *ngFor="let body of tableBody">
+              <td *ngFor="let b of body">{{b}}</td>
+            </tr>
+          </table>
+          <div *ngIf="reportForm.get('report_type').value != 'summary'" class="col-xs-12 text-center">
+            <ngb-pagination [collectionSize]="tableData?.last_page * 10" [(page)]="pageTest" [maxSize]="5" [rotate]="true"
+              [ellipses]="true" [boundaryLinks]="true" (pageChange)="pageChange($event)" [size]="lg">
+            </ngb-pagination>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,78 @@
+<modal
+  #modalRef
+  dir="rtl"
+  title="عرض المرفقات"
+  modalClass="modal-lg"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="save()"
+  (onClose)="onClose()"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <ng-container *ngIf="case_data">
+      <div>
+        <h3 class="text-center">المرفقات</h3>
+        <div class="files-container d-flex justify-content-center">
+          <div
+            class="file d-flex justify-content-between align-items-center"
+            *ngFor="let file of case_data.files"
+          >
+            <div class="data text-nowrap">
+              <i class="fa fa-file" aria-hidden="true"></i>
+              {{ file.name }}
+            </div>
+            <div class="actions">
+              <div
+                class="btn-group folder-actions"
+                role="group"
+                aria-label="Basic example"
+              >
+                <button
+                  type="button"
+                  class="btn btn-danger"
+                  (click)="deleteFile(file.id)"
+                >
+                  <i class="fa fa-trash" aria-hidden="true"></i>
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  (click)="openFile(file.full_url)"
+                >
+                  <i class="fa fa-download" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr class="hr" />
+        <h3 class="text-center">رفع ملفات جديده</h3>
+        <div class="text-center">
+          <div class="form-group">
+            <input
+              type="file"
+              multiple
+              class="form-control"
+              id="files"
+              name="files"
+              (change)="handleUploadFiles($event)"
+              #fileInput
+            />
+          </div>
+          <button
+            type="button"
+            class="btn"
+            (click)="uploadFiles()"
+            *ngIf="filesToUpload.length"
+          >
+            اضافة الملفات
+          </button>
+        </div>
+      </div>
+    </ng-container>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="modalRef.close()">الغاء</button>
+  </modal-footer>
+</modal>

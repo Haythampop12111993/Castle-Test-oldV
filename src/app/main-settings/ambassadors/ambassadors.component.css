@@ -1,0 +1,63 @@
+.card__title {
+  margin-bottom: 20px;
+}
+
+.margin-top {
+  margin-top: 10px;
+}
+
+.edit-mode-active {
+  border-bottom: 3px solid lightblue !important;
+}
+
+.buttons {
+  margin-left: 10px;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0px;
+}
+
+ul li {
+  margin: 10px 0px;
+  padding: 10px 0px;
+  border-bottom: 1px solid #cecece;
+}
+
+ul li input {
+  border: 0px;
+  cursor: default;
+  background: #fff;
+  box-shadow: none;
+  font-size: 1.6rem;
+}
+
+.select-mode-active {
+  background-color: #fff;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  text-indent: 1px;
+  text-overflow: '';
+}
+
+.settings-icons i {
+  font-size: 3rem;
+  cursor: pointer;
+  margin: 10px;
+}
+
+.dropdown i {
+  font-family: FontAwesome !important;
+}
+
+.dropdown-menu{
+  left: -133px !important;
+}
+
+::ng-deep .modal{
+  z-index: 4000;
+}

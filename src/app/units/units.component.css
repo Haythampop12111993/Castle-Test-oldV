@@ -1,0 +1,325 @@
+.action {
+  width: 10%;
+}
+
+.dropdown-menu {
+  left: unset;
+  right: 0;
+}
+
+.table-responsive {
+  overflow-x: unset;
+}
+
+h6 {
+  text-align: left;
+  margin-bottom: 1.5rem;
+}
+
+h6 small {
+  font-size: 90%;
+}
+
+.dropdown span {
+  display: block;
+  text-align: center;
+}
+
+.margin-top {
+  margin-top: 20px;
+}
+
+.form-group {
+  width: 90%;
+  margin: 0 auto;
+}
+
+.project-inner {
+  padding-bottom: 0;
+}
+
+.project-inner .filter label,
+.add-new-project .filter label,
+.eoi-table .filter label,
+.unit-types-table .filter label,
+.payment-plans-table .filter label,
+.rf-tble .filter label,
+.users-table .filter label,
+.teams-table .filter label {
+  margin-left: 0px;
+  margin-bottom: 0px !important;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.reset-filter {
+  background-color: #dc3838;
+}
+
+.disable-all-intercation {
+  pointer-events: none;
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.import-container {
+  display: flex;
+  align-items: center;
+}
+
+.import-btn {
+  margin-top: 22px;
+}
+
+.import-inner-container {
+  width: 90%;
+  margin: 0 auto;
+}
+
+.no-interaction {
+  opacity: 0.3;
+  cursor: wait;
+}
+
+.temp-blocked-by {
+  font-size: 1.2rem;
+}
+
+textarea {
+  resize: none;
+}
+
+.top-header-container {
+  display: flex;
+  align-items: center;
+}
+
+i.fa.fa-cog {
+  font-size: 3rem;
+  cursor: pointer;
+  margin: 10px;
+}
+
+.dropdown-menu li {
+  border-bottom: 1px solid #eee;
+  padding: 5px 0px;
+}
+
+.dropdown-menu li:last-child {
+  border: 0px;
+}
+
+.toggle-container {
+  display: flex;
+  align-items: center;
+}
+
+.toggle-container p {
+  margin: 0px;
+}
+
+.import-container {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.form-group.price-range-container {
+  margin-bottom: 10px;
+}
+
+.form-group.price-range-container .form-control {
+  border: none;
+  box-shadow: none;
+}
+
+.ranges-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.mat-toggle-label {
+  display: inline-block;
+  margin: 0 10px;
+}
+
+.masterplan {
+}
+
+.table {
+}
+
+.img-overlay-wrap {
+  position: relative;
+  display: inline-block;
+  /* <= shrinks container to image size */
+  /* transition: transform 150ms ease-in-out; */
+  width: 95%;
+  margin-left: 2.5%;
+}
+
+.img-overlay-wrap img {
+  /* <= optional, for responsiveness */
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.img-overlay-wrap svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* .img-overlay-wrap:hover {
+  transform: rotate( 15deg );
+} */
+
+.path {
+  opacity: 0.1;
+  stroke-width: 0;
+  cursor: pointer;
+}
+
+.path:hover {
+  fill: green;
+  cursor: pointer;
+  opacity: 0.5;
+}
+
+.unit-path {
+  opacity: 0.1;
+  stroke-width: 0;
+  cursor: pointer;
+}
+
+.unit-red {
+  fill: red;
+  cursor: pointer;
+  opacity: 0.3;
+}
+
+.unit-red:hover {
+  opacity: 0.7;
+}
+
+.unit-green:hover {
+  fill: green;
+  cursor: pointer;
+  opacity: 0.5;
+}
+
+path::after {
+  content: " - Remember this";
+}
+
+::ng-deep .mat-tooltip {
+  /* background: red!important; */
+  font-size: 20px;
+}
+
+.master-plan-title-container {
+  margin-bottom: 20px;
+}
+
+.master-plan-title-container h1 {
+  margin-left: 5px;
+}
+
+.master-plan-title-container .close-container {
+  font-size: 36px;
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 60px;
+  margin-top: 30px;
+}
+
+.master-plan-title-container .close-container i {
+  cursor: pointer;
+}
+
+.switch-view-container {
+  min-width: 150px;
+}
+
+path.disabled {
+  pointer-events: none;
+  cursor: default;
+}
+
+.close-container span {
+  font-size: 3rem;
+  cursor: pointer;
+}
+
+.w-90 {
+  width: 80%;
+  margin: 0 auto;
+  margin-top: 50px;
+}
+
+.advanced-filter {
+  border: navajowhite;
+  background-color: unset;
+  width: 45px;
+  height: 50px;
+  font-size: 25px;
+}
+
+.d-flex {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.justify-content-end {
+  justify-content: end;
+}
+
+.d-flex > div {
+  flex-basis: 190px;
+  margin: 15px;
+  max-width: 190px;
+}
+
+.button {
+  width: 90px !important;
+  height: 35px;
+  padding: 0 !important;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  margin-inline-end: 5px;
+}
+.search-buttons {
+  display: flex;
+  margin: 0 15px 15px;
+  justify-content: end;
+}
+
+.price-input {
+  max-width: initial !important;
+  flex-basis: auto !important;
+}
+
+.table_sticky_header {
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.table_sticky_header .table_sticky_header_header {
+  background-color: var(--color-warm-gray);
+
+  /* Stick to the left */
+  top: 0;
+  position: sticky;
+  /* Displayed on top of other rows when scrolling */
+  z-index: 999;
+}
+.cursor-pointer {
+  cursor: pointer;
+}
+.custom-hr {
+  margin: 0;
+  border-color: black;
+}

@@ -1,0 +1,140 @@
+.buttons-container {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.buttons-container button {
+  outline: none;
+  border: none;
+  background-color: #28a745;
+  width: 150px;
+  color: #fff;
+  padding: 10px;
+  border-radius: 25px;
+  font-weight: bold;
+}
+
+.table.table-responsive {
+  margin-top: 20px;
+}
+
+.action {
+  width: 10%;
+}
+
+.dropdown-menu {
+  left: unset;
+  right: 0;
+}
+
+.table-responsive {
+  overflow-x: unset;
+}
+
+.payment-tabs-container {
+  /* background-color: #dadada; */
+  display: flex;
+  margin: 15px 0px;
+  border-radius: 10px;
+}
+
+.payment-tab {
+  cursor: pointer;
+  background-color: #dadada;
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 0px;
+}
+
+.payment-tab--active {
+  background-color: #848484;
+}
+
+.payment-tab.general,
+.payment-tab.details,
+.payment-tab.extra {
+  border-right: 3px solid #ccc;
+}
+
+.payment-tab p {
+  margin: 0px;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.payment-tab--active p {
+  color: #fff;
+}
+
+.payment-tab.details {
+}
+
+.back {
+  background-color: #000 !important;
+  margin-right: 20px;
+}
+
+.add-btn {
+  background-color: #22226b !important;
+}
+
+.save-btn {
+  background-color: #0e6919 !important;
+}
+
+.percentage-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.percentage-inner {
+  background-color: #fff;
+  padding: 10px;
+  border: 1px solid #000;
+  border-radius: 15px;
+  font-size: 20px;
+}
+
+.no-border {
+  border: none;
+}
+
+.table {
+  border-bottom: none;
+}
+
+.buttons-container-end {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+
+.general-info {
+
+}
+
+.general-info-title {
+  margin-bottom: 20px;
+  font-size: 25px;
+}
+
+.general-info .label {
+  color: #000;
+  font-size: 15px;
+  margin-bottom: 7px;
+  display: inline-block;
+}
+
+.general-info .value {
+  color: #666;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.disable-interaction-and-opacity{
+  opacity: .6;
+  pointer-events: none;
+}

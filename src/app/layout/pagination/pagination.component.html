@@ -1,0 +1,39 @@
+<div
+  *ngIf="page"
+  class="mb-3 d-flex align-items-center justify-content-between"
+>
+  <div class="d-flex align-items-center justify-content-start gap-4">
+    <button
+      class="btn btn-secondary"
+      [ngClass]="{ 'active-page_length': page_length == 15 }"
+      (click)="changePageLength(15)"
+    >
+      <span>15</span>
+    </button>
+    <button
+      class="btn btn-secondary"
+      [ngClass]="{ 'active-page_length': page_length == 50 }"
+      (click)="changePageLength(50)"
+    >
+      <span>50</span>
+    </button>
+    <button
+      class="btn btn-secondary"
+      [ngClass]="{ 'active-page_length': page_length == 500 }"
+      (click)="changePageLength(500)"
+    >
+      <span>500</span>
+    </button>
+  </div>
+  <ngb-pagination
+    [collectionSize]="last_page * 10"
+    [(page)]="page"
+    [maxSize]="5"
+    [rotate]="true"
+    [ellipses]="true"
+    [boundaryLinks]="true"
+    (pageChange)="pageChange($event)"
+    [size]="lg"
+  ></ngb-pagination>
+  <p>({{ to || 0 }} Of {{ total }})</p>
+</div>

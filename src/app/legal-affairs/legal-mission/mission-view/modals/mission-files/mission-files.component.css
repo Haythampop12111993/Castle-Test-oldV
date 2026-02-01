@@ -1,0 +1,20 @@
+*:not(.fa) {
+  font-family: "Cairo", sans-serif;
+}
+
+.files-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.files-container .file {
+  padding: 8px 10px;
+  border: 1px solid #999;
+  border-radius: 4px;
+  max-width: 100%;
+}
+
+.files-container .file .data {
+  padding-left: 15px;
+}

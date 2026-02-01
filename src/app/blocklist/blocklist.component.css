@@ -1,0 +1,50 @@
+.action {
+  width: 10%;
+}
+
+.dropdown-menu {
+  left: unset;
+  right: 0;
+}
+
+.table-responsive {
+  overflow-x: unset;
+}
+
+i.fa.fa-cog {
+  font-size: 3rem;
+  cursor: pointer;
+  margin: 10px;
+}
+
+.dropdown-menu li {
+  border-bottom: 1px solid #eee;
+  padding: 5px 0px;
+}
+
+.dropdown-menu li:last-child {
+  border: 0px;
+}
+
+textarea {
+  width: 100%;
+}
+
+.dropdown-menu li {
+  border-bottom: 1px solid #eee;
+  padding: 5px 0px;
+}
+
+.dropdown-menu li:last-child {
+  border: 0px;
+}
+
+::ng-deep .dropdown-menu {
+  top: -45px !important;
+}
+
+@media only screen and (max-width: 926px) {
+  ::ng-deep .dropdown-menu {
+    position: initial !important;
+  }
+}

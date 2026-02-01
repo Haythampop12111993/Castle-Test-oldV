@@ -1,0 +1,630 @@
+<section class="new-lead">
+  <div class="container-fluid">
+    <div class="border-sec">
+      <div class="row">
+        <form #leadForm="ngForm">
+          <div class="line">
+            <div class="col-md-4">
+              <div class="form-group">
+                <h4>CONTACT INFORMATION</h4>
+              </div>
+              <div class="form-group">
+                <label for="">Full Name :</label>
+                <input
+                  type="text"
+                  #fullName="ngModel"
+                  placeholder="Full Name"
+                  name="fullName"
+                  class="form-control req"
+                  [(ngModel)]="lead.name"
+                  required
+                />
+                <small *ngIf="fullName.errors?.required" class="required"
+                  >* required</small
+                >
+              </div>
+              <div class="form-group">
+                <label for="">Primary Phone Number :</label>
+                <input
+                  type="text"
+                  id="primaryPhoneNumber"
+                  #primaryPhoneNumber="ngModel"
+                  placeholder="Primary Phone Number"
+                  name="primaryPhoneNumber"
+                  class="form-control req"
+                  [(ngModel)]="lead.phone"
+                  (keypress)="onlyNumber($event)"
+                  oninput="
+                    this.value = this.value
+                      .replace(/[^0-9]/g, '');
+                    if (this.value && this.value[0] !== '0') {
+                      this.value = '0' + this.value.replace(/^0+/, '');
+                    }
+                  "
+                  required
+                />
+                <small
+                  *ngIf="primaryPhoneNumber.errors?.required"
+                  class="required"
+                  >* required</small
+                >
+              </div>
+              <div class="form-group">
+                <label for="">Secondary Phone Number :</label>
+                <input
+                  type="text"
+                  id="secondaryPhoneNumber"
+                  #secondaryPhoneNumber="ngModel"
+                  placeholder="Secondary Phone Number"
+                  name="secondaryPhoneNumber"
+                  class="form-control"
+                  [(ngModel)]="lead.phone_2"
+                  (keypress)="onlyNumber($event)"
+                  oninput="
+                    this.value = this.value
+                      .replace(/[^0-9]/g, '');
+                    if (this.value && this.value[0] !== '0') {
+                      this.value = '0' + this.value.replace(/^0+/, '');
+                    }
+                  "
+                  maxlength="18"
+                />
+              </div>
+              <div class="form-group">
+                <label for="">3rd phone number :</label>
+                <input
+                  type="text"
+                  id="tertiaryPhoneNumber"
+                  #tertiaryPhoneNumber="ngModel"
+                  placeholder="3rd phone number"
+                  name="tertiaryPhoneNumber"
+                  class="form-control"
+                  [(ngModel)]="lead.phone_3"
+                  (keypress)="onlyNumber($event)"
+                  oninput="
+                    this.value = this.value
+                      .replace(/[^0-9]/g, '');
+                    if (this.value && this.value[0] !== '0') {
+                      this.value = '0' + this.value.replace(/^0+/, '');
+                    }
+                  "
+                  maxlength="18"
+                />
+              </div>
+              <div class="form-group">
+                <label for="">Email Address :</label>
+                <input
+                  type="email"
+                  #emailAddress="ngModel"
+                  placeholder="E-Mail Address"
+                  class="form-control req"
+                  name="emailAddress"
+                  [(ngModel)]="lead.email"
+                />
+              </div>
+              <div class="form-group">
+                <label for="">Gender :</label>
+                <ng-select
+                  [(ngModel)]="lead.gender"
+                  name="gender"
+                  placeholder="Gender"
+                  #gender="ngModel"
+                >
+                  <!-- <option *ngFor="let g of genders">
+                    {{g.text}}
+                  </option> -->
+                  <ng-option value="Male">Male</ng-option>
+                  <ng-option value="Female">Female</ng-option>
+                </ng-select>
+              </div>
+              <div class="form-group">
+                <label for="">Country :</label>
+                <ng-select
+                  [(ngModel)]="lead.country"
+                  name="country"
+                  placeholder="Country"
+                  #country="ngModel"
+                >
+                  <ng-option
+                    *ngFor="let country of countries"
+                    [value]="country.country"
+                  >
+                    {{ country.country }}
+                  </ng-option>
+                </ng-select>
+              </div>
+              <div class="form-group">
+                <label for="">Religion :</label>
+                <ng-select
+                  [(ngModel)]="lead.religion"
+                  name="religion"
+                  placeholder="religion"
+                  #religion="ngModel"
+                >
+                  <ng-option value="Muslim">Muslim</ng-option>
+                  <ng-option value="Christian">Christian</ng-option>
+                </ng-select>
+              </div>
+              <div class="form-group">
+                <label for="">Occupation :</label>
+                <input
+                  type="text"
+                  #occupation="ngModel"
+                  name="occupation"
+                  placeholder="Ocupation"
+                  class="form-control"
+                  [(ngModel)]="lead.occupation"
+                />
+              </div>
+              <div class="form-group">
+                <label for="">Company Name :</label>
+                <input
+                  type="text"
+                  #companyName="ngModel"
+                  name="companyName"
+                  placeholder="Company Name"
+                  class="form-control"
+                  [(ngModel)]="lead.workplace"
+                />
+              </div>
+              <div class="form-group">
+                <label for="">Nationality :</label>
+                <input
+                  type="text"
+                  #nationality="ngModel"
+                  name="nationality"
+                  placeholder="Nationality"
+                  class="form-control"
+                  [(ngModel)]="lead.nationality"
+                />
+              </div>
+              <div class="form-group">
+                <label for="">ID Type :</label>
+                <ng-select name="id_type" [(ngModel)]="lead.id_type">
+                  <ng-option *ngFor="let type of id_types" [value]="type">{{
+                    type
+                  }}</ng-option>
+                </ng-select>
+              </div>
+              <div class="form-group">
+                <label for="">ID Number :</label>
+                <input
+                  type="text"
+                  #id_number="ngModel"
+                  name="id_number"
+                  placeholder="ID Number"
+                  class="form-control"
+                  [(ngModel)]="lead.id_number"
+                />
+              </div>
+              <div class="form-group" [hidden]="userData.role == 'Call Center'">
+                <label for="">Select byc :</label>
+                <div class="search-btn-container">
+                  <div>
+                    <input
+                      ngui-auto-complete
+                      [source]="observableSource.bind(this)"
+                      placeholder="Search for lead by name "
+                      class="form-control"
+                      name="chosen_lead"
+                      [(ngModel)]="chosenLead"
+                    />
+                  </div>
+                  <button
+                    class="btn btn-primary margin-left-20 pull-right btn-black"
+                    type="button"
+                    [disabled]="!chosenLead"
+                    (click)="getLinkedLeadDetails()"
+                  >
+                    Link
+                  </button>
+                  <button
+                    class="btn btn-default pull-right btn-black"
+                    type="button"
+                    *ngIf="chosenLead"
+                    (click)="unLink()"
+                  >
+                    Un-Link
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="line">
+            <div class="col-md-4">
+              <div class="form-group">
+                <h4>INTERESTS</h4>
+              </div>
+              <div class="form-group">
+                <label for="">Interested Projects :</label>
+                <ng-select
+                  name="intrestedProjects"
+                  [(ngModel)]="lead.intrestedProjects"
+                  [multiple]="true"
+                >
+                  <!-- <ng-option value="All">All Projects</ng-option> -->
+                  <ng-option
+                    *ngFor="let project of projects?.data"
+                    [value]="project.id"
+                    >{{ project.name }}</ng-option
+                  >
+                </ng-select>
+              </div>
+              <div class="form-group">
+                <label for="">Interested Type Of Units :</label>
+                <ng-select
+                  name="intrestedUnitTypes"
+                  [(ngModel)]="lead.intrestedUnitTypes"
+                  [multiple]="true"
+                >
+                  <ng-option *ngFor="let type of types" [value]="type.id">{{
+                    type.name
+                  }}</ng-option>
+                </ng-select>
+              </div>
+              <div class="form-group">
+                <label for="">Budget From :</label>
+                <input
+                  type="text"
+                  #budgetFrom="ngModel"
+                  name="budgetFrom"
+                  placeholder="Budget From"
+                  class="form-control"
+                  [(ngModel)]="lead.budget_from"
+                />
+              </div>
+              <div class="form-group">
+                <label for="">Budget To :</label>
+                <input
+                  type="text"
+                  #budgetTo="ngModel"
+                  name="budgetTo"
+                  placeholder="Budget to"
+                  class="form-control"
+                  [(ngModel)]="lead.budget_to"
+                />
+              </div>
+              <!-- <hr> -->
+              <div class="form-group">
+                <label for="">Date of birth :</label>
+                <input
+                  type="date"
+                  #date_of_birth="ngModel"
+                  name="date_of_birth"
+                  placeholder="Date of birth"
+                  class="form-control"
+                  [(ngModel)]="lead.date_of_birth"
+                />
+              </div>
+              <div class="form-group">
+                <label for="">Address :</label>
+                <input
+                  type="text"
+                  #address="ngModel"
+                  name="address"
+                  placeholder="Address"
+                  class="form-control"
+                  [(ngModel)]="lead.address"
+                />
+              </div>
+              <div class="form-group">
+                <label for="">ID Address :</label>
+                <input
+                  type="text"
+                  #id_address="ngModel"
+                  name="id_address"
+                  placeholder="id_address"
+                  class="form-control"
+                  [(ngModel)]="lead.id_address"
+                />
+              </div>
+              <div class="form-group">
+                <label for="">Comment :</label>
+                <textarea
+                  type="text"
+                  #comment="ngModel"
+                  name="comment"
+                  placeholder="Comment"
+                  class="form-control"
+                  [(ngModel)]="lead.comment"
+                ></textarea>
+              </div>
+              <div class="form-group">
+                <label for="">how did you hear about us ?</label>
+                <textarea
+                  type="text"
+                  #how_hear_about_us="ngModel"
+                  name="how_hear_about_us"
+                  placeholder="how_hear_about_us"
+                  class="form-control"
+                  [(ngModel)]="lead.how_hear_about_us"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="line">
+            <div class="col-md-4">
+              <div class="form-group">
+                <h4>LEAD CYCLE</h4>
+              </div>
+              <div class="form-group">
+                <label for="branch_id">Branch :</label>
+
+                <ng-select name="branch_id" [(ngModel)]="lead.branch_id">
+                  <ng-option
+                    *ngFor="let branch of branches"
+                    [value]="branch.id"
+                    >{{ branch.name }}</ng-option
+                  >
+                </ng-select>
+              </div>
+              <div class="form-group">
+                <label for="available_time_to_call"
+                  >Available Time To Call :</label
+                >
+                <input
+                  type="text"
+                  name="available_time_to_call"
+                  placeholder="Available Time To Call"
+                  class="form-control"
+                  [(ngModel)]="lead.available_time_to_call"
+                />
+              </div>
+              <div
+                class="form-group"
+                *ngIf="
+                  (userData.role == 'Admin' ||
+                    userData.role == 'Super Development' ||
+                    userData.role == 'Helpdesk Supervisor' ||
+                    userData.role == 'Helpdesk Agent' ||
+                    userData.role == 'Moderator' ||
+                    userData.role == 'Super Moderator' ||
+                    userData?.is_sales_team ||
+                    userData.role == 'Call Center') &&
+                  userData.role != 'Broker Incentive'
+                "
+              >
+                <label for="">Channel {{ channel }}</label>
+                <ng-select
+                  #channelSelect="ngModel"
+                  type="text"
+                  placeholder="Channel"
+                  [(ngModel)]="channel"
+                  (change)="channelChange($event)"
+                  name="channel"
+                  [items]="channels"
+                  bindLabel="name"
+                  bindValue="id"
+                  required
+                >
+                </ng-select>
+                <small *ngIf="channelSelect.errors?.required" class="required"
+                  >* required</small
+                >
+              </div>
+
+              <div
+                class="form-group"
+                *ngIf="
+                  (userData.role == 'Admin' ||
+                    userData.role == 'Super Development' ||
+                    userData.role == 'Helpdesk Supervisor' ||
+                    userData.role == 'Helpdesk Agent' ||
+                    userData.role == 'Moderator' ||
+                    userData.role == 'Super Moderator' ||
+                    (userData?.is_sales_team && channel) ||
+                    userData.role == 'Call Center') &&
+                  userData.role != 'Broker Incentive'
+                "
+              >
+                <label for="">Lead Source</label>
+                <ng-select
+                  #leadSource1="ngModel"
+                  type="text"
+                  placeholder="Lead Source"
+                  [(ngModel)]="lead.lead_source"
+                  name="leadSource"
+                  [items]="leadSources"
+                  bindLabel="name"
+                  bindValue="name"
+                  required
+                >
+                  <!-- <ng-option value="-1" disabled>Lead Source</ng-option>
+                  <ng-option
+                    *ngFor="let leadSource of leadSources; let i = index"
+                    value="{{ leadSource.name }}"
+                  >
+                    {{ leadSource.name }}
+                  </ng-option> -->
+                </ng-select>
+                <small *ngIf="leadSource1.errors?.required" class="required"
+                  >* required</small
+                >
+              </div>
+
+              <div
+                class="form-group"
+                *ngIf="
+                  (lead.lead_source == 'Broker' ||
+                    lead.lead_source == 'Broker ARM') &&
+                  userData.role != 'Broker Incentive'
+                "
+              >
+                <label for="">Broker</label>
+                <!-- <select type="text" placeholder="Broker Name" class="form-control" name="assignAgent"
+                  [(ngModel)]="lead.broker_id">
+                  <option *ngFor="let broker of brokers; let i = index" value="{{ broker.id }}">
+                    {{ broker.name }}
+                  </option>
+                </select> -->
+                <ng-select
+                  name="broker_id"
+                  [(ngModel)]="lead.broker_id"
+                  #brokerSource="ngModel"
+                  (change)="getIncentiveUsers(lead.broker_id)"
+                  [items]="brokers"
+                  bindLabel="name"
+                  bindValue="id"
+                  required
+                >
+                  <!-- <ng-option
+                    *ngFor="let broker of brokers"
+                    [value]="broker.id"
+                    >{{ broker.name }}</ng-option
+                  > -->
+                </ng-select>
+                <small *ngIf="brokerSource.errors?.required" class="required"
+                  >* required</small
+                >
+              </div>
+
+              <div
+                class="form-group"
+                *ngIf="
+                  lead.lead_source == 'Broker' &&
+                  userData.role != 'Broker Incentive'
+                "
+              >
+                <label for="">Broker Incentive</label>
+                <ng-select
+                  name="broker_incentive_id"
+                  [(ngModel)]="lead.broker_incentive_id"
+                  [items]="incentive_users"
+                  bindLabel="name"
+                  bindValue="id"
+                  #brokerIncentiveSource="ngModel"
+                >
+                  <!-- <ng-option
+                    *ngFor="let user of incentive_users"
+                    [value]="user.id"
+                    >{{ user.name }}</ng-option
+                  > -->
+                </ng-select>
+                <!-- <small
+                  *ngIf="brokerIncentiveSource.errors?.required"
+                  class="required"
+                  >* required</small
+                > -->
+              </div>
+
+              <div class="form-group" *ngIf="lead.lead_source == 'Ambassador'">
+                <label for="">Ambassadors</label>
+                <ng-select
+                  type="text"
+                  placeholder="Ambassador Name"
+                  name="ambassador_id"
+                  [(ngModel)]="lead.ambassador_id"
+                  #ambassadorSource="ngModel"
+                  required
+                >
+                  <ng-option
+                    *ngFor="let ambassador of ambassadors; let i = index"
+                    value="{{ ambassador.id }}"
+                  >
+                    {{ ambassador.name }}
+                  </ng-option>
+                </ng-select>
+                <small
+                  *ngIf="ambassadorSource.errors?.required"
+                  class="required"
+                  >* required</small
+                >
+              </div>
+
+              <div class="agent-input" *ngIf="userData.role != 'Call Center'">
+                <label for="">Assign to an agent</label>
+                <p-dropdown
+                  class="form-control"
+                  [(ngModel)]="lead.agent_id"
+                  class="p-ddl"
+                  [options]="agents"
+                  [filter]="true"
+                  class="p-ddl"
+                  name="assignAgent"
+                  [autoWidth]="false"
+                  placeholder="Assigned agent"
+                  [showClear]="true"
+                  optionLabel="name"
+                >
+                </p-dropdown>
+              </div>
+
+              <div class="form-group margin-top-10">
+                <label for="">Event And Exhibition</label>
+                <ng-select
+                  type="text"
+                  placeholder="Event And Exhibition"
+                  name="lead.lead_event_id"
+                  [(ngModel)]="lead.lead_event_id"
+                >
+                  <ng-option value="" disabled selected></ng-option>
+                  <ng-option
+                    *ngFor="let event of events; let i = index"
+                    [value]="event.id"
+                  >
+                    {{ event.name }}
+                  </ng-option>
+                </ng-select>
+              </div>
+
+              <div class="form-group">
+                <label for="lead_campaign_id">Campaign</label>
+                <ng-select
+                  type="text"
+                  placeholder="Campaign"
+                  name="lead_campaign_id"
+                  [(ngModel)]="lead.lead_campaign_id"
+                >
+                  <ng-option value="" disabled selected></ng-option>
+                  <ng-option
+                    *ngFor="let campaign of lead_campaigns; let i = index"
+                    [value]="campaign.id"
+                  >
+                    {{ campaign.name }}
+                  </ng-option>
+                </ng-select>
+              </div>
+
+              <div class="form-group">
+                <label for="catch_date">Catch Date</label>
+                <input
+                  type="date"
+                  name="catch_date"
+                  id="catch_date"
+                  class="form-control"
+                  [(ngModel)]="lead.catch_date"
+                />
+              </div>
+              <ng-select
+                name="broker_id"
+                [(ngModel)]="lead.broker_id"
+                *ngIf="channelview == 'Brokers'"
+              >
+                <ng-option *ngFor="let broker of brokers" [value]="broker.id">{{
+                  broker.name
+                }}</ng-option>
+              </ng-select>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <p class="text-center error-text" *ngIf="errortext">{{ errortext }}</p>
+      </div>
+    </div>
+    <div class="form-group">
+      <button
+        class="btn btn-primary pull-right"
+        [disabled]="!leadForm.valid || disable_submit_button"
+        (click)="save()"
+      >
+        SAVE
+      </button>
+      <button class="btn btn-primary btn-black" (click)="gotodashboard()">
+        BACK
+      </button>
+    </div>
+  </div>
+</section>

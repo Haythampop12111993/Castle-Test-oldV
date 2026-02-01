@@ -1,0 +1,82 @@
+<!--=======START TOP PAGE BACKGROUND=======-->
+<!--##################################################################-->
+<!--=====START SIGN IN PAGE======-->
+<div class="wraper">
+  <div #sign_in_page class="sign-in-page">
+    <form #form="ngForm" #login_form>
+      <div class="sign-in">
+        <div class="text-center">
+          <img style="width: 200px" [src]="'assets/logos/logo.png'" alt="" />
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <a href="" class="pull-left">SIGN IN</a>
+          </div>
+          <div class="panel-body">
+            <div class="form-group">
+              <label for=""
+                >EMAIL ADDRESS OR USERNAME
+                <sup>*</sup>
+              </label>
+              <input
+                type="email"
+                name="email"
+                [(ngModel)]="userLogin.email"
+                placeholder="Your Email"
+                class="form-control"
+                required
+              />
+            </div>
+          </div>
+          <div class="panel-footer">
+            <div class="form-group">
+              <label for=""
+                >YOUR PASSWORD
+                <sup>*</sup>
+              </label>
+              <input
+                name="password"
+                [(ngModel)]="userLogin.password"
+                type="password"
+                placeholder="Your Password"
+                class="form-control"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <button
+                class="btn btn-default form-control"
+                [disabled]="!form.form.valid"
+                (click)="goToLead()"
+                type="button"
+                [ngClass]="{ 'btn-disabled': isLoading }"
+              >
+                SIGN IN
+              </button>
+            </div>
+            <!-- <div *ngIf="errMsg" class="error-msg-container">
+              <p class="err-msg">Email or password is incorrect.</p>
+            </div> -->
+          </div>
+          <div *ngIf="isLoading" class="container-wrapper">
+            <div class="sk-circle">
+              <div class="sk-circle1 sk-child"></div>
+              <div class="sk-circle2 sk-child"></div>
+              <div class="sk-circle3 sk-child"></div>
+              <div class="sk-circle4 sk-child"></div>
+              <div class="sk-circle5 sk-child"></div>
+              <div class="sk-circle6 sk-child"></div>
+              <div class="sk-circle7 sk-child"></div>
+              <div class="sk-circle8 sk-child"></div>
+              <div class="sk-circle9 sk-child"></div>
+              <div class="sk-circle10 sk-child"></div>
+              <div class="sk-circle11 sk-child"></div>
+              <div class="sk-circle12 sk-child"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<!--=====END SIGN IN PAGE======-->

@@ -1,0 +1,963 @@
+<div class="container-fluid" *ngIf="true">
+  <div class="proj-details">
+    <div class="proj-details">
+      <div class="row">
+        <div class="col-xs-4">
+          <h3></h3>
+        </div>
+      </div>
+      <div class="row">
+        <div
+          class="col-md-12 pb-20 d-flex justify-content-between align-items-center"
+        >
+          <ul class="nav nav-pills w-90">
+            <li
+              class="nav-item margin-top-10"
+              [ngClass]="{ active: view == 'sources' }"
+            >
+              <a class="nav-link" (click)="setView('sources')"
+                >Sources Report</a
+              >
+            </li>
+            <li
+              class="nav-item margin-top-10"
+              [ngClass]="{ active: view == 'agent_activities_leads' }"
+            >
+              <a class="nav-link" (click)="setView('agent_activities_leads')"
+                >Pipeline</a
+              >
+            </li>
+            <li
+              class="nav-item margin-top-10"
+              [ngClass]="{ active: view == 'brokers' }"
+            >
+              <a class="nav-link" (click)="setView('brokers')"
+                >Brokers Report</a
+              >
+            </li>
+            <li
+              class="nav-item margin-top-10"
+              [ngClass]="{ active: view == 'campaign' }"
+            >
+              <a
+                class="nav-link"
+                (click)="setView('campaign'); isLoading = false"
+                >Campaign Report</a
+              >
+            </li>
+          </ul>
+          <div>
+            <button
+              [disabled]="downloading_export || isLoading"
+              class="btn"
+              (click)="downloadReport()"
+            >
+              <i class="fa fa-download"></i>
+            </button>
+            <button
+              class="btn"
+              (click)="views_conf.filters = !views_conf.filters"
+            >
+              <i class="fa fa-filter"></i>
+            </button>
+            <button
+              class="btn"
+              *ngIf="views_conf.charts !== null"
+              (click)="views_conf.charts = !views_conf.charts"
+            >
+              <i class="fa fa-table" *ngIf="views_conf.charts"></i>
+              <i class="fa fa-line-chart" *ngIf="!views_conf.charts"></i>
+            </button>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div class="filters row m-0 p-15" *ngIf="views_conf.filters">
+            <form class="col-md-12">
+              <div class="row m-3">
+                <div *ngIf="view == 'sources'" class="form-group col-md-4">
+                  <label for="">Sources</label>
+                  <ng-multiselect-dropdown
+                    [placeholder]="'Sources'"
+                    [data]="allSources"
+                    [(ngModel)]="source_id"
+                    [ngModelOptions]="{ standalone: true }"
+                    [settings]="projectsDropdownSettings"
+                  >
+                  </ng-multiselect-dropdown>
+                </div>
+                <div *ngIf="view == 'sources'" class="form-group col-md-4">
+                  <label for="">Campaign</label>
+                  <ng-select
+                    [placeholder]="'Campaign'"
+                    [(ngModel)]="campaign_id"
+                    [items]="campaignsFilter"
+                    bindLabel="name"
+                    bindValue="id"
+                    [ngModelOptions]="{ standalone: true }"
+                  >
+                  </ng-select>
+                </div>
+                <div *ngIf="view == 'campaign'" class="form-group col-md-4">
+                  <label for="">Campaign</label>
+                  <input
+                    type="text"
+                    placeholder="Enter Campaign Name"
+                    class="form-control"
+                    [ngModelOptions]="{ standalone: true }"
+                    [(ngModel)]="campaign_name"
+                  />
+                </div>
+                <div *ngIf="view == 'brokers'" class="form-group col-md-4">
+                  <label for="">Brokers</label>
+                  <ng-multiselect-dropdown
+                    [placeholder]="'Brokers'"
+                    [data]="allBrokers"
+                    [(ngModel)]="broker_id"
+                    [ngModelOptions]="{ standalone: true }"
+                    [settings]="projectsDropdownSettings"
+                  >
+                  </ng-multiselect-dropdown>
+                </div>
+                <div class="form-group col-md-4" *ngIf="view != 'campaign' && view != 'agent_activities_leads'">
+                  <label for="">Projects</label>
+                  <ng-multiselect-dropdown
+                    [placeholder]="'Projects'"
+                    [data]="projects"
+                    [(ngModel)]="project_id"
+                    [ngModelOptions]="{ standalone: true }"
+                    [settings]="projectsDropdownSettings"
+                  >
+                  </ng-multiselect-dropdown>
+                </div>
+                <div class="form-group col-md-4" *ngIf="view != 'campaign' && view != 'agent_activities_leads'">
+                  <label for="">Unit Types</label>
+                  <ng-multiselect-dropdown
+                    [placeholder]="'Unit Types'"
+                    [data]="unit_design_types"
+                    [(ngModel)]="types"
+                    [ngModelOptions]="{ standalone: true }"
+                    [settings]="unitTypesDropdownSettings"
+                  >
+                  </ng-multiselect-dropdown>
+                </div>
+                <div class="form-group col-md-4" *ngIf="view != 'campaign'">
+                  <label for="">Agents</label>
+                  <ng-multiselect-dropdown
+                    [placeholder]="'Agent'"
+                    [data]="allAgents"
+                    [(ngModel)]="agent_id"
+                    [ngModelOptions]="{ standalone: true }"
+                    [settings]="agentsDropdownSettings"
+                  >
+                  </ng-multiselect-dropdown>
+                </div>
+                <div class="form-group col-md-4" *ngIf="view == 'agent_activities_leads' || view == 'campaign'">
+                  <label for="">Teams</label>
+                  <ng-select
+                    placeholder="Select Team"
+                    name="team_ids"
+                    id="team_ids"
+                    [multiple]="true"
+                    [closeOnSelect]="false"
+                    [(ngModel)]="team_ids"
+                    [ngModelOptions]="{ standalone: true }"
+                    [items]="allTeams"
+                    bindLabel="name"
+                    bindValue="id"
+                  ></ng-select>
+                </div>
+                <div *ngIf="view == 'agent_activities_leads'" class="form-group col-md-4">
+                  <label for="">Campaign</label>
+                  <ng-select
+                    placeholder="Select Campaign"
+                    [multiple]="true"
+                    [closeOnSelect]="false"
+                    [(ngModel)]="campaign_ids"
+                    [items]="campaignsFilter"
+                    bindLabel="name"
+                    bindValue="id"
+                    [ngModelOptions]="{ standalone: true }"
+                  >
+                  </ng-select>
+                </div>
+                <form
+                  class="col-md-12"
+                  [formGroup]="filter_form"
+                  *ngIf="view != 'campaign' && view != 'agent_activities_leads'"
+                >
+                  <div class="col-md-4 pl-0 form-group">
+                    <label for="year">Year</label>
+                    <ng-select id="year" name="year" formControlName="year">
+                      <ng-option [disabled]="true" value="">Select</ng-option>
+                      <ng-option *ngFor="let year of years" [value]="year">{{
+                        year
+                      }}</ng-option>
+                    </ng-select>
+                  </div>
+                </form>
+                <form
+                  class="col-md-12"
+                  [formGroup]="filter_form"
+                  *ngIf="view != 'campaign' && view != 'agent_activities_leads'"
+                >
+                  <div class="filters-container d-flex flex-wrap">
+                    <div class="form-group">
+                      <label for="">From Date</label>
+                      <input
+                        type="date"
+                        placeholder="from_date"
+                        class="form-control"
+                        formControlName="from_date"
+                        name="from_date"
+                        id="from_date"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="">To Date</label>
+                      <input
+                        type="date"
+                        placeholder="to_date"
+                        class="form-control"
+                        formControlName="to_date"
+                        name="to_date"
+                        id="to_date"
+                      />
+                    </div>
+                  </div>
+                </form>
+                <div class="col-md-4 filter-buttons">
+                  <button class="filter-btn" (click)="filter()" value="button">
+                    Filter
+                  </button>
+                  <button class="reset-btn" (click)="reset()" value="button">
+                    Reset
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div
+            *ngIf="isLoading"
+            class="loader-wrapper text-center"
+            role="status"
+          >
+            <div class="loader">{{ loader.text }}</div>
+          </div>
+
+          <div
+            class="row"
+            *ngIf="
+              userProfile?.role != 'Moderator' &&
+              view == 'sources' &&
+              !isLoading
+            "
+          >
+            <div class="col-md-12 d-flex-end mb-3">
+              <div class="col-md-2">
+                <select
+                  class="form-control"
+                  (change)="sortByChangeHandler()"
+                  [(ngModel)]="params.sort"
+                >
+                  <option disabled selected value="null">Sort By</option>
+                  <option value="asc">Ascending</option>
+                  <option value="desc">Descending</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <table
+                *ngIf="monthly_sources_residential && userProfile?.role != 'MD'"
+                class="table table-responsive"
+              >
+                <tr class="heading monthly-sources centered">
+                  <th class="heading centered" colspan="18">Sources</th>
+                </tr>
+                <tr>
+                  <th class="centered vertical-align-center status">Source</th>
+                  <th class="centered status">Fresh Data</th>
+                  <th class="centered status">Not Reachable</th>
+                  <th class="centered status">No Answer</th>
+                  <th class="centered status">Intersted</th>
+                  <th class="centered status">Not Intersted</th>
+                  <th class="centered status">Meeting Activity</th>
+                  <th class="centered status">Reservation</th>
+                  <th class="centered status">Contracted</th>
+                  <th class="centered status">Cancelled</th>
+                  <th class="centered status">Leads</th>
+                </tr>
+                <tr
+                  *ngFor="let sources of monthly_sources_residential?.sources"
+                >
+                  <td class="status">{{ sources?.source_name }}</td>
+                  <td class="td-data-color">{{ sources?.new }}</td>
+                  <td class="td-data-color">{{ sources?.unReachable }}</td>
+                  <td class="td-data-color">{{ sources?.noAnswer }}</td>
+                  <td class="td-data-color">{{ sources?.followUp }}</td>
+                  <td class="td-data-color">{{ sources?.disqualified }}</td>
+                  <td class="td-data-color">{{ sources?.meeting }}</td>
+                  <td class="td-data-color">{{ sources?.reservation }}</td>
+                  <td class="td-data-color">{{ sources?.doneDeal }}</td>
+                  <td class="td-data-color">{{ sources?.cancelledDeal }}</td>
+                  <td class="td-data-color">{{ sources?.leads }}</td>
+                </tr>
+              </table>
+              <div
+                class="col-xs-12 text-center"
+                *ngIf="monthly_sources_residential?.total?.pages"
+              >
+                <ngb-pagination
+                  [collectionSize]="
+                    monthly_sources_residential?.total?.pages * 10
+                  "
+                  [(page)]="sourcePage"
+                  [maxSize]="5"
+                  [rotate]="true"
+                  [ellipses]="true"
+                  [boundaryLinks]="true"
+                  (pageChange)="sourcePageChange($event)"
+                  [size]="lg"
+                >
+                </ngb-pagination>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="row"
+            *ngIf="view == 'agent_activities_leads' && !isLoading"
+          >
+            <div class="col-md-12 d-flex-end mb-3">
+              <div class="col-md-2">
+                <select
+                  class="form-control"
+                  (change)="sortByChangeHandler()"
+                  [(ngModel)]="params.sort"
+                >
+                  <option disabled selected value="null">Sort By</option>
+                  <option value="asc">Ascending</option>
+                  <option value="desc">Descending</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-12 overflow-scroll">
+              <table
+                *ngIf="agents_activities_leads_data?.data"
+                class="table table-responsive"
+              >
+                <tr
+                  class="heading monthly-record"
+                  *ngIf="agent_activities_leads_filter"
+                >
+                  <th class="heading centered" colspan="4">
+                    {{ date_from }} TO {{ date_to }}
+                  </th>
+                </tr>
+                <tr>
+                  <th class="centered">Agent Name</th>
+                  <th class="centered">Fresh Data</th>
+                  <th class="centered">Not Reachable</th>
+                  <th class="centered">No Answer</th>
+                  <th class="centered">Interested</th>
+                  <th class="centered">Not Interested</th>
+                  <th class="centered">Closed</th>
+                  <th class="centered">Total</th>
+                </tr>
+                <tr *ngFor="let agent of agents_activities_leads_data?.data">
+                  <td class="centered status">{{ agent?.agent_name }}</td>
+                  <td class="td-data-color">{{ agent?.new_leads }}</td>
+                  <td class="td-data-color">{{ agent?.not_reachable_leads }}</td>
+                  <td class="td-data-color">{{ agent?.no_answer_leads }}</td>
+                  <td class="td-data-color">{{ agent?.interested_leads }}</td>
+                  <td class="td-data-color">{{ agent?.not_interested_leads }}</td>
+                  <td class="td-data-color">{{ agent?.closed_leads }}</td>
+                  <td class="td-data-color">
+                    {{ agent?.total }}
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <div
+            class="row"
+            *ngIf="
+              userProfile?.role != 'Moderator' &&
+              view == 'brokers' &&
+              !isLoading
+            "
+          >
+            <div class="col-md-12 d-flex-end mb-3">
+              <div class="col-md-2">
+                <select
+                  class="form-control"
+                  (change)="sortByChangeHandler()"
+                  [(ngModel)]="params.sort"
+                >
+                  <option disabled selected value="null">Sort By</option>
+                  <option value="asc">Ascending</option>
+                  <option value="desc">Descending</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <table
+                *ngIf="brokers_residential && userProfile?.role != 'MD'"
+                class="table table-responsive"
+              >
+                <tr class="heading monthly-sources centered">
+                  <th class="heading centered" colspan="18">Brokers</th>
+                </tr>
+                <tr>
+                  <th class="centered vertical-align-center status">Broker</th>
+                  <th class="centered status">Fresh Data</th>
+                  <th class="centered status">Not Reachable</th>
+                  <th class="centered status">No Answer</th>
+                  <th class="centered status">Following</th>
+                  <th class="centered status">Intersted</th>
+                  <th class="centered status">Not Intersted</th>
+                  <th class="centered status">Meeting Activity</th>
+                  <th class="centered status">Reservation</th>
+                  <th class="centered status">Contracted</th>
+                  <th class="centered status">Cancelled</th>
+                  <th class="centered status">Leads</th>
+                </tr>
+                <tr *ngFor="let broker of brokers_residential?.brokers">
+                  <td class="status">{{ broker?.broker_name }}</td>
+                  <td class="td-data-color">{{ broker?.new }}</td>
+                  <td class="td-data-color">{{ broker?.unReachable }}</td>
+                  <td class="td-data-color">{{ broker?.noAnswer }}</td>
+                  <td class="td-data-color">{{ broker?.followUp }}</td>
+                  <td class="td-data-color">{{ broker?.disqualified }}</td>
+                  <td class="td-data-color">{{ broker?.meeting }}</td>
+                  <td class="td-data-color">{{ broker?.meeting }}</td>
+                  <td class="td-data-color">{{ broker?.reservation }}</td>
+                  <td class="td-data-color">{{ broker?.doneDeal }}</td>
+                  <td class="td-data-color">{{ broker?.cancelledDeal }}</td>
+                  <td class="td-data-color">{{ broker?.leads }}</td>
+                </tr>
+              </table>
+              <div class="col-xs-12 text-center">
+                <ngb-pagination
+                  [collectionSize]="brokers_residential?.pages * 10"
+                  [(page)]="page"
+                  [maxSize]="5"
+                  [rotate]="true"
+                  [ellipses]="true"
+                  [boundaryLinks]="true"
+                  (pageChange)="pageChange($event)"
+                  [size]="lg"
+                >
+                </ngb-pagination>
+              </div>
+            </div>
+          </div>
+          <div
+            class="row"
+            *ngIf="
+              userProfile?.role != 'Moderator' &&
+              view == 'campaign' &&
+              !isLoading
+            "
+          >
+            <div
+              class="d-flex align-items-start justify-content-between gap-4 py-4"
+            >
+              <div class="col-md-4">
+                <table class="table table-responsive">
+                  <thead>
+                    <tr>
+                      <th class="centered status">Name</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let campaign of campaigns?.data">
+                      <td
+                        class="pointer"
+                        [ngClass]="{
+                          'active-tab': activeCampaign?.id == campaign?.id
+                        }"
+                        (click)="
+                          activeCampaign = campaign;
+                          resetCharts();
+                          getLeadsAgents(campaign?.id);
+                          getLeads(campaign?.id);
+                          getLeadStatus(campaign?.id)
+                        "
+                      >
+                        {{ campaign?.name }}
+                      </td>
+                    </tr>
+                    <tr *ngIf="!campaigns">
+                      <td class="text-center">No Data Found</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="col-md-12" *ngIf="campaigns?.data">
+                  <app-pagination
+                    [to]="campaigns?.to"
+                    [total]="campaigns?.total"
+                    [last_page]="campaigns?.last_page"
+                    [paginate_url]="campaigns?.path"
+                    (submitNewRecord)="getNewRecord($event)"
+                  ></app-pagination>
+                </div>
+              </div>
+              <div class="col-md-8" *ngIf="activeCampaign">
+                <ul class="nav nav-tabs" role="tablist">
+                  <li role="presentation" class="active">
+                    <a
+                      href="#summary"
+                      aria-controls="summary"
+                      role="tab"
+                      data-toggle="tab"
+                      >Summary</a
+                    >
+                  </li>
+                  <li role="presentation">
+                    <a
+                      href="#leads"
+                      aria-controls="leads"
+                      role="tab"
+                      data-toggle="tab"
+                      >Leads</a
+                    >
+                  </li>
+                  <li role="presentation">
+                    <a
+                      href="#assignees"
+                      aria-controls="assignees"
+                      role="tab"
+                      data-toggle="tab"
+                      >Assignees</a
+                    >
+                  </li>
+                </ul>
+
+                <div class="tab-content">
+                  <div
+                    role="tabpanel"
+                    class="tab-pane fade in active"
+                    id="summary"
+                  >
+                    <div class="col-md-12 py-4">
+                      <div class="col-md-12">
+                        <table class="table table-responsive">
+                          <thead>
+                            <tr>
+                              <th class="centered status">Leads Count</th>
+                              <th class="centered status">Done Deals</th>
+                              <th class="centered status">Pending Deals</th>
+                            </tr>
+                            <tr></tr>
+                          </thead>
+
+                          <tbody>
+                            <tr>
+                              <td class="td-data-color">
+                                {{ leadStatus?.deals?.total_leads_count }}
+                              </td>
+                              <td class="td-data-color">
+                                {{ leadStatus?.deals?.closed_deals_count }}
+                              </td>
+                              <td class="td-data-color">
+                                {{ leadStatus?.deals?.open_deals_count }}
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="col-md-12 py-4">
+                        <div class="sales-stats">
+                          <div class="sales-stats__wrapper">
+                            <div
+                              *ngFor="let leadStatus of leadStatus?.statuses"
+                              class="sales-states__card"
+                            >
+                              <div class="card-number">
+                                {{ leadStatus?.status_count }}
+                              </div>
+                              <div class="card-title">
+                                {{ leadStatus?.status_name }}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- Charts Section -->
+                      <div class="col-md-12 py-4">
+                        <div class="row">
+                          <!-- Pie Chart: Leads by Status -->
+                          <div class="col-md-6">
+                            <div class="chart-container" style="position: relative; height: 400px;">
+                              <h4 class="text-center mb-3">Leads Distribution by Status</h4>
+                              <canvas
+                                *ngIf="pieChartData.length > 0"
+                                baseChart
+                                [data]="pieChartData"
+                                [labels]="pieChartLabels"
+                                [options]="pieChartOptions"
+                                [colors]="pieChartColors"
+                                [chartType]="'pie'"
+                                [legend]="true"
+                              ></canvas>
+                              <div *ngIf="pieChartData.length === 0" class="text-center py-5">
+                                <p>No data available for chart</p>
+                              </div>
+                            </div>
+                          </div>
+                          <!-- Bar Chart: All Lead Statuses Comparison -->
+                          <div class="col-md-6">
+                            <div class="chart-container" style="position: relative; height: 400px;">
+                              <h4 class="text-center mb-3">Lead Status Comparison</h4>
+                              <canvas
+                                *ngIf="barChartData.length > 0"
+                                baseChart
+                                [datasets]="barChartData"
+                                [labels]="barChartLabels"
+                                [options]="barChartOptions"
+                                [colors]="barChartColors"
+                                [chartType]="'bar'"
+                                [legend]="true"
+                              ></canvas>
+                              <div *ngIf="barChartData.length === 0" class="text-center py-5">
+                                <p>No data available for chart</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div role="tabpanel" class="tab-pane fade" id="leads">
+                    <div class="col-md-12">
+                      <form class="filter">
+                        <div class="col-md-12 my-4">
+                          <div
+                            class="d-flex align-items-center justify-content-end"
+                          >
+                            <button
+                              class="btn"
+                              (click)="
+                                exportLeads(
+                                  activeCampaign.id,
+                                  1,
+                                  keyword,
+                                  catch_from,
+                                  catch_to
+                                )
+                              "
+                            >
+                              <i class="fa fa-download"></i>
+                            </button>
+                          </div>
+                        </div>
+                        <div class="d-flex flex-wrap">
+                          <div class="form-group col-md-4">
+                            <label for="phone">Phone</label>
+                            <input
+                              type="text"
+                              class="form-control"
+                              name="phone"
+                              id="phone"
+                              [(ngModel)]="keyword"
+                              oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');"
+                            />
+                          </div>
+                          <div class="form-group col-md-4">
+                            <label for="catch_from">Catch Date From</label>
+                            <input
+                              type="date"
+                              class="form-control"
+                              name="catch_from"
+                              id="catch_from"
+                              [(ngModel)]="catch_from"
+                            />
+                          </div>
+                          <div class="form-group col-md-4">
+                            <label for="catch_to">Catch Date To</label>
+                            <input
+                              type="date"
+                              class="form-control"
+                              name="catch_to"
+                              id="catch_to"
+                              [(ngModel)]="catch_to"
+                            />
+                          </div>
+                        </div>
+                        <div
+                          class="d-flex align-items-center justify-content-end gap-2"
+                        >
+                          <button
+                            type="submit"
+                            class="btn btn-primary button c-bg"
+                            (click)="
+                              getLeads(
+                                activeCampaign.id,
+                                1,
+                                keyword,
+                                catch_from,
+                                catch_to
+                              )
+                            "
+                          >
+                            Search
+                          </button>
+                          <button
+                            type="submit"
+                            class="btn btn-secondary button bg-danger reset-filter"
+                            (click)="resetSearch()"
+                          >
+                            Reset
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                    <div class="col-md-12">
+                      <table class="table table-responsive">
+                        <thead>
+                          <tr>
+                            <th class="centered status">ID</th>
+                            <th class="centered status">Name</th>
+                            <th class="centered status">Phone Number</th>
+                            <th class="centered status">Status</th>
+                            <th class="centered status">Assignees</th>
+                            <th class="centered status">Created At</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let lead of leads?.data">
+                            <td class="td-data-color">
+                              <a
+                                class="btn"
+                                *ngIf="userData?.role != 'Campaign Viewer'"
+                                [routerLink]="['/pages/leads']"
+                                [queryParams]="{ lead_id: lead?.id }"
+                              >
+                                {{ lead?.id }}
+                              </a>
+                              <span
+                                *ngIf="userData?.role == 'Campaign Viewer'"
+                                >{{ lead?.id }}</span
+                              >
+                            </td>
+                            <td class="td-data-color">{{ lead?.name }}</td>
+                            <td class="td-data-color">{{ lead?.phone }}</td>
+                            <td class="td-data-color">{{ lead?.status }}</td>
+                            <td class="td-data-color">
+                              {{ lead?.agent?.name }}
+                            </td>
+                            <td class="td-data-color">
+                              {{
+                                lead?.created_at | date : "dd MMM yyyy hh:mm:aa"
+                              }}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="col-xs-12 text-center">
+                      <ngb-pagination
+                        [collectionSize]="leads?.last_page * 10"
+                        [(page)]="leadsPage"
+                        [maxSize]="5"
+                        [rotate]="true"
+                        [ellipses]="true"
+                        [boundaryLinks]="true"
+                        (pageChange)="leadsPageChange($event)"
+                        [size]="lg"
+                      >
+                      </ngb-pagination>
+                    </div>
+                  </div>
+                  <div role="tabpanel" class="tab-pane fade" id="assignees">
+                    <div class="col-md-12">
+                      <form class="filter">
+                        <div class="d-flex flex-wrap">
+                          <div class="form-group col-md-4">
+                            <label for="name">Agent</label>
+                            <ng-select
+                              placeholder="Select Agent"
+                              [(ngModel)]="agent_id"
+                              [items]="allAgents"
+                              bindLabel="name"
+                              bindValue="id"
+                              name="agent_id"
+                            ></ng-select>
+                          </div>
+                          <div class="form-group col-md-4">
+                            <label for="catch_from">Catch Date From</label>
+                            <input
+                              type="date"
+                              class="form-control"
+                              name="catch_from"
+                              id="catch_from"
+                              [(ngModel)]="catch_from"
+                            />
+                          </div>
+                          <div class="form-group col-md-4">
+                            <label for="catch_to">Catch Date To</label>
+                            <input
+                              type="date"
+                              class="form-control"
+                              name="catch_to"
+                              id="catch_to"
+                              [(ngModel)]="catch_to"
+                            />
+                          </div>
+                        </div>
+                        <div
+                          class="d-flex align-items-center justify-content-end gap-2"
+                        >
+                          <button
+                            type="submit"
+                            class="btn btn-primary button c-bg"
+                            (click)="
+                              getLeadsAgents(activeCampaign.id, agent_id)
+                            "
+                          >
+                            Search
+                          </button>
+                          <button
+                            type="submit"
+                            class="btn btn-secondary button bg-danger reset-filter"
+                            (click)="resetSearch()"
+                          >
+                            Reset
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                    <div class="col-md-12">
+                      <table class="table table-responsive">
+                        <thead>
+                          <tr>
+                            <th class="centered status">Name</th>
+                            <th class="centered status">Leads</th>
+                            <th class="centered status">Pending Deals</th>
+                            <th class="centered status">Contracted Deals</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let agent of agents">
+                            <td class="td-data-color">
+                              {{ agent.agent_name }}
+                            </td>
+                            <td class="td-data-color">
+                              {{ agent.total_leads }}
+                            </td>
+                            <td class="td-data-color">
+                              {{ agent.open_deals }}
+                            </td>
+                            <td class="td-data-color">
+                              {{ agent.done_deals }}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td class="td-data-color">Total</td>
+                            <td class="td-data-color">
+                              {{ leadStatus?.deals?.total_leads_count }}
+                            </td>
+                            <td class="td-data-color">
+                              {{ leadStatus?.deals?.closed_deals_count }}
+                            </td>
+                            <td class="td-data-color">
+                              {{ leadStatus?.deals?.open_deals_count }}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <mat-tab-group *ngIf="false">
+                  <mat-tab label="Summary">
+                    <ng-template mat-tab-label>
+                      <i class="fa fa-info" aria-hidden="true"></i>
+                      <span class="tab-label"> Summary </span>
+                    </ng-template>
+                    <div class="col-md-12 py-4">
+                      <div class="col-md-12">
+                        <table class="table table-responsive">
+                          <thead>
+                            <tr>
+                              <th class="centered status">Leads Count</th>
+                              <th class="centered status">Done Deals</th>
+                              <th class="centered status">Pending Deals</th>
+                            </tr>
+                          </thead>
+                          <!-- <tbody></tbody> -->
+                        </table>
+                      </div>
+                      <div class="col-md-12 py-4">
+                        <div class="sales-stats">
+                          <div class="sales-stats__wrapper">
+                            <div
+                              *ngFor="
+                                let leadStatus of statsData?.leadStatusStats
+                                  ?.leads_status
+                              "
+                              class="sales-states__card"
+                              (click)="onLeadStatusClicked(leadStatus)"
+                            >
+                              <div class="card-number">
+                                {{ leadStatus.count }}
+                              </div>
+                              <div class="card-title">
+                                {{ leadStatus.status }}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </mat-tab>
+                  <mat-tab label="Leads">
+                    <ng-template mat-tab-label>
+                      <i class="fa fa-filter" aria-hidden="true"></i>
+                      <span class="tab-label"> Leads </span>
+                    </ng-template>
+                    <div class="col-md-12 py-4">
+                      <table class="table table-responsive">
+                        <thead>
+                          <tr>
+                            <th class="centered status">ID</th>
+                            <th class="centered status">Name</th>
+                            <th class="centered status">Status</th>
+                            <th class="centered status">Assignees</th>
+                            <th class="centered status">Created At</th>
+                          </tr>
+                        </thead>
+                      </table>
+                    </div>
+                  </mat-tab>
+                  <mat-tab>
+                    <ng-template mat-tab-label>
+                      <i class="fa fa-users" aria-hidden="true"></i>
+                      <span class="tab-label"> Assignees </span>
+                    </ng-template>
+                    <div class="col-md-12 py-4">
+                      <table class="table table-responsive">
+                        <thead>
+                          <tr>
+                            <th class="centered status">Name</th>
+                            <th class="centered status">Leads</th>
+                            <th class="centered status">Revenues</th>
+                            <th class="centered status">Deals</th>
+                            <th class="centered status">Won Deals</th>
+                            <th class="centered status">Open Deals</th>
+                            <th class="centered status">Lost Deals</th>
+                          </tr>
+                        </thead>
+                      </table>
+                    </div>
+                  </mat-tab>
+                </mat-tab-group>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

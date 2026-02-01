@@ -1,0 +1,43 @@
+.lead-pg .lead-details .contact-lead li {
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+.lead-pg .lead-details .contact-lead li:hover span {
+  text-decoration: underline;
+}
+.lead-pg .leads-prs .contact:hover {
+  background-color: rgba(0, 0, 0, 0.082);
+}
+
+.lead-pg .leads-prs .contacts-container {
+  overflow: auto;
+  max-height: auto;
+  /* min-height: 900px; */
+  max-height: 866px;
+}
+.alert-sec {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  background-color: red;
+  color: #fff;
+  padding: 0 2%;
+}
+.alert-sec span {
+  position: absolute;
+  right: 78px;
+  top: 2px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.slim-loading-bar {
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+.project-inner .table.table-responsive .table.table-bordered tr td {
+  background: none !important;
+}

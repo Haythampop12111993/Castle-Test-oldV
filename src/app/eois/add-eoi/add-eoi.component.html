@@ -1,0 +1,72 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <h2>Add Eoi</h2>
+    </div>
+    <form [formGroup]="eoiForm" class="col-md-12">
+      <div class="row">
+        <div class="form-group col-md-4">
+            <label>Search leads :</label>
+            <div class="search-btn-container">
+              <div>
+                <input ngui-auto-complete [source]="observableSource.bind(this)" placeholder="Search for lead by name " class="form-control"
+                  name="chosen_lead" [(ngModel)]="chosenLead" [ngModelOptions]="{standalone: true }" />
+                <small class="required">* required</small>
+              </div>
+            </div>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="">Paid Price</label>
+          <input type="text" class="form-control" formControlName="paid_price" placeholder="Paid Price">
+        </div>
+        <div class="form-group col-md-4">
+          <label for="">Project</label>
+          <ng-select name="project_id" id="project_id" placeholder="Project" formControlName="project_id">
+            <ng-option *ngFor="let project of projects" [value]="project.id">{{project.name}}</ng-option>
+          </ng-select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="form-group col-md-4">
+          <label for="">Delivery Date</label>
+          <input type="date" class="form-control" formControlName="delivery_date" placeholder="Delivery Date">
+        </div>
+        <div class="form-group col-md-4">
+          <label for="">Total Budget From</label>
+          <input type="text" class="form-control" formControlName="total_budget_from" placeholder="Total Budget From">
+        </div>
+        <div class="form-group col-md-4">
+          <label for="">Total Budget To</label>
+          <input type="text" class="form-control" formControlName="total_budget_to" placeholder="Total Budget To">
+        </div>
+      </div>
+      <div class="row">
+        <div class="form-group col-md-4">
+          <label for="">Down Payment From</label>
+          <input type="text" class="form-control" formControlName="down_payment_from" placeholder="Down Payment From">
+        </div>
+        <div class="form-group col-md-4">
+          <label for="">Down Payment To</label>
+          <input type="text" class="form-control" formControlName="total_budget_from" placeholder="Total Budget From">
+        </div>
+        <div class="form-group col-md-4">
+          <label for="">Unit Area From</label>
+          <input type="text" class="form-control" formControlName="unit_area_from" placeholder="Unit Area From">
+        </div>
+      </div>
+      <div class="row">
+        <div class="form-group col-md-4">
+          <label for="">Unit Area To</label>
+          <input type="text" class="form-control" formControlName="unit_area_to" placeholder="Unit Area To">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="buttons-group">
+            <button class="btn btn-primary" (click)="add()">Add</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

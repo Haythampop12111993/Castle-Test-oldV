@@ -1,0 +1,177 @@
+<mat-card *ngIf="userData.role == 'Admin'">
+  <mat-card-content>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-xs-10 top-header-container">
+          <h3 class="card__title">General Settings</h3>
+        </div>
+        <div class="col-xs-2 import-container">
+          <!-- <div class="settings-icons pull-right">
+            <div class="dropdown" dropdown>
+              <i class="fa fa-cog" aria-hidden="true" dropdown-open></i>
+              <ul class="dropdown-menu">
+                <li (click)="exportPaymentTerms()">
+                  <a>
+                    <span>Export Payment Terms</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div> -->
+        </div>
+      </div>
+    </div>
+
+    <table>
+      <tr>
+        <th>Name</th>
+        <th>Disbale/Enable</th>
+      </tr>
+      <tr class="data">
+        <td>Reservation Status</td>
+        <td *ngIf="reservation">
+          <ui-switch
+            defaultBgColor="#c6cbd4"
+            color="gray"
+            [checked]="reservation.value == 'on' ? true : false"
+            (change)="toggleChange($event)"
+          ></ui-switch>
+        </td>
+      </tr>
+      <tr class="data">
+        <td>Lead Cycle Status</td>
+        <td *ngIf="leadCycle">
+          <ui-switch
+            defaultBgColor="#c6cbd4"
+            color="gray"
+            [checked]="leadCycle.value == 'on' ? true : false"
+            (change)="leadCycleChange($event)"
+          ></ui-switch>
+        </td>
+      </tr>
+      <tr class="data">
+        <td>Reservation Mobile Status</td>
+        <td *ngIf="reservation_mobile_status">
+          <ui-switch
+            defaultBgColor="#c6cbd4"
+            color="gray"
+            [checked]="reservation_mobile_status.value == 'on' ? true : false"
+            (change)="reservationMobileStatusChange($event)"
+          ></ui-switch>
+        </td>
+      </tr>
+      <tr class="data">
+        <td>Lead Mobile Status</td>
+        <td *ngIf="reservation_mobile_status">
+          <ui-switch
+            defaultBgColor="#c6cbd4"
+            color="gray"
+            [checked]="lead_mobile_status.value == 'on' ? true : false"
+            (change)="leadMobileStatusChanged($event)"
+          >
+          </ui-switch>
+        </td>
+      </tr>
+      <!-- <tr class="data" *ngIf="userData.role === 'Admin'">
+        <td>Shut Down System Actions</td>
+        <td *ngIf="reservation_mobile_status">
+          <ui-switch defaultBgColor="#c6cbd4" color="gray"
+            [checked]="lead_mobile_status.value == 'on' ? true : false" (change)="shutDownStatusChanged($event)">
+          </ui-switch>
+        </td>
+      </tr> -->
+      <tr class="data">
+        <td>System Status</td>
+        <td *ngIf="reservation_mobile_status">
+          <ui-switch
+            defaultBgColor="#c6cbd4"
+            color="#7c6f4e"
+            [checked]="system_open.value == 'on' ? true : false"
+            (change)="systemStatusChanged($event)"
+          ></ui-switch>
+        </td>
+      </tr>
+    </table>
+  </mat-card-content>
+</mat-card>
+
+<mat-card>
+  <mat-card-content>
+    <div class="container-fluid actions-on-projects">
+      <div class="row">
+        <div class="col-xs-10 top-header-container">
+          <h3 class="card__title">Commissions</h3>
+        </div>
+        <div class="col-xs-2 import-container"></div>
+      </div>
+      <div class="row">
+        <div
+          class="col-md-6"
+          *ngIf="
+            (userData.role == 'Admin' ||
+              userData.role == 'Super Development' ||
+              userData.role == 'Moderator' ||
+              userData.role == 'Super Moderator') &&
+            userData.is_full_access
+          "
+        >
+          <button
+            class="action edit-project"
+            (click)="uploadComissionModal.open()"
+          >
+            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+            <span>Upload Comission</span>
+          </button>
+        </div>
+        <div
+          class="col-md-6"
+          *ngIf="
+            (userData.role == 'Admin' ||
+              userData.role == 'Super Development' ||
+              userData.role == 'Moderator' ||
+              userData.role == 'Super Moderator') &&
+            userData.is_full_access
+          "
+        >
+          <button
+            class="action exports-units"
+            (click)="downloadComissionSheet()"
+          >
+            <i class="fa fa-download" aria-hidden="true"></i>
+            <span>Export Comissions Sheet</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<modal
+  #uploadComissionModal
+  submitButtonLabel="submit"
+  title="Upload Comission Modal"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="submitComissionModal(uploadComissionModal)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <form [formGroup]="filesForm">
+      <div class="form-group flex-column">
+        <label for="">Contacts Excel:</label>
+        <input
+          accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+          type="file"
+          id="excel"
+          (change)="handleComissionExcel($event)"
+        />
+      </div>
+    </form>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="uploadComissionModal.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>

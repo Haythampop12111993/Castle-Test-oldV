@@ -1,0 +1,466 @@
+<section class="case-form" dir="rtl" lang="ar">
+  <div class="container-fluid">
+    <div class="flex">
+      <h2 *ngIf="!case_id">إضافة قضية</h2>
+      <h2 *ngIf="case_id">تعديل قضية</h2>
+    </div>
+    <div class="border-sec">
+      <form>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="description">وصف القضية</label>
+              <editor
+                [init]="editorConfig"
+                id="description"
+                name="description"
+                dir="rtl"
+                [(ngModel)]="form_data.description"
+              >
+              </editor>
+            </div>
+            <div
+              *ngIf="submitted && errors && errors?.description"
+              class="text-danger mt-1"
+            >
+              {{ errors?.description?.join(", ") }}
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="row">
+              <div class="col-xs-6">
+                <div class="form-group">
+                  <label for="case_file_no">رقم الملف</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="case_file_no"
+                    name="case_file_no"
+                    [(ngModel)]="form_data.case_file_no"
+                  />
+                </div>
+                <div
+                  *ngIf="submitted && errors && errors?.case_file_no"
+                  class="text-danger mt-1"
+                >
+                  {{ errors?.case_file_no?.join(", ") }}
+                </div>
+              </div>
+              <div class="col-xs-6">
+                <div class="form-group">
+                  <label for="case_no">رقم القضية</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="case_no"
+                    name="case_no"
+                    [(ngModel)]="form_data.case_no"
+                  />
+                </div>
+                <div
+                  *ngIf="submitted && errors && errors?.case_no"
+                  class="text-danger mt-1"
+                >
+                  {{ errors?.case_no?.join(", ") }}
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="category_id">نوع القضية</label>
+              <ngx-select-v1
+                appendTo="body"
+                id="category_id"
+                name="category_id"
+                [(ngModel)]="form_data.category_id"
+              >
+                <ngx-option-v1
+                  *ngFor="let item of categoriesArray"
+                  [value]="item.id"
+                  >{{ item.name }}</ngx-option-v1
+                >
+              </ngx-select-v1>
+              <div
+                *ngIf="submitted && errors && errors?.category_id"
+                class="text-danger mt-1"
+              >
+                {{ errors?.category_id?.join(", ") }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="status_id">حالة القضية</label>
+              <ngx-select-v1
+                appendTo="body"
+                id="status_id"
+                name="status_id"
+                [(ngModel)]="form_data.status_id"
+              >
+                <ngx-option-v1
+                  *ngFor="let item of StatusesArray"
+                  [value]="item.id"
+                  >{{ item.name }}</ngx-option-v1
+                >
+              </ngx-select-v1>
+              <div
+                *ngIf="submitted && errors && errors?.status_id"
+                class="text-danger mt-1"
+              >
+                {{ errors?.status_id?.join(", ") }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="court_id">المحكمة</label>
+              <ngx-select-v1
+                appendTo="body"
+                id="court_id"
+                name="court_id"
+                [(ngModel)]="form_data.court_id"
+              >
+                <ngx-option-v1
+                  *ngFor="let item of courtsArray"
+                  [value]="item.id"
+                  >{{ item.name }}</ngx-option-v1
+                >
+              </ngx-select-v1>
+              <div
+                *ngIf="submitted && errors && errors?.court_id"
+                class="text-danger mt-1"
+              >
+                {{ errors?.court_id?.join(", ") }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr class="hr" />
+        <div class="row">
+          <div class="col-xs-6">
+            <h3 class="text-center">المشكو في حقة</h3>
+            <div class="form-group">
+              <label for="accused_type">نوع المشكو في حقة</label>
+              <ngx-select-v1
+                appendTo="body"
+                id="accused_type"
+                name="accused_type"
+                [(ngModel)]="form_data.accused_type"
+                (ngModelChange)="plaintiffOrAccusedChanged('accused', $event)"
+              >
+                <ngx-option-v1
+                  value="CRED"
+                  *ngIf="form_data.plaintiff_type !== 'CRED'"
+                  >{{ company_name }}</ngx-option-v1
+                >
+                <ng-container
+                  *ngIf="
+                    !form_data.plaintiff_type ||
+                    form_data.plaintiff_type === 'CRED'
+                  "
+                >
+                  <ngx-option-v1 value="Company">شركة / شخص</ngx-option-v1>
+                  <ngx-option-v1 value="Lead">عميل</ngx-option-v1>
+                </ng-container>
+              </ngx-select-v1>
+              <div
+                *ngIf="submitted && errors && errors?.accused_type"
+                class="text-danger mt-1"
+              >
+                {{ errors?.accused_type?.join(", ") }}
+              </div>
+            </div>
+            <div
+              class="form-group"
+              *ngIf="form_data.accused_type === 'Company'"
+            >
+              <label for="accused_name">اسم الشركة/الشخص</label>
+              <input
+                type="text"
+                class="form-control"
+                id="accused_name"
+                name="accused_name"
+                [(ngModel)]="form_data.accused_name"
+              />
+              <div
+                *ngIf="submitted && errors && errors?.accused_name"
+                class="text-danger mt-1"
+              >
+                {{ errors?.accused_name?.join(", ") }}
+              </div>
+            </div>
+            <div class="form-group" *ngIf="form_data.accused_type === 'Lead'">
+              <label for="accused_lead_id">العميل</label>
+              <ngx-select-v1
+                appendTo="body"
+                id="accused_lead_id"
+                name="accused_lead_id"
+                [(ngModel)]="form_data.accused_lead_id"
+                (search)="getLeads('accused', false, $event)"
+                [loading]="accusedLeadSearch.loading"
+                (scrollToEnd)="getLeads('accused', true)"
+                (change)="onSelectLead('accused', $event)"
+              >
+                <ngx-option-v1
+                  *ngFor="let item of accusedLeadSearch.data"
+                  [value]="item.id"
+                  dir="rtl"
+                >
+                  {{ item.name }} - {{ item.phone }}
+                </ngx-option-v1>
+              </ngx-select-v1>
+              <div
+                *ngIf="submitted && errors && errors?.accused_lead_id"
+                class="text-danger mt-1"
+              >
+                {{ errors?.accused_lead_id?.join(", ") }}
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-6">
+                <div class="form-group">
+                  <label for="accused_lawyer_phone">تليفون المحامي</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="accused_lawyer_phone"
+                    name="accused_lawyer_phone"
+                    [(ngModel)]="form_data.accused_lawyer_phone"
+                  />
+                </div>
+                <div
+                  *ngIf="submitted && errors && errors?.accused_lawyer_phone"
+                  class="text-danger mt-1"
+                >
+                  {{ errors?.accused_lawyer_phone?.join(", ") }}
+                </div>
+              </div>
+              <div class="col-xs-6">
+                <div class="form-group">
+                  <label for="accused_lawyer_name">محامي المشكو في حقة</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="accused_lawyer_name"
+                    name="accused_lawyer_name"
+                    [(ngModel)]="form_data.accused_lawyer_name"
+                  />
+                </div>
+                <div
+                  *ngIf="submitted && errors && errors?.accused_lawyer_name"
+                  class="text-danger mt-1"
+                >
+                  {{ errors?.accused_lawyer_name?.join(", ") }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-xs-6">
+            <h3 class="text-center">الشاكي</h3>
+            <div class="form-group">
+              <label for="plaintiff_type">نوع الشاكي</label>
+              <ngx-select-v1
+                appendTo="body"
+                id="plaintiff_type"
+                name="plaintiff_type"
+                [(ngModel)]="form_data.plaintiff_type"
+                (ngModelChange)="plaintiffOrAccusedChanged('plaintiff', $event)"
+              >
+                <ngx-option-v1
+                  value="CRED"
+                  *ngIf="form_data.accused_type !== 'CRED'"
+                >
+                  {{ company_name }}
+                </ngx-option-v1>
+                <ng-container
+                  *ngIf="
+                    !form_data.accused_type || form_data.accused_type === 'CRED'
+                  "
+                >
+                  <ngx-option-v1 value="Company">شركة / شخص</ngx-option-v1>
+                  <ngx-option-v1 value="Lead">عميل</ngx-option-v1>
+                </ng-container>
+              </ngx-select-v1>
+              <div
+                *ngIf="submitted && errors && errors?.plaintiff_type"
+                class="text-danger mt-1"
+              >
+                {{ errors?.plaintiff_type?.join(", ") }}
+              </div>
+            </div>
+            <div
+              class="form-group"
+              *ngIf="form_data.plaintiff_type === 'Company'"
+            >
+              <label for="plaintiff_name">اسم الشركة/الشخص</label>
+              <input
+                type="text"
+                class="form-control"
+                id="plaintiff_name"
+                name="plaintiff_name"
+                [(ngModel)]="form_data.plaintiff_name"
+              />
+              <div
+                *ngIf="submitted && errors && errors?.plaintiff_name"
+                class="text-danger mt-1"
+              >
+                {{ errors?.plaintiff_name?.join(", ") }}
+              </div>
+            </div>
+            <div class="form-group" *ngIf="form_data.plaintiff_type === 'Lead'">
+              <label for="plaintiff_lead_id">العميل</label>
+              <ngx-select-v1
+                appendTo="body"
+                id="plaintiff_lead_id"
+                name="plaintiff_lead_id"
+                [(ngModel)]="form_data.plaintiff_lead_id"
+                (search)="getLeads('plaintiff', false, $event)"
+                [loading]="plaintiffLeadSearch.loading"
+                (scrollToEnd)="getLeads('plaintiff', true)"
+                (change)="onSelectLead('plaintiff', $event)"
+              >
+                <ngx-option-v1
+                  *ngFor="let item of plaintiffLeadSearch.data"
+                  [value]="item.id"
+                  dir="rtl"
+                >
+                  {{ item.name }} - {{ item.phone }}
+                </ngx-option-v1>
+              </ngx-select-v1>
+              <div
+                *ngIf="submitted && errors && errors?.plaintiff_lead_id"
+                class="text-danger mt-1"
+              >
+                {{ errors?.plaintiff_lead_id?.join(", ") }}
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-6">
+                <div class="form-group">
+                  <label for="plaintiff_lawyer_phone">تليفون المحامي</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="plaintiff_lawyer_phone"
+                    name="plaintiff_lawyer_phone"
+                    [(ngModel)]="form_data.plaintiff_lawyer_phone"
+                  />
+                </div>
+                <div
+                  *ngIf="submitted && errors && errors?.plaintiff_lawyer_phone"
+                  class="text-danger mt-1"
+                >
+                  {{ errors?.plaintiff_lawyer_phone?.join(", ") }}
+                </div>
+              </div>
+              <div class="col-xs-6">
+                <div class="form-group">
+                  <label for="plaintiff_lawyer_name">محامي الشاكي</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="plaintiff_lawyer_name"
+                    name="plaintiff_lawyer_name"
+                    [(ngModel)]="form_data.plaintiff_lawyer_name"
+                  />
+                </div>
+                <div
+                  *ngIf="submitted && errors && errors?.plaintiff_lawyer_name"
+                  class="text-danger mt-1"
+                >
+                  {{ errors?.plaintiff_lawyer_name?.join(", ") }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr class="hr" />
+        <div class="row">
+          <div class="col-xs-6">
+            <div class="form-group">
+              <label for="receive_date">تاريخ اول جلسة</label>
+              <input
+                type="date"
+                class="form-control"
+                id="receive_date"
+                name="receive_date"
+                [(ngModel)]="form_data.receive_date"
+              />
+              <div
+                *ngIf="submitted && errors && errors?.receive_date"
+                class="text-danger mt-1"
+              >
+                {{ errors?.receive_date?.join(", ") }}
+              </div>
+            </div>
+          </div>
+          <div class="col-xs-6">
+            <div class="form-group">
+              <label for="filing_date">تاريخ الإيداع</label>
+              <input
+                type="date"
+                class="form-control"
+                id="filing_date"
+                name="filing_date"
+                [(ngModel)]="form_data.filing_date"
+              />
+              <div
+                *ngIf="submitted && errors && errors?.filing_date"
+                class="text-danger mt-1"
+              >
+                {{ errors?.filing_date?.join(", ") }}
+              </div>
+            </div>
+          </div>
+          <div class="col-xs-6">
+            <div class="form-group">
+              <label for="judgement_date">تاريخ الحكم</label>
+              <input
+                type="date"
+                class="form-control"
+                id="judgement_date"
+                name="judgement_date"
+                [(ngModel)]="form_data.judgement_date"
+              />
+              <div
+                *ngIf="submitted && errors && errors?.judgement_date"
+                class="text-danger mt-1"
+              >
+                {{ errors?.judgement_date?.join(", ") }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="!case_id">
+          <h3 class="text-center">الملفات</h3>
+
+          <div class="form-group">
+            <label for="files">الملفات</label>
+            <input
+              type="file"
+              multiple
+              class="form-control"
+              id="files"
+              name="files"
+              (change)="handleUploadFiles($event)"
+            />
+          </div>
+          <div
+            *ngIf="submitted && errors && errors?.files"
+            class="text-danger mt-1"
+          >
+            {{ errors?.files?.join(", ") }}
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="d-flex justify-content-end">
+      <button
+        type="submit"
+        [disabled]="is_submitting"
+        (click)="save()"
+        class="btn btn-default btn-black"
+      >
+        حفظ
+      </button>
+    </div>
+  </div>
+</section>

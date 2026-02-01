@@ -1,0 +1,32 @@
+.action{
+  width: 10%;
+}
+
+.dropdown-menu{
+  left: unset;
+  right: 0;
+}
+
+.table-responsive{
+  overflow-x: unset;
+}
+
+.teams-title {
+  margin-top: 0;
+}
+
+::ng-deep .modal{
+  z-index: 4000;
+}
+
+.text-start {
+  text-align: start;
+}
+
+.branch-title {
+  font-weight: bold; 
+}
+
+.branch-title.parent-team {
+  margin-top: 15px;
+}

@@ -1,0 +1,180 @@
+<section class="users-table">
+  <div class="container-fluid">
+    <h2 class="users-table__title">Users</h2>
+    <div class="proj-details">
+      <div class="row filter-outer-container">
+        <div class="col-md-12">
+          <div class="filter">
+            <div class="row">
+              <div class="col-md-2">
+                <h3 class="search__title">Advanced Search</h3>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group search-btn-container">
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Seach users by name, phone, title"
+                    name="seachUsers"
+                    (keyup.enter)="searchUsers()"
+                    [(ngModel)]="searchUserKeyword"
+                  />
+                  <button
+                    class="btn btn-default pull-right btn-black"
+                    type="button"
+                    [disabled]="!searchUserKeyword"
+                    (click)="searchUsers()"
+                  >
+                    Search
+                  </button>
+                  <button
+                    class="btn btn-default pull-right btn-black"
+                    type="button"
+                    (click)="reset()"
+                  >
+                    Reset
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="settings-icons pull-right">
+            <div class="dropdown" dropdown>
+              <i class="fa fa-cog" aria-hidden="true" dropdown-open></i>
+              <ul class="dropdown-menu">
+                <li>
+                  <a [href]="user_export_url">
+                    <span>Export Users</span>
+                  </a>
+                </li>
+                <li (click)="importUsersModal.open()">
+                  <a>
+                    <span>Import Users</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="col-md-12">
+          <div class="table table-responsive">
+            <table class="table table-bordered">
+              <tr>
+                <th>User Serial</th>
+                <th>Name</th>
+                <th>User Type</th>
+                <th>Active</th>
+                <th>User Team</th>
+                <th>Job Title</th>
+                <th>E-Mail</th>
+                <th>Phone Number</th>
+                <th>Date <br />Modified/Add</th>
+                <th>Action</th>
+              </tr>
+
+              <tr
+                *ngFor="let details of inaccounts"
+                [ngClass]="{ 'bg-danger': details.is_active == 0 }"
+              >
+                <td>#{{ details.id }}</td>
+                <td>{{ details.name }}</td>
+                <td *ngIf="!details.broker">{{ details.role_display }}</td>
+                <td *ngIf="details.broker">
+                  {{ details.role_display }} <br />
+                  ( {{ details.broker.name }} )
+                </td>
+                <td *ngIf="details.is_active == 0">Disabled</td>
+                <td *ngIf="details.is_active == 1">Active</td>
+                <td>
+                  <span *ngIf="details?.teams">
+                    <span *ngFor="let team of details?.teams">
+                      {{ team?.name }} ,
+                    </span>
+                  </span>
+                </td>
+                <td>{{ details.job_title }}</td>
+                <td>{{ details.email }}</td>
+                <td>{{ details.phone }}</td>
+                <td>{{ details.created_at }}</td>
+                <td>
+                  <div class="dropdown" dropdown>
+                    <img
+                      class="more-options-icon"
+                      src="assets/img/show-more-button-with-three-dots.svg"
+                      dropdown-open
+                    />
+                    <ul class="dropdown-menu">
+                      <li (click)="editaccount(details.id)">
+                        <a>
+                          <span class="doc_link">Edit</span>
+                        </a>
+                      </li>
+                      <li
+                        (click)="disableUser(details.id, details.name)"
+                        *ngIf="details.is_active"
+                      >
+                        <a>
+                          <span class="doc_link">Disable</span>
+                        </a>
+                      </li>
+                      <li
+                        (click)="activeUser(details.id, details.name)"
+                        *ngIf="!details.is_active"
+                      >
+                        <a>
+                          <span class="doc_link">Active</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div class="col-xs-12 text-center">
+            <ngb-pagination
+              [collectionSize]="accounts_raw_data?.last_page * 10"
+              [(page)]="current_page"
+              [maxSize]="5"
+              [rotate]="true"
+              [ellipses]="true"
+              [boundaryLinks]="true"
+              (pageChange)="pageChange($event)"
+              [size]="'lg'"
+            >
+            </ngb-pagination>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<modal
+  #importUsersModal
+  title="Upload Files"
+  submitButtonLabel="submit"
+  modalClass="modal-lg"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="importUsers(importUsersModal)"
+>
+  <modal-content>
+    <form [formGroup]="filesForm">
+      <div class="form-group flex-column">
+        <label for="">Users Excel:</label>
+        <input type="file" id="excel" (change)="handleUsersExcel($event)" />
+      </div>
+    </form>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="importUsersModal.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>

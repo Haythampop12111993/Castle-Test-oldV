@@ -1,0 +1,53 @@
+.error-text {
+  color: red;
+}
+section.new-lead .border-sec .col-md-3,
+section.eoi .border-sec .col-md-3,
+section.add-new-proj .border-sec .col-md-3,
+section.add-rf-form .border-sec .col-md-3,
+section.add-new-unit-type .border-sec .col-md-3,
+section.add-new-payment-plan .border-sec .col-md-3,
+section.add-new-team .border-sec .col-md-3,
+section.add-new-unit .border-sec .col-md-3 {
+  border-right: 1px solid #bfbfbf;
+  height: 816px;
+  margin-bottom: -25px;
+}
+
+section.new-lead .border-sec .col-md-4 {
+  border-right: 1px solid #bfbfbf;
+  /* height: 780px; */
+  margin-bottom: 50px;
+}
+
+.required {
+  color: red;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.form-group {
+  /* margin-bottom: 35px; */
+  /* height: 75px !important; */
+}
+
+.agent-input {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+::ng-deep .ui-dropdown {
+  width: 100% !important;
+}
+
+.margin-left-20 {
+  margin-left: 20px;
+}
+
+.btn.btn-default.btn-black {
+  padding: 10px 10px;
+}
+
+.margin-top-10 {
+  margin-top: 10px;
+}

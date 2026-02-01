@@ -1,0 +1,29 @@
+<modal
+  #modalRef
+  dir="rtl"
+  [title]="id ? 'تعديل مجلد' : 'مجلد جديد'"
+  [submitButtonLabel]="id ? 'تعديل' : 'اضافة'"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="save()"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <ng-container *ngIf="formData">
+      <div class="form-group">
+        <label for="name">الاسم</label>
+        <input
+          type="text"
+          class="form-control"
+          id="name"
+          name="name"
+          [(ngModel)]="formData.name"
+        />
+      </div>
+    </ng-container>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="modalRef.close()">الغاء</button>
+  </modal-footer>
+</modal>

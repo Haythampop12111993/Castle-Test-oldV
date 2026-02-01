@@ -1,0 +1,244 @@
+<section class="add-team__wrapper">
+  <h2 class="page-title">
+    <span *ngIf="!isEditState">ADD NEW</span>
+    <span *ngIf="isEditState">Edit</span> TEAM
+  </h2>
+  <div>
+    <div class="border-sec">
+      <div class="ui-g ui-fluid">
+        <div class="ui-g-12 ui-md-4">
+          <div class="ui-inputgroup">
+            <div class="form-group">
+              <label>TEAM NAME</label>
+              <input
+                type="text"
+                class="form-control req"
+                [(ngModel)]="teamName"
+                placeholder="Type Name....."
+                name="name"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="ui-g-12 ui-md-4">
+          <div class="ui-inputgroup">
+            <div class="form-group width">
+              <label>TEAM Level</label>
+              <!-- <input type="text" class="form-control req" [(ngModel)]="teamName" placeholder="Type Name....."
+                name="name" /> -->
+              <select
+                name="team_level"
+                class="form-control req"
+                [(ngModel)]="teamLevel"
+                placeholder="Team Level..."
+              >
+                <option value="team">Team</option>
+                <option value="sub_team">Sub Team</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="ui-g-12 ui-md-4" *ngIf="teamLevel == 'sub_team'">
+          <div class="ui-inputgroup">
+            <div class="form-group width">
+              <label>Parent Team</label>
+              <!-- <input type="text" class="form-control req" [(ngModel)]="teamName" placeholder="Type Name....."
+                name="name" /> -->
+              <select
+                name="team_level"
+                class="form-control req"
+                [(ngModel)]="parentTeam"
+                placeholder="Team Level..."
+              >
+                <option *ngFor="let team of parentTeams" [value]="team.id">
+                  {{ team.name }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="ui-g-12 ui-md-4" *ngIf="teamLevel == 'team'">
+          <div class="ui-inputgroup">
+            <div class="form-group">
+              <div class="role-container">
+                <label>Sales Manager</label>
+                <!-- <p-multiSelect
+                  [options]="salesManager"
+                  [panelStyle]="{ minWidth: '15em' }"
+                  [style]="{ minWidth: '15em' }"
+                  optionLabel="name"
+                  [(ngModel)]="selectedSalesManager"
+                ></p-multiSelect> -->
+                <ng-multiselect-dropdown
+                  [placeholder]="'Sales Manager'"
+                  [data]="salesManager"
+                  [(ngModel)]="selectedSalesManager"
+                  [settings]="dropdownSettings"
+                  (onSelect)="onItemSelect($event)"
+                  (onSelectAll)="onSelectAll($event)"
+                >
+                </ng-multiselect-dropdown>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ui-g-12 ui-md-4" *ngIf="teamLevel == 'team'">
+          <div class="ui-inputgroup">
+            <div class="form-group">
+              <div class="role-container">
+                <label>Admin</label>
+                <ng-multiselect-dropdown
+                  [placeholder]="'Admin'"
+                  [data]="admin"
+                  [(ngModel)]="selectedAdmin"
+                  [settings]="dropdownSettings"
+                  (onSelect)="onItemSelect($event)"
+                  (onSelectAll)="onSelectAll($event)"
+                >
+                </ng-multiselect-dropdown>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ui-g-12 ui-md-4" *ngIf="teamLevel == 'team'">
+          <div class="ui-inputgroup">
+            <div class="form-group">
+              <div class="role-container">
+                <label>Deputy Sales Manager</label>
+                <!-- <p-multiSelect
+                  [options]="deputySalesManager"
+                  [panelStyle]="{ minWidth: '15em' }"
+                  [style]="{ minWidth: '15em' }"
+                  optionLabel="name"
+                  [(ngModel)]="selectedDeputySalesManager"
+                >
+                </p-multiSelect> -->
+                <ng-multiselect-dropdown
+                  [placeholder]="'Deputy Sales Manager'"
+                  [data]="deputySalesManager"
+                  [(ngModel)]="selectedDeputySalesManager"
+                  [settings]="dropdownSettings"
+                  (onSelect)="onItemSelect($event)"
+                  (onSelectAll)="onSelectAll($event)"
+                >
+                </ng-multiselect-dropdown>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ui-g-12 ui-md-4" *ngIf="teamLevel == 'sub_team'">
+          <div class="ui-inputgroup">
+            <div class="form-group">
+              <div class="role-container">
+                <label>Senior Team Leader</label>
+                <!-- <p-multiSelect
+                  [options]="seniorTeamLeader"
+                  [panelStyle]="{ minWidth: '15em' }"
+                  [style]="{ minWidth: '15em' }"
+                  optionLabel="name"
+                  [(ngModel)]="selectedSeniorTeamLeader"
+                >
+                </p-multiSelect> -->
+                <ng-multiselect-dropdown
+                  [placeholder]="'Senior Team Leader'"
+                  [data]="seniorTeamLeader"
+                  [(ngModel)]="selectedSeniorTeamLeader"
+                  [settings]="dropdownSettings"
+                  (onSelect)="onItemSelect($event)"
+                  (onSelectAll)="onSelectAll($event)"
+                >
+                </ng-multiselect-dropdown>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ui-g-12 ui-md-4" *ngIf="teamLevel == 'sub_team'">
+          <div class="ui-inputgroup">
+            <div class="form-group">
+              <div class="role-container">
+                <label>Team Leader</label>
+                <!-- <p-multiSelect
+                  [options]="teamLeader"
+                  [panelStyle]="{ minWidth: '15em' }"
+                  [style]="{ minWidth: '15em' }"
+                  optionLabel="name"
+                  [(ngModel)]="selectedTeamLeader"
+                ></p-multiSelect> -->
+                <ng-multiselect-dropdown
+                  [placeholder]="'Team Leader'"
+                  [data]="teamLeader"
+                  [(ngModel)]="selectedTeamLeader"
+                  [settings]="dropdownSettings"
+                  (onSelect)="onItemSelect($event)"
+                  (onSelectAll)="onSelectAll($event)"
+                >
+                </ng-multiselect-dropdown>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ui-g-12 ui-md-4" *ngIf="teamLevel == 'sub_team'">
+          <div class="ui-inputgroup">
+            <div class="form-group">
+              <div class="role-container">
+                <label>Supervisor</label>
+                <!-- <p-multiSelect
+                  [options]="supervisor"
+                  [panelStyle]="{ minWidth: '15em' }"
+                  [style]="{ minWidth: '15em' }"
+                  optionLabel="name"
+                  [(ngModel)]="selectedSupervisor"
+                ></p-multiSelect> -->
+                <ng-multiselect-dropdown
+                  [placeholder]="'Supervisor'"
+                  [data]="supervisor"
+                  [(ngModel)]="selectedSupervisor"
+                  [settings]="dropdownSettings"
+                  (onSelect)="onItemSelect($event)"
+                  (onSelectAll)="onSelectAll($event)"
+                >
+                </ng-multiselect-dropdown>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ui-g-12 ui-md-4" *ngIf="teamLevel == 'sub_team'">
+          <div class="ui-inputgroup">
+            <div class="form-group">
+              <div class="role-container">
+                <label>Property Consultant</label>
+                <!-- <p-multiSelect
+                  [options]="propertyConsultant"
+                  [panelStyle]="{ minWidth: '15em' }"
+                  [style]="{ minWidth: '15em' }"
+                  optionLabel="name"
+                  [(ngModel)]="selectedPropertyConsultant"
+                >
+                </p-multiSelect> -->
+                <ng-multiselect-dropdown
+                  [placeholder]="'Property Consultant'"
+                  [data]="propertyConsultant"
+                  [(ngModel)]="selectedPropertyConsultant"
+                  [settings]="dropdownSettings"
+                  (onSelect)="onItemSelect($event)"
+                  (onSelectAll)="onSelectAll($event)"
+                >
+                </ng-multiselect-dropdown>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <button
+        type="submit"
+        class="btn btn-default pull-right btn-black"
+        (click)="save()"
+        [disabled]="!teamName"
+      >
+        SAVE
+      </button>
+    </div>
+  </div>
+</section>

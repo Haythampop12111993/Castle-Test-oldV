@@ -1,0 +1,48 @@
+.action{
+    width: 10%;
+  }
+  
+  .dropdown-menu{
+    left: unset;
+    right: 0;
+  }
+  
+  .table-responsive{
+    overflow-x: unset;
+  }
+  
+  .teams-title {
+    margin-top: 0;
+  }
+  
+  ::ng-deep .modal{
+    z-index: 4000;
+  }
+  
+  .text-start {
+    text-align: start;
+  }
+  
+  .branch-title {
+    font-weight: bold; 
+  }
+  
+  .branch-title.parent-team {
+    margin-top: 15px;
+  }
+
+
+.settings-icons i {
+  font-size: 3rem;
+  cursor: pointer;
+  margin: 10px;
+}
+
+.dropdown-menu {
+  right: 0 !important;
+  left: unset !important;
+}
+
+.padding-horizontal {
+  padding: 0 20px !important;
+}

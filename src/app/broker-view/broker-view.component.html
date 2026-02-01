@@ -1,0 +1,177 @@
+<section class="unit">
+  <div class="container-fluid" [ngClass]="{ 'no-interaction': loading }">
+    <h2>Broker</h2>
+    <div class="row">
+      <div class="col-xs-12"></div>
+      <div class="col-xs-12">
+        <div class="lead-details max-h-auto">
+          <div class="header-lead">
+            <div class="row">
+              <div class="col-md-9">
+                <div class="media">
+                  <div class="media-body">
+                    <h3>
+                      {{ BrokerDetails?.name }}
+                    </h3>
+                    <div class="row">
+                      <div
+                        class="col-xs-4"
+                        *ngIf="BrokerDetails?.contact_person"
+                      >
+                        Contact Person : {{ BrokerDetails?.contact_person }}
+                      </div>
+                      <div
+                        class="col-xs-4"
+                        *ngIf="BrokerDetails?.contact_email"
+                      >
+                        Contact Email : {{ BrokerDetails?.contact_email }}
+                      </div>
+                      <div
+                        class="col-xs-4"
+                        *ngIf="BrokerDetails?.contact_phone"
+                      >
+                        Contact Phone : {{ BrokerDetails?.contact_phone }}
+                      </div>
+                      <div
+                        class="col-xs-4"
+                        *ngIf="BrokerDetails?.contact_address"
+                      >
+                        Contact Address : {{ BrokerDetails?.contact_address }}
+                      </div>
+                      <div class="col-xs-12" *ngIf="BrokerDetails?.users">
+                        Agents :
+                        <span
+                          class="badge badge-secoundry"
+                          *ngFor="let user of BrokerDetails.users"
+                        >
+                          {{ user?.name }}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3 operation-container">
+                <div class="contact-lead">
+                  <ul class="list-unstyled edit-spam">
+                    <li (click)="addActivityModal.open(broker_id)">
+                      <i
+                        class="fa fa-times-circle q-color"
+                        aria-hidden="true"
+                      ></i>
+                      <span>Add Activity</span>
+                    </li>
+                    <li (click)="showBrokerDocumentsModal.open()">
+                      <i class="fa fa-times-circle q-color"></i>
+                      <span>Show Documents</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="lead-content-section">
+            <div>
+              <!-- Nav tabs -->
+              <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active">
+                  <a
+                    href="#activity"
+                    aria-controls="activity"
+                    role="tab"
+                    data-toggle="tab"
+                    >Activity</a
+                  >
+                </li>
+              </ul>
+
+              <!-- Tab panes -->
+              <div class="tab-content max-h-auto">
+                <div
+                  role="tabpanel"
+                  class="tab-pane fade in active"
+                  id="activity"
+                >
+                  <div class="col-md-8">
+                    <div
+                      class="time-line"
+                      *ngFor="let activity of BrokerDetails?.activities"
+                    >
+                      <h2>{{ activity.title }}</h2>
+                      <ul class="list-unstyled">
+                        <li>
+                          <span class="crcle-t"></span>
+                          <div class="tm-content">
+                            <div class="dateformat">
+                              {{ activity.created_at | date : "medium" }}
+                            </div>
+                            <h5>{{ activity.type }}</h5>
+                            <p>
+                              {{ activity.details }} | by
+                              {{ activity.user?.name }}
+                            </p>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<app-add-broker-activity-modal
+  #addActivityModal
+  (onSave)="getBroker()"
+></app-add-broker-activity-modal>
+
+<modal
+  #showBrokerDocumentsModal
+  title="Broker documents"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+>
+  <modal-content>
+    <div class="row" *ngIf="BrokerDetails">
+      <div
+        class="form-group col-xs-12 documentsContainer"
+        [ngClass]="{
+          _flex: !BrokerDetails.documents || BrokerDetails.documents.length == 0
+        }"
+      >
+        <div
+          *ngFor="let doc of BrokerDetails.documents"
+          class="documentImage"
+          [id]="doc.id"
+        >
+          <a [href]="doc.full_url" target="_blank"
+            ><img [src]="doc.full_url" width="200" height="200" alt=""
+          /></a>
+          <h6>{{ doc.name }}</h6>
+        </div>
+        <h4
+          class="text-center"
+          *ngIf="
+            !BrokerDetails.documents || BrokerDetails.documents.length == 0
+          "
+        >
+          No Related Documents
+        </h4>
+      </div>
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button
+      class="btn btn-secondary"
+      (click)="showBrokerDocumentsModal.close()"
+    >
+      Ok
+    </button>
+  </modal-footer>
+</modal>

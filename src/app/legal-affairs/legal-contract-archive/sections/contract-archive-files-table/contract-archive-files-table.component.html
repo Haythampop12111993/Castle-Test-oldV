@@ -1,0 +1,61 @@
+<div class="table-responsive">
+  <table class="table table-bordered text-center">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>الاسم</th>
+        <th>عدد المرفقات</th>
+        <th>تاريخ الانشاء</th>
+        <th>اخر تحديث</th>
+        <th>
+          <button class="btn btn-success" (click)="openForm()">
+            إضافة ملف
+          </button>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let file of files; let i = index">
+        <td>{{ i + 1 }}</td>
+        <td>{{ file.name }}</td>
+        <td>{{ file.files?.length || 0 }}</td>
+        <td>{{ file.created_at | date : "medium" : undefined : "ar-EG" }}</td>
+        <td>{{ file.updated_at | date : "medium" : undefined : "ar-EG" }}</td>
+        <td>
+          <div
+            class="btn-group folder-actions"
+            role="group"
+            aria-label="Basic example"
+          >
+            <button
+              type="button"
+              class="btn btn-danger"
+              (click)="deleteContractArchive(file.id)"
+            >
+              <i class="fa fa-trash" aria-hidden="true"></i>
+            </button>
+            <button
+              type="button"
+              class="btn btn-warning"
+              (click)="openForm(file.id)"
+            >
+              <i class="fa fa-pencil" aria-hidden="true"></i>
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              (click)="documentView.open(file)"
+            >
+              <i class="fa fa-eye" aria-hidden="true"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<app-view-contract-archive
+  #documentView
+  (onSave)="reload.emit()"
+></app-view-contract-archive>

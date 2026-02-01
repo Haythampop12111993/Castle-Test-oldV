@@ -1,0 +1,226 @@
+<p-sidebar [(visible)]="status" position="right" (onHide)="closeDialog()">
+  <ng-container *ngIf="status !== 'view'">
+    <h3>{{ editId ? "Edit " : "Add " }}Reminder</h3>
+  </ng-container>
+  <ng-container *ngIf="status === 'view'">
+    <div class="d-flex justify-content-between align-items-center">
+      <h3 class="m-0">Reminder</h3>
+      <button
+        class="btn"
+        (click)="status = true"
+        *ngIf="!selectedEvent?.is_done"
+      >
+        Edit
+      </button>
+    </div>
+  </ng-container>
+  <form #form="ngForm">
+    <div class="row">
+      <div class="form-group col-md-12">
+        <label for="action_id">Type</label>
+        <ng-select
+          id="action_id"
+          name="action_id"
+          [(ngModel)]="eventForm.action_id"
+          [items]="reminderOptions"
+          bindValue="id"
+          bindLabel="name"
+          required
+          #event_action_id="ngModel"
+          [disabled]="status === 'view'"
+          [ngClass]="{
+            invalid: eventFormSubmitted && event_action_id.errors
+          }"
+        >
+          <ng-option value="" selected disabled>Please Select</ng-option>
+          <ng-template ng-option-tmp ng-label-tmp let-item="item">
+            <div class="d-flex justify-content-start align-items-center">
+              <span
+                class="color_bg"
+                [ngStyle]="{ 'background-color': item.color }"
+              ></span>
+              {{ item.name }}
+            </div>
+          </ng-template>
+        </ng-select>
+      </div>
+      <div
+        class="form-group col-md-12"
+        [ngClass]="{
+          'has-error': eventFormSubmitted && event_title.errors
+        }"
+      >
+        <label for="title">Title</label>
+        <input
+          type="text"
+          name="title"
+          class="form-control"
+          [(ngModel)]="eventForm.title"
+          required
+          #event_title="ngModel"
+          [disabled]="status === 'view'"
+        />
+      </div>
+      <div
+        class="form-group col-md-12"
+        *ngIf="status === 'view'"
+      >
+        <label for="agent">User</label>
+        <input
+          type="text"
+          name="user_name"
+          class="form-control"
+          [(ngModel)]="eventForm.user_name"
+          required
+          #user_name="ngModel"
+          [disabled]="status === 'view'"
+        />
+      </div>
+      <div
+        class="form-group col-md-12"
+        [ngClass]="{
+          'has-error': eventFormSubmitted && event_desc.errors
+        }"
+      >
+        <label for="desc">Desc</label>
+        <textarea
+          name="desc"
+          class="form-control"
+          [(ngModel)]="eventForm.desc"
+          required
+          #event_desc="ngModel"
+          [disabled]="status === 'view'"
+        >
+        </textarea>
+      </div>
+      <div
+        class="form-group col-md-12"
+        [ngClass]="{
+          'has-error': eventFormSubmitted && event_datetime.errors
+        }"
+      >
+        <label for="datetime">Date</label>
+        <input
+          type="datetime-local"
+          name="datetime"
+          class="form-control"
+          [(ngModel)]="eventForm.datetime"
+          required
+          [disabled]="status === 'view'"
+          #event_datetime="ngModel"
+        />
+      </div>
+      <div class="form-group col-md-12">
+        <label for="lead_id">Lead</label>
+        <div
+          [ngClass]="{
+            'd-flex justify-content-between': status === 'view'
+          }"
+        >
+          <ng-select
+            #lead_id_select
+            id="lead_id"
+            name="lead_id"
+            [(ngModel)]="eventForm.lead_id"
+            [searchable]="false"
+            [loading]="leadsSelectController.loading"
+            (scrollToEnd)="getLeads(true)"
+            #event_lead_id="ngModel"
+            class="pe-4"
+            [disabled]="status === 'view'"
+            [ngClass]="{
+              invalid: eventFormSubmitted && event_lead_id.errors
+            }"
+          >
+            <ng-option value="" selected disabled>Please Select</ng-option>
+            <ng-option
+              *ngFor="let lead of leadsSelectController.data"
+              [value]="lead.id"
+              >{{ lead.name }} ({{ lead.phone }})
+            </ng-option>
+            <ng-template ng-header-tmp>
+              <input
+                style="width: 100%; line-height: 24px; border: 0; outline: 0"
+                type="text"
+                (input)="
+                  lead_id_select.filter($event.target.value);
+                  getLeads(false, $event.target.value)
+                "
+              />
+            </ng-template>
+          </ng-select>
+          <button
+            class="btn"
+            *ngIf="status === 'view' && eventForm.lead_id"
+            (click)="openLead(eventForm.lead_id)"
+          >
+            Open
+          </button>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <ng-container *ngIf="status === 'view'">
+          <h4>Status</h4>
+          <button
+            class="btn d-block w-100"
+            [disabled]="selectedEvent?.is_done"
+            [ngStyle]="{ 'btn-success': selectedEvent?.is_done }"
+            (click)="eventForm.lead_id ? addActivityModal.open() : addAction()"
+          >
+            {{ selectedEvent?.is_done ? "Done" : "Make Done" }}
+          </button>
+        </ng-container>
+      </div>
+      <div class="col-md-12" *ngIf="status !== 'view'">
+        <button class="btn add-event-save" (click)="addCampainSubmit(form)">
+          Save
+        </button>
+      </div>
+    </div>
+  </form>
+</p-sidebar>
+
+<modal
+  #addActivityModal
+  title="Add Activity"
+  submitButtonLabel="Submit"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="addActivityForm.valid && addAction(addActivityModal, true)"
+>
+  <modal-content>
+    <form #addActivityForm="ngForm">
+      <div class="row">
+        <div class="col-xs-12 form-group">
+          <select
+            class="form-control"
+            [(ngModel)]="activity.title"
+            name="actionName"
+            required
+          >
+            <option value="" selected hidden>Select Activity</option>
+            <option *ngFor="let action of activityActions">
+              {{ action.name }}
+            </option>
+          </select>
+        </div>
+        <div class="col-xs-12 form-group">
+          <textarea
+            type="text"
+            class="form-control"
+            name="actionDescription"
+            placeholder="Action Description"
+            rows="4"
+            [(ngModel)]="activity.details"
+            required
+          ></textarea>
+        </div>
+      </div>
+    </form>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="addActivityModal.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>

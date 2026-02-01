@@ -1,0 +1,11 @@
+.card__title {
+  margin-bottom: 20px;
+}
+
+.margin-bottom {
+  margin-bottom: 15px;
+}
+
+.edit-mode-active {
+  border-bottom: 3px solid lightblue !important;
+}

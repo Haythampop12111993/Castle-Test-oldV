@@ -1,0 +1,46 @@
+@import '../../styles/shared';
+.flex {
+  display: flex;
+}
+.select-all {
+  flex: 30%;
+}
+.permissions {
+  flex: 70%;
+  i {
+    font-size: 16px;
+    cursor: pointer;
+  }
+}
+.table th,
+.table td {
+  vertical-align: baseline;
+}
+.break-word {
+  word-break: break-all;
+}
+.depend {
+  text-decoration: underline;
+  text-decoration-color: red;
+  text-decoration-thickness: 2px;
+}
+.depend_icon {
+  color: #f3ced2 !important;
+}
+
+#add-role .mat-tab-body-content {
+  overflow: hidden !important;
+}
+ .perm td{
+   border-top: 0px !important;
+ }
+
+.table-secondary{
+  background: #1d1d1e !important;
+  color: #fff !important;
+
+}
+
+input[type="checkbox"] {
+  margin: 4px 5px 0;
+}

@@ -1,0 +1,262 @@
+<ng-container *ngIf="true">
+  <section class="projects">
+    <div class="container-fluid">
+      <h2>Upload Project Offer Images</h2>
+      <div class="box">
+        <form (ngSubmit)="send()">
+          <div class="border-sec">
+            <div class="row">
+              <div class="col-xs-12">
+                <div class="form-group flex-column">
+                  <label for="">Image 1</label>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="custom-dropzone-class" ngx-dropzone [accept]="'image/*'"
+                        (change)="onSelect($event, 'image1')">
+                        <ngx-dropzone-label> Upload Images </ngx-dropzone-label>
+                        <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview" *ngIf="imageView.image1"
+                          [file]="imageView.image1" [removable]="true" (removed)="onRemoveImage('image1')">
+                        </ngx-dropzone-image-preview>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <img class="mt-5 img-responsive" *ngIf="images?.image1" [src]="images.image1.url" alt="" />
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group flex-column">
+                  <label for="">Image 2</label>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="custom-dropzone-class" ngx-dropzone [accept]="'image/*'"
+                        (change)="onSelect($event, 'image2')">
+                        <ngx-dropzone-label> Upload Images </ngx-dropzone-label>
+                        <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview" *ngIf="imageView.image2"
+                          [file]="imageView.image2" [removable]="true" (removed)="onRemoveImage('image2')">
+                        </ngx-dropzone-image-preview>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <img class="mt-5 img-responsive" *ngIf="images?.image2" [src]="images.image2.url" alt="" />
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group flex-column">
+                  <label for="">Image 3</label>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="custom-dropzone-class" ngx-dropzone [accept]="'image/*'"
+                        (change)="onSelect($event, 'image3')">
+                        <ngx-dropzone-label> Upload Images </ngx-dropzone-label>
+                        <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview" *ngIf="imageView.image3"
+                          [file]="imageView.image3" [removable]="true" (removed)="onRemoveImage('image3')">
+                        </ngx-dropzone-image-preview>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <img class="mt-5 img-responsive" *ngIf="images?.image3" [src]="images.image3.url" alt="" />
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group flex-column">
+                  <label for="">Image 4</label>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="custom-dropzone-class" ngx-dropzone [accept]="'image/*'"
+                        (change)="onSelect($event, 'image4')">
+                        <ngx-dropzone-label> Upload Images </ngx-dropzone-label>
+                        <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview" *ngIf="imageView.image4"
+                          [file]="imageView.image4" [removable]="true" (removed)="onRemoveImage('image4')">
+                        </ngx-dropzone-image-preview>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <img class="mt-5 img-responsive" *ngIf="images?.image4" [src]="images.image4.url" alt="" />
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group flex-column">
+                  <label for="">Image 5</label>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="custom-dropzone-class" ngx-dropzone [accept]="'image/*'"
+                        (change)="onSelect($event, 'image5')">
+                        <ngx-dropzone-label> Upload Images </ngx-dropzone-label>
+                        <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview" *ngIf="imageView.image5"
+                          [file]="imageView.image5" [removable]="true" (removed)="onRemoveImage('image5')">
+                        </ngx-dropzone-image-preview>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <img class="mt-5 img-responsive" *ngIf="images?.image5" [src]="images.image5.url" alt="" />
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group flex-column">
+                  <label for="">Unit Detail Background</label>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="custom-dropzone-class" ngx-dropzone [accept]="'image/*'"
+                        (change)="onSelect($event, 'unit_detail_background')">
+                        <ngx-dropzone-label> Upload Images </ngx-dropzone-label>
+                        <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview"
+                          *ngIf="imageView.unit_detail_background" [file]="imageView.unit_detail_background"
+                          [removable]="true" (removed)="onRemoveImage('unit_detail_background')">
+                        </ngx-dropzone-image-preview>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <img class="mt-5 img-responsive" *ngIf="images?.unit_detail_background"
+                        [src]="images.unit_detail_background.url" alt="" />
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group flex-column">
+                  <label for="">Installment Background</label>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="custom-dropzone-class" ngx-dropzone [accept]="'image/*'"
+                        (change)="onSelect($event, 'installment_background')">
+                        <ngx-dropzone-label> Upload Images </ngx-dropzone-label>
+                        <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview"
+                          *ngIf="imageView.installment_background" [file]="imageView.installment_background"
+                          [removable]="true" (removed)="onRemoveImage('installment_background')">
+                        </ngx-dropzone-image-preview>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <img class="mt-5 img-responsive" *ngIf="images?.installment_background"
+                        [src]="images.installment_background.url" alt="" />
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group flex-column">
+                  <label for="">Master Plan 1</label>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="custom-dropzone-class" ngx-dropzone [accept]="'image/*'"
+                        (change)="onSelect($event, 'master1')">
+                        <ngx-dropzone-label> Upload Images </ngx-dropzone-label>
+                        <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview" *ngIf="imageView.master1"
+                          [file]="imageView.master1" [removable]="true" (removed)="onRemoveImage('master1')">
+                        </ngx-dropzone-image-preview>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <img class="mt-5 img-responsive" *ngIf="images?.master1" [src]="images.master1.url" alt="" />
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group flex-column">
+                  <label for="">Extra Master Plan 1</label>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="custom-dropzone-class" ngx-dropzone [accept]="'image/*'"
+                        (change)="onSelect($event, 'extra1')">
+                        <ngx-dropzone-label> Upload Images </ngx-dropzone-label>
+                        <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview" *ngIf="imageView.extra1"
+                          [file]="imageView.extra1" [removable]="true" (removed)="onRemoveImage('extra1')">
+                        </ngx-dropzone-image-preview>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <img class="mt-5 img-responsive" *ngIf="images?.extra1" [src]="images.extra1.url" alt="" />
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group flex-column">
+                  <label for="">Extra Master Plan 2</label>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="custom-dropzone-class" ngx-dropzone [accept]="'image/*'"
+                        (change)="onSelect($event, 'extra2')">
+                        <ngx-dropzone-label> Upload Images </ngx-dropzone-label>
+                        <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview" *ngIf="imageView.extra2"
+                          [file]="imageView.extra2" [removable]="true" (removed)="onRemoveImage('extra2')">
+                        </ngx-dropzone-image-preview>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <img class="mt-5 img-responsive" *ngIf="images?.extra2" [src]="images.extra2.url" alt="" />
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group flex-column">
+                  <label for="">Extra Master Plan 3</label>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="custom-dropzone-class" ngx-dropzone [accept]="'image/*'"
+                        (change)="onSelect($event, 'extra3')">
+                        <ngx-dropzone-label> Upload Images </ngx-dropzone-label>
+                        <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview" *ngIf="imageView.extra3"
+                          [file]="imageView.extra3" [removable]="true" (removed)="onRemoveImage('extra3')">
+                        </ngx-dropzone-image-preview>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <img class="mt-5 img-responsive" *ngIf="images?.extra3" [src]="images.extra3.url" alt="" />
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group flex-column">
+                  <label for="">Extra Master Plan 4</label>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="custom-dropzone-class" ngx-dropzone [accept]="'image/*'"
+                        (change)="onSelect($event, 'extra4')">
+                        <ngx-dropzone-label> Upload Images </ngx-dropzone-label>
+                        <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview" *ngIf="imageView.extra4"
+                          [file]="imageView.extra4" [removable]="true" (removed)="onRemoveImage('extra4')">
+                        </ngx-dropzone-image-preview>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <img class="mt-5 img-responsive" *ngIf="images?.extra4" [src]="images.extra4.url" alt="" />
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group flex-column">
+                  <label for="disclaimer">Disclaimer</label>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="custom-dropzone-class" ngx-dropzone [accept]="'image/*'"
+                        (change)="onSelect($event, 'disclaimer')">
+                        <ngx-dropzone-label> Upload Images </ngx-dropzone-label>
+                        <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview" *ngIf="imageView.disclaimer"
+                          [file]="imageView.disclaimer" [removable]="true" (removed)="onRemoveImage('disclaimer')">
+                        </ngx-dropzone-image-preview>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <img class="mt-5 img-responsive" *ngIf="images?.disclaimer" [src]="images.disclaimer.url" alt="" />
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group flex-column">
+                  <label for="">Last</label>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="custom-dropzone-class" ngx-dropzone [accept]="'image/*'"
+                        (change)="onSelect($event, 'last')">
+                        <ngx-dropzone-label> Upload Images </ngx-dropzone-label>
+                        <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview" *ngIf="imageView.last"
+                          [file]="imageView.last" [removable]="true" (removed)="onRemoveImage('last')">
+                        </ngx-dropzone-image-preview>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <img class="mt-5 img-responsive" *ngIf="images?.last" [src]="images.last.url" alt="" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xs-12 submit-btn-wrapper">
+                <button type="submit" class="btn btn-primary">Save</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+</ng-container>

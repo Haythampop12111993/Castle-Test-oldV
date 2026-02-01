@@ -1,0 +1,47 @@
+export class Reservation {
+  leadphonenumber:'';
+  lead_id:'';
+  user_id:'';
+  unit_id:'';
+  payment_method_id:'';
+  status:'';
+  build_area:'';
+  serial:'';
+  lead_name:'';
+  lead_address:'';
+  lead_home_phone:'';
+  lead_phone:'';
+  lead_other_phone:'';
+  lead_nationality:'';
+  lead_birthday:'';
+  lead_national_id:'';
+  lead_civil_registry:'';
+  lead_issue_date:'';
+  lead_district:'';
+  lead_marital_status:'';
+  lead_email:'';
+  lead_job_title:'';
+  lead_workplace:'';
+  lead_work_address:'';
+  lead_fax_number:'';
+  unit_number:'';
+  unit_building:'';
+  unit_phase:'';
+  unit_land_area:'';
+  unit_building_area:'';
+  unit_basement_area:'';
+  unit_uncovered_basement_area:'';
+  unit_roof_area:'';
+  unit_semi_covered_roof_area:'';
+  unit_penthouse_area:'';
+  unit_garden_area:'';
+  unit_garden_price:'';
+  unit_garage_area:'';
+  unit_garage_price:'';
+  unit_extra_area:'';
+  unit_extra_price:'';
+  unit_maintenance_price:'';
+
+    constructor() {
+    }
+}

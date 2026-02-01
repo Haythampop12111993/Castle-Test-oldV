@@ -1,0 +1,3113 @@
+<div class="container-fluid" *ngIf="true">
+  <div class="proj-details">
+    <div class="proj-details">
+      <div class="row">
+        <div class="col-xs-4">
+          <h3></h3>
+        </div>
+      </div>
+      <div class="row">
+        <div
+          class="col-md-12 pb-20 d-flex justify-content-between align-items-center"
+        >
+          <ul class="nav nav-pills w-90">
+            <li
+              class="nav-item margin-top-10"
+              [ngClass]="{ active: view == 'contracts' }"
+            >
+              <a class="nav-link" (click)="setView('contracts')"
+                >Daily Reports</a
+              >
+            </li>
+            <li
+              class="nav-item margin-top-10"
+              [ngClass]="{ active: view == 'months' }"
+            >
+              <a class="nav-link" (click)="setView('months')"
+                >Monthly contracts</a
+              >
+            </li>
+            <li
+              class="nav-item margin-top-10"
+              [ngClass]="{ active: view == 'eois' }"
+            >
+              <a class="nav-link" (click)="setView('eois')">EOIs</a>
+            </li>
+            <li
+              class="nav-item margin-top-10"
+              [ngClass]="{ active: view == 'agent_activities' }"
+            >
+              <a class="nav-link" (click)="setView('agent_activities')"
+                >Sales Activities</a
+              >
+            </li>
+            <li
+              class="nav-item margin-top-10"
+              [ngClass]="{ active: view == 'contract_cycle' }"
+            >
+              <a class="nav-link" (click)="setView('contract_cycle')"
+                >Contract Cycle Report</a
+              >
+            </li>
+            <li
+              class="nav-item margin-top-10"
+              [ngClass]="{ active: view == 'agent_activities_leads' }"
+            >
+              <a class="nav-link" (click)="setView('agent_activities_leads')"
+                >Pipeline</a
+              >
+            </li>
+            <li
+              class="nav-item margin-top-10"
+              [ngClass]="{ active: view == 'agent_sales' }"
+            >
+              <a class="nav-link" (click)="setView('agent_sales')"
+                >Combined Users Sales</a
+              >
+            </li>
+            <li
+              class="nav-item margin-top-10"
+              [ngClass]="{ active: view == 'pc_sales_report' }"
+            >
+              <a class="nav-link" (click)="setView('pc_sales_report')"
+                >P.C Sales Report</a
+              >
+            </li>
+            <li
+              class="nav-item margin-top-10"
+              [ngClass]="{ active: view == 'pc_eois_report' }"
+            >
+              <a class="nav-link" (click)="setView('pc_eois_report')"
+                >P.C EOIs Report</a
+              >
+            </li>
+            <li
+              class="nav-item margin-top-10"
+              [ngClass]="{ active: view == 'manager_eois_report' }"
+            >
+              <a class="nav-link" (click)="setView('manager_eois_report')"
+                >Manager EOIs Report</a
+              >
+            </li>
+            <li
+              class="nav-item margin-top-10"
+              [ngClass]="{ active: view == 'manager_sales_report' }"
+            >
+              <a class="nav-link" (click)="setView('manager_sales_report')"
+                >Manager Sales Report</a
+              >
+            </li>
+            <li
+              class="nav-item margin-top-10"
+              [ngClass]="{ active: view == 'pc_target_report' }"
+            >
+              <a class="nav-link" (click)="setView('pc_target_report')"
+                >P.C Target Report</a
+              >
+            </li>
+            <li
+              class="nav-item margin-top-10"
+              [ngClass]="{ active: view == 'managers_target_report' }"
+            >
+              <a class="nav-link" (click)="setView('managers_target_report')"
+                >Manager Target Report</a
+              >
+            </li>
+            <li
+              class="nav-item margin-top-10"
+              [ngClass]="{ active: view == 'channel_sales_report' }"
+            >
+              <a class="nav-link" (click)="setView('channel_sales_report')"
+                >Channel Sales Report</a
+              >
+            </li>
+            <li
+              class="nav-item margin-top-10"
+              [ngClass]="{ active: view == 'overseas_sales_report' }"
+            >
+              <a class="nav-link" (click)="setView('overseas_sales_report')"
+                >Overseas Sales Report</a
+              >
+            </li>
+          </ul>
+          <div>
+            <button
+              [disabled]="downloading_export || isLoading"
+              class="btn"
+              (click)="downloadReport()"
+            >
+              <i class="fa fa-download"></i>
+            </button>
+            <button
+              class="btn"
+              (click)="views_conf.filters = !views_conf.filters"
+            >
+              <i class="fa fa-filter"></i>
+            </button>
+            <button
+              class="btn"
+              *ngIf="views_conf.charts !== null"
+              (click)="views_conf.charts = !views_conf.charts"
+            >
+              <i class="fa fa-table" *ngIf="views_conf.charts"></i>
+              <i class="fa fa-line-chart" *ngIf="!views_conf.charts"></i>
+            </button>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div class="filters row m-0 p-15" *ngIf="views_conf.filters">
+            <form class="col-md-12">
+              <div class="row m-3">
+                <div
+                  class="form-group col-md-4"
+                  *ngIf="
+                    view != 'agent_sales' &&
+                    view != 'agent_activities' &&
+                    view != 'agent_activities_leads'
+                  "
+                >
+                  <label for="">Projects</label>
+                  <ng-multiselect-dropdown
+                    [placeholder]="'Projects'"
+                    [data]="projects"
+                    [(ngModel)]="project_id"
+                    [ngModelOptions]="{ standalone: true }"
+                    [settings]="projectsDropdownSettings"
+                  >
+                  </ng-multiselect-dropdown>
+                </div>
+                <div
+                  class="form-group col-md-4"
+                  *ngIf="
+                    view != 'manager_sales_report' &&
+                    view != 'overseas_sales_report' &&
+                    view != 'channel_sales_report'
+                  "
+                >
+                  <label for="" *ngIf="view != 'managers_target_report'"
+                    >Agents</label
+                  >
+                  <label for="" *ngIf="view == 'managers_target_report'"
+                    >Mangers</label
+                  >
+                  <ng-multiselect-dropdown
+                    *ngIf="view == 'managers_target_report'"
+                    [placeholder]="'Mangers'"
+                    [data]="allMangers"
+                    [(ngModel)]="agent_id"
+                    [ngModelOptions]="{ standalone: true }"
+                    [settings]="agentsDropdownSettings"
+                  >
+                  </ng-multiselect-dropdown>
+                  <ng-multiselect-dropdown
+                    *ngIf="view != 'managers_target_report'"
+                    [placeholder]="'Agent'"
+                    [data]="allAgents"
+                    [(ngModel)]="agent_id"
+                    [ngModelOptions]="{ standalone: true }"
+                    [settings]="agentsDropdownSettings"
+                  >
+                  </ng-multiselect-dropdown>
+                </div>
+                <div
+                  class="form-group col-md-4"
+                  *ngIf="
+                    view == 'pc_target_report' ||
+                    view == 'agent_sales' ||
+                    view == 'agent_activities' ||
+                    view == 'pc_sales_report' ||
+                    view == 'manager_sales_report' ||
+                    view == 'managers_target_report' ||
+                    view == 'pc_eois_report' ||
+                    view == 'manager_eois_report'
+                  "
+                >
+                  <label for="">Status</label>
+                  <ng-select
+                    placeholder="Status"
+                    name="status"
+                    class="min-w-200"
+                    [multiple]="false"
+                    [(ngModel)]="is_active"
+                    [ngModelOptions]="{ standalone: true }"
+                    (change)="statusChange($event)"
+                    [items]="allStatus"
+                    bindValue="id"
+                    bindLabel="name"
+                  >
+                  </ng-select>
+                </div>
+                <form
+                  class="col-md-12"
+                  [formGroup]="filter_form"
+                  *ngIf="
+                    view === 'pc_target_report' ||
+                    view === 'managers_target_report'
+                  "
+                >
+                  <div class="col-md-4 pl-0 form-group">
+                    <label for="year">Year</label>
+                    <ng-select id="year" name="year" formControlName="year">
+                      <ng-option [disabled]="true" value="">Select</ng-option>
+                      <ng-option *ngFor="let year of years" [value]="year">{{
+                        year
+                      }}</ng-option>
+                    </ng-select>
+                  </div>
+                </form>
+                <form
+                  class="col-md-12"
+                  [formGroup]="filter_form"
+                  [hidden]="
+                    view == 'manager_sales_report' ||
+                    view == 'pc_sales_report' ||
+                    view == 'pc_eois_report' ||
+                    view == 'manager_eois_report' ||
+                    view == 'overseas_sales_report' ||
+                    view == 'channel_sales_report' ||
+                    view == 'pc_target_report' ||
+                    view == 'managers_target_report'
+                  "
+                >
+                  <div class="filters-container d-flex flex-wrap">
+                    <div class="form-group">
+                      <label for="">From Date</label>
+                      <input
+                        type="date"
+                        placeholder="date_from"
+                        class="form-control"
+                        formControlName="date_from"
+                        name="date_from"
+                        id="date_from"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="">To Date</label>
+                      <input
+                        type="date"
+                        placeholder="date_to"
+                        class="form-control"
+                        formControlName="date_to"
+                        name="date_to"
+                        id="date_to"
+                      />
+                    </div>
+                  </div>
+                </form>
+                <div class="col-md-4 filter-buttons">
+                  <button class="filter-btn" (click)="filter()" value="button">
+                    Filter
+                  </button>
+                  <button class="reset-btn" (click)="reset()" value="button">
+                    Reset
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div
+            *ngIf="isLoading"
+            class="loader-wrapper text-center"
+            role="status"
+          >
+            <div class="loader">{{ loader.text }}</div>
+          </div>
+
+          
+          <!-- monthly report -->
+          <div
+            class="row"
+            *ngIf="view == 'contracts' && !isLoading"
+          >
+            <div class="col-md-12">
+              <table *ngIf="monthly_report" class="table table-responsive">
+                <tr class="heading monthly-record">
+                  <th
+                    class="heading centered"
+                    colspan="3"
+                    *ngIf="!contracts_filter"
+                  >
+                    Monthly Record
+                  </th>
+                  <th
+                    class="heading centered"
+                    colspan="3"
+                    *ngIf="contracts_filter"
+                  >
+                    {{ from_date }} TO {{ to_date }} Record
+                  </th>
+                </tr>
+                <tr>
+                  <th class="centered">Status</th>
+                  <th class="centered" *ngIf="!contracts_filter">Today</th>
+                  <th class="centered">Total</th>
+                </tr>
+                <tr>
+                  <td class="dark-grey-b">Meeting</td>
+                  <td class="light-grey-b" *ngIf="!contracts_filter">
+                    {{ monthly_report?.meetings?.today }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{ monthly_report?.meetings?.total }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="dark-grey-b">Hotline Leads</td>
+                  <td class="light-grey-b" *ngIf="!contracts_filter">
+                    {{ monthly_report?.hotline?.today }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{ monthly_report?.hotline?.total }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="dark-grey-b">Social Media Leads</td>
+                  <td class="light-grey-b" *ngIf="!contracts_filter">
+                    {{ monthly_report?.socialMedia?.today }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{ monthly_report?.socialMedia?.total }}
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <!-- Daily Residential,  Monthly Residential -->
+          <div
+            class="row"
+            *ngIf="
+            view == 'contracts' && !contracts_filter && !isLoading
+            "
+          >
+            <div class="col-md-6" *ngIf="userProfile?.role != 'MD'">
+              <table
+                *ngIf="daily_residential_reservations?.daily"
+                class="table table-responsive"
+              >
+                <tr class="heading monthly-record">
+                  <th class="heading centered" colspan="5">Daily</th>
+                </tr>
+                <tr>
+                  <th class="centered">Status</th>
+                  <th class="centered">Area</th>
+                  <th class="centered">Count</th>
+                  <th class="centered">Selling Price</th>
+                  <th class="centered">Original Price</th>
+                </tr>
+                <tr>
+                  <td class="dark-grey-b">Reserved Deal</td>
+                  <td class="light-grey-b">{{daily_residential_reservations?.daily?.doneDeal?.area}}</td>
+                  <td class="light-grey-b">
+                    {{ daily_residential_reservations?.daily?.doneDeal?.count }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{
+                      daily_residential_reservations?.daily?.doneDeal?.value
+                        | currency : " "
+                    }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{
+                      daily_residential_reservations?.daily?.doneDeal
+                        ?.original_price | currency : " "
+                    }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="dark-grey-b">Signed Contract</td>
+                  <td class="light-grey-b">{{daily_residential_reservations?.daily?.signedContract?.area}}</td>
+                  <td class="light-grey-b">
+                    {{
+                      daily_residential_reservations?.daily?.signedContract
+                        ?.count
+                    }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{
+                      daily_residential_reservations?.daily?.signedContract
+                        ?.value | currency : " "
+                    }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{
+                      daily_residential_reservations?.daily?.signedContract
+                        ?.original_price | currency : " "
+                    }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="dark-grey-b">Pending Contract</td>
+                  <td class="light-grey-b">{{daily_residential_reservations?.daily?.pendingContract?.area}}</td>
+                  <td class="light-grey-b">
+                    {{
+                      daily_residential_reservations?.daily?.pendingContract
+                        ?.count
+                    }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{
+                      daily_residential_reservations?.daily?.pendingContract
+                        ?.value | currency : " "
+                    }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{
+                      daily_residential_reservations?.daily?.pendingContract
+                        ?.original_price | currency : " "
+                    }}
+                  </td>
+                </tr>
+                <tr *ngIf="userProfile?.role != 'MD'">
+                  <td class="dark-grey-b">Cancelled Deal</td>
+                  <td class="light-grey-b">{{daily_residential_reservations?.daily?.cancelledDeal?.area}}</td>
+                  <td class="light-grey-b">
+                    {{
+                      daily_residential_reservations?.daily?.cancelledDeal
+                        ?.count
+                    }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{
+                      daily_residential_reservations?.daily?.cancelledDeal
+                        ?.value | currency : " "
+                    }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{
+                      daily_residential_reservations?.daily?.cancelledDeal
+                        ?.original_price | currency : " "
+                    }}
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div class="col-md-6">
+              <table
+                *ngIf="daily_residential_reservations?.monthly"
+                class="table table-responsive"
+              >
+                <tr class="heading monthly-record">
+                  <th class="heading centered" colspan="5">Monthly</th>
+                </tr>
+                <tr>
+                  <th class="centered">Status</th>
+                  <th class="centered">Area</th>
+                  <th class="centered">Count</th>
+                  <th class="centered">Selling Price</th>
+                  <th class="centered">Original Price</th>
+                </tr>
+                <tr>
+                  <td class="dark-grey-b">Reserved Deal</td>
+                  <td class="light-grey-b">{{daily_residential_reservations?.monthly?.doneDeal?.area}}</td>
+                  <td class="light-grey-b">
+                    {{
+                      daily_residential_reservations?.monthly?.doneDeal?.count
+                    }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{
+                      daily_residential_reservations?.monthly?.doneDeal?.value
+                        | currency : " "
+                    }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{
+                      daily_residential_reservations?.monthly?.doneDeal
+                        ?.original_price | currency : " "
+                    }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="dark-grey-b">Signed Contract</td>
+                  <td class="light-grey-b">{{daily_residential_reservations?.monthly?.signedContract?.area}}</td>
+                  <td class="light-grey-b">
+                    {{
+                      daily_residential_reservations?.monthly?.signedContract
+                        ?.count
+                    }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{
+                      daily_residential_reservations?.monthly?.signedContract
+                        ?.value | currency : " "
+                    }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{
+                      daily_residential_reservations?.monthly?.signedContract
+                        ?.original_price | currency : " "
+                    }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="dark-grey-b">Pending Contract</td>
+                  <td class="light-grey-b">{{daily_residential_reservations?.monthly?.pendingContract?.area}}</td>
+                  <td class="light-grey-b">
+                    {{
+                      daily_residential_reservations?.monthly?.pendingContract
+                        ?.count
+                    }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{
+                      daily_residential_reservations?.monthly?.pendingContract
+                        ?.value | currency : " "
+                    }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{
+                      daily_residential_reservations?.monthly?.pendingContract
+                        ?.original_price | currency : " "
+                    }}
+                  </td>
+                </tr>
+                <tr *ngIf="userProfile?.role != 'MD'">
+                  <td class="dark-grey-b">Cancelled Deal</td>
+                  <td class="light-grey-b">{{daily_residential_reservations?.monthly?.cancelledDeal?.area}}</td>
+                  <td class="light-grey-b">
+                    {{
+                      daily_residential_reservations?.monthly?.cancelledDeal
+                        ?.count
+                    }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{
+                      daily_residential_reservations?.monthly?.cancelledDeal
+                        ?.value | currency : " "
+                    }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{
+                      daily_residential_reservations?.monthly?.cancelledDeal
+                        ?.original_price | currency : " "
+                    }}
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <div
+            class="row"
+            *ngIf="view == 'contracts' && !isLoading"
+          >
+            <div class="col-md-6">
+              <table
+                *ngIf="daily_residential_reservations?.yearly"
+                class="table table-responsive"
+              >
+                <tr class="heading monthly-record">
+                  <th class="heading centered" colspan="5">Year To Date</th>
+                </tr>
+                <tr>
+                  <th class="centered">Status</th>
+                  <th class="centered">Area</th>
+                  <th class="centered">Count</th>
+                  <th class="centered">Selling Price</th>
+                  <th class="centered">Original Price</th>
+                </tr>
+                <tr>
+                  <td class="dark-grey-b">Reserved Deal</td>
+                  <td class="light-grey-b">{{daily_residential_reservations?.yearly?.doneDeal?.area}}</td>
+                  <td class="light-grey-b">
+                    {{
+                      daily_residential_reservations?.yearly?.doneDeal?.count
+                    }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{
+                      daily_residential_reservations?.yearly?.doneDeal?.value
+                        | currency : " "
+                    }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{
+                      daily_residential_reservations?.yearly?.doneDeal
+                        ?.original_price | currency : " "
+                    }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="dark-grey-b">Signed Contract</td>
+                  <td class="light-grey-b">{{daily_residential_reservations?.yearly?.signedContract?.area}}</td>
+                  <td class="light-grey-b">
+                    {{
+                      daily_residential_reservations?.yearly?.signedContract
+                        ?.count
+                    }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{
+                      daily_residential_reservations?.yearly?.signedContract
+                        ?.value | currency : " "
+                    }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{
+                      daily_residential_reservations?.yearly?.signedContract
+                        ?.original_price | currency : " "
+                    }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="dark-grey-b">Pending Contract</td>
+                  <td class="light-grey-b">{{daily_residential_reservations?.yearly?.pendingContract?.area}}</td>
+                  <td class="light-grey-b">
+                    {{
+                      daily_residential_reservations?.yearly?.pendingContract
+                        ?.count
+                    }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{
+                      daily_residential_reservations?.yearly?.pendingContract
+                        ?.value | currency : " "
+                    }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{
+                      daily_residential_reservations?.yearly?.pendingContract
+                        ?.original_price | currency : " "
+                    }}
+                  </td>
+                </tr>
+                <tr *ngIf="userProfile?.role != 'MD'">
+                  <td class="dark-grey-b">Cancelled Deal</td>
+                  <td class="light-grey-b">{{daily_residential_reservations?.yearly?.cancelledDeal?.area}}</td>
+                  <td class="light-grey-b">
+                    {{
+                      daily_residential_reservations?.yearly?.cancelledDeal
+                        ?.count
+                    }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{
+                      daily_residential_reservations?.yearly?.cancelledDeal
+                        ?.value | currency : " "
+                    }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{
+                      daily_residential_reservations?.yearly?.cancelledDeal
+                        ?.original_price | currency : " "
+                    }}
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div class="col-md-6">
+              <table
+                *ngIf="
+                  !daily_residential_reservations?.filterByDates &&
+                  ((daily_residential_reservations?.accumulative &&
+                    userProfile?.role != 'Moderator' &&
+                    userProfile?.role != 'Super Moderator') ||
+                    userProfile?.role != 'Development Director')
+                "
+                class="table table-responsive"
+              >
+                <tr class="heading monthly-record">
+                  <th class="heading centered" colspan="5">Accumulative</th>
+                </tr>
+                <tr>
+                  <th class="centered">Status</th>
+                  <th class="centered">Area</th>
+                  <th class="centered">Count</th>
+                  <th class="centered">Selling Price</th>
+                  <th class="centered">Original Price</th>
+                </tr>
+                <tr>
+                  <td class="dark-grey-b">Reserved Deal</td>
+                  <td class="light-grey-b">{{daily_residential_reservations?.accumulative?.doneDeal?.area}}</td>
+                  <td class="light-grey-b">
+                    {{
+                      daily_residential_reservations?.accumulative?.doneDeal
+                        ?.count
+                    }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{
+                      daily_residential_reservations?.accumulative?.doneDeal
+                        ?.value | currency : " "
+                    }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{
+                      daily_residential_reservations?.accumulative?.doneDeal
+                        ?.original_price | currency : " "
+                    }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="dark-grey-b">Signed Contract</td>
+                  <td class="light-grey-b">{{daily_residential_reservations?.accumulative?.signedContract?.area}}</td>
+                  <td class="light-grey-b">
+                    {{
+                      daily_residential_reservations?.accumulative
+                        ?.signedContract?.count
+                    }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{
+                      daily_residential_reservations?.accumulative
+                        ?.signedContract?.value | currency : " "
+                    }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{
+                      daily_residential_reservations?.accumulative
+                        ?.signedContract?.original_price | currency : " "
+                    }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="dark-grey-b">Pending Contract</td>
+                  <td class="light-grey-b">{{daily_residential_reservations?.accumulative?.pendingContract?.area}}</td>
+                  <td class="light-grey-b">
+                    {{
+                      daily_residential_reservations?.accumulative
+                        ?.pendingContract?.count
+                    }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{
+                      daily_residential_reservations?.accumulative
+                        ?.pendingContract?.value | currency : " "
+                    }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{
+                      daily_residential_reservations?.accumulative
+                        ?.pendingContract?.original_price | currency : " "
+                    }}
+                  </td>
+                </tr>
+                <tr *ngIf="userProfile?.role != 'MD'">
+                  <td class="dark-grey-b">Cancelled Deal</td>
+                  <td class="light-grey-b">{{daily_residential_reservations?.accumulative?.cancelledDeal?.area}}</td>
+                  <td class="light-grey-b">
+                    {{
+                      daily_residential_reservations?.accumulative
+                        ?.cancelledDeal?.count
+                    }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{
+                      daily_residential_reservations?.accumulative
+                        ?.cancelledDeal?.value | currency : " "
+                    }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{
+                      daily_residential_reservations?.accumulative
+                        ?.cancelledDeal?.original_price | currency : " "
+                    }}
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <div
+            class="row"
+            *ngIf="
+            view == 'contracts' && contracts_filter && !isLoading
+            "
+          >
+            <div class="col-md-12">
+              <table
+                *ngIf="daily_residential_reservations"
+                class="table table-responsive"
+              >
+                <tr class="heading monthly-record">
+                  <th class="heading centered" colspan="5">
+                    {{ from_date }} TO {{ to_date }} Record
+                  </th>
+                </tr>
+                <tr>
+                  <th class="centered">Status</th>
+                  <th class="centered">Area</th>  
+                  <th class="centered">Count</th>
+                  <th class="centered">Selling Price</th>
+                  <th class="centered">Original Price</th>
+                </tr>
+                <tr>
+                  <td class="dark-grey-b">Reserved Deal</td>
+                  <td class="light-grey-b">{{daily_residential_reservations?.filterByDates?.doneDeal?.area}}</td>
+                  <td class="light-grey-b">
+                    {{
+                      daily_residential_reservations?.filterByDates?.doneDeal
+                        ?.count
+                    }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{
+                      daily_residential_reservations?.filterByDates?.doneDeal
+                        ?.value | currency : " "
+                    }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{
+                      daily_residential_reservations?.filterByDates?.doneDeal
+                        ?.original_price | currency : " "
+                    }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="dark-grey-b">Signed Contract</td>
+                  <td class="light-grey-b">{{daily_residential_reservations?.filterByDates?.signedContract?.area}}</td>
+                  <td class="light-grey-b">
+                    {{
+                      daily_residential_reservations?.filterByDates?.signedContract?.count
+                    }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{
+                      daily_residential_reservations?.filterByDates?.signedContract?.value | currency : " "
+                    }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{
+                      daily_residential_reservations?.filterByDates?.signedContract?.original_price | currency : " "
+                    }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="dark-grey-b">Pending Contract</td>
+                  <td class="light-grey-b">{{daily_residential_reservations?.filterByDates?.pendingContract?.area}}</td>
+                  <td class="light-grey-b">
+                    {{
+                      daily_residential_reservations?.filterByDates?.pendingContract?.count
+                    }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{
+                      daily_residential_reservations?.filterByDates?.pendingContract?.value | currency : " "
+                    }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{
+                      daily_residential_reservations?.filterByDates?.pendingContract?.original_price | currency : " "
+                    }}
+                  </td>
+                </tr>
+                <tr *ngIf="userProfile?.role != 'MD'">
+                  <td class="dark-grey-b">Cancelled Deal</td>
+                  <td class="light-grey-b">{{daily_residential_reservations?.filterByDates?.cancelledDeal?.area}}</td>
+                  <td class="light-grey-b">
+                    {{
+                      daily_residential_reservations?.filterByDates?.cancelledDeal?.count
+                    }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{
+                      daily_residential_reservations?.filterByDates?.cancelledDeal?.value | currency : " "
+                    }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{
+                      daily_residential_reservations?.filterByDates?.cancelledDeal?.original_price | currency : " "
+                    }}
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <div
+            class="row pb-20"
+            *ngIf="
+              userProfile?.role != 'Moderator' && view == 'months' && !isLoading
+            "
+          >
+            <div class="col-md-12" *ngIf="userProfile?.role != 'MD'">
+              <div class="month-table">
+                <div class="month-head border">
+                  <div class="month-center" colspan="6">Months</div>
+                </div>
+                <div class="month-subhead">
+                  <div class="center-text subhead padding border-t min-w-main">
+                    Month
+                  </div>
+                  <div
+                    class="center-text subhead padding border-l-t min-w-main"
+                  >
+                    Contacted
+                  </div>
+                  <div
+                    class="center-text subhead padding border-l-t min-w-main"
+                  >
+                    Pending
+                  </div>
+                  <div
+                    class="center-text subhead padding border-l-t min-w-main"
+                  >
+                    All
+                  </div>
+                </div>
+                <div class="month-subhead main">
+                  <div class="center-text subhead padding border-t min-w-sub">
+                    -
+                  </div>
+                  <div
+                    class="center-text level2-bg subhead border-l-t flex-display"
+                  >
+                    <div class="center-text border-l padding flex-50 min-w-sub">
+                      Units
+                    </div>
+                    <div class="center-text border-l padding flex-50 min-w-sub">
+                      value
+                    </div>
+                  </div>
+                  <div
+                    class="center-text level2-bg subhead border-l-t flex-display"
+                  >
+                    <div class="center-text border-l padding flex-50 min-w-sub">
+                      Units
+                    </div>
+                    <div class="center-text border-l padding flex-50 min-w-sub">
+                      value
+                    </div>
+                  </div>
+                  <div
+                    class="center-text level2-bg subhead border-l-t flex-display"
+                  >
+                    <div class="center-text border-l padding flex-50 min-w-sub">
+                      Units
+                    </div>
+                    <div class="center-text border-l padding flex-50 min-w-sub">
+                      value
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="month-subhead"
+                  *ngFor="let item of monthly_yearly_report"
+                >
+                  <div class="center-text subhead padding border-t min-w-sub">
+                    {{ item.month }}
+                  </div>
+                  <div
+                    class="center-text level2-bg flex-25 border-l-t flex-display"
+                  >
+                    <div
+                      class="center-text border-l padding flex-50 min-w-sub td-data-color"
+                    >
+                      {{ item.stats["doneDeal"].count }}
+                    </div>
+                    <div
+                      class="center-text value-bg border-l padding flex-50 min-w-sub td-data-color"
+                    >
+                      {{
+                        item.stats["doneDeal"].value
+                          | currency : " " : false : "1.0-0"
+                      }}
+                    </div>
+                  </div>
+                  <div
+                    class="center-text level2-bg flex-25 border-l-t flex-display"
+                  >
+                    <div
+                      class="center-text border-l padding flex-50 min-w-sub td-data-color"
+                    >
+                      {{ item.stats["pendingContract"].count }}
+                    </div>
+                    <div
+                      class="center-text value-bg border-l padding flex-50 min-w-sub td-data-color"
+                    >
+                      {{
+                        item.stats["pendingContract"].value
+                          | currency : " " : false : "1.0-0"
+                      }}
+                    </div>
+                  </div>
+                  <div
+                    class="center-text level2-bg flex-25 border-l-t flex-display"
+                  >
+                    <div
+                      class="center-text border-l padding flex-50 min-w-sub td-data-color"
+                    >
+                      {{ item.stats["total"].count }}
+                    </div>
+                    <div
+                      class="center-text value-bg border-l padding flex-50 min-w-sub td-data-color"
+                    >
+                      {{
+                        item.stats["total"].value
+                          | currency : " " : false : "1.0-0"
+                      }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="row" *ngIf="view == 'contract_cycle' && !isLoading">
+            <div class="col-md-12">
+              <table *ngIf="contract_cycle_data" class="table table-responsive">
+                <tr>
+                  <th class="centered" colspan="6">Contracts</th>
+                </tr>
+                <tr>
+                  <th class="centered"></th>
+                  <th class="centered">Waiting For Client's Sign</th>
+                  <th class="centered">Signed By Client</th>
+                  <th class="centered">Approved</th>
+                  <th class="centered">Signed Not Approved</th>
+                  <th class="centered">Delivery</th>
+                </tr>
+                <tr>
+                  <td class="td-data-color">Count</td>
+                  <td class="td-data-color">
+                    {{ contract_cycle_data?.pending_signature }}
+                  </td>
+                  <td class="td-data-color">
+                    {{ contract_cycle_data?.client_signature }}
+                  </td>
+                  <td class="td-data-color">
+                    {{ contract_cycle_data?.approved }}
+                  </td>
+                  <td class="td-data-color">
+                    {{ contract_cycle_data?.signed_not_approved }}
+                  </td>
+                  <td class="td-data-color">
+                    {{ contract_cycle_data?.delivered }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="td-data-color">Amount</td>
+                  <td class="td-data-color">
+                    {{
+                      contract_cycle_data?.pending_signature_amount
+                        | currency : " "
+                    }}
+                  </td>
+                  <td class="td-data-color">
+                    {{
+                      contract_cycle_data?.client_signature_amount
+                        | currency : " "
+                    }}
+                  </td>
+                  <td class="td-data-color">
+                    {{ contract_cycle_data?.approved_amount | currency : " " }}
+                  </td>
+                  <td class="td-data-color">
+                    {{
+                      contract_cycle_data?.signed_not_approved_amount
+                        | currency : " "
+                    }}
+                  </td>
+                  <td class="td-data-color">
+                    {{ contract_cycle_data?.delivered_amount | currency : " " }}
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <div class="row" *ngIf="view == 'eois' && !eois_filter && !isLoading">
+            <div
+              class="col-md-6"
+              *ngIf="userProfile?.role != 'MD' && !views_conf.charts"
+            >
+              <table *ngIf="eois_reports?.daily" class="table table-responsive">
+                <tr class="heading monthly-record">
+                  <th class="heading centered" colspan="3">Daily</th>
+                </tr>
+                <tr>
+                  <th class="centered col-md-3">Status</th>
+                  <th class="centered col-md-3">Units</th>
+                  <th class="centered col-md-3">Value</th>
+                </tr>
+                <tr>
+                  <td class="dark-grey-b">Approved</td>
+                  <td class="light-grey-b">
+                    {{ eois_reports?.daily?.approved?.count }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{ eois_reports?.daily?.approved?.value }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="dark-grey-b">Cancelled</td>
+                  <td class="light-grey-b">
+                    {{ eois_reports?.daily?.cancelled?.count }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{ eois_reports?.daily?.cancelled?.value }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="dark-grey-b">Reserved</td>
+                  <td class="light-grey-b">
+                    {{ eois_reports?.daily?.deposited?.count }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{ eois_reports?.daily?.deposited?.value }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="dark-grey-b">Pending</td>
+                  <td class="light-grey-b">
+                    {{ eois_reports?.daily?.pending?.count }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{ eois_reports?.daily?.pending?.value }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="dark-grey-b">Refunded</td>
+                  <td class="light-grey-b">
+                    {{ eois_reports?.daily?.refunded?.count }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{ eois_reports?.daily?.refunded?.value }}
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div class="col-md-6" *ngIf="!views_conf.charts">
+              <table
+                *ngIf="eois_reports?.monthly"
+                class="table table-responsive"
+              >
+                <tr class="heading monthly-record">
+                  <th class="heading centered" colspan="3">Monthly</th>
+                </tr>
+                <tr>
+                  <th class="centered col-md-3">Status</th>
+                  <th class="centered col-md-3">Units</th>
+                  <th class="centered col-md-3">Value</th>
+                </tr>
+                <tr>
+                  <td class="dark-grey-b">Approved</td>
+                  <td class="light-grey-b">
+                    {{ eois_reports?.monthly?.approved?.count }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{ eois_reports?.monthly?.approved?.value }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="dark-grey-b">Cancelled</td>
+                  <td class="light-grey-b">
+                    {{ eois_reports?.monthly?.cancelled?.count }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{ eois_reports?.monthly?.cancelled?.value }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="dark-grey-b">Reserved</td>
+                  <td class="light-grey-b">
+                    {{ eois_reports?.monthly?.deposited?.count }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{ eois_reports?.monthly?.deposited?.value }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="dark-grey-b">Pending</td>
+                  <td class="light-grey-b">
+                    {{ eois_reports?.monthly?.pending?.count }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{ eois_reports?.monthly?.pending?.value }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="dark-grey-b">Refunded</td>
+                  <td class="light-grey-b">
+                    {{ eois_reports?.monthly?.refunded?.count }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{ eois_reports?.monthly?.refunded?.value }}
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <div class="row" *ngIf="view == 'eois' && !eois_filter && !isLoading">
+            <div
+              class="col-md-6"
+              *ngIf="userProfile?.role != 'Moderator' && !views_conf.charts"
+            >
+              <table
+                *ngIf="eois_reports?.yearly"
+                class="table table-responsive"
+              >
+                <tr class="heading monthly-record">
+                  <th class="heading centered" colspan="3">Year To Date</th>
+                </tr>
+                <tr>
+                  <th class="centered col-md-3">Status</th>
+                  <th class="centered col-md-3">Units</th>
+                  <th class="centered col-md-3">Value</th>
+                </tr>
+                <tr>
+                  <td class="dark-grey-b">Approved</td>
+                  <td class="light-grey-b">
+                    {{ eois_reports?.yearly?.approved?.count }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{ eois_reports?.yearly?.approved?.value }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="dark-grey-b">Cancelled</td>
+                  <td class="light-grey-b">
+                    {{ eois_reports?.yearly?.cancelled?.count }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{ eois_reports?.yearly?.cancelled?.value }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="dark-grey-b">Reserved</td>
+                  <td class="light-grey-b">
+                    {{ eois_reports?.yearly?.deposited?.count }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{ eois_reports?.yearly?.deposited?.value }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="dark-grey-b">Pending</td>
+                  <td class="light-grey-b">
+                    {{ eois_reports?.yearly?.pending?.count }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{ eois_reports?.yearly?.pending?.value }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="dark-grey-b">Refunded</td>
+                  <td class="light-grey-b">
+                    {{ eois_reports?.yearly?.refunded?.count }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{ eois_reports?.yearly?.refunded?.value }}
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div class="col-md-6">
+              <table
+                *ngIf="
+                  eois_reports?.accumulative &&
+                  userProfile?.role != 'CCO' &&
+                  !views_conf.charts
+                "
+                class="table table-responsive"
+              >
+                <tr class="heading monthly-record">
+                  <th class="heading centered" colspan="3">Accumulative</th>
+                </tr>
+                <tr>
+                  <th class="centered col-md-3">Status</th>
+                  <th class="centered col-md-3">Units</th>
+                  <th class="centered col-md-3">Value</th>
+                </tr>
+                <tr>
+                  <td class="dark-grey-b">Approved</td>
+                  <td class="light-grey-b">
+                    {{ eois_reports?.accumulative?.approved?.count }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{ eois_reports?.accumulative?.approved?.value }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="dark-grey-b">Cancelled</td>
+                  <td class="light-grey-b">
+                    {{ eois_reports?.accumulative?.cancelled?.count }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{ eois_reports?.accumulative?.cancelled?.value }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="dark-grey-b">Reserved</td>
+                  <td class="light-grey-b">
+                    {{ eois_reports?.accumulative?.deposited?.count }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{ eois_reports?.accumulative?.deposited?.value }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="dark-grey-b">Pending</td>
+                  <td class="light-grey-b">
+                    {{ eois_reports?.accumulative?.pending?.count }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{ eois_reports?.accumulative?.pending?.value }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="dark-grey-b">Refunded</td>
+                  <td class="light-grey-b">
+                    {{ eois_reports?.accumulative?.refunded?.count }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{ eois_reports?.accumulative?.refunded?.value }}
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <div class="row" *ngIf="view == 'eois' && eois_filter && !isLoading">
+            <div class="col-md-12" *ngIf="eois_reports?.filterByDates">
+              <table
+                *ngIf="eois_reports && !views_conf.charts"
+                class="table table-responsive"
+              >
+                <tr class="heading monthly-record" *ngIf="date_from || date_to">
+                  <th class="heading centered" colspan="3">
+                    {{ date_from }} TO {{ date_to }}
+                  </th>
+                </tr>
+                <tr>
+                  <th class="centered">Status</th>
+                  <th class="centered">Units</th>
+                  <th class="centered">Value</th>
+                </tr>
+                <tr>
+                  <td class="dark-grey-b">Approved</td>
+                  <td class="light-grey-b">
+                    {{ eois_reports?.filterByDates?.approved?.count }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{ eois_reports?.filterByDates?.approved?.value }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="dark-grey-b">Cancelled</td>
+                  <td class="light-grey-b">
+                    {{ eois_reports?.filterByDates?.cancelled?.count }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{ eois_reports?.filterByDates?.cancelled?.value }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="dark-grey-b">Reserved</td>
+                  <td class="light-grey-b">
+                    {{ eois_reports?.filterByDates?.deposited?.count }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{ eois_reports?.filterByDates?.deposited?.value }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="dark-grey-b">Pending</td>
+                  <td class="light-grey-b">
+                    {{ eois_reports?.filterByDates?.pending?.count }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{ eois_reports?.filterByDates?.pending?.value }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="dark-grey-b">Refunded</td>
+                  <td class="light-grey-b">
+                    {{ eois_reports?.filterByDates?.refunded?.count }}
+                  </td>
+                  <td class="light-orange-b">
+                    {{ eois_reports?.filterByDates?.refunded?.value }}
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div class="col-md-12" *ngIf="!eois_reports?.filterByDates">
+              <div
+                class="col-md-6"
+                *ngIf="userProfile?.role != 'MD' && !views_conf.charts"
+              >
+                <table
+                  *ngIf="eois_reports?.daily"
+                  class="table table-responsive"
+                >
+                  <tr class="heading monthly-record">
+                    <th class="heading centered" colspan="3">Daily</th>
+                  </tr>
+                  <tr>
+                    <th class="centered col-md-3">Status</th>
+                    <th class="centered col-md-3">Units</th>
+                    <th class="centered col-md-3">Value</th>
+                  </tr>
+                  <tr>
+                    <td class="dark-grey-b">Approved</td>
+                    <td class="light-grey-b">
+                      {{ eois_reports?.daily?.approved?.count }}
+                    </td>
+                    <td class="light-orange-b">
+                      {{ eois_reports?.daily?.approved?.value }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="dark-grey-b">Cancelled</td>
+                    <td class="light-grey-b">
+                      {{ eois_reports?.daily?.cancelled?.count }}
+                    </td>
+                    <td class="light-orange-b">
+                      {{ eois_reports?.daily?.cancelled?.value }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="dark-grey-b">Reserved</td>
+                    <td class="light-grey-b">
+                      {{ eois_reports?.daily?.deposited?.count }}
+                    </td>
+                    <td class="light-orange-b">
+                      {{ eois_reports?.daily?.deposited?.value }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="dark-grey-b">Pending</td>
+                    <td class="light-grey-b">
+                      {{ eois_reports?.daily?.pending?.count }}
+                    </td>
+                    <td class="light-orange-b">
+                      {{ eois_reports?.daily?.pending?.value }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="dark-grey-b">Refunded</td>
+                    <td class="light-grey-b">
+                      {{ eois_reports?.daily?.refunded?.count }}
+                    </td>
+                    <td class="light-orange-b">
+                      {{ eois_reports?.daily?.refunded?.value }}
+                    </td>
+                  </tr>
+                </table>
+              </div>
+              <div class="col-md-6" *ngIf="!views_conf.charts">
+                <table
+                  *ngIf="eois_reports?.monthly"
+                  class="table table-responsive"
+                >
+                  <tr class="heading monthly-record">
+                    <th class="heading centered" colspan="3">Monthly</th>
+                  </tr>
+                  <tr>
+                    <th class="centered col-md-3">Status</th>
+                    <th class="centered col-md-3">Units</th>
+                    <th class="centered col-md-3">Value</th>
+                  </tr>
+                  <tr>
+                    <td class="dark-grey-b">Approved</td>
+                    <td class="light-grey-b">
+                      {{ eois_reports?.monthly?.approved?.count }}
+                    </td>
+                    <td class="light-orange-b">
+                      {{ eois_reports?.monthly?.approved?.value }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="dark-grey-b">Cancelled</td>
+                    <td class="light-grey-b">
+                      {{ eois_reports?.monthly?.cancelled?.count }}
+                    </td>
+                    <td class="light-orange-b">
+                      {{ eois_reports?.monthly?.cancelled?.value }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="dark-grey-b">Reserved</td>
+                    <td class="light-grey-b">
+                      {{ eois_reports?.monthly?.deposited?.count }}
+                    </td>
+                    <td class="light-orange-b">
+                      {{ eois_reports?.monthly?.deposited?.value }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="dark-grey-b">Pending</td>
+                    <td class="light-grey-b">
+                      {{ eois_reports?.monthly?.pending?.count }}
+                    </td>
+                    <td class="light-orange-b">
+                      {{ eois_reports?.monthly?.pending?.value }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="dark-grey-b">Refunded</td>
+                    <td class="light-grey-b">
+                      {{ eois_reports?.monthly?.refunded?.count }}
+                    </td>
+                    <td class="light-orange-b">
+                      {{ eois_reports?.monthly?.refunded?.value }}
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+            <div class="col-md-12" *ngIf="!views_conf.charts">
+              <div
+                class="col-md-6"
+                *ngIf="userProfile?.role != 'Moderator' && !views_conf.charts"
+              >
+                <table
+                  *ngIf="eois_reports?.yearly"
+                  class="table table-responsive"
+                >
+                  <tr class="heading monthly-record">
+                    <th class="heading centered" colspan="3">Year To Date</th>
+                  </tr>
+                  <tr>
+                    <th class="centered col-md-3">Status</th>
+                    <th class="centered col-md-3">Units</th>
+                    <th class="centered col-md-3">Value</th>
+                  </tr>
+                  <tr>
+                    <td class="dark-grey-b">Approved</td>
+                    <td class="light-grey-b">
+                      {{ eois_reports?.yearly?.approved?.count }}
+                    </td>
+                    <td class="light-orange-b">
+                      {{ eois_reports?.yearly?.approved?.value }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="dark-grey-b">Cancelled</td>
+                    <td class="light-grey-b">
+                      {{ eois_reports?.yearly?.cancelled?.count }}
+                    </td>
+                    <td class="light-orange-b">
+                      {{ eois_reports?.yearly?.cancelled?.value }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="dark-grey-b">Reserved</td>
+                    <td class="light-grey-b">
+                      {{ eois_reports?.yearly?.deposited?.count }}
+                    </td>
+                    <td class="light-orange-b">
+                      {{ eois_reports?.yearly?.deposited?.value }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="dark-grey-b">Pending</td>
+                    <td class="light-grey-b">
+                      {{ eois_reports?.yearly?.pending?.count }}
+                    </td>
+                    <td class="light-orange-b">
+                      {{ eois_reports?.yearly?.pending?.value }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="dark-grey-b">Refunded</td>
+                    <td class="light-grey-b">
+                      {{ eois_reports?.yearly?.refunded?.count }}
+                    </td>
+                    <td class="light-orange-b">
+                      {{ eois_reports?.yearly?.refunded?.value }}
+                    </td>
+                  </tr>
+                </table>
+              </div>
+              <div class="col-md-6">
+                <table
+                  *ngIf="
+                    eois_reports?.accumulative &&
+                    userProfile?.role != 'CCO' &&
+                    !views_conf.charts
+                  "
+                  class="table table-responsive"
+                >
+                  <tr class="heading monthly-record">
+                    <th class="heading centered" colspan="3">Accumulative</th>
+                  </tr>
+                  <tr>
+                    <th class="centered col-md-3">Status</th>
+                    <th class="centered col-md-3">Units</th>
+                    <th class="centered col-md-3">Value</th>
+                  </tr>
+                  <tr>
+                    <td class="dark-grey-b">Approved</td>
+                    <td class="light-grey-b">
+                      {{ eois_reports?.accumulative?.approved?.count }}
+                    </td>
+                    <td class="light-orange-b">
+                      {{ eois_reports?.accumulative?.approved?.value }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="dark-grey-b">Cancelled</td>
+                    <td class="light-grey-b">
+                      {{ eois_reports?.accumulative?.cancelled?.count }}
+                    </td>
+                    <td class="light-orange-b">
+                      {{ eois_reports?.accumulative?.cancelled?.value }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="dark-grey-b">Reserved</td>
+                    <td class="light-grey-b">
+                      {{ eois_reports?.accumulative?.deposited?.count }}
+                    </td>
+                    <td class="light-orange-b">
+                      {{ eois_reports?.accumulative?.deposited?.value }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="dark-grey-b">Pending</td>
+                    <td class="light-grey-b">
+                      {{ eois_reports?.accumulative?.pending?.count }}
+                    </td>
+                    <td class="light-orange-b">
+                      {{ eois_reports?.accumulative?.pending?.value }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="dark-grey-b">Refunded</td>
+                    <td class="light-grey-b">
+                      {{ eois_reports?.accumulative?.refunded?.count }}
+                    </td>
+                    <td class="light-orange-b">
+                      {{ eois_reports?.accumulative?.refunded?.value }}
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="row" *ngIf="views_conf.charts && view == 'eois'">
+            <div class="col-md-6">
+              <div style="max-height: 300px">
+                <canvas
+                  baseChart
+                  height="600"
+                  [datasets]="charts.eoi_accumulative.datasets"
+                  [labels]="charts.eoi_accumulative.labels"
+                  [options]="chartOptions"
+                  [legend]="true"
+                  [chartType]="'bar'"
+                ></canvas>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div style="max-height: 300px">
+                <canvas
+                  baseChart
+                  height="600"
+                  [datasets]="charts.eoi_daily.datasets"
+                  [labels]="charts.eoi_daily.labels"
+                  [options]="chartOptions"
+                  [legend]="true"
+                  [chartType]="'bar'"
+                ></canvas>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div style="max-height: 300px">
+                <canvas
+                  baseChart
+                  height="600"
+                  [datasets]="charts.eoi_monthly.datasets"
+                  [labels]="charts.eoi_monthly.labels"
+                  [options]="chartOptions"
+                  [legend]="true"
+                  [chartType]="'bar'"
+                ></canvas>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div style="max-height: 300px">
+                <canvas
+                  baseChart
+                  height="600"
+                  [datasets]="charts.eoi_yearly.datasets"
+                  [labels]="charts.eoi_yearly.labels"
+                  [options]="chartOptions"
+                  [legend]="true"
+                  [chartType]="'bar'"
+                ></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="row" *ngIf="view == 'agent_sales' && !isLoading">
+            <div class="col-md-12 d-flex-end mb-3">
+              <div class="col-md-2">
+                <select
+                  class="form-control"
+                  (change)="sortByChangeHandler()"
+                  [(ngModel)]="params.sort"
+                >
+                  <option disabled selected value="null">Sort By</option>
+                  <option value="asc">Ascending</option>
+                  <option value="desc">Descending</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-12 overflow-scroll">
+              <table
+                *ngIf="agents_sales_data?.data"
+                class="table table-responsive"
+              >
+                <tr class="heading monthly-record" *ngIf="agent_sales_filter">
+                  <th
+                    class="heading centered"
+                    [attr.colspan]="agents_sales_projects?.length + 2"
+                  >
+                    {{ date_from }} TO {{ date_to }}
+                  </th>
+                </tr>
+                <tr class="heading monthly-record">
+                  <th
+                    class="heading centered"
+                    [attr.colspan]="agents_sales_projects?.length + 8"
+                  >
+                    Projects
+                  </th>
+                </tr>
+                <tr>
+                  <th class="centered" rowSpan="2">Agent Name</th>
+                  <th class="centered" colSpan="2">
+                    All
+                    <button
+                      [disabled]="isLoading"
+                      (click)="sortByColumn('agent_sales', 'desc')"
+                      class="sort-btn"
+                    >
+                      <i class="fa fa-solid fa-arrow-up"></i>
+                    </button>
+                    <button
+                      [disabled]="isLoading"
+                      (click)="sortByColumn('agent_sales', 'asc')"
+                      class="sort-btn"
+                    >
+                      <i class="fa fa-solid fa-arrow-down"></i>
+                    </button>
+                  </th>
+                  <th
+                    class="centered"
+                    colspan="2"
+                    *ngFor="let project of agents_sales_projects"
+                  >
+                    {{ project.project_name }}
+                  </th>
+                </tr>
+                <tr>
+                  <th class="centered">Unit</th>
+                  <th class="centered">Value</th>
+                  <ng-container *ngFor="let project of agents_sales_projects">
+                    <th class="centered">Unit</th>
+                    <th class="centered">Value</th>
+                  </ng-container>
+                </tr>
+                <tr *ngFor="let agent of agents_sales_data?.data">
+                  <td class="light-grey-b">{{ agent?.agent_name }}</td>
+                  <td class="td-data-color">
+                    {{ agent?.total_units_no }}
+                  </td>
+                  <td class="td-data-color">
+                    {{ agent?.total | currency : " " }}
+                  </td>
+                  <ng-container *ngFor="let agent_project of agent?.projects">
+                    <td class="td-data-color">
+                      {{ agent_project?.units }}
+                    </td>
+                    <td class="td-data-color">
+                      {{ agent_project?.amount | currency : " " }}
+                    </td>
+                  </ng-container>
+                </tr>
+                <tr *ngIf="agents_sales_data?.total">
+                  <td class="light-grey-b">Total</td>
+                  <ng-container *ngFor="let total of agents_sales_data?.total">
+                    <td class="td-data-color">
+                      {{ total.units }}
+                    </td>
+                    <td class="td-data-color">
+                      {{ total.amount | currency : " " }}
+                    </td>
+                  </ng-container>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <div class="row" *ngIf="view == 'agent_activities' && !isLoading">
+            <div class="col-md-12 d-flex-end mb-3">
+              <div class="col-md-2">
+                <select
+                  class="form-control"
+                  (change)="sortByChangeHandler()"
+                  [(ngModel)]="params.sort"
+                >
+                  <option disabled selected value="null">Sort By</option>
+                  <option value="asc">Ascending</option>
+                  <option value="desc">Descending</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-12 overflow-scroll">
+              <table
+                *ngIf="agents_activities_data?.data"
+                class="table table-responsive"
+              >
+                <tr
+                  class="heading monthly-record"
+                  *ngIf="agent_activities_filter"
+                >
+                  <th
+                    class="heading centered"
+                    [attr.colspan]="agents_activities_actions?.length + 2"
+                  >
+                    {{ date_from }} TO {{ date_to }}
+                  </th>
+                </tr>
+                <tr class="heading monthly-record">
+                  <th
+                    class="heading centered"
+                    [attr.colspan]="agents_activities_actions?.length + 2"
+                  >
+                    Actions
+                  </th>
+                </tr>
+                <tr>
+                  <th class="centered">Agent Name</th>
+                  <th class="centered">All</th>
+                  <th
+                    class="centered"
+                    *ngFor="let action of agents_activities_actions"
+                  >
+                    {{ action.action }}
+                  </th>
+                </tr>
+                <tr
+                  class="td-data-color"
+                  *ngFor="let agent of agents_activities_data?.data"
+                >
+                  <td class="light-grey-b">{{ agent?.agent_name }}</td>
+                  <td class="">
+                    {{ agent?.total }}
+                  </td>
+                  <td *ngFor="let agent_action of agent?.actions" class="">
+                    {{ agent_action?.count }}
+                  </td>
+                </tr>
+                <tr *ngIf="agents_activities_data?.total">
+                  <td class="light-grey-b">Total</td>
+                  <td
+                    *ngFor="let total of agents_activities_data?.total"
+                    class=""
+                  >
+                    {{ total }}
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <div
+            class="row"
+            *ngIf="view == 'agent_activities_leads' && !isLoading"
+          >
+            <div class="col-md-12 d-flex-end mb-3">
+              <div class="col-md-2">
+                <select
+                  class="form-control"
+                  (change)="sortByChangeHandler()"
+                  [(ngModel)]="params.sort"
+                >
+                  <option disabled selected value="null">Sort By</option>
+                  <option value="asc">Ascending</option>
+                  <option value="desc">Descending</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-12 overflow-scroll">
+              <table
+                *ngIf="agents_activities_leads_data?.data"
+                class="table table-responsive"
+              >
+                <tr
+                  class="heading monthly-record"
+                  *ngIf="agent_activities_leads_filter"
+                >
+                  <th class="heading centered" colspan="4">
+                    {{ date_from }} TO {{ date_to }}
+                  </th>
+                </tr>
+                <tr>
+                  <th class="centered">Agent Name</th>
+                  <th class="centered">Closed Leads</th>
+                  <th class="centered">Freeze Leads</th>
+                  <th class="centered">Interested Leads</th>
+                  <th class="centered">New Leads</th>
+                  <th class="centered">No Answer Leads</th>
+                  <th class="centered">Not Interested Leads</th>
+                  <th class="centered">Not Reachable Leads</th>
+                  <th class="centered">Total</th>
+                </tr>
+                <tr *ngFor="let agent of agents_activities_leads_data?.data">
+                  <td class="light-grey-b">{{ agent?.agent_name }}</td>
+                  <td class="td-data-color">{{ agent?.closed_leads }}</td>
+                  <td class="td-data-color">{{ agent?.freeze_leads }}</td>
+                  <td class="td-data-color">{{ agent?.interested_leads }}</td>
+                  <td class="td-data-color">{{ agent?.new_leads }}</td>
+                  <td class="td-data-color">{{ agent?.no_answer_leads }}</td>
+                  <td class="td-data-color">
+                    {{ agent?.not_interested_leads }}
+                  </td>
+                  <td class="td-data-color">
+                    {{ agent?.not_reachable_leads }}
+                  </td>
+                  <td class="td-data-color">
+                    {{ agent?.total }}
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <div class="row" *ngIf="view == 'manager_sales_report' && !isLoading">
+            <div class="col-md-12 overflow-scroll">
+              <table
+                *ngIf="manager_sales_report"
+                class="table table-responsive"
+              >
+                <tr>
+                  <th class="centered" rowspan="2">Manager</th>
+                  <th class="centered" rowspan="2">Hiring Date</th>
+                  <th class="centered" colspan="2">Pending</th>
+                  <th class="centered" colspan="2">Contracted</th>
+                  <th class="centered" colspan="2">Total</th>
+                </tr>
+                <tr>
+                  <th class="centered">Units</th>
+                  <th class="centered">Value</th>
+                  <th class="centered">Units</th>
+                  <th class="centered">
+                    Value
+                    <button
+                      [disabled]="isLoading"
+                      (click)="sortByColumn('manager_sales_report', 'desc')"
+                      class="sort-btn"
+                    >
+                      <i class="fa fa-solid fa-arrow-up"></i>
+                    </button>
+                    <button
+                      [disabled]="isLoading"
+                      (click)="sortByColumn('manager_sales_report', 'asc')"
+                      class="sort-btn"
+                    >
+                      <i class="fa fa-solid fa-arrow-down"></i>
+                    </button>
+                  </th>
+                  <th class="centered">Units</th>
+                  <th class="centered">Value</th>
+                </tr>
+                <tr *ngFor="let user of manager_sales_report?.users">
+                  <td class="cenetered light-grey-b">{{ user?.user_name }}</td>
+                  <td class="cenetered">{{ user?.date | date }}</td>
+                  <td class="cenetered td-data-color">
+                    {{ user?.reserved_no }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ user?.reserved_value | currency : " " }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ user?.contracted_no }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ user?.contracted_value | currency : " " }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ user?.total_units }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ user?.total_value | currency : " " }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="centered light-grey-b">Total</td>
+                  <td class="centered td-data-color"></td>
+                  <td class="centered td-data-color">
+                    {{ manager_sales_report?.total?.total_reserved_no }}
+                  </td>
+                  <td class="centered td-data-color">
+                    {{
+                      manager_sales_report?.total?.total_reserved_value
+                        | currency : " "
+                    }}
+                  </td>
+                  <td class="centered td-data-color">
+                    {{ manager_sales_report?.total?.total_contracted_no }}
+                  </td>
+                  <td class="centered td-data-color">
+                    {{
+                      manager_sales_report?.total?.total_contracted_value
+                        | currency : " "
+                    }}
+                  </td>
+                  <td class="centered td-data-color">
+                    {{ manager_sales_report?.total?.total_all_units }}
+                  </td>
+                  <td class="centered td-data-color">
+                    {{
+                      manager_sales_report?.total?.total_all_value
+                        | currency : " "
+                    }}
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <div class="row" *ngIf="view == 'pc_sales_report' && !isLoading">
+            <div class="col-md-12 overflow-scroll">
+              <table *ngIf="pc_sales_report" class="table table-responsive">
+                <tr>
+                  <th class="centered" rowspan="2">P.C Sales</th>
+                  <th class="centered" rowspan="2">Hiring Date</th>
+                  <th class="centered" colspan="2">Pending</th>
+                  <th class="centered" colspan="2">Contracted</th>
+                  <th class="centered" colspan="2">Total</th>
+                </tr>
+                <tr>
+                  <th class="centered">Units</th>
+                  <th class="centered">Value</th>
+                  <th class="centered">Units</th>
+                  <th class="centered">
+                    Value
+                    <button
+                      [disabled]="isLoading"
+                      (click)="sortByColumn('pc_sales_report', 'desc')"
+                      class="sort-btn"
+                    >
+                      <i class="fa fa-solid fa-arrow-up"></i>
+                    </button>
+                    <button
+                      [disabled]="isLoading"
+                      (click)="sortByColumn('pc_sales_report', 'asc')"
+                      class="sort-btn"
+                    >
+                      <i class="fa fa-solid fa-arrow-down"></i>
+                    </button>
+                  </th>
+                  <th class="centered">Units</th>
+                  <th class="centered">Value</th>
+                </tr>
+                <tr *ngFor="let user of pc_sales_report?.users">
+                  <td class="cenetered light-grey-b">{{ user?.user_name }}</td>
+                  <td class="cenetered">{{ user?.date | date }}</td>
+                  <td class="cenetered td-data-color">
+                    {{ user?.reserved_no }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ user?.reserved_value | currency : " " }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ user?.contracted_no }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ user?.contracted_value | currency : " " }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ user?.total_units }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ user?.total_value | currency : " " }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="centered light-grey-b">Total</td>
+                  <td class="centered td-data-color">-</td>
+                  <td class="centered td-data-color">
+                    {{ pc_sales_report?.total?.total_reserved_no }}
+                  </td>
+                  <td class="centered td-data-color">
+                    {{
+                      pc_sales_report?.total?.total_reserved_value
+                        | currency : " "
+                    }}
+                  </td>
+                  <td class="centered td-data-color">
+                    {{ pc_sales_report?.total?.total_contracted_no }}
+                  </td>
+                  <td class="centered td-data-color">
+                    {{
+                      pc_sales_report?.total?.total_contracted_value
+                        | currency : " "
+                    }}
+                  </td>
+                  <td class="centered td-data-color">
+                    {{ pc_sales_report?.total?.total_all_units }}
+                  </td>
+                  <td class="centered td-data-color">
+                    {{
+                      pc_sales_report?.total?.total_all_value | currency : " "
+                    }}
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div
+              class="col-md-12 d-flex align-items-center justify-content-center"
+            >
+              <ngb-pagination
+                [collectionSize]="pc_sales_report?.pages * 10"
+                [(page)]="page"
+                [maxSize]="5"
+                [rotate]="true"
+                [ellipses]="true"
+                [boundaryLinks]="true"
+                (pageChange)="pageChange($event)"
+                [size]="lg"
+              ></ngb-pagination>
+            </div>
+          </div>
+
+          <div class="row" *ngIf="view == 'pc_eois_report' && !isLoading">
+            <div class="col-md-12 overflow-scroll">
+              <table *ngIf="pc_eois_report" class="table table-responsive">
+                <tr>
+                  <th class="centered" rowspan="2">P.C EOIs</th>
+                  <th class="centered" rowspan="2">Hiring Date</th>
+                  <th class="centered" colspan="2">Pending</th>
+                  <th class="centered" colspan="2">Approved</th>
+                  <th class="centered" colspan="2">Reserved</th>
+                  <th class="centered" colspan="2">Refunded</th>
+                  <th class="centered" colspan="2">Cancelled</th>
+                  <th class="centered" colspan="2">Total</th>
+                </tr>
+                <tr>
+                  <th class="centered">EOIs</th>
+                  <th class="centered">Value</th>
+                  <th class="centered">EOIs</th>
+                  <th class="centered">Value</th>
+                  <th class="centered">EOIs</th>
+                  <th class="centered">Value</th>
+                  <th class="centered">EOIs</th>
+                  <th class="centered">Value</th>
+                  <th class="centered">EOIs</th>
+                  <th class="centered">Value</th>
+                  <th class="centered">EOIs</th>
+                  <th class="centered">Value</th>
+                </tr>
+                <tr *ngFor="let user of pc_eois_report?.users">
+                  <td class="cenetered light-grey-b">{{ user?.user_name }}</td>
+                  <td class="cenetered">{{ user?.date | date }}</td>
+                  <td class="cenetered td-data-color">
+                    {{ user?.pending_no }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ user?.pending_value | currency : " " }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ user?.approved_no }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ user?.approved_value | currency : " " }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ user?.reserved_no }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ user?.reserved_value | currency : " " }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ user?.refunded_no }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ user?.refunded_value | currency : " " }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ user?.cancelled_no }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ user?.cancelled_value | currency : " " }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ user?.total_eois }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ user?.total_value | currency : " " }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="centered light-grey-b">Total</td>
+                  <td class="centered td-data-color">-</td>
+                  <td class="centered td-data-color">
+                    {{ pc_eois_report?.total?.total_pending_no }}
+                  </td>
+                  <td class="centered td-data-color">
+                    {{
+                      pc_eois_report?.total?.total_pending_value
+                        | currency : " "
+                    }}
+                  </td>
+                  <td class="centered td-data-color">
+                    {{ pc_eois_report?.total?.total_approved_no }}
+                  </td>
+                  <td class="centered td-data-color">
+                    {{
+                      pc_eois_report?.total?.total_approved_value
+                        | currency : " "
+                    }}
+                  </td>
+                  <td class="centered td-data-color">
+                    {{ pc_eois_report?.total?.total_reserved_no }}
+                  </td>
+                  <td class="centered td-data-color">
+                    {{
+                      pc_eois_report?.total?.total_reserved_value
+                        | currency : " "
+                    }}
+                  </td>
+                  <td class="centered td-data-color">
+                    {{ pc_eois_report?.total?.total_refunded_no }}
+                  </td>
+                  <td class="centered td-data-color">
+                    {{
+                      pc_eois_report?.total?.total_refunded_value
+                        | currency : " "
+                    }}
+                  </td>
+                  <td class="centered td-data-color">
+                    {{ pc_eois_report?.total?.total_cancelled_no }}
+                  </td>
+                  <td class="centered td-data-color">
+                    {{
+                      pc_eois_report?.total?.total_cancelled_value
+                        | currency : " "
+                    }}
+                  </td>
+                  <td class="centered td-data-color">
+                    {{ pc_eois_report?.total?.total_all_eois }}
+                  </td>
+                  <td class="centered td-data-color">
+                    {{
+                      pc_eois_report?.total?.total_all_value | currency : " "
+                    }}
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div
+              class="col-md-12 d-flex align-items-center justify-content-center"
+            >
+              <ngb-pagination
+                [collectionSize]="pc_eois_report?.pages * 10"
+                [(page)]="page"
+                [maxSize]="5"
+                [rotate]="true"
+                [ellipses]="true"
+                [boundaryLinks]="true"
+                (pageChange)="pageChange($event)"
+                [size]="lg"
+              ></ngb-pagination>
+            </div>
+          </div>
+
+          <div class="row" *ngIf="view == 'manager_eois_report' && !isLoading">
+            <div class="col-md-12 overflow-scroll">
+              <table *ngIf="manager_eois_report" class="table table-responsive">
+                <tr>
+                  <th class="centered" rowspan="2">P.C EOIs</th>
+                  <th class="centered" rowspan="2">Hiring Date</th>
+                  <th class="centered" colspan="2">Pending</th>
+                  <th class="centered" colspan="2">Approved</th>
+                  <th class="centered" colspan="2">Reserved</th>
+                  <th class="centered" colspan="2">Refunded</th>
+                  <th class="centered" colspan="2">Cancelled</th>
+                  <th class="centered" colspan="2">Total</th>
+                </tr>
+                <tr>
+                  <th class="centered">EOIs</th>
+                  <th class="centered">Value</th>
+                  <th class="centered">EOIs</th>
+                  <th class="centered">Value</th>
+                  <th class="centered">EOIs</th>
+                  <th class="centered">Value</th>
+                  <th class="centered">EOIs</th>
+                  <th class="centered">Value</th>
+                  <th class="centered">EOIs</th>
+                  <th class="centered">Value</th>
+                  <th class="centered">EOIs</th>
+                  <th class="centered">Value</th>
+                </tr>
+                <tr *ngFor="let user of manager_eois_report?.users">
+                  <td class="cenetered light-grey-b">{{ user?.user_name }}</td>
+                  <td class="cenetered">{{ user?.date | date }}</td>
+                  <td class="cenetered td-data-color">
+                    {{ user?.pending_no }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ user?.pending_value | currency : " " }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ user?.approved_no }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ user?.approved_value | currency : " " }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ user?.reserved_no }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ user?.reserved_value | currency : " " }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ user?.refunded_no }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ user?.refunded_value | currency : " " }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ user?.cancelled_no }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ user?.cancelled_value | currency : " " }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ user?.total_eois }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ user?.total_value | currency : " " }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="centered light-grey-b">Total</td>
+                  <td class="centered td-data-color">-</td>
+                  <td class="centered td-data-color">
+                    {{ manager_eois_report?.total?.total_pending_no }}
+                  </td>
+                  <td class="centered td-data-color">
+                    {{
+                      manager_eois_report?.total?.total_pending_value
+                        | currency : " "
+                    }}
+                  </td>
+                  <td class="centered td-data-color">
+                    {{ manager_eois_report?.total?.total_approved_no }}
+                  </td>
+                  <td class="centered td-data-color">
+                    {{
+                      manager_eois_report?.total?.total_approved_value
+                        | currency : " "
+                    }}
+                  </td>
+                  <td class="centered td-data-color">
+                    {{ manager_eois_report?.total?.total_reserved_no }}
+                  </td>
+                  <td class="centered td-data-color">
+                    {{
+                      manager_eois_report?.total?.total_reserved_value
+                        | currency : " "
+                    }}
+                  </td>
+                  <td class="centered td-data-color">
+                    {{ manager_eois_report?.total?.total_refunded_no }}
+                  </td>
+                  <td class="centered td-data-color">
+                    {{
+                      manager_eois_report?.total?.total_refunded_value
+                        | currency : " "
+                    }}
+                  </td>
+                  <td class="centered td-data-color">
+                    {{ manager_eois_report?.total?.total_cancelled_no }}
+                  </td>
+                  <td class="centered td-data-color">
+                    {{
+                      manager_eois_report?.total?.total_cancelled_value
+                        | currency : " "
+                    }}
+                  </td>
+                  <td class="centered td-data-color">
+                    {{ manager_eois_report?.total?.total_all_eois }}
+                  </td>
+                  <td class="centered td-data-color">
+                    {{
+                      manager_eois_report?.total?.total_all_value
+                        | currency : " "
+                    }}
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div
+              class="col-md-12 d-flex align-items-center justify-content-center"
+            >
+              <ngb-pagination
+                [collectionSize]="manager_eois_report?.pages * 10"
+                [(page)]="page"
+                [maxSize]="5"
+                [rotate]="true"
+                [ellipses]="true"
+                [boundaryLinks]="true"
+                (pageChange)="pageChange($event)"
+                [size]="lg"
+              ></ngb-pagination>
+            </div>
+          </div>
+
+          <div
+            class="row"
+            *ngIf="view == 'overseas_sales_report' && !isLoading"
+          >
+            <div class="col-md-12 overflow-scroll">
+              <table
+                *ngIf="overseas_sales_report"
+                class="table table-responsive"
+              >
+                <tr>
+                  <th class="centered" rowspan="2">Local / Overseas</th>
+                  <th class="centered" colspan="2">Pending</th>
+                  <th class="centered" colspan="2">Contracted</th>
+                  <th class="centered" colspan="4">Total</th>
+                </tr>
+                <tr>
+                  <th class="centered">Units</th>
+                  <th class="centered">Value</th>
+                  <th class="centered">Units</th>
+                  <th class="centered">Value</th>
+                  <th class="centered">Units</th>
+                  <th class="centered">Percentage</th>
+                  <th class="centered">Value</th>
+                  <th class="centered">Percentage</th>
+                </tr>
+                <tr>
+                  <td class="cenetered light-grey-b">Local Sales</td>
+                  <td class="cenetered td-data-color">
+                    {{
+                      overseas_sales_report?.reservations[0]
+                        ?.local_reserved_units
+                    }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{
+                      overseas_sales_report?.reservations[0]
+                        ?.local_reserved_value | currency : " "
+                    }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{
+                      overseas_sales_report?.reservations[0]
+                        ?.local_contracted_units
+                    }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{
+                      overseas_sales_report?.reservations[0]
+                        ?.local_contracted_value | currency : " "
+                    }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{
+                      overseas_sales_report?.reservations[0]?.local_total_units
+                    }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{
+                      (overseas_sales_report?.reservations[0]
+                        ?.local_total_units_percentage | currency : " ") + "%"
+                    }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{
+                      overseas_sales_report?.reservations[0]?.local_total_value
+                        | currency : " "
+                    }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{
+                      (overseas_sales_report?.reservations[0]
+                        ?.local_total_value_percentage | currency : " ") + "%"
+                    }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="cenetered light-grey-b">Overseas Sales</td>
+                  <td class="cenetered td-data-color">
+                    {{
+                      overseas_sales_report?.reservations[0]
+                        ?.overseas_reserved_units
+                    }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{
+                      overseas_sales_report?.reservations[0]
+                        ?.overseas_reserved_value | currency : " "
+                    }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{
+                      overseas_sales_report?.reservations[0]
+                        ?.overseas_contracted_units
+                    }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{
+                      overseas_sales_report?.reservations[0]
+                        ?.overseas_contracted_value | currency : " "
+                    }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{
+                      overseas_sales_report?.reservations[0]
+                        ?.overseas_total_units
+                    }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{
+                      (overseas_sales_report?.reservations[0]
+                        ?.overseas_total_units_percentage | currency : " ") +
+                        "%"
+                    }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{
+                      overseas_sales_report?.reservations[0]
+                        ?.overseas_total_value | currency : " "
+                    }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{
+                      (overseas_sales_report?.reservations[0]
+                        ?.overseas_total_value_percentage | currency : " ") +
+                        "%"
+                    }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="centered light-grey-b">Total</td>
+                  <td class="centered td-data-color">
+                    {{ overseas_sales_report?.total?.reserved_total_units }}
+                  </td>
+                  <td class="centered td-data-color">
+                    {{
+                      overseas_sales_report?.total?.reserved_total_value
+                        | currency : " "
+                    }}
+                  </td>
+                  <td class="centered td-data-color">
+                    {{ overseas_sales_report?.total?.contracted_total_units }}
+                  </td>
+                  <td class="centered td-data-color">
+                    {{
+                      overseas_sales_report?.total?.contracted_total_value
+                        | currency : " "
+                    }}
+                  </td>
+                  <td class="centered td-data-color">
+                    {{ overseas_sales_report?.total?.total_all_units }}
+                  </td>
+                  <td class="centered td-data-color">100%</td>
+                  <td class="centered td-data-color">
+                    {{
+                      overseas_sales_report?.total?.total_all_value
+                        | currency : " "
+                    }}
+                  </td>
+                  <td class="centered td-data-color">100%</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <div
+            class="row"
+            *ngIf="
+              view == 'channel_sales_report' && !isLoading && !views_conf.charts
+            "
+          >
+            <!-- <div class="col-md-12 d-flex-end mb-3">
+              <div class="col-md-2">
+                <select
+                  class="form-control"
+                  (change)="sortByChangeHandler()"
+                  [(ngModel)]="params.sort"
+                >
+                  <option disabled selected value="null">Sort By</option>
+                  <option value="asc">Ascending</option>
+                  <option value="desc">Descending</option>
+                </select>
+              </div>
+            </div> -->
+            <div class="col-md-12 overflow-scroll">
+              <table
+                *ngIf="channel_sales_report"
+                class="table table-responsive"
+              >
+                <tr>
+                  <th class="centered" rowspan="2">Channels / Sales</th>
+                  <th class="centered" colspan="2">Pending</th>
+                  <th class="centered" colspan="2">Contracted</th>
+                  <th class="centered" colspan="3">Total</th>
+                </tr>
+                <tr>
+                  <th class="centered">Units</th>
+                  <th class="centered">Value</th>
+                  <th class="centered">Units</th>
+                  <th class="centered">Value</th>
+                  <th class="centered">Units</th>
+                  <th class="centered">
+                    Value
+                    <button
+                      [disabled]="isLoading"
+                      (click)="sortByColumn('channel_sales_report', 'desc')"
+                      class="sort-btn"
+                    >
+                      <i class="fa fa-solid fa-arrow-up"></i>
+                    </button>
+                    <button
+                      [disabled]="isLoading"
+                      (click)="sortByColumn('channel_sales_report', 'asc')"
+                      class="sort-btn"
+                    >
+                      <i class="fa fa-solid fa-arrow-down"></i>
+                    </button>
+                  </th>
+                  <th class="centered">Percentage</th>
+                </tr>
+                <tr
+                  *ngFor="let channel of channel_sales_report?.reservations[0]"
+                >
+                  <td class="cenetered light-grey-b">
+                    {{ channel?.title }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ channel?.reserved_units }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ channel?.reserved_value | currency : " " }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ channel?.contracted_units }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ channel?.contracted_value | currency : " " }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ channel?.total_units }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ channel?.total_value | currency : " " }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ channel?.total_units_percentage | currency : " " }}%
+                  </td>
+                </tr>
+                <tr>
+                  <td class="centered light-grey-b">Total</td>
+                  <td class="centered td-data-color">
+                    {{ channel_sales_report?.total?.reserved_total_units }}
+                  </td>
+                  <td class="centered td-data-color">
+                    {{
+                      channel_sales_report?.total?.reserved_total_value
+                        | currency : " "
+                    }}
+                  </td>
+                  <td class="centered td-data-color">
+                    {{ channel_sales_report?.total?.contracted_total_units }}
+                  </td>
+                  <td class="centered td-data-color">
+                    {{
+                      channel_sales_report?.total?.contracted_total_value
+                        | currency : " "
+                    }}
+                  </td>
+                  <td class="centered td-data-color">
+                    {{ channel_sales_report?.total?.total_all_units }}
+                  </td>
+                  <td class="centered td-data-color">
+                    {{
+                      channel_sales_report?.total?.total_all_value
+                        | currency : " "
+                    }}
+                  </td>
+                  <td class="centered td-data-color">
+                    {{ channel_sales_report?.total?.total_all_percentage }}%
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <div
+            class="row"
+            *ngIf="
+              view == 'channel_sales_report' && !isLoading && views_conf.charts
+            "
+          >
+            <div class="col-md-12">
+              <div class="col-md-6">
+                <h4 class="text-center">Unit Distribution</h4>
+                <canvas
+                  baseChart
+                  [data]="pieUnitChartData"
+                  [labels]="pieChartLabels"
+                  [chartType]="pieChartType"
+                ></canvas>
+              </div>
+              <div class="col-md-6">
+                <h4 class="text-center">Unit Value Distribution</h4>
+                <canvas
+                  baseChart
+                  [data]="pieUnitValueChartData"
+                  [labels]="pieChartLabels"
+                  [chartType]="pieChartType"
+                ></canvas>
+              </div>
+            </div>
+          </div>
+          <div class="row" *ngIf="view == 'pc_target_report' && !isLoading">
+            <div class="col-md-12 overflow-scroll">
+              <table *ngIf="pc_target_report" class="table table-responsive">
+                <tr>
+                  <th class="centered" rowspan="2">P.C</th>
+                  <th class="centered" rowspan="2">Hiring Date</th>
+                  <ng-container>
+                    <th
+                      class="centered"
+                      *ngFor="
+                        let date of pc_target_report?.users[0]?.target_arr
+                      "
+                      colspan="3"
+                    >
+                      {{ date?.date }}
+                    </th>
+                  </ng-container>
+                  <th class="centered" colspan="3">Year Total</th>
+                  <th class="centered" colspan="2">Lost Achievement</th>
+                </tr>
+                <tr>
+                  <ng-container
+                    *ngFor="let date of pc_target_report?.users[0]?.target_arr"
+                  >
+                    <th class="centered">Target</th>
+                    <th class="centered">Value</th>
+                    <th class="centered">
+                      Achievement
+                      <button
+                        [disabled]="isLoading"
+                        (click)="
+                          sortByColumn('pc_target_report', 'desc', date?.date)
+                        "
+                        class="sort-btn"
+                      >
+                        <i class="fa fa-solid fa-arrow-up"></i>
+                      </button>
+                      <button
+                        [disabled]="isLoading"
+                        (click)="
+                          sortByColumn('pc_target_report', 'asc', date?.date)
+                        "
+                        class="sort-btn"
+                      >
+                        <i class="fa fa-solid fa-arrow-down"></i>
+                      </button>
+                    </th>
+                  </ng-container>
+                  <th class="centered">Target</th>
+                  <th class="centered">Value</th>
+                  <th class="centered">
+                    Achievement
+                    <button
+                      [disabled]="isLoading"
+                      (click)="
+                        sortByColumn('pc_target_report', 'desc', date?.date)
+                      "
+                      class="sort-btn"
+                    >
+                      <i class="fa fa-solid fa-arrow-up"></i>
+                    </button>
+                    <button
+                      [disabled]="isLoading"
+                      (click)="
+                        sortByColumn('pc_target_report', 'asc', date?.date)
+                      "
+                      class="sort-btn"
+                    >
+                      <i class="fa fa-solid fa-arrow-down"></i>
+                    </button>
+                  </th>
+                  <th class="centered">Lost Value</th>
+                  <th class="centered">Lost %</th>
+                </tr>
+                <tr *ngFor="let user of pc_target_report?.users">
+                  <td class="cenetered light-grey-b">{{ user?.user_name }}</td>
+                  <td class="cenetered">{{ user?.date | date }}</td>
+                  <ng-container *ngFor="let target of user?.target_arr">
+                    <td class="cenetered td-data-color">
+                      {{ target?.target | currency : " " }}
+                    </td>
+                    <td class="cenetered td-data-color">
+                      {{ target?.value | currency : " " }}
+                    </td>
+                    <td class="cenetered td-data-color">
+                      {{ target?.achievement_percentage }} %
+                    </td>
+                  </ng-container>
+                  <td class="cenetered td-data-color">
+                    {{ user?.year_target | currency : " " }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ user?.year_value | currency : " " }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ user?.year_achievement_percentage }} %
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ user?.lost_value | currency : " " }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ user?.lost_percentage }} %
+                  </td>
+                </tr>
+                <tr>
+                  <td class="centered light-grey-b" colspan="2">Total</td>
+                  <ng-container
+                    *ngFor="
+                      let year of pc_target_report?.total?.total_target_arr
+                    "
+                  >
+                    <td class="centered td-data-color-reverse">
+                      {{ year?.target | currency : " " }}
+                    </td>
+                    <td class="centered td-data-color-reverse">
+                      {{ year?.value | currency : " " }}
+                    </td>
+                    <td class="centered td-data-color-reverse">
+                      {{ year?.achievement_percentage }} %
+                    </td>
+                  </ng-container>
+                  <td class="centered td-data-color-reverse">
+                    {{
+                      pc_target_report?.total?.total_year_target
+                        | currency : " "
+                    }}
+                  </td>
+                  <td class="centered td-data-color-reverse">
+                    {{
+                      pc_target_report?.total?.total_year_value | currency : " "
+                    }}
+                  </td>
+                  <td class="centered td-data-color-reverse">
+                    {{
+                      pc_target_report?.total?.total_year_achievement_percentage
+                    }}
+                    %
+                  </td>
+                  <td class="centered td-data-color-reverse">
+                    {{
+                      pc_target_report?.total?.total_lost_value | currency : " "
+                    }}
+                  </td>
+                  <td class="centered td-data-color-reverse">
+                    {{ pc_target_report?.total?.total_lost_percentage }} %
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div
+              class="col-md-12 d-flex align-items-center justify-content-center"
+            >
+              <ngb-pagination
+                [collectionSize]="pc_target_report?.pages * 10"
+                [(page)]="page"
+                [maxSize]="5"
+                [rotate]="true"
+                [ellipses]="true"
+                [boundaryLinks]="true"
+                (pageChange)="pageChange($event)"
+                [size]="lg"
+              ></ngb-pagination>
+            </div>
+          </div>
+
+          <div
+            class="row"
+            *ngIf="view == 'managers_target_report' && !isLoading"
+          >
+            <div class="col-md-12 overflow-scroll">
+              <table
+                *ngIf="managers_target_report"
+                class="table table-responsive"
+              >
+                <tr>
+                  <th class="centered" rowspan="2">Managers</th>
+                  <th class="centered" rowspan="2">Hiring Date</th>
+                  <ng-container>
+                    <th
+                      class="centered"
+                      *ngFor="
+                        let date of managers_target_report?.users[0]?.target_arr
+                      "
+                      colspan="3"
+                    >
+                      {{ date?.date }}
+                    </th>
+                  </ng-container>
+                  <th class="centered" colspan="3">Year Total</th>
+                  <th class="centered" colspan="2">Lost Achievement</th>
+                </tr>
+                <tr>
+                  <ng-container
+                    *ngFor="
+                      let date of managers_target_report?.users[0]?.target_arr
+                    "
+                  >
+                    <th class="centered">Target</th>
+                    <th class="centered">Value</th>
+                    <th class="centered">
+                      Achievement
+
+                      <button
+                        [disabled]="isLoading"
+                        (click)="
+                          sortByColumn(
+                            'managers_target_report',
+                            'desc',
+                            date?.date
+                          )
+                        "
+                        class="sort-btn"
+                      >
+                        <i class="fa fa-solid fa-arrow-up"></i>
+                      </button>
+                      <button
+                        [disabled]="isLoading"
+                        (click)="
+                          sortByColumn(
+                            'managers_target_report',
+                            'asc',
+                            date?.date
+                          )
+                        "
+                        class="sort-btn"
+                      >
+                        <i class="fa fa-solid fa-arrow-down"></i>
+                      </button>
+                    </th>
+                  </ng-container>
+                  <th class="centered">Target</th>
+                  <th class="centered">Value</th>
+                  <th class="centered">
+                    Achievement
+
+                    <button
+                      [disabled]="isLoading"
+                      (click)="
+                        sortByColumn(
+                          'managers_target_report',
+                          'desc',
+                          date?.date
+                        )
+                      "
+                      class="sort-btn"
+                    >
+                      <i class="fa fa-solid fa-arrow-up"></i>
+                    </button>
+                    <button
+                      [disabled]="isLoading"
+                      (click)="
+                        sortByColumn(
+                          'managers_target_report',
+                          'asc',
+                          date?.date
+                        )
+                      "
+                      class="sort-btn"
+                    >
+                      <i class="fa fa-solid fa-arrow-down"></i>
+                    </button>
+                  </th>
+                  <th class="centered">Lost Value</th>
+                  <th class="centered">Lost %</th>
+                </tr>
+                <tr *ngFor="let user of managers_target_report?.users">
+                  <td class="cenetered light-grey-b">{{ user?.user_name }}</td>
+                  <td class="cenetered">{{ user?.date | date }}</td>
+                  <ng-container *ngFor="let target of user?.target_arr">
+                    <td class="cenetered td-data-color">
+                      {{ target?.target | currency : " " }}
+                    </td>
+                    <td class="cenetered td-data-color">
+                      {{ target?.value | currency : " " }}
+                    </td>
+                    <td class="cenetered td-data-color">
+                      {{ target?.achievement_percentage }} %
+                    </td>
+                  </ng-container>
+                  <td class="cenetered td-data-color">
+                    {{ user?.year_value | currency : " " }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ user?.year_achievement_percentage }} %
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ user?.lost_value | currency : " " }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ user?.lost_value | currency : " " }}
+                  </td>
+                  <td class="cenetered td-data-color">
+                    {{ user?.lost_percentage }} %
+                  </td>
+                </tr>
+                <tr>
+                  <td class="centered light-grey-b" colspan="2">Total</td>
+                  <ng-container
+                    *ngFor="
+                      let year of managers_target_report?.total
+                        ?.total_target_arr
+                    "
+                  >
+                    <td class="centered td-data-color-reverse">
+                      {{ year?.target | currency : " " }}
+                    </td>
+                    <td class="centered td-data-color-reverse">
+                      {{ year?.value | currency : " " }}
+                    </td>
+                    <td class="centered td-data-color-reverse">
+                      {{ year?.achievement_percentage }} %
+                    </td>
+                  </ng-container>
+                  <td class="centered td-data-color-reverse">
+                    {{
+                      managers_target_report?.total?.total_year_target
+                        | currency : " "
+                    }}
+                  </td>
+                  <td class="centered td-data-color-reverse">
+                    {{
+                      managers_target_report?.total?.total_year_value
+                        | currency : " "
+                    }}
+                  </td>
+                  <td class="centered td-data-color-reverse">
+                    {{
+                      managers_target_report?.total
+                        ?.total_year_achievement_percentage
+                    }}
+                    %
+                  </td>
+                  <td class="centered td-data-color-reverse">
+                    {{
+                      managers_target_report?.total?.total_lost_value
+                        | currency : " "
+                    }}
+                  </td>
+                  <td class="centered td-data-color-reverse">
+                    {{ managers_target_report?.total?.total_lost_percentage }} %
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

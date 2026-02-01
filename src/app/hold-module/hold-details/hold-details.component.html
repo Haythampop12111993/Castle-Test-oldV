@@ -1,0 +1,1194 @@
+<!-- THIS SECTION REPRESENTS THE STRUCTURE/SKELETON OF THE PAGE AND WHERE EACH PART IS LAID OUT -->
+<!-- USE Fold level 1 command in vs code for clear visualization of the page -->
+<section class="unit">
+  <div class="container-fluid">
+    <h2>HOLD</h2>
+    <div class="row">
+      <div class="col-xs-12" *ngIf="hold_details">
+        <div class="lead-details">
+          <ng-template [ngTemplateOutlet]="holdSummary"></ng-template>
+
+          <div class="lead-content-section">
+            <ng-template [ngTemplateOutlet]="tabButtons"></ng-template>
+
+            <div>
+              <div class="tab-content">
+                <ng-template [ngTemplateOutlet]="customerInfoTab"></ng-template>
+                <ng-template [ngTemplateOutlet]="dealTypeTab"></ng-template>
+                <ng-template
+                  [ngTemplateOutlet]="accountantInformationTab"
+                ></ng-template>
+                <ng-template [ngTemplateOutlet]="pcInfoTab"></ng-template>
+                <ng-template [ngTemplateOutlet]="commentTab"></ng-template>
+                <ng-template [ngTemplateOutlet]="activityLogTab"></ng-template>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Random divs go here -->
+
+<ng-template #holdSummary>
+  <div class="header-lead">
+    <div class="row">
+      <div class="col-md-9">
+        <div class="media">
+          <div class="media-icon">
+            <a
+              [ngClass]="{
+                'bg-success-circle': hold_details.status == 1,
+                'bg-rent-success-circle ': hold_details.status == 3,
+                'bg-danger-circle':
+                  hold_details.status == -1 ||
+                  hold_details.status == 2 ||
+                  hold_details.status == -2
+              }"
+            >
+              {{ hold_details?.status_text.substring(0, 10) }}
+            </a>
+          </div>
+          <div class="media-body">
+            <h3>
+              Hold [{{ hold_details?.serial }}]
+              <span>#{{ hold_details?.id }}</span>
+            </h3>
+            <div class="row">
+              <div class="col-xs-4">
+                <ul class="list-unstyled">
+                  <li>Status: {{ hold_details?.status_text }}</li>
+                  <li>
+                    Lead Name:
+                    <a (click)="redirectToLeadDetails(hold_details?.lead_id)">{{
+                      hold_details?.lead?.name
+                    }}</a>
+                  </li>
+                  <li>Lead Phone: {{ hold_details?.lead_phone }}</li>
+                  <li>Lead Address: {{ hold_details?.lead_address }}</li>
+                  <li>
+                    Lead Other Phone: {{ hold_details?.lead_other_phone }}
+                  </li>
+                  <li>Lead Issue Date: {{ hold_details?.lead_issue_date }}</li>
+                  <li>Arabic Name: {{ hold_details?.lead_arabic_name }}</li>
+                  <li>Job: {{ hold_details?.lead_job_title }}</li>
+                  <li>Issue Date: {{ hold_details?.lead_issue_date }}</li>
+                  <li>Workplace: {{ hold_details?.lead_workplace }}</li>
+                  <li>Phase: {{ hold_details?.phase }}</li>
+                </ul>
+              </div>
+              <div class="col-xs-4">
+                <ul class="list-unstyled">
+                  <li>Agent: {{ hold_details?.user?.name }}</li>
+                  <li>Payment Type: {{ hold_details?.payment_type }}</li>
+                  <li>
+                    Hold Fees:
+                    {{
+                      hold_details?.hold_value
+                        | currency : " " : false : "1.0-0"
+                    }}
+                  </li>
+                  <li>Expiration date: {{ hold_details?.expiration_date }}</li>
+                  <li>Project Name: {{ hold_details?.project?.name }}</li>
+                  <li>Unit Serial: {{ hold_details?.unit?.serial }}</li>
+                  <li>
+                    Finishing Types: {{ hold_details?.finishing_type?.name }}
+                  </li>
+                  <li>
+                    Linked reservation status:
+                    {{ hold_details?.linked_reservation_status_text }}
+                  </li>
+                  <li *ngIf="hold_details.reservation">
+                    Linked Reservation serial: #
+                    {{ hold_details?.reservation?.id }}
+                  </li>
+                </ul>
+              </div>
+              <div class="col-xs-4"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 operation-container"></div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #tabButtons>
+  <ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active">
+      <a
+        href="#customerInfoTab"
+        aria-controls="customerInfoTab"
+        role="tab"
+        data-toggle="tab"
+      >
+        Customer Information
+      </a>
+    </li>
+
+    <li role="presentation" *ngIf="userProfile.role !== 'Down Town Account'">
+      <a
+        href="#dealTypeTab"
+        aria-controls="dealTypeTab"
+        role="tab"
+        data-toggle="tab"
+        >Deal Type</a
+      >
+    </li>
+
+    <li role="presentation" *ngIf="userProfile.role !== 'Down Town Account'">
+      <a
+        href="#accountantInformationTab"
+        aria-controls="accountantInformationTab"
+        role="tab"
+        data-toggle="tab"
+        >Accountant Information</a
+      >
+    </li>
+
+    <li role="presentation" *ngIf="userProfile.role !== 'Down Town Account'">
+      <a
+        href="#pcInfoTab"
+        aria-controls="pcInfoTab"
+        role="tab"
+        data-toggle="tab"
+      >
+        P.C Info
+      </a>
+    </li>
+
+    <li
+      role="presentation"
+      *ngIf="
+        userProfile.role == 'Admin' || userProfile.role == 'Super Development'
+      "
+    >
+      <a
+        href="#commentTab"
+        aria-controls="commentTab"
+        role="tab"
+        data-toggle="tab"
+      >
+        Comment
+      </a>
+    </li>
+
+    <li role="presentation" *ngIf="userProfile.role !== 'Down Town Account'">
+      <a
+        href="#activityLogTab"
+        aria-controls="activityLogTab"
+        role="tab"
+        data-toggle="tab"
+      >
+        Activity Log
+      </a>
+    </li>
+  </ul>
+</ng-template>
+
+<!-- Tabs Start Here -->
+
+<ng-template #customerInfoTab>
+  <div role="tabpanel" class="tab-pane fade in active" id="customerInfoTab">
+    <div class="box-mrg">
+      <div class="row">
+        <div class="col-xs-4">
+          <ul class="list-unstyled">
+            <li class="row">
+              <div class="col-xs-6">Customer Name :</div>
+              <div class="col-xs-6">
+                {{ hold_details?.lead_name }}
+              </div>
+            </li>
+
+            <li class="row">
+              <div class="col-xs-6">Lead Nationality :</div>
+              <div class="col-xs-6">
+                {{ hold_details?.lead_nationality }}
+              </div>
+            </li>
+            <li class="row">
+              <div class="col-xs-6">Lead National ID :</div>
+              <div class="col-xs-6">
+                {{ hold_details?.lead_national_id }}
+              </div>
+            </li>
+            <li class="row">
+              <div class="col-xs-6">Lead Email :</div>
+              <div class="col-xs-6">
+                {{ hold_details?.lead_email }}
+              </div>
+            </li>
+
+            <ng-container *ngIf="hold_details?.approved">
+              <li class="row">
+                <div class="col-xs-6">Cash Collected :</div>
+                <div class="col-xs-6">
+                  {{ hold_details?.approved }}
+                </div>
+              </li>
+              <li class="row">
+                <div class="col-xs-6">Cash Collected Date :</div>
+                <div class="col-xs-6">
+                  {{ hold_details?.approved_date }}
+                </div>
+              </li>
+              <li class="row">
+                <div class="col-xs-6">Cash Collected By :</div>
+                <div class="col-xs-6">
+                  {{ hold_details?.approved_by }}
+                </div>
+              </li>
+            </ng-container>
+          </ul>
+        </div>
+        <div class="col-xs-4">
+          <ul class="list-unstyled">
+            <li class="row">
+              <div class="col-xs-6">Lead Address :</div>
+              <div class="col-xs-6">
+                {{ hold_details?.lead_address }}
+              </div>
+            </li>
+            <li class="row">
+              <div class="col-xs-6">Lead Birthday :</div>
+              <div class="col-xs-6">
+                {{ hold_details?.lead_birthday }}
+              </div>
+            </li>
+            <li class="row">
+              <div class="col-xs-6">Lead District :</div>
+              <div class="col-xs-6">
+                {{ hold_details?.lead_district }}
+              </div>
+            </li>
+
+            <li class="row">
+              <div class="col-xs-6">Lead Channel :</div>
+              <div class="col-xs-6">
+                {{ hold_details?.lead_channel }}
+              </div>
+            </li>
+            <li class="row">
+              <div class="col-xs-6">Lead Source :</div>
+              <div class="col-xs-6">
+                {{ hold_details?.lead_source }}
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="col-xs-3 col-xs-offset-1 operation-buttons">
+          <button
+            class="btn btn-secondary first-btn"
+            (click)="assignModal.open(eoi_details?.id)"
+            *ngIf="
+              userProfile?.role == 'Admin' ||
+              userProfile.role == 'Super Development' ||
+              userProfile?.role == 'Moderator' ||
+              userProfile?.role == 'Super Moderator'
+            "
+          >
+            Assign to Agent
+          </button>
+
+          <button
+            class="btn btn-primary"
+            *ngIf="
+              (userProfile?.role == 'Admin' ||
+                userProfile.role == 'Super Development' ||
+                userProfile?.role == 'Moderator' ||
+                userProfile?.role == 'Super Moderator') &&
+              hold_details.approved_by
+            "
+            (click)="downloadHoldDocument()"
+          >
+            Download
+          </button>
+
+          <button
+            class="btn btn-secondary"
+            *ngIf="
+              (userProfile?.role == 'Admin' ||
+                userProfile.role == 'Super Development' ||
+                userProfile?.role == 'Moderator' ||
+                userProfile?.role == 'Super Moderator') &&
+              hold_details.status !== -1 &&
+              hold_details.status !== -2
+            "
+            (click)="changeConfirmationDateModal.open()"
+          >
+            Change Expiration Date
+          </button>
+
+          <!-- <button class="btn btn-danger" *ngIf="userProfile?.role == 'Admin'"
+           (click)="swalDelete(hold_details.id)">
+            Delete Hold
+          </button> -->
+
+          <button
+            class="btn btn-secondary"
+            *ngIf="
+              (userProfile?.role == 'Admin' ||
+                userProfile.role == 'Super Development' ||
+                userProfile?.role == 'Moderator' ||
+                userProfile?.role == 'Super Moderator') &&
+              hold_details.status !== -1 &&
+              hold_details.status !== -2
+            "
+            (click)="openEditLead(); editLead.open()"
+          >
+            Edit Customer Info
+          </button>
+
+          <button
+            class="btn btn-secondary"
+            *ngIf="
+              (userProfile?.role == 'Admin' ||
+                userProfile.role == 'Super Development' ||
+                userProfile?.role == 'Moderator' ||
+                userProfile?.role == 'Super Moderator' ||
+                userProfile?.role == 'A.R Accountant' ||
+                userProfile?.role == 'Treasury Accountant') &&
+              hold_details.status !== -1 &&
+              hold_details.status !== -2
+            "
+            (click)="openEditHold(); editHold.open()"
+          >
+            Edit Hold Info
+          </button>
+
+          <!-- <button class="btn btn-secondary" *ngIf="userProfile.role == 'Admin' && hold_details.status !== -1 && hold_details.status !== -2"
+            (click)="changeChannelAndSourceModal.open()">
+            Change Channel and Source
+          </button> -->
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #dealTypeTab>
+  <div role="tabpanel" class="tab-pane fade" id="dealTypeTab">
+    <div class="box-mrg">
+      <div class="row">
+        <div class="col-xs-4">
+          <ul class="list-unstyled">
+            <li class="row">
+              <div class="col-xs-6">Is Overseas :</div>
+              <div class="col-xs-6" *ngIf="hold_details?.is_overseas == 1">
+                Yes
+              </div>
+              <div class="col-xs-6" *ngIf="hold_details?.is_overseas == 0">
+                No
+              </div>
+            </li>
+            <li class="row">
+              <div class="col-xs-6">AMB :</div>
+              <div class="col-xs-6" *ngIf="hold_details?.ambassador">Yes</div>
+              <div class="col-xs-6" *ngIf="!hold_details?.ambassador">No</div>
+            </li>
+            <li class="row">
+              <div class="col-xs-6">Broker :</div>
+              <div class="col-xs-6" *ngIf="hold_details?.broker">Yes</div>
+              <div class="col-xs-6" *ngIf="!hold_details?.broker">No</div>
+            </li>
+            <!-- <li class="row" *ngIf="
+                userProfile?.role == 'Admin' &&
+                hold_details?.deal_type == 'In-Direct'
+              ">
+              <div class="col-xs-6">Change P.C in charge :</div>
+              <div class="col-xs-6">
+                <div class="form-group">
+                  <p-dropdown [(ngModel)]="agent_in_charge" name="agent_in_charge" [options]="agents" [filter]="true"
+                    class="p-ddl" [autoWidth]="false" [showClear]="true" optionLabel="name"
+                    (onChange)="onAgentInChargeSelected($event)" placeholder="Select agent">
+                  </p-dropdown>
+
+                </div>
+              </div>
+            </li> -->
+            <!-- <select (change)="onAgentInChargeSelected($event)" class="form-control" [(ngModel)]="agent_in_charge"
+              name="agent_in_charge">
+              <option *ngFor="let agent of agents" value="{{ agent.id }}">{{ agent.name }}</option>
+            </select> -->
+            <li class="row">
+              <div class="col-xs-6">Division :</div>
+              <div class="col-xs-6">
+                {{ hold_details?.deal_type }}
+              </div>
+            </li>
+            <!-- <li class="row">
+              <div class="col-xs-6">Project :</div>
+              <div class="col-xs-6">
+                <div class="form-group">
+                  <select name="project_id" (change)="onProjectChange($event)" [(ngModel)]="hold_details.project_id"
+                    id="project_id" class="form-control">
+                    <option *ngFor="let project of projects" [value]="project.id">{{project.name}}</option>
+                  </select>
+                </div>
+              </div>
+            </li>
+            <li class="row">
+              <div class="col-xs-6">Link To Reservation :</div>
+              <div class="col-xs-6">
+                <div class="form-group">
+                  <select name="reservation_id" (change)="onReservationLink($event)"
+                    [(ngModel)]="hold_details.reservation_id" id="reservation_id" class="form-control">
+                    <option *ngFor="let reservation of hold_details?.lead?.reservations" [value]="reservation.id">
+                      {{reservation?.unit?.serial}}</option>
+                  </select>
+                </div>
+              </div>
+            </li> -->
+          </ul>
+        </div>
+        <div class="col-xs-4">
+          <ul class="list-unstyled">
+            <li class="row" *ngIf="hold_details?.ambassador?.name">
+              <div class="col-xs-6">Ambassador Name :</div>
+              <div class="col-xs-6">
+                {{ hold_details?.ambassador?.name }}
+              </div>
+            </li>
+            <li class="row" *ngIf="hold_details?.broker?.name">
+              <div class="col-xs-6">Broker Name :</div>
+              <div class="col-xs-6">
+                {{ hold_details?.broker?.name }}
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="col-xs-3 col-xs-offset-1 operation-buttons"></div>
+        <div class="col-xs-3 col-xs-offset-1 operation-buttons">
+          <button
+            class="btn btn-secondary"
+            (click)="divisionModal.open()"
+            *ngIf="
+              (userProfile?.role == 'Admin' ||
+                userProfile.role == 'Super Development' ||
+                userProfile?.role == 'Moderator' ||
+                userProfile?.role == 'Super Moderator') &&
+              hold_details.status !== -1 &&
+              hold_details.status !== -2
+            "
+          >
+            Change Deal Type
+          </button>
+          <button
+            class="btn btn-secondary"
+            (click)="overseasModal.open()"
+            *ngIf="
+              (userProfile?.role == 'Admin' ||
+                userProfile.role == 'Super Development' ||
+                userProfile?.role == 'Moderator' ||
+                userProfile?.role == 'Super Moderator') &&
+              hold_details.status !== -1 &&
+              hold_details.status !== -2
+            "
+          >
+            Change Overseas
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #accountantInformationTab>
+  <div role="tabpanel" class="tab-pane fade" id="accountantInformationTab">
+    <div class="box-mrg">
+      <div class="col-xs-4">
+        <ul class="list-unstyled">
+          <li class="row">
+            <div class="col-xs-6">Payment Type :</div>
+            <div class="col-xs-6">
+              {{ hold_details?.payment_type }}
+            </div>
+          </li>
+
+          <ng-container *ngIf="hold_details?.approved_by">
+            <li class="row">
+              <div class="col-xs-6">Approved by :</div>
+              <div class="col-xs-6">
+                {{ hold_details?.approved_by }}
+              </div>
+            </li>
+
+            <li class="row">
+              <div class="col-xs-6">Approved Date :</div>
+              <div class="col-xs-6">
+                {{ hold_details?.approved_date }}
+              </div>
+            </li>
+          </ng-container>
+
+          <ng-container *ngIf="hold_details?.cancelled_by">
+            <li class="row">
+              <div class="col-xs-6">Cancelled Date :</div>
+              <div class="col-xs-6">
+                {{ hold_details?.cancelled_date }}
+              </div>
+            </li>
+            <li class="row">
+              <div class="col-xs-6">Cancelled by :</div>
+              <div class="col-xs-6">
+                {{ hold_details?.cancelled_by }}
+              </div>
+            </li>
+          </ng-container>
+        </ul>
+      </div>
+
+      <div class="col-xs-4">
+        <ul class="list-unstyled">
+          <li class="row">
+            <div class="col-xs-6">Hold Price :</div>
+            <div class="col-xs-6">
+              {{ hold_details?.hold_value | currency : " " : false : "1.0-0" }}
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="col-xs-4 operation-buttons">
+        <button
+          class="btn btn-secondary approve-btn"
+          *ngIf="
+            (userProfile?.role == 'Admin' ||
+              userProfile.role == 'Super Development' ||
+              userProfile?.role == 'Accoutant') &&
+            !hold_details.approved_by &&
+            hold_details.status !== -2 &&
+            hold_details.status !== -1
+          "
+          (click)="accountantApprove()"
+        >
+          Approve Hold
+        </button>
+
+        <button
+          class="btn btn-secondary decline-btn"
+          *ngIf="
+            (userProfile?.role == 'Admin' ||
+              userProfile.role == 'Super Development' ||
+              userProfile?.role == 'Moderator' ||
+              userProfile?.role == 'Super Moderator') &&
+            !hold_details.cancelled_by &&
+            hold_details.status !== -2
+          "
+          (click)="cancel()"
+        >
+          Cancel Hold
+        </button>
+
+        <button
+          class="btn btn-secondary"
+          (click)="paymentTypeModal.open()"
+          *ngIf="
+            (userProfile?.role == 'Admin' ||
+              userProfile.role == 'Super Development' ||
+              userProfile?.role == 'Moderator' ||
+              userProfile?.role == 'Super Moderator') &&
+            hold_details.status !== -1 &&
+            hold_details.status !== -2
+          "
+        >
+          Change Payment Type
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #pcInfoTab>
+  <div role="tabpanel" class="tab-pane" id="pcInfoTab">
+    <div class="box-mrg">
+      <div class="row">
+        <div class="col-xs-4">
+          <ul class="list-unstyled">
+            <li class="row">
+              <div class="col-xs-6">Owner :</div>
+              <div class="col-xs-6">
+                {{ hold_details?.user?.name }}
+              </div>
+            </li>
+            <li class="row">
+              <div class="col-xs-6">Branch :</div>
+              <div class="col-xs-6">
+                {{ hold_details?.branch?.name }}
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="col-xs-4">
+          <ul class="list-unstyled">
+            <li class="row">
+              <div class="col-xs-6">Team :</div>
+              <div class="col-xs-6">
+                {{ hold_details?.team?.name }}
+              </div>
+            </li>
+
+            <li class="row">
+              <div class="col-xs-6">Expiration Date :</div>
+              <div class="col-xs-6">
+                {{ hold_details?.expiration_date }}
+              </div>
+            </li>
+
+            <li class="row">
+              <div class="col-xs-6">Creation Date :</div>
+              <div class="col-xs-6">
+                {{ hold_details?.created_at }}
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #commentTab>
+  <div role="tabpanel" class="tab-pane" id="commentTab">
+    <div class="box-mrg">
+      <div class="row">
+        <div class="col-xs-8">
+          <ul class="list-unstyled">
+            <li class="row">
+              <div class="col-xs-6">Comment :</div>
+              <div *ngIf="hold_details?.comment" class="col-xs-6">
+                {{ hold_details?.comment }}
+              </div>
+              <div *ngIf="!hold_details?.comment" class="col-xs-6">
+                No Comment Available.
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="col-xs-3 col-xs-offset-1 operation-buttons">
+          <button
+            class="btn btn-secondary"
+            (click)="commentModal.open(hold_details)"
+          >
+            Add Comment
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #activityLogTab>
+  <div role="tabpanel" class="tab-pane" id="activityLogTab">
+    <div class="col-md-8">
+      <div class="time-line">
+        <ul class="list-unstyled">
+          <li *ngFor="let item of hold_details?.logs">
+            <span class="crcle-t"></span>
+            <div class="tm-content">
+              <div class="dateformat">
+                {{ item?.created_at | date : "medium" }}
+              </div>
+              <div class="activity-details">
+                {{ item?.details }}
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- MODALS start here -->
+
+<modal
+  #changeConfirmationDateModal
+  title="Change Confirmation Date"
+  submitButtonLabel="submit"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="
+    submitConfirmationDateModal(hold_details, changeConfirmationDateModal)
+  "
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <div class="row">
+      <form>
+        <div class="form-group" class="col-xs-6">
+          <label for="">Expiration Date</label>
+          <input
+            type="date"
+            onkeydown="return false"
+            class="form-control"
+            [min]="todayDate | date : 'yyyy-MM-dd'"
+            name="expiration_date"
+            [(ngModel)]="expiration_date"
+          />
+        </div>
+      </form>
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button
+      class="btn btn-secondary"
+      (click)="changeConfirmationDateModal.close()"
+    >
+      close
+    </button>
+  </modal-footer>
+</modal>
+
+<modal
+  #editLead
+  title="Edit Custmer Info"
+  submitButtonLabel="save"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="editLeadModalSubmit(editLead)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <div class="row">
+      <div class="col-md-6">
+        <label for="">Lead Name</label>
+        <input
+          type="text"
+          name="lead_name"
+          [(ngModel)]="edit_lead_data.lead_name"
+          class="form-control"
+        />
+      </div>
+      <div class="col-md-6">
+        <label for="">Lead District</label>
+        <input
+          type="text"
+          name="lead_district"
+          [(ngModel)]="edit_lead_data.lead_district"
+          class="form-control"
+        />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="">Lead Nationality</label>
+          <input
+            type="text"
+            name="lead_nationality"
+            [(ngModel)]="edit_lead_data.lead_nationality"
+            class="form-control"
+          />
+        </div>
+      </div>
+      <div class="col-md-6">
+        <label for="">Lead National ID</label>
+        <input
+          type="text"
+          name="lead_national_id"
+          [(ngModel)]="edit_lead_data.lead_national_id"
+          class="form-control"
+        />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <label for="">Lead Address</label>
+        <input
+          type="text"
+          name="lead_address"
+          [(ngModel)]="edit_lead_data.lead_address"
+          class="form-control"
+        />
+      </div>
+      <div class="col-md-6">
+        <label for="">Lead Birthday</label>
+        <input
+          type="date"
+          name="lead_birthday"
+          [(ngModel)]="edit_lead_data.lead_birthday"
+          class="form-control"
+        />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <label for="">Lead Email</label>
+        <input
+          type="email"
+          name="lead_email"
+          [(ngModel)]="edit_lead_data.lead_email"
+          class="form-control"
+        />
+      </div>
+      <div class="col-md-6">
+        <label for="">Lead Arabic Name</label>
+        <input
+          type="text"
+          name="lead_arabic_name"
+          [(ngModel)]="edit_lead_data.lead_arabic_name"
+          class="form-control"
+        />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <label for="">National Issue Date</label>
+        <input
+          type="date"
+          name="national_issue_date"
+          [(ngModel)]="edit_lead_data.lead_issue_date"
+          class="form-control"
+        />
+      </div>
+      <div class="col-md-6">
+        <label for="">Job Title</label>
+        <input
+          type="text"
+          name="job_title"
+          [(ngModel)]="edit_lead_data.lead_job_title"
+          class="form-control"
+        />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <label for="">Workplace</label>
+        <input
+          type="text"
+          name="workplace"
+          [(ngModel)]="edit_lead_data.lead_workplace"
+          class="form-control"
+        />
+      </div>
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="editLead.close()">close</button>
+  </modal-footer>
+</modal>
+
+<modal
+  #editHold
+  title="Edit Hold Info"
+  submitButtonLabel="save"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="editHoldModalSubmit(editHold)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <div class="row">
+      <div class="col-md-6">
+        <label for="">Phase</label>
+        <input
+          type="text"
+          name="phase"
+          [(ngModel)]="edit_hold_data.phase"
+          class="form-control"
+        />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="">Hold Value</label>
+          <input
+            type="text"
+            name="hold_value"
+            [(ngModel)]="edit_hold_data.hold_value"
+            class="form-control"
+          />
+        </div>
+      </div>
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="editHold.close()">close</button>
+  </modal-footer>
+</modal>
+
+<modal
+  #changeChannelAndSourceModal
+  title="Change Channel and Source"
+  submitButtonLabel="submit"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="changeChannelAndSourceModalSubmit(changeChannelAndSourceModal)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <div class="row">
+      <form>
+        <div class="form-group" class="col-xs-6">
+          <label for="">Channel</label>
+          <select
+            (change)="channelChange($event)"
+            name="lead_channel"
+            id="lead_channel"
+            [(ngModel)]="lead_channel"
+            class="form-control"
+          >
+            <option
+              *ngFor="let channel of channels; let i = index"
+              [value]="channel.name"
+            >
+              {{ channel.name }}
+            </option>
+          </select>
+        </div>
+        <div class="form-group" class="col-xs-6">
+          <label for="">Source</label>
+          <select
+            name="lead_source"
+            id="lead_source"
+            [(ngModel)]="lead_source"
+            class="form-control"
+          >
+            <option
+              *ngFor="let leadSource of leadSources; let i = index"
+              [value]="leadSource.name"
+            >
+              {{ leadSource.name }}
+            </option>
+          </select>
+        </div>
+      </form>
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button
+      class="btn btn-secondary"
+      (click)="changeChannelAndSourceModal.close()"
+    >
+      close
+    </button>
+  </modal-footer>
+</modal>
+
+<modal
+  #divisionModal
+  title="Change Division"
+  submitButtonLabel="submit"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="divisionModalSubmit(divisionModal)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <form action="" [formGroup]="divisionForm">
+      <div class="row search">
+        <div class="col-xs-6 form-group">
+          <label for="">Division</label>
+          <select
+            name="deal_type"
+            formControlName="deal_type"
+            class="form-control"
+          >
+            <option value="" disabled="true" [selected]="!deal_type">
+              Status...
+            </option>
+            <option *ngFor="let type of deal_types" [value]="type">
+              {{ type }}
+            </option>
+          </select>
+        </div>
+
+        <div
+          class="col-xs-6 form-group"
+          *ngIf="divisionForm.get('deal_type').value == 'Direct'"
+        >
+          <label for="">Division Type</label>
+          <select
+            name="deal_category"
+            formControlName="deal_category"
+            class="form-control"
+          >
+            <option *ngFor="let division of direct_option" [value]="division">
+              {{ division }}
+            </option>
+          </select>
+        </div>
+
+        <div
+          class="col-xs-6 form-group"
+          *ngIf="
+            divisionForm.get('deal_type').value == 'Direct' &&
+            divisionForm.get('deal_category').value == 'Ambassador'
+          "
+        >
+          <label for="">Ambassador</label>
+          <p-dropdown
+            formControlName="ambassador_id"
+            class="p-ddl"
+            [options]="ambassadors"
+            [filter]="true"
+            class="p-ddl"
+            name="ambassador"
+            [autoWidth]="false"
+            placeholder="Ambassadors"
+            [showClear]="true"
+            optionLabel="name"
+          >
+          </p-dropdown>
+          <!-- <select class="form-control" name="ambassador" formControlName="ambassador_id">
+            <option *ngFor="let ambassador of ambassadors" value="{{ ambassador.id }}">{{ ambassador?.name }}</option>
+          </select> -->
+        </div>
+
+        <div
+          class="col-xs-6 form-group"
+          *ngIf="divisionForm.get('deal_type').value == 'In-Direct'"
+        >
+          <label for="">Broker</label>
+          <p-dropdown
+            formControlName="broker_id"
+            class="p-ddl"
+            [options]="brokers"
+            [filter]="true"
+            class="p-ddl"
+            name="broker"
+            [autoWidth]="false"
+            placeholder="Brokers"
+            [showClear]="true"
+            optionLabel="name"
+          >
+          </p-dropdown>
+          <!-- <select class="form-control" name="broker" formControlName="broker_id">
+            <option *ngFor="let broker of brokers" value="{{ broker.id }}">{{
+              broker?.name
+              }}</option>
+          </select> -->
+        </div>
+      </div>
+    </form>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="divisionModal.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>
+
+<modal
+  #overseasModal
+  title="Change Overseas"
+  submitButtonLabel="submit"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="overseasModalSubmit(overseasModal)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <div class="form-group">
+      <label for="">Overseas</label>
+      <select class="form-control" [(ngModel)]="is_overseas">
+        <option value="0">No</option>
+        <option value="1">Yes</option>
+      </select>
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="overseasModal.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>
+
+<modal
+  #paymentTypeModal
+  title="Change Payment Type"
+  submitButtonLabel="submit"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="paymentTypeSubmit(paymentTypeModal)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <div class="form-group">
+      <label for="">Payment Type</label>
+      <select class="form-control" [(ngModel)]="last_payment_type">
+        <option *ngFor="let payment of payment_types" [value]="payment.name">
+          {{ payment.name }}
+        </option>
+      </select>
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="paymentTypeModal.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>
+
+<modal
+  #assignModal
+  title="Assign Hold to Lead"
+  submitButtonLabel="submit"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="submitAssignModal(hold_details?.id, assignModal)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <div class="search">
+      <label for="">Search for Property Consultant :</label>
+      <input
+        ngui-auto-complete
+        [source]="filterLeadObservable.bind(this)"
+        placeholder=""
+        [ngModelOptions]="{ standalone: true }"
+        (valueChanged)="valueChanged($event)"
+        class="form-control"
+        name="filterAgentByWordText"
+        [(ngModel)]="filterAgentByWordText"
+      />
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="assignModal.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>
+
+<modal
+  #commentModal
+  title="Add reservation comment"
+  submitButtonLabel="submit"
+  modalClass="modal-lg"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="submitCommentModal(hold_details.id, commentModal)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <div class="search">
+      <label for="">Comment :</label>
+      <textarea
+        type="text"
+        class="form-control"
+        [(ngModel)]="commentHold"
+      ></textarea>
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="commentModal.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>

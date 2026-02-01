@@ -1,0 +1,24 @@
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+
+import { HelpdeskDashboardComponent } from "./helpdesk-dashboard.component";
+
+describe("DashboardComponent", () => {
+  let component: HelpdeskDashboardComponent;
+  let fixture: ComponentFixture<HelpdeskDashboardComponent>;
+
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [HelpdeskDashboardComponent],
+    }).compileComponents();
+  }));
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(HelpdeskDashboardComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it("should create", () => {
+    expect(component).toBeTruthy();
+  });
+});

@@ -1,0 +1,45 @@
+<div class="container-fluid">
+  <h2>Add Ticket Settings</h2>
+  <div class="tabs-group">
+    <button [ngClass]="{'active_grp_btn': tab.active}" *ngFor="let tab of tabs; let index = index" class="tab-grp-btn"
+      (click)="setActiveTab(tab, index)">
+      {{tab.name}}
+    </button>
+  </div>
+  <div class="tabs-content" *ngFor="let tab of tabs; let tableIndex = index" [hidden]="!tab.active">
+    <div class="row add-name">
+      <div class="col-md-4 form-group">
+        <label for="">{{tab.name}} Name</label>
+        <input class="form-control" (keyup.enter)="addName(tab)" type="text" [(ngModel)]="name" placeholder="">
+      </div>
+      <div class="col-md-8">
+        <button type="button" class="btn btn-primary add-name-btn" (click)="addName(tab)" *ngIf="!isEdit">Add</button>
+        <button type="button" class="btn btn-primary add-name-btn" (click)="saveEditName(tab)" *ngIf="isEdit">Edit</button>
+        <button type="button" class="btn btn-secondary add-name-btn" (click)="cancelEdit()" *ngIf="isEdit">Cancel</button>
+      </div>
+      <div class="col-md-12" *ngIf="names">
+        <div class="table table-responsive">
+          <table class="table table-bordered">
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Create At</th>
+              <th>Update At</th>
+              <th>Actions</th>
+            </tr>
+            <tr *ngFor="let name of names">
+              <td>{{name?.id}}</td>
+              <td>{{name?.name}}</td>
+              <td>{{name?.created_at}}</td>
+              <td>{{name?.updated_at}}</td>
+              <td>
+                <button class="btn btn-danger" (click)="deleteName(tab, name.id, tableIndex)">Delete</button>
+                <button class="btn btn-primary" (click)="editName(name)">Edit</button>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

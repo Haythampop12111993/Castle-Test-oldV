@@ -1,0 +1,117 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <h3>Leads Listing by Reminders</h3>
+    </div>
+    <div class="col-md-12">
+      <div class="buttons-group">
+        <button 
+          class="btn-tab"
+          [ngClass]="{'active-btn': activeTab == 'today'}"
+          (click)="setActiveTab('today')">
+          Today
+        </button>
+        <button 
+          class="btn-tab"
+          [ngClass]="{'active-btn': activeTab == 'past'}"
+          (click)="setActiveTab('past')">
+          Delayed
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="activeTab == 'today'">
+      <div class="col-md-12">
+        <div class="table table-responsive">
+  
+          <table class="table table-bordered">
+            <tr>
+              <th>Lead Name</th>
+              <th>Lead phone</th>
+              <th>Lead Source</th>
+              <th>Lead Status</th>
+              <th>Property consultant</th>
+              <th>Created At</th>
+              <th>Updated At</th>
+            </tr>
+            <tr 
+              *ngFor="let lead of today_leads; let index = index">
+              <td>
+                <a (click)="goToThisLead(lead.id)">{{lead?.name}}</a>
+              </td>
+              <td>{{lead?.phone}}</td>
+              <td>{{lead?.lead_source}}</td>
+              <td>{{lead?.status}}</td>
+              <td>{{lead?.agent?.name}}</td>
+              <td>{{lead?.created_at}}</td>
+              <td>{{lead?.updated_at}}</td>
+            </tr>
+          </table>
+  
+        </div>
+      </div>
+      
+      <div *ngIf="today_leads_current_page" class="col-xs-12 text-center">
+        <p>
+          ({{today_leads_per_page}} / {{today_leads_total}})
+        </p>
+        <p>
+          page {{today_leads_current_page}}
+        </p>
+      </div>
+      <div class="col-xs-12 text-center">
+        <ngb-pagination [collectionSize]="today_leads_raw_data?.last_page * 10" [(page)]="today_leads_pageTest" [maxSize]="5"
+          [rotate]="true" [ellipses]="true" [boundaryLinks]="true" (pageChange)="pageChangeTodayLeads($event)" [size]="today_leads_lg">
+        </ngb-pagination>
+      </div>
+    </div>
+
+    <div *ngIf="activeTab == 'past'">
+      <div class="col-md-12">
+        <div class="table table-responsive">
+  
+          <table class="table table-bordered">
+            <tr>
+              <th>Lead Name</th>
+              <th>Lead phone</th>
+              <th>Lead Source</th>
+              <th>Lead Status</th>
+              <th>Property consultant</th>
+              <th>Created At</th>
+              <th>Updated At</th>
+              <th>Last Activity Date</th>
+            </tr>
+            <tr 
+              *ngFor="let lead of past_leads; let index = index">
+              <td>
+                <a (click)="goToThisLead(lead.id)">{{lead?.name}}</a>
+              </td>
+              <td>{{lead?.phone}}</td>
+              <td>{{lead?.lead_source}}</td>
+              <td>{{lead?.status}}</td>
+              <td>{{lead?.agent?.name}}</td>
+              <td>{{lead?.created_at}}</td>
+              <td>{{lead?.updated_at}}</td>
+              <td>{{lead?.last_activity_by_user}}</td>
+            </tr>
+          </table>
+  
+        </div>
+      </div>
+      
+      <div *ngIf="past_leads_current_page" class="col-xs-12 text-center">
+        <p>
+          ({{past_leads_per_page}} / {{past_leads_total}})
+        </p>
+        <p>
+          page {{past_leads_current_page}}
+        </p>
+      </div>
+      <div class="col-xs-12 text-center">
+        <ngb-pagination [collectionSize]="past_leads_raw_data?.last_page * 10" [(page)]="past_leads_pageTest" [maxSize]="5"
+          [rotate]="true" [ellipses]="true" [boundaryLinks]="true" (pageChange)="pageChangePastLeads($event)" [size]="past_leads_lg">
+        </ngb-pagination>
+      </div>
+    </div>
+  </div>
+</div>

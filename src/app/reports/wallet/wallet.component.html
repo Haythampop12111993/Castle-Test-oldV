@@ -1,0 +1,328 @@
+<section class="payment-plans-table">
+  <div class="container-fluid">
+    <div class="proj-details">
+      <div class="row">
+        <div class="col-xs-4" *ngIf="userData">
+          <h3>Wallet</h3>
+        </div>
+        <div class="col-xs-8 flex-end align-items-center">
+          <button
+            (click)="filter_expand = !filter_expand"
+            class="advanced-filter"
+          >
+            <i class="fa fa-filter" aria-hidden="true"></i>
+          </button>
+          <div class="settings-icons pull-right">
+            <div class="dropdown" dropdown>
+              <i class="fa fa-cog" aria-hidden="true" dropdown-open></i>
+              <ul class="dropdown-menu menu-settings">
+                <li
+                  *ngIf="
+                    userData.role == 'Admin' ||
+                    userData.role == 'Super Development'
+                  "
+                >
+                  <a [href]="excel">
+                    <span>Export</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div class="btn-group d-flex flex-nowrap">
+            <button
+              class="btn btn-outline-secondary w-100"
+              [ngClass]="{ active: active_tab == 'all' }"
+              (click)="setActiveTab('all')"
+            >
+              All
+            </button>
+            <button
+              class="btn btn-outline-secondary w-100"
+              [ngClass]="{ active: active_tab == 'me' }"
+              (click)="setActiveTab('me')"
+            >
+              Me
+            </button>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-12" *ngIf="filter_expand">
+              <form class="filter" [formGroup]="filterForm">
+                <div class="d-flex justify-content-around">
+                  <div class="form-group">
+                    <label for="Project">Project:</label>
+                    <select
+                      class="form-control"
+                      name="project_id"
+                      formControlName="project_id"
+                    >
+                      <option
+                        *ngFor="let project of projects; let index = index"
+                        [value]="project.id"
+                      >
+                        {{ project.name }}
+                      </option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="reservation_id">Reservation Id:</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      formControlName="reservation_id"
+                      name="reservation_id"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="unit_serial">Unit Serial:</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      formControlName="unit_serial"
+                      name="unit_serial"
+                    />
+                  </div>
+                  <div
+                    class="form-group"
+                    *ngIf="
+                      userData.role === 'Admin' ||
+                      userData.role == 'Super Development'
+                    "
+                  >
+                    <label for="team">Team:</label>
+                    <select
+                      class="form-control"
+                      name="team"
+                      formControlName="team_id"
+                    >
+                      <option
+                        *ngFor="let team of teams; let index = index"
+                        [value]="team.id"
+                      >
+                        {{ team.name }}
+                      </option>
+                    </select>
+                  </div>
+                  <div
+                    class="form-group"
+                    *ngIf="
+                      userData.role !== 'Property Consultant' &&
+                      active_tab === 'all'
+                    "
+                  >
+                    <label for="Commissioned For">Commissioned For:</label>
+                    <select
+                      class="form-control"
+                      name="commissioned_for"
+                      formControlName="commissioned_for"
+                    >
+                      <option
+                        *ngFor="let user of users; let index = index"
+                        value="{{ user.id }}"
+                      >
+                        {{ user.name }}
+                      </option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="is_collect">Status:</label>
+                    <select
+                      class="form-control"
+                      name="is_collect"
+                      formControlName="is_collect"
+                    >
+                      <option value="">All</option>
+                      <option value="yes">Commissioned</option>
+                      <option value="no">Pending</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="from">From:</label>
+                    <input
+                      type="date"
+                      class="form-control"
+                      formControlName="from"
+                      name="from"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="to">To:</label>
+                    <input
+                      type="date"
+                      class="form-control"
+                      formControlName="to"
+                      name="to"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="from_collect">From Collect:</label>
+                    <input
+                      type="date"
+                      class="form-control"
+                      formControlName="from_collect"
+                      name="from_collect"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="to_collect">To Collect:</label>
+                    <input
+                      type="date"
+                      class="form-control"
+                      formControlName="to_collect"
+                      name="to_collect"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <button
+                      type="submit"
+                      class="button c-bg"
+                      (click)="getWallet()"
+                    >
+                      GO
+                    </button>
+                  </div>
+                  <div class="form-group">
+                    <button
+                      (click)="resetFilter()"
+                      type="button"
+                      class="button bg-danger reset-filter"
+                    >
+                      RESET FILTER
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="col-md-12">
+              <div class="data-box-container">
+                <div class="data-box">
+                  <div class="d-flex justify-content-between">
+                    <p class="stat-title">Current Balance</p>
+                    <p class="count">
+                      {{ wallet?.balance_count }}
+                    </p>
+                  </div>
+                  <p class="value">
+                    {{ wallet?.balance | currency : " " }}
+                  </p>
+                </div>
+                <div class="data-box">
+                  <div class="d-flex justify-content-between">
+                    <p class="stat-title">Commissioned</p>
+                    <p class="count">
+                      {{ wallet?.commissioned_count }}
+                    </p>
+                  </div>
+                  <p class="value">
+                    {{ wallet?.commissioned | currency : " " }}
+                  </p>
+                </div>
+                <div class="data-box">
+                  <div class="d-flex justify-content-between">
+                    <p class="stat-title">Total</p>
+                    <p class="count">
+                      {{ wallet?.wallets?.total }}
+                    </p>
+                  </div>
+                  <p class="value">
+                    {{ wallet?.total | currency : " " }}
+                  </p>
+                </div>
+              </div>
+              <div class="table table-responsive">
+                <table class="table table-bordered">
+                  <tr>
+                    <th>Date</th>
+                    <th>Transaction ID</th>
+                    <th>Reservation ID</th>
+                    <th>Serial</th>
+                    <th>Project</th>
+                    <th>Selling Price</th>
+                    <th>Commission For</th>
+                    <th>Team</th>
+                    <th>Shared commission</th>
+                    <th>Commission</th>
+                    <th>Commission Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                  <tr
+                    *ngFor="let w of wallet?.wallets?.data; let i = index"
+                    [ngClass]="{
+                      'bg-success': w.type == 'Commissioned',
+                      'bg-alert': w.type == 'Pending'
+                    }"
+                  >
+                    <td>{{ w.date?.substring(0, 11) }}</td>
+                    <td>{{ w.id }}</td>
+                    <td>
+                      <a
+                        [routerLink]="[
+                          '/',
+                          'pages',
+                          'project',
+                          'view-reservation',
+                          w.reservation_id
+                        ]"
+                        >{{ w.reservation_id }}</a
+                      >
+                    </td>
+                    <td>{{ w.unit?.serial }}</td>
+                    <td>{{ w.project?.name }}</td>
+                    <td>{{ w.reservation?.total_price | currency : " " }}</td>
+                    <td>{{ w.user?.name }}</td>
+                    <td>{{ w.reservation?.team?.name }}</td>
+                    <td>{{ w.shared_commission_percentage }} %</td>
+                    <td>{{ w.commission | currency : " " }}</td>
+                    <td>{{ w.collect_date || "-" }}</td>
+                    <td>{{ w.is_collect ? "Yes" : "No" }}</td>
+                    <td>
+                      <div class="dropdown" dropdown *ngIf="!w.is_collect">
+                        <img
+                          class="more-options-icon"
+                          src="assets/img/show-more-button-with-three-dots.svg"
+                          dropdown-open
+                        />
+                        <ul class="dropdown-menu">
+                          <li
+                            *ngIf="
+                              userData.role == 'Admin' ||
+                              userData.role == 'Super Development'
+                            "
+                          >
+                            <a (click)="payWallet(w.id)">
+                              <span>Pay</span>
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+              <div *ngIf="wallet" class="col-xs-12 text-center">
+                <ngb-pagination
+                  [collectionSize]="wallet?.wallets?.last_page * 10"
+                  [(page)]="pageTest"
+                  [maxSize]="5"
+                  [rotate]="true"
+                  [ellipses]="true"
+                  [boundaryLinks]="true"
+                  (pageChange)="pageChange($event)"
+                  [size]="lg"
+                >
+                </ngb-pagination>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- <app-upcoming-scene [name]="'Wallet'"></app-upcoming-scene> -->

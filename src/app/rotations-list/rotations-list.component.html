@@ -1,0 +1,145 @@
+<section class="users-table">
+  <div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center">
+      <h2 class="users-table__title">All Rotations</h2>
+      <button
+        class="btn btn-secoundary"
+        *ngIf="
+          userData.role == 'Helpdesk Supervisor' ||
+          userData.role == 'Helpdesk Agent' ||
+          userData.role == 'Marketing' ||
+          ((userData?.role == 'Admin' || userData?.role == 'CFO') &&
+            userData.role != 'CCO')
+        "
+        [routerLink]="['/pages/rotation/add']"
+      >
+        Add Rotations
+      </button>
+    </div>
+    <div class="proj-details">
+      <div class="row filter-outer-container">
+        <!-- <div class="col-md-12">
+          <div class="filter">
+            <div class="row">
+              <div class="col-md-2">
+                <h3 class="search__title">Advanced Search</h3>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group search-btn-container">
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Seach users by name, phone, title"
+                    name="seachUsers"
+                    (keyup.enter)="searchUsers()"
+                    [(ngModel)]="searchUserKeyword"
+                  />
+                  <button
+                    class="btn btn-default pull-right btn-black"
+                    type="button"
+                    [disabled]="!searchUserKeyword"
+                    (click)="searchUsers()"
+                  >
+                    Search
+                  </button>
+                  <button
+                    class="btn btn-default pull-right btn-black"
+                    type="button"
+                    (click)="reset()"
+                  >
+                    Reset
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> -->
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="settings-icons pull-right">
+            <div class="dropdown" dropdown>
+              <i class="fa fa-cog" aria-hidden="true" dropdown-open></i>
+              <ul class="dropdown-menu">
+                <li>
+                  <a [routerLink]="['/pages/rotation/add']">
+                    <span>Add Rotation</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="col-md-12">
+          <div class="table table-responsive">
+            <table class="table table-bordered">
+              <tr>
+                <th>ID</th>
+                <th>Rotation Name</th>
+                <th>Created At</th>
+                <th>Action</th>
+              </tr>
+
+              <tr *ngFor="let rotation of rotations">
+                <td>#{{ rotation.id }}</td>
+                <td>{{ rotation.name }}</td>
+                <td>{{ rotation.created_at }}</td>
+                <td>
+                  <div class="dropdown" dropdown>
+                    <img
+                      class="more-options-icon"
+                      src="assets/img/show-more-button-with-three-dots.svg"
+                      dropdown-open
+                    />
+                    <ul class="dropdown-menu">
+                      <li
+                        *ngIf="
+                          userData?.role == 'Admin' ||
+                          userData?.role == 'Sales Manager' ||
+                          userData?.role == 'CFO' ||
+                          userData.role == 'Helpdesk Supervisor' ||
+                          userData.role == 'Helpdesk Agent' ||
+                          userData.role == 'Marketing' ||
+                          userData.role == 'Helpdesk Agent' ||
+                          (userData.role == 'Moderator' &&
+                            userData.role != 'CCO')
+                        "
+                        (click)="editRotation(rotation.id)"
+                      >
+                        <a>
+                          <span>Edit</span>
+                        </a>
+                      </li>
+                      <!-- <li (click)="editaccount(details.id)">
+                        <a>
+                          <span class="doc_link">Edit</span>
+                        </a>
+                      </li>
+                      <li
+                        (click)="disableUser(details.id, details.name)"
+                        *ngIf="details.is_active"
+                      >
+                        <a>
+                          <span class="doc_link">View Sources</span>
+                        </a>
+                      </li>
+                      <li
+                        (click)="activeUser(details.id, details.name)"
+                        *ngIf="!details.is_active"
+                      >
+                        <a>
+                          <span class="doc_link">View Users</span>
+                        </a>
+                      </li> -->
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

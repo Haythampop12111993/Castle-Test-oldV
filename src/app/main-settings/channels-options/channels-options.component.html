@@ -1,0 +1,127 @@
+<mat-card class="option-card">
+  <mat-card-content>
+    <h3 class="card__title">Manage Channels Options</h3>
+    <div class="row">
+      <div class="col-xs-12 margin-bottom d-f-end">
+        <button (click)="addChannelList.open()" class="btn btn-primary">
+          Add channel
+        </button>
+      </div>
+      <div class="col-xs-12 margin-bottom">
+        <table>
+          <tr>
+            <th>Name</th>
+            <th>Actions</th>
+          </tr>
+          <tr class="data" *ngFor="let channel of channels">
+            <td>
+              {{channel.name}}
+            </td>
+            <td>
+              <button class="btn btn-primary" (click)="editChannel(editChannelList, channel)">
+                Edit
+              </button>
+              <button class="btn btn-danger delete" (click)="deleteChannel(channel)">
+                Delete
+              </button>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<modal #addChannelList title="Add Channel" submitButtonLabel="submit" modalClass="modal-md" [hideCloseButton]="true"
+  [closeOnOutsideClick]="true" (onOpen)="addChannelModalOpen()" (onClose)="addChannelModalClose()"
+  (onSubmit)="addChannelModalSubmit(addChannelList)">
+  <modal-header> </modal-header>
+  <modal-content>
+    <form>
+      <div class="row search">
+        <div class="col-xs-6 form-group">
+          <label for="">Channel Name</label>
+          <input type="text" placeholder="Channel Name" class="form-control" name="channel_name"
+            [(ngModel)]="channel_name" />
+        </div>
+        <div class="col-xs-12">
+          <h4>Sources:</h4>
+        </div>
+        <div class="col-xs-10 form-group">
+          <input type="text" class="form-control" name="source_name" placeholder="Source Name"
+            [(ngModel)]="source_name" />
+        </div>
+        <div class="col-xs-2">
+          <button (click)="addSource()" class="btn btn-primary">Add</button>
+        </div>
+        <div *ngIf="source_list_add.length" class="col-xs-12">
+          <h4>Sources List:</h4>
+        </div>
+        <div *ngIf="source_list_add.length">
+          <div *ngFor="let source of source_list_add; let index = index">
+            <div class="col-xs-10 form-group">
+              <h4>{{ source }}</h4>
+            </div>
+            <div class="col-xs-2 form-group">
+              <button class="btn btn-danger" (click)="deleteSource(index)">
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="addChannelList.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>
+
+<modal #editChannelList title="Edit Channel" submitButtonLabel="submit" modalClass="modal-md" [hideCloseButton]="true"
+  [closeOnOutsideClick]="true" (onOpen)="editChannelListModalOpen()" (onClose)="editChannelListModalClose()"
+  (onSubmit)="editChannelListModalSubmit(editChannelList)">
+  <modal-header> </modal-header>
+  <modal-content>
+    <form>
+      <div class="row search">
+        <div class="col-xs-6 form-group">
+          <label for="">Channel Name</label>
+          <input type="text" placeholder="Channel Name" class="form-control" name="channel_name"
+            [(ngModel)]="channel_name" />
+        </div>
+        <div class="col-xs-12">
+          <h4>Sources:</h4>
+        </div>
+        <div class="col-xs-10 form-group">
+          <input type="text" class="form-control" name="source_name" placeholder="Source Name"
+            [(ngModel)]="source_name" />
+        </div>
+        <div class="col-xs-2">
+          <button (click)="addSource()" class="btn btn-primary">Add</button>
+        </div>
+        <div *ngIf="source_list_add.length" class="col-xs-12">
+          <h4>Sources List:</h4>
+        </div>
+        <div *ngIf="source_list_add.length">
+          <div *ngFor="let source of source_list_add; let index = index">
+            <div class="col-xs-10 form-group">
+              <h4>{{ source }}</h4>
+            </div>
+            <div class="col-xs-2 form-group">
+              <button class="btn btn-danger" (click)="deleteSource(index)">
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="editChannelList.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>

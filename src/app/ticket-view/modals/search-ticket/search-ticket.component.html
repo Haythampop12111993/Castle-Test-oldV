@@ -1,0 +1,57 @@
+
+<modal #modal title="Search Ticket"  modalClass="modal-md"
+[hideCloseButton]="true" [closeOnOutsideClick]="true">
+<modal-header> </modal-header>
+<modal-content>
+
+  <form *ngIf="searchTicketForm" [formGroup]="searchTicketForm" class="container-fluid" (ngSubmit)="addTicket()">
+    <div class="row">
+
+      <div class="form-group col-md-6">
+        <label for="">Ticket Title </label>
+        <input type="text" class="form-control" placeholder="Ticket Title" formControlName="title">
+      </div>
+      <div class="form-group col-md-6">
+        <label for="">Ticket Type</label>
+        <select name="ticket_type" id="ticket_type" class="form-control" formControlName="type_id"
+          placeholder="Ticket Type">
+          <option value="">None</option>
+          <option *ngFor="let type of ticket_types" [value]="type.id">{{type.name}}</option>
+        </select>
+      </div>
+      <div class="form-group col-md-6">
+        <label for="">Ticket Priority </label>
+        <select name="ticket_priority" class="form-control" id="ticket_priority" formControlName="priority_id"
+          placeholder="Ticket Priority">
+          <option value="">None</option>
+          <option *ngFor="let priority of ticket_priorities" [value]="priority.id">{{priority.name}}</option>
+        </select>
+      </div>
+      <div class="form-group col-md-6">
+        <label for="">Source</label>
+        <select name="source_id" class="form-control" id="source_id" formControlName="source_id"
+          placeholder="Ticket Source">
+          <option value="">None</option>
+          <option *ngFor="let source of ticket_sources" [value]="source.id">{{source.name}}</option>
+        </select>
+      </div>
+      <div class="form-group col-md-12">
+        <label for="">Reservation </label>
+        <input type="text" class="form-control" placeholder="Reservation RFID" formControlName="reservation">
+      </div>
+
+      <!-- <div class="col-md-12">
+        <button class="btn btn-primary" [disabled]='searchTicketForm.invalid' (click)="addTicket()" [ngClass]="{'no-interaction-on-btn': disable_submit_btn}">{{isEditMode?'Update':'Submit'}}</button>
+        <button class="btn btn-danger" (click)="cancel()" >Cancel</button>
+      </div>  -->
+    </div>
+  </form>
+
+</modal-content>
+<modal-footer>
+  <button class="btn btn-primary" [disabled]='searchTicketForm.invalid' (click)="addTicket()" [ngClass]="{'no-interaction-on-btn': disable_submit_btn}">{{isEditMode?'Update':'Submit'}}</button>
+  <button class="btn btn-secondary" (click)="closeModal()">
+    close
+  </button>
+</modal-footer>
+</modal>

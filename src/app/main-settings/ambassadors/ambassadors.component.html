@@ -1,0 +1,341 @@
+<div class="">
+  <div class="row">
+    <div class="col-xs-8">
+      <h3 class="card__title lato">Ambassadors Table</h3>
+    </div>
+    <div class="col-md-4">
+      <div class="settings-icons pull-right">
+        <div class="dropdown" dropdown>
+          <i class="fa fa-cog" aria-hidden="true" dropdown-open></i>
+          <ul class="dropdown-menu menu-settings">
+            <li>
+              <a [href]="ambassador_export_url">
+                <span>Export Ambassadors</span>
+              </a>
+            </li>
+            <li (click)="importAmbassadorModal.open()">
+              <a>
+                <span>Import Ambassadors</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-12 col-md-5 margin-top">
+      <div class="form-group">
+        <label for="">Search Ambassadors</label>
+        <input
+          (keyup)="searchAmbassadors($event)"
+          name="search_ambassador_keyword"
+          [(ngModel)]="search_ambassador_keyword"
+          type="text"
+          class="form-control"
+          placeholder="Enter Ambassador (name or phone) / Property Consultant number"
+        />
+      </div>
+    </div>
+    <div class="responsive-table">
+      <div class="col-sm-12">
+        <table class="table table-bordered">
+          <tr>
+            <th>Ambassador Name</th>
+            <th>Contact Person</th>
+            <th>Contact Phone</th>
+            <th>Contact Address</th>
+          </tr>
+          <tr *ngFor="let ambassador of ambassadors; let i = index">
+            <td>
+              <div class="form-inline">
+                <input
+                  type="text"
+                  class="form-control lato"
+                  name="name"
+                  [ngClass]="{ 'edit-mode-active': ambassador.edit_mode }"
+                  [(ngModel)]="ambassador.name"
+                  [disabled]="!ambassador.edit_mode"
+                />
+              </div>
+            </td>
+            <td>
+              <div class="form-inline">
+                <select
+                  name="contact_person"
+                  [disabled]="!ambassador.edit_mode"
+                  [(ngModel)]="ambassador.agent.id"
+                  class="form-control"
+                  [ngClass]="{
+                    'edit-mode-active': ambassador.edit_mode,
+                    'select-mode-active': !ambassador.edit_mode
+                  }"
+                >
+                  <option *ngFor="let cp of agents" [value]="cp.id">
+                    {{ cp.name }}
+                  </option>
+                </select>
+              </div>
+            </td>
+            <td>
+              <div class="form-inline">
+                <input
+                  type="text"
+                  class="form-control lato"
+                  name="contact_phone"
+                  [ngClass]="{ 'edit-mode-active': ambassador.edit_mode }"
+                  [(ngModel)]="ambassador.contact_phone"
+                  [disabled]="!ambassador.edit_mode"
+                />
+              </div>
+            </td>
+            <td>
+              <div class="form-inline">
+                <input
+                  type="text"
+                  class="form-control lato"
+                  name="contact_address"
+                  [ngClass]="{ 'edit-mode-active': ambassador.edit_mode }"
+                  [(ngModel)]="ambassador.contact_address"
+                  [disabled]="!ambassador.edit_mode"
+                />
+              </div>
+            </td>
+            <td>
+              <div class="d-flex flex-wrap gap-1">
+                <button
+                  class="btn btn-primary"
+                  style="margin-top: 5px; margin-right: 5px"
+                  *ngIf="!ambassador.edit_mode"
+                  (click)="edit_ambassador(i)"
+                >
+                  Edit
+                </button>
+                <button
+                  class="btn btn-success"
+                  style="margin-top: 5px; margin-right: 5px"
+                  *ngIf="ambassador.edit_mode"
+                  (click)="save_ambassador(i)"
+                >
+                  Save
+                </button>
+                <button
+                  class="btn btn-danger"
+                  style="margin-top: 5px; margin-right: 5px"
+                  *ngIf="ambassador.edit_mode"
+                  (click)="cancel_ambassador(i)"
+                >
+                  Cancel
+                </button>
+                <button
+                  class="btn btn-primary"
+                  style="margin-top: 5px; margin-right: 5px"
+                  *ngIf="ambassador.edit_mode"
+                  (click)="commissionsModal.open(ambassador)"
+                >
+                  Commissions
+                </button>
+                <button
+                  class="btn btn-primary"
+                  style="margin-top: 5px; margin-right: 5px"
+                  *ngIf="ambassador.edit_mode"
+                  (click)="uploadAmbassadorDocumentModal.open(ambassador)"
+                >
+                  Upload Document
+                </button>
+                <button
+                  class="btn btn-primary"
+                  style="margin-top: 5px; margin-right: 5px"
+                  (click)="showAmbassadorDocumentsModal.open(ambassador)"
+                >
+                  Show Document
+                </button>
+                <modal
+                  #uploadAmbassadorDocumentModal
+                  title="Upload Ambassador document"
+                  submitButtonLabel="upload"
+                  modalClass="modal-md"
+                  [hideCloseButton]="true"
+                  [closeOnOutsideClick]="true"
+                  (onOpen)="uploadAmbassadorDocumentModalOpen(ambassador)"
+                  (onSubmit)="
+                    uploadAmbassadorDocument(uploadAmbassadorDocumentModal)
+                  "
+                  (onClose)="uploadAmbassadorDocumentModalClose()"
+                >
+                  <modal-content>
+                    <div class="row">
+                      <div class="form-group col-xs-12">
+                        <form class="form-group btn-group-files pull-left">
+                          <label for="">Ambassador document: </label>
+                          <input
+                            type="file"
+                            class="margin-left"
+                            multiple
+                            #documentFile
+                            (change)="handleDocumentUpload($event)"
+                          />
+
+                          <!-- <label for="" style="margin-top: 20px;">File description: </label>
+                      <input class="margin-left"  style="border: 1px solid;" [formControl]="ambassadorDocumentForm.controls['name']"> -->
+                        </form>
+                      </div>
+                    </div>
+                  </modal-content>
+                  <modal-footer>
+                    <button
+                      class="btn btn-secondary"
+                      (click)="uploadAmbassadorDocumentModal.close()"
+                    >
+                      Cancel
+                    </button>
+                  </modal-footer>
+                </modal>
+
+                <modal
+                  #commissionsModal
+                  title="Edit Ambassador Commissions"
+                  submitButtonLabel="Save"
+                  modalClass="modal-md"
+                  [hideCloseButton]="true"
+                  [closeOnOutsideClick]="true"
+                  (onOpen)="commissionsModalOpen(ambassador.id)"
+                  (onSubmit)="
+                    submitCommissions(ambassador.id, commissionsModal)
+                  "
+                  (onClose)="commissionsModalClose()"
+                >
+                  <modal-content>
+                    <div class="row">
+                      <div class="form-group col-xs-12">
+                        <form class="form-group btn-group-files">
+                          <div
+                            *ngFor="let project of projects; let first = first"
+                            class="d-flex"
+                            [ngClass]="{ 'margin-top': !first }"
+                          >
+                            <div class="col-xs-3">
+                              <label for="">{{ project.name }}</label>
+                            </div>
+                            <div class="col-xs-9">
+                              <input
+                                type="text"
+                                class="form-control lato edit-mode-active"
+                                [(ngModel)]="
+                                  ambassadorCommissionData[project.id].value
+                                "
+                                [ngModelOptions]="{ standalone: true }"
+                              />
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </modal-content>
+                  <modal-footer>
+                    <button
+                      class="btn btn-secondary"
+                      (click)="commissionsModal.close()"
+                    >
+                      Cancel
+                    </button>
+                  </modal-footer>
+                </modal>
+
+                <modal
+                  #showAmbassadorDocumentsModal
+                  title="Ambassador documents"
+                  modalClass="modal-md"
+                  [hideCloseButton]="true"
+                  [closeOnOutsideClick]="true"
+                  (onOpen)="showAmbassadorDocumentsModalOpen(ambassador)"
+                >
+                  <modal-content>
+                    <div class="row">
+                      <div class="form-group col-xs-12 documentsContainer">
+                        <div
+                          *ngFor="let doc of ambassadorDocuments"
+                          class="documentImage"
+                        >
+                          <div class="col">
+                            <button
+                              type="button"
+                              class="close"
+                              aria-label="Close"
+                              (click)="
+                                deleteAmbassadorDocument(ambassador.id, doc.id)
+                              "
+                            >
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <a [href]="doc.full_url" target="_blank"
+                            ><img
+                              [src]="doc.full_url"
+                              width="200"
+                              height="200"
+                              alt=""
+                          /></a>
+                          <h6>{{ doc.name }}</h6>
+                        </div>
+                        <h4
+                          class="text-center"
+                          *ngIf="
+                            !ambassadorDocuments ||
+                            ambassadorDocuments.length == 0
+                          "
+                        >
+                          No Related Documents
+                        </h4>
+                      </div>
+                    </div>
+                  </modal-content>
+                  <modal-footer>
+                    <button
+                      class="btn btn-secondary"
+                      (click)="showAmbassadorDocumentsModal.close()"
+                    >
+                      Ok
+                    </button>
+                  </modal-footer>
+                </modal>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <modal
+    #importAmbassadorModal
+    title="Import Ambassadors"
+    submitButtonLabel="submit"
+    modalClass="modal-md"
+    [hideCloseButton]="true"
+    [closeOnOutsideClick]="true"
+    (onOpen)="importAmbassadorsModalOpen()"
+    (onClose)="importAmbassadorsModalClose()"
+    (onSubmit)="uploadExcelMethod(importAmbassadorModal)"
+  >
+    <modal-content>
+      <div class="row">
+        <div class="form-group col-xs-6">
+          <form class="form-group btn-group-files pull-left">
+            <label for="">Ambassadors File : </label>
+            <input
+              type="file"
+              accept=".xlsx, .xls"
+              class="margin-left"
+              id="file"
+              (change)="handleUploadExcel($event)"
+            />
+          </form>
+        </div>
+      </div>
+    </modal-content>
+    <modal-footer>
+      <button class="btn btn-secondary" (click)="importAmbassadorModal.close()">
+        close
+      </button>
+    </modal-footer>
+  </modal>
+</div>

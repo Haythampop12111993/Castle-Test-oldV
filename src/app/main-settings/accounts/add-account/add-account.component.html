@@ -1,0 +1,227 @@
+<section class="add-new-user">
+  <div class="container-fluid">
+    <form [formGroup]="documentForm" (ngSubmit)="onDocumentSubmit()">
+      <h2 class="users-form__title" *ngIf="user.id == null || ''">
+        ADD NEW USER FORM
+      </h2>
+      <h2 class="users-form__title" *ngIf="user.id != null || ''">
+        EDIT USER FORM
+      </h2>
+      <div class="border-sec">
+        <div class="row">
+          <div class="line">
+            <div class="col-md-3">
+              <div class="form-group">
+                <h4>USER INFORMATION</h4>
+              </div>
+              <input
+                type="hidden"
+                placeholder="id"
+                [(ngModel)]="user.id"
+                name="id"
+                class="form-control"
+                formControlName="id"
+              />
+              <div class="form-group">
+                <label for="">Name :</label>
+                <input
+                  type="text"
+                  placeholder="Name"
+                  [(ngModel)]="user.name"
+                  name="name"
+                  id="name"
+                  class="form-control"
+                  formControlName="name"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="">Email :</label>
+                <input
+                  type="email"
+                  placeholder="E-mail"
+                  [(ngModel)]="user.email"
+                  name="email"
+                  class="form-control"
+                  formControlName="email"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="">Password :</label>
+                <input
+                  type="password"
+                  placeholder="Password"
+                  [(ngModel)]="user.password"
+                  name="password"
+                  class="form-control"
+                  formControlName="password"
+                />
+              </div>
+              <div class="form-group">
+                <label for="">Role :</label>
+                <p-dropdown
+                  [style]="{ width: '100%' }"
+                  formControlName="role"
+                  name="role"
+                  [options]="roles"
+                  [(ngModel)]="user.role"
+                  [filter]="true"
+                  [autoWidth]="false"
+                  placeholder="Select Role"
+                  [showClear]="true"
+                  optionLabel="value"
+                ></p-dropdown>
+              </div>
+              <div class="form-group">
+                <input
+                  formControlName="is_full_access"
+                  type="checkbox"
+                  id="is_full_access"
+                  name="is_full_access"
+                  [value]="is_full_access"
+                  [checked]="user.is_full_access"
+                />
+                <label for="is_full_access">
+                  Is Full Access (import, export)</label
+                >
+              </div>
+              <!-- <div class="form-group" *ngIf="user?.role?.value == 'Broker'">
+                <label for=""> Brokerage Company:</label>
+                <p-dropdown
+                  [style]="{ width: '100%' }"
+                  formControlName="broker_id"
+                  name="brokerCompany"
+                  [options]="brokers"
+                  [(ngModel)]="user.brokerCompany"
+                  [filter]="true"
+                  [autoWidth]="false"
+                  placeholder="Select Broker"
+                  [showClear]="true"
+                  optionLabel="name"
+                ></p-dropdown>
+              </div> -->
+              <div class="form-group">
+                <label for="">Job Title :</label>
+                <input
+                  type="text"
+                  placeholder="Job Title"
+                  [(ngModel)]="user.job_title"
+                  name="job_title"
+                  class="form-control"
+                  formControlName="job_title"
+                />
+              </div>
+              <div class="form-group">
+                <input
+                  formControlName="can_manage_payment_plan"
+                  type="checkbox"
+                  id="can_manage_payment_plan"
+                  name="can_manage_payment_plan"
+                  [value]="can_manage_payment_plan"
+                  [checked]="user.can_manage_payment_plan"
+                  (change)="changeManagePaymentPlanSelect($event)"
+                />
+                <label for="can_manage_payment_plan">
+                  Can Manage Payment Plan</label
+                ><br />
+              </div>
+              <div class="form-group">
+                <label for="">Phone Number :</label>
+                <input
+                  type="tel"
+                  min="0"
+                  placeholder="Phone Number"
+                  class="form-control"
+                  [(ngModel)]="user.phone"
+                  name="phone"
+                  formControlName="phone"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="line">
+            <div class="col-md-3">
+              <div class="form-group">
+                <h4>USER SOCIAL MEDIA</h4>
+              </div>
+              <div class="form-group">
+                <label for="">Facebook Profile :</label>
+                <input
+                  type="text"
+                  placeholder="Facebook Profile"
+                  class="form-control"
+                  [(ngModel)]="user.facebook_url"
+                  name="facebook_url"
+                  formControlName="facebook_url"
+                />
+              </div>
+              <div class="form-group">
+                <label for="">Twitter Profile :</label>
+                <input
+                  type="text"
+                  placeholder="Twitter Profile"
+                  class="form-control"
+                  [(ngModel)]="user.twitter_url"
+                  name="twitter_url"
+                  formControlName="twitter_url"
+                />
+              </div>
+              <div class="form-group">
+                <label for="">Instagram Profile :</label>
+                <input
+                  type="text"
+                  placeholder="Instagram Profile"
+                  class="form-control"
+                  [(ngModel)]="user.instagram_url"
+                  name="instagram_url"
+                  formControlName="instagram_url"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="line">
+            <div class="col-md-3">
+              <div class="form-group">
+                <h4>USER IMAGES</h4>
+              </div>
+              <div class="form-group">
+                <input type="file" id="image" (change)="onFileChange($event)" />
+                <small>Upload your profile picture here</small>
+              </div>
+            </div>
+          </div>
+          <div class="line">
+            <div class="col-md-3">
+              <div class="form-group">
+                <h4>ABOUT</h4>
+              </div>
+              <div class="form-group">
+                <textarea
+                  class="form-control"
+                  rows="11"
+                  [(ngModel)]="user.about"
+                  name="about"
+                  formControlName="about"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <button
+          class="btn btn-default pull-right btn-black"
+          [disabled]="!documentForm.valid"
+        >
+          SAVE
+        </button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<div [hidden]="!showError" class="alert-sec">
+  <p>{{ messages }}</p>
+  <span (click)="alertRequired($event)">&#10006;</span>
+</div>

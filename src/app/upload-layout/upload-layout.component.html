@@ -1,0 +1,125 @@
+<section class="projects">
+  <div class="container-fluid">
+    <h2>Upload Layout</h2>
+    <div class="box">
+      <form [formGroup]="layoutForm" (ngSubmit)="uploadLayout()">
+        <div class="border-sec">
+          <div class="row">
+            <div class="col-xs-6">
+              <div class="form-group">
+                <label>Project</label>
+                <select
+                  class="form-control"
+                  name="project"
+                  formControlName="project_id"
+                  id="project_id"
+                  (change)="getUnitTypes(); getdesignTypes()"
+                >
+                  <option *ngFor="let project of projects" [value]="project.id">
+                    {{ project.name }}
+                  </option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Unit Floor</label>
+                <select
+                  class="form-control"
+                  name="floor"
+                  formControlName="floor"
+                  id="floor"
+                >
+                  <option *ngFor="let f of floors" value="{{ f }}">
+                    {{ f }}
+                  </option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="">Block</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="block"
+                  id="block"
+                />
+              </div>
+              <div class="form-group">
+                <label for="">Area</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="area"
+                  id="area"
+                />
+              </div>
+              <div class="form-group flex-column">
+                <label for="">Unit Layouts</label>
+                <div
+                  class="custom-dropzone-class"
+                  ngx-dropzone
+                  [accept]="'image/*'"
+                  (change)="onSelect($event)"
+                  [multiple]="true"
+                >
+                  <ngx-dropzone-label> Upload Images </ngx-dropzone-label>
+                  <ngx-dropzone-image-preview
+                    ngProjectAs="ngx-dropzone-preview"
+                    *ngFor="let f of files"
+                    [file]="f"
+                    [removable]="true"
+                    (removed)="onRemove(f)"
+                  >
+                  </ngx-dropzone-image-preview>
+                </div>
+              </div>
+            </div>
+            <div class="col-xs-6">
+              <div class="form-group">
+                <label for="">Design Type :</label>
+                <select class="form-control" formControlName="design_type">
+                  <option *ngFor="let type of designTypes" [value]="type">
+                    {{ type }}
+                  </option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="">Unit Type :</label>
+                <select class="form-control" formControlName="type">
+                  <option *ngFor="let type of types" [value]="type.id">
+                    {{ type.name }}
+                  </option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="">Building</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="building"
+                  id="building"
+                />
+              </div>
+              <div class="form-group">
+                <label for="">Apartment Number</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="apartment_number"
+                  id="apartment_number"
+                />
+              </div>
+            </div>
+            <div class="col-xs-12 submit-btn-wrapper">
+              <button
+                type="submit"
+                class="btn btn-primary"
+                [disabled]="!layoutForm.valid"
+              >
+                Submit
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,21 @@
+<section class="projects">
+  <div class="container-fluid">
+    <h2>Notifications</h2>
+    <div class="notifications-container">
+      <div *ngFor="let notification of notifications" (click)="goToPage(notification)" class="notification">
+        <div class="highlight" [ngClass]="{'reservation': notification.type == 'Reservation', 'lead': notification.type == 'Lead'}"></div>
+        <div class="notification">
+          <p class="notification-date">{{notification?.created_at | date: 'medium'}}</p>
+          <p class="notification-text">{{notification?.details}}.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- <div class="search-results" infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="50" (scrolled)="onScroll()">
+  </div> -->
+  <div class="col-md-12 text-center">
+    <ngb-pagination [collectionSize]="notifications_raw_data?.last_page * 10" [(page)]="pageTest" [maxSize]="5" [rotate]="true"
+      [ellipses]="true" [boundaryLinks]="true" (pageChange)="pageChange($event)" [size]="lg">
+    </ngb-pagination>
+  </div>
+</section>

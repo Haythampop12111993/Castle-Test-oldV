@@ -1,0 +1,144 @@
+<section id="legal-missions" dir="rtl">
+  <div class="container-fluid">
+    <div class="d-flex justify-content-between">
+      <h2>المعاملات الخارجية</h2>
+      <div class="d-flex justify-content-center align-items-center gap-15">
+        <div class="btn-group" role="group">
+          <button
+            type="button"
+            class="btn"
+            [routerLink]="['/pages/legal-affairs/missions/add']"
+          >
+            إضافة معاملة جديده
+          </button>
+        </div>
+        <div class="dropdown">
+          <button
+            class="btn btn-secondary dropdown-toggle"
+            type="button"
+            id="dropdownMenuButton"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            <i class="fa fa-cog" aria-hidden="true"></i>
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <li (click)="manageModal.open()">
+              <a>
+                <span>Manage Table</span>
+              </a>
+            </li>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="col-md-12"
+      [ngClass]="{ 'no-interaction': is_refreshing }"
+      *ngIf="data_list"
+    >
+      <div class="table table-responsive table_sticky_header">
+        <table class="table table-bordered">
+          <tr class="table_sticky_header_header">
+            <th *ngIf="manageTable.name">اسم المعاملة</th>
+            <th *ngIf="manageTable.category">نوع المعاملة</th>
+            <th *ngIf="manageTable.status">حالة المعاملة</th>
+            <th *ngIf="manageTable.side">الجهة</th>
+            <th *ngIf="manageTable.date">التاريخ</th>
+            <th>الإجراءات</th>
+          </tr>
+          <ng-container *ngFor="let row of data_list; let index = index">
+            <tr>
+              <td *ngIf="manageTable.name">
+                {{ row.name }}
+              </td>
+              <td *ngIf="manageTable.category">
+                {{ row.category?.name }}
+              </td>
+              <td *ngIf="manageTable.status">
+                {{ row.status?.name }}
+              </td>
+              <td *ngIf="manageTable.side">
+                {{ row.side?.name }}
+              </td>
+              <td *ngIf="manageTable.date">
+                {{ row.date | date : "mediumDate" : undefined : "ar-EG" }}
+              </td>
+              <td class="action">
+                <div
+                  class="d-flex flex-wrap justify-content-center align-items-center gap-15"
+                  role="group"
+                  aria-label="Basic example"
+                >
+                  <button
+                    type="button"
+                    class="btn btn-warning"
+                    [routerLink]="[
+                      '/pages/legal-affairs/missions/edit',
+                      row.id
+                    ]"
+                  >
+                    <i class="fa fa-pencil" aria-hidden="true"></i>
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    [routerLink]="[
+                      '/pages/legal-affairs/missions/view',
+                      row.id
+                    ]"
+                  >
+                    <i class="fa fa-eye" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </ng-container>
+        </table>
+      </div>
+      <div>
+        <div *ngIf="paginate.last_page" class="text-center">
+          ({{ paginate?.to }} / {{ paginate.total || 0 }}) page
+          {{ params.page }}
+        </div>
+        <div class="text-center" *ngIf="paginate.last_page">
+          <ngb-pagination
+            [collectionSize]="paginate?.total"
+            [pageSize]="paginate?.per_page"
+            [(page)]="params.page"
+            [maxSize]="5"
+            [rotate]="true"
+            [ellipses]="true"
+            [boundaryLinks]="true"
+            (pageChange)="pageChange($event)"
+            size="lg"
+          >
+          </ngb-pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<modal
+  #manageModal
+  title="Manage Table"
+  modalClass="modal-lg"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <columns-filter
+      uid="unites_view"
+      [columns]="columns"
+      (selectColumns)="onSelectColumns($event)"
+    ></columns-filter>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="manageModal.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>

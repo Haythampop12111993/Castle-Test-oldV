@@ -1,0 +1,16 @@
+.projects {
+  padding-bottom: 350px;
+}
+
+
+.generate-btns-container {
+  margin-top: 20px;
+}
+
+.generate-btns-container button {
+  /* margin: 0 10px; */
+}
+
+.gap-4 {
+  gap: 1rem
+}

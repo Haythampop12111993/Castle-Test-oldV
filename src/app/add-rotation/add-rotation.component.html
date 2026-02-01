@@ -1,0 +1,139 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12 no-border text-left">
+      <h2 *ngIf="is_edit == false">Add Rotation</h2>
+      <h2 *ngIf="is_edit == true">Edit Rotation</h2>
+    </div>
+    <form *ngIf="addRotationForm" class="col-md-12 no-border" [formGroup]="addRotationForm">
+      <div class="row">
+        <div class="col-md-3 no-border form-group">
+          <label for="">Rotation Name</label>
+          <input name="name" placeholder="Rotation Name" class="form-control" formControlName="name" type="text">
+        </div>
+        <div class="col-md-3 no-border form-group">
+          <label for="">Projects</label>
+          <!-- <select class="form-control" formControlName="project_id" name="project_id">
+            <option *ngFor="let project of projects" [value]="project.id">
+              {{project.name}}
+            </option>
+          </select> -->
+          <ng-multiselect-dropdown [placeholder]="'Projects'" [data]="projects" formControlName="project_id"
+            [settings]="projectsDropdownSettings" (onSelect)="onItemSelect($event)" (onSelectAll)="onSelectAll($event)">
+          </ng-multiselect-dropdown>
+        </div>
+        <div class="col-md-3 no-border form-group">
+          <label for="">Sources</label>
+          <!-- <select class="form-control" formControlName="project_id" name="project_id">
+            <option *ngFor="let project of projects" [value]="project.id">
+              {{project.name}}
+            </option>
+          </select> -->
+          <ng-multiselect-dropdown [placeholder]="'Sources'" [data]="sources" formControlName="source"
+            [settings]="sourceDropdownSettings" (onSelect)="onItemSelect($event)" (onSelectAll)="onSelectAll($event)">
+          </ng-multiselect-dropdown>
+        </div>
+        <!-- <div class="col-md-3 no-border">
+            <button class="apply-btn" (click)="getData()">Apply</button>
+        </div> -->
+      </div>
+    </form>
+  </div>
+</div>
+<div class="container">
+  <div class="dndPlaceholder col-md-12" #placeholder></div>
+
+  <div class="row">
+    <div class="col-md-6" [dndList] [dndPlaceholder]="placeholder" [dndModel]="users">
+      <div class="col-md-12">
+        <span class="headline">Property Consultants</span>
+      </div>
+      <div *ngFor="let user of users" class="col-md-12" [dndType]="'user'" (dndMoved)="removeUser(user, users)"
+        [dndDraggable] [dndObject]="user">
+        <span>
+          <i class="fa fa-bars" aria-hidden="true"></i>
+        </span>
+        <span>
+          {{user.name}}
+        </span>
+      </div>
+    </div>
+    <div class="col-md-6" [dndList] [dndModel]="selected" [dndPlaceholder]="placeholder">
+      <div class="col-md-12">
+        <span class="headline">Selected</span>
+      </div>
+      <div *ngFor="let user of selected;let index = index" class="col-md-12 selected-item" [ngStyle]="{
+          'background-color': user?.teams?.branch?.branch_color
+        }" [dndType]="'user'" (dndMoved)="removeSelected(user, selected)" [dndDraggable] [dndObject]="user">
+        <div class="selected-user">
+          <div class="user-drag-name">
+            <span>
+              <i class="fa fa-bars" aria-hidden="true"></i>
+            </span>
+            <span>
+              {{user?.name}}
+            </span>
+          </div>
+          <div class="remove-user">
+            <span *ngIf="user.is_paused">This User Paused</span>
+            <span class="next_user" *ngIf="user.id ===  isNextUserId">This is the next user</span>
+            <span (click)="removeUserFromRotation(user, index)">
+              <i class="fa fa-trash" aria-hidden="true"></i>
+            </span>
+            <span *ngIf="!user.is_paused" (click)="open(pauseModal)" data-toggle="modal" data-target="#modal">
+              <i class="fa fa-pause-circle"></i>
+            </span>
+          </div>
+        </div>
+        <!-- Modal -->
+        <modal #pauseModal modalClass="modal-md" [hideCloseButton]="true"
+        [closeOnOutsideClick]="true">
+        <modal-header><h4>Pause Period</h4> </modal-header>
+        <modal-content>
+          <form #pauseForm="ngForm">
+            <div class="form-group">
+              <label for="recipient-name">Date From:</label>
+              <input (change)="resetDateTo()" [(ngModel)]="userPeriodData.date_from" [min]="todayDate | date: 'yyyy-MM-dd'"  name="userPeriodData.date_from" type="date" class="form-control" id="recipient-name" required>
+            </div>
+            <div class="form-group">
+              <label for="message-text">Date To:</label>
+              <input [disabled]="!userPeriodData.date_from" [(ngModel)]="userPeriodData.date_to" [min]="userPeriodData.date_from | date: 'yyyy-MM-dd'" name="userPeriodData.date_to" type="date" class="form-control" id="message-text" required>
+            </div>
+          </form>
+        </modal-content>
+        <modal-footer>
+          <button class="btn close_btn" (click)="closeModal(pauseModal)">
+            close
+          </button>
+          <button [disabled]="pauseForm.form.invalid" class="btn save_btn" (click)="setUserPeriod(user.id, pauseModal)">
+            Save
+          </button>
+        </modal-footer>
+        </modal>
+
+      </div>
+
+    </div>
+    <div class="row" *ngIf="can_submit && !is_edit">
+      <div class="col-md-6 no-border"></div>
+      <div class="col-md-6 no-border">
+        <div class="col-md-3 no-border"></div>
+        <div class="col-md-6 no-border">
+          <button class="apply-btn" (click)="submit()">Submit</button>
+        </div>
+      </div>
+    </div>
+    <div class="row" *ngIf="can_submit && is_edit">
+      <div class="col-md-6 no-border"></div>
+      <div class="col-md-6 no-border">
+        <div class="col-md-3 no-border"></div>
+        <div class="col-md-6 no-border">
+          <button class="apply-btn" (click)="update()">Update</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+

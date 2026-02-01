@@ -1,0 +1,125 @@
+<section class="add-new-project">
+  <div class="container-fluid">
+    <div class="row d-flex align-items-center">
+      <div class="col-xs-10">
+        <h2>Block Requests</h2>
+      </div>
+      <div class="col-xs-2 actions">
+        <button
+          class="btn btn-primary"
+          *ngIf="
+            (userInfo.role == 'Admin' ||
+              userInfo.role == 'Super Development') &&
+            userInfo.is_full_access
+          "
+          (click)="getBlockList(true)"
+        >
+          export
+        </button>
+      </div>
+    </div>
+    <div class="proj-details">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="table table-responsive">
+            <table class="table table-bordered">
+              <tr>
+                <th>Request Serial</th>
+                <th>Unit</th>
+                <th>Agent Name</th>
+                <th>Reason</th>
+                <th>Comment</th>
+                <th>For</th>
+                <th>Date</th>
+                <th>Action</th>
+              </tr>
+              <tr
+                *ngFor="let block of blockList?.data"
+                [ngClass]="{
+                  'bg-success': block.is_approved == 1,
+                  'bg-danger': block.is_declined == 1
+                }"
+              >
+                <td>#{{ block.id }}</td>
+                <td>
+                  <a href="">#{{ block.unit?.serial }}</a>
+                </td>
+                <td>{{ block.user?.name }}</td>
+                <td>{{ block.reason }}</td>
+                <td>{{ block.reason_comment }}</td>
+                <td>{{ block.for?.name }}</td>
+                <td>
+                  {{ block.created_at.substring(0, 10) }} <br />{{
+                    block.created_at.substring(11)
+                  }}
+                </td>
+                <td>
+                  <div class="dropdown" dropdown>
+                    <img
+                      class="more-options-icon"
+                      src="assets/img/show-more-button-with-three-dots.svg"
+                      dropdown-open
+                    />
+                    <ul class="dropdown-menu">
+                      <li
+                        (click)="approveUnit(block.id)"
+                        *ngIf="
+                          userInfo.role == 'Moderator' ||
+                          userInfo.role == 'Super Moderator' ||
+                          userInfo.role == 'Admin' ||
+                          userInfo.role == 'Super Development' ||
+                          userInfo.role == 'CCO' ||
+                          userInfo.role == 'Development Director' ||
+                          userInfo.role == 'Sales Director' ||
+                          userInfo.role == 'Sales Manager' ||
+                          userInfo.is_sales_top_level
+                        "
+                      >
+                        <a>
+                          <span>Approve</span>
+                        </a>
+                      </li>
+                      <li
+                        class="decline-list-item"
+                        (click)="declinelUnit(block.id)"
+                        *ngIf="
+                          userInfo.role == 'Moderator' ||
+                          userInfo.role == 'Super Moderator' ||
+                          userInfo.role == 'Admin' ||
+                          userInfo.role == 'Super Development' ||
+                          userInfo.role == 'CCO' ||
+                          userInfo.role == 'Development Director' ||
+                          userInfo.is_sales_top_level ||
+                          userInfo.role == 'Head Of Sales'
+                        "
+                      >
+                        <a>
+                          <span>Decline</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div class="col-md-12 text-center">
+            <ngb-pagination
+              [collectionSize]="blockList?.last_page * 10"
+              [(page)]="pageTest"
+              [maxSize]="5"
+              [rotate]="true"
+              [ellipses]="true"
+              [boundaryLinks]="true"
+              (pageChange)="pageChange($event)"
+              [size]="lg"
+            >
+            </ngb-pagination>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- <app-upcoming-scene *ngIf="coming_soon" [name]="'Block Requests'"></app-upcoming-scene> -->

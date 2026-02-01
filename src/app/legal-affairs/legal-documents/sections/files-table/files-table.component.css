@@ -1,0 +1,7 @@
+*:not(.fa) {
+  font-family: "Cairo", sans-serif;
+}
+
+th {
+  text-align: center;
+}

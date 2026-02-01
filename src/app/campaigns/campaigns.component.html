@@ -1,0 +1,233 @@
+<section class="users-table">
+  <div class="container-fluid">
+    <h2>Campaigns</h2>
+    <div class="proj-details">
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="settings-icons pull-right">
+            <div class="dropdown" dropdown>
+              <i class="fa fa-cog" aria-hidden="true" dropdown-open></i>
+              <ul class="dropdown-menu">
+                <li (click)="campaignModal.open()">
+                  <a>
+                    <span class="doc_link">Add Campaign</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="col-md-12">
+          <div class="table table-responsive">
+            <table class="table table-bordered">
+              <tr>
+                <th>ID</th>
+                <th>Campaign Name</th>
+                <th>Page Name</th>
+                <th>Lead Channel</th>
+                <th>Channel Source</th>
+                <th>Rotation Name</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Action</th>
+              </tr>
+              <tr *ngFor="let campaign of campaigns?.data">
+                <td>{{ campaign?.id }}</td>
+                <td>{{ campaign?.name }}</td>
+                <td>{{ campaign?.page?.name }}</td>
+                <td>{{ campaign?.lead_channel?.name }}</td>
+                <td>{{ campaign?.channel_source?.name }}</td>
+                <td>{{ campaign?.rotation?.name }}</td>
+                <td>{{ campaign?.start_date }}</td>
+                <td>{{ campaign?.end_date }}</td>
+                <td>
+                  <div class="dropdown" dropdown>
+                    <img
+                      class="more-options-icon"
+                      src="assets/img/show-more-button-with-three-dots.svg"
+                      dropdown-open
+                    />
+                    <ul class="dropdown-menu">
+                      <li (click)="editCampain(campaign, campaignModal)">
+                        <a>
+                          <span class="doc_link">Edit</span>
+                        </a>
+                      </li>
+                      <!-- <li>
+                        <a>
+                          <span class="doc_link">Show</span>
+                        </a>
+                      </li> -->
+                      <li (click)="deleteCampaign(campaign.id)">
+                        <a>
+                          <span class="doc_link">Delete</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div *ngIf="campaigns" class="col-xs-12">
+            <app-pagination
+              #paginationRef
+              [to]="campaigns?.to"
+              [total]="campaigns?.total"
+              [last_page]="campaigns?.last_page"
+              [paginate_url]="campaigns?.path"
+              (submitNewRecord)="getNewRecord($event)"
+            ></app-pagination>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<modal
+  #campaignModal
+  title="Add Campaign"
+  submitButtonLabel="submit"
+  modalClass="modal-lg"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="addCampainSubmit(campaignModal)"
+  (onClose)="addCampaignModalOnClose()"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <form [formGroup]="campaignForm">
+      <div class="row">
+        <div class="form-group col-md-12">
+          <label for="">Name</label>
+          <input
+            type="text"
+            name="subject"
+            class="form-control"
+            formControlName="name"
+          />
+        </div>
+        <div class="form-group col-md-6">
+          <label for="">Start Date</label>
+          <input
+            type="date"
+            name="subject"
+            class="form-control"
+            formControlName="start_date"
+          />
+        </div>
+        <div class="form-group col-md-6">
+          <label for="">End Date</label>
+          <input
+            type="date"
+            name="subject"
+            class="form-control"
+            formControlName="end_date"
+          />
+        </div>
+        <div class="form-group col-md-6">
+          <label for="">Page</label>
+          <ng-select
+            [items]="pages"
+            (change)="getAllForms(campaignForm.get('page_id').value)"
+            bindLabel="name"
+            bindValue="id"
+            formControlName="page_id"
+          >
+          </ng-select>
+        </div>
+        <div class="form-group col-md-6">
+          <label for="">Form</label>
+          <ng-select
+            formControlName="external_form_id"
+            placeholder="Select Form"
+          >
+            <ng-option *ngFor="let form of forms" [value]="form.id">{{
+              form.name
+            }}</ng-option>
+          </ng-select>
+        </div>
+        <div class="form-group col-md-6">
+          <label for="">Lead Channel</label>
+          <ng-select
+            [items]="leadChannels"
+            (change)="getSources()"
+            bindLabel="name"
+            bindValue="id"
+            formControlName="lead_channel_id"
+          >
+          </ng-select>
+        </div>
+        <div class="form-group col-md-6">
+          <label for="">Channel Source</label>
+          <ng-select
+            [items]="channelSources"
+            bindLabel="name"
+            bindValue="id"
+            formControlName="channel_source_id"
+          >
+          </ng-select>
+        </div>
+        <div class="form-group col-md-6">
+          <label for="">Rotation</label>
+          <ng-select
+            [items]="rotations"
+            bindLabel="name"
+            bindValue="id"
+            formControlName="rotation_id"
+          >
+          </ng-select>
+        </div>
+        <div class="form-group col-md-6">
+          <label for="">Users</label>
+          <ng-select
+            [items]="users"
+            bindLabel="name"
+            bindValue="id"
+            formControlName="campaign_viewer_id"
+          >
+          </ng-select>
+        </div>
+        <div class="form-group col-md-12">
+          <label for="">Max Period For Take Action</label>
+          <ng-select
+            [items]="period_times"
+            bindLabel="name"
+            bindValue="val"
+            formControlName="max_period_for_take_action"
+          >
+          </ng-select>
+        </div>
+        <div class="form-group col-md-6">
+          <label for="">Start From</label>
+          <input
+            type="time"
+            name="start_work_time"
+            class="form-control"
+            formControlName="start_work_time"
+          />
+        </div>
+        <div class="form-group col-md-6">
+          <label for="">End To</label>
+          <input
+            type="time"
+            name="end_work_time"
+            class="form-control"
+            formControlName="end_work_time"
+          />
+        </div>
+      </div>
+    </form>
+  </modal-content>
+  <modal-footer>
+    <button
+      [ngClass]="{ 'disable, disabled': disableAddCampaign }"
+      class="btn btn-secondary"
+      (click)="campaignModal.close()"
+    >
+      close
+    </button>
+  </modal-footer>
+</modal>

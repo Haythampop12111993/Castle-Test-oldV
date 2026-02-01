@@ -1,0 +1,101 @@
+<section class="projects">
+  <div class="container-fluid">
+    <h2 *ngIf="!is_edit">Add Account</h2>
+    <h2 *ngIf="is_edit">Edit Account</h2>
+    <div class="box" *ngIf="page_loaded && !is_edit">
+      <form [formGroup]="accountForm" (ngSubmit)="addAccount()">
+        <div class="border-sec">
+          <div class="row">
+            <div class="col-xs-6">
+              <div class="form-group">
+                <label for="">Account Level : </label>
+                <ng-select placeholder="Select Account Level" formControlName="account_level">
+                  <ng-option value="parent_account">Parent Account</ng-option>
+                  <ng-option value="sub_account">Sub Account</ng-option>
+                </ng-select>
+              </div>
+            </div>
+          </div>
+          <div class="row" *ngIf="accountForm.get('account_level').value == 'sub_account'">
+            <div class="col-xs-6">
+              <div class="form-group">
+                <label>Account Name : </label>
+                <input type="text" class="form-control" formControlName="name" id="name">
+              </div>
+              <div class="form-group">
+                <label>Account Type : </label>
+                <ng-select placeholder="Select Account Type" formControlName="type" name="type">
+                  <ng-option *ngFor="let t of types" value="{{t}}">{{t}}</ng-option>
+                </ng-select>
+              </div>
+              <div class="form-group">
+                <label>Parent Name : </label>
+                <ng-select placeholder="Select Parent Name" formControlName="parent_id" name="parent_id">
+                  <ng-option *ngFor="let p of parents" value="{{p.id}}">{{p.name}}</ng-option>
+                </ng-select>
+              </div>
+            </div>
+            <div class="col-xs-6">
+              <div class="form-group">
+                <label>Initial Balance : </label>
+                <input type="number" class="form-control" formControlName="initial_balance" name="initial_balance">
+              </div>
+              <div class="form-group">
+                <label for="">Description</label>
+                <input type="text" class="form-control" formControlName="description" name="description">
+              </div>
+            </div>
+          </div>
+          <div class="row" *ngIf="accountForm.get('account_level').value == 'parent_account'">
+            <div class="col-xs-6">
+              <div class="form-group">
+                <label>Account Name : </label>
+                <input type="text" class="form-control" formControlName="name" id="name">
+              </div>
+              <div class="form-group">
+                <label>Account Type : </label>
+                <ng-select placeholder="Select Account Type" formControlName="type" name="type">
+                  <ng-option *ngFor="let t of types" value="{{t}}">{{t}}</ng-option>
+                </ng-select>
+              </div>
+            </div>
+            <div class="col-xs-6">
+              <div class="form-group">
+                <label for="">Description</label>
+                <input type="text" class="form-control" formControlName="description" name="description">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <button class="btn btn-default pull-right btn-black" [disabled]="!accountForm.valid">Submit</button>
+          <button class="btn btn-default btn-black " [routerLink]="['/pages/finance/accounts']">BACK</button>
+        </div>
+      </form>
+    </div>
+    <div class="box" *ngIf="page_loaded && is_edit">
+      <form [formGroup]="accountForm" (ngSubmit)="addAccount()">
+        <div class="border-sec">
+          <div class="row">
+            <div class="col-xs-6">
+              <div class="form-group">
+                <label>Account Name : </label>
+                <input type="text" class="form-control" formControlName="name" id="name">
+              </div>
+            </div>
+            <div class="col-xs-6">
+              <div class="form-group">
+                <label for="">Description</label>
+                <input type="text" class="form-control" formControlName="description" name="description">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <button class="btn btn-default pull-right btn-black" [disabled]="!accountForm.valid">Submit</button>
+          <button class="btn btn-default btn-black " [routerLink]="['/pages/finance/accounts']">BACK</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>

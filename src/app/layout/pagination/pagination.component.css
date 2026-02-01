@@ -1,0 +1,18 @@
+.gap-4 {
+  gap: 4px !important;
+}
+
+.active-page_length {
+  background-color: var(--color-cyan) !important;
+  color: #fff !important;
+}
+
+:host ngb-pagination ::ng-deep .pagination > .active > a,
+:host ngb-pagination ::ng-deep .pagination > .active > span,
+:host ngb-pagination ::ng-deep .pagination > .active > a:hover,
+:host ngb-pagination ::ng-deep .pagination > .active > span:hover,
+:host ngb-pagination ::ng-deep .pagination > .active > a:focus,
+:host ngb-pagination ::ng-deep .pagination > .active > span:focus {
+  background-color: var(--color-cyan) !important;
+  border-color: var(--color-cyan) !important;
+}

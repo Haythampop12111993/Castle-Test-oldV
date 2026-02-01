@@ -1,0 +1,158 @@
+<section class="users-table">
+  <div class="container-fluid">
+    <h2>Marketing</h2>
+    <div class="proj-details">
+      <div class="row">
+        <!-- <div class="col-xs-12">
+          <div class="settings-icons pull-right">
+            <div class="dropdown" dropdown>
+              <i class="fa fa-cog" aria-hidden="true" dropdown-open></i>
+              <ul class="dropdown-menu">
+                <li (click)="creatListModal.open()">
+                  <a>
+                    <span class="doc_link">Add List</span>
+                  </a>
+                </li>
+                <li (click)="downloadEmailExample()">
+                  <a>
+                    <span>Download Email Example</span>
+                  </a>
+                </li>
+                <li (click)="downloadSmSExample()">
+                  <a>
+                    <span>Download Sms Example</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div> -->
+        <div class="clearfix"></div>
+        <div class="col-md-12">
+          <div class="table table-responsive">
+            <table class="table table-bordered">
+              <tr>
+                <th>ID</th>
+                <th>List Name</th>
+                <th>List Type</th>
+                <th>Create At</th>
+                <th>Action</th>
+              </tr>
+              <tr *ngFor="let list of lists">
+                <td>{{list.id}}</td>
+                <td>{{list.list_name}}</td>
+                <td>{{list.type}}</td>
+                <td>{{list.created_at}}</td>
+                <td>
+                  <div class="dropdown" dropdown>
+                    <img class="more-options-icon" src="assets/img/show-more-button-with-three-dots.svg" dropdown-open/>
+                    <ul class="dropdown-menu">
+                      <li>
+                        <a>
+                          <span class="doc_link" (click)="exportList(list.id , list.type)">Export</span>
+                        </a>
+                      </li>
+                      <li (click)="openModalEditMode(creatListModal, list)">
+                        <a>
+                          <span class="doc_link">Edit</span>
+                        </a>
+                      </li>
+                      <li *ngIf="list.type == 'SMS'" (click)="openSmMModal(list, smsModal)">
+                        <a>
+                          <span class="doc_link">Send SmS</span>
+                        </a>
+                      </li>
+                      <li *ngIf="list.type == 'Email'" (click)="openEmailModal(list, emailModal)">
+                        <a>
+                          <span class="doc_link">Send Emails</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<modal #creatListModal title="Create List" submitButtonLabel="submit" modalClass="modal-lg" [hideCloseButton]="true" [closeOnOutsideClick]="true"
+  (onOpen)="createListModelOnOpen()" (onClose)="createListModelOnClose()" (onSubmit)="createListModelOnSubmit(creatListModal)">
+  <modal-header>
+  </modal-header>
+  <modal-content>
+    <form [formGroup]="createForm">
+      <div class="row">
+        <div class="form-group col-md-6">
+          <label for="">Name :</label>
+          <input type="text" name="name" class="form-control" formControlName="list_name">
+        </div>
+        <div class="form-group col-md-6">
+          <label class="label-left">Type</label>
+          <select class="form-control" formControlName="type" name="type">
+            <option value="" selected>Type...</option>
+            <option value="SMS" selected>SMS</option>
+            <option value="Email" selected>Email</option>
+          </select>
+        </div>
+        <div class="col-md-6 form-group flex-column">
+          <label for="">List Excel :</label>
+          <input type="file" id="list" (change)="handleCreationListFile($event)" />
+        </div>
+      </div>
+    </form>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="creatListModal.close()">close</button>
+  </modal-footer>
+</modal>
+
+<modal #smsModal title="Send SmS" submitButtonLabel="submit" modalClass="modal-lg" [hideCloseButton]="true" [closeOnOutsideClick]="true"
+  (onClose)="smsModalOnClose()" (onSubmit)="sendSmSBulk(smsModal)">
+  <modal-header>
+  </modal-header>
+  <modal-content>
+    <form [formGroup]="smsForm">
+      <div class="row">
+        <div class="col-md-12">
+          <label for="">Message :</label>
+          <textarea style="resize: none" name="message" formControlName="message" palceholder="Enter your message here..." rows="5"></textarea>
+        </div>
+      </div>
+    </form>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="smsModal.close()">close</button>
+  </modal-footer>
+</modal>
+
+<modal #emailModal title="Send Email" submitButtonLabel="submit" modalClass="modal-lg" [hideCloseButton]="true" [closeOnOutsideClick]="true"
+  (onClose)="emailModalOnClose()" (onSubmit)="sendEmailBulk(emailModal)">
+  <modal-header>
+  </modal-header>
+  <modal-content>
+    <form [formGroup]="emailForm">
+      <div class="row">
+        <div class="form-group col-md-6">
+          <label for="">Subject</label>
+          <input type="text" name="subject" class="form-control" formControlName="subject">
+        </div>
+        <div class="form-group col-md-6">
+          <label for="">Title</label>
+          <input type="text" name="title" class="form-control" formControlName="title">
+        </div>
+        <div class="col-md-12">
+          <label for="">Message :</label>
+          <textarea class="form-control" style="resize: none" name="message" formControlName="message" palceholder="Enter your message here..."
+            rows="5"></textarea>
+        </div>
+      </div>
+    </form>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="emailModal.close()">close</button>
+  </modal-footer>
+</modal>

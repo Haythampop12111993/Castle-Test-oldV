@@ -1,0 +1,102 @@
+
+<div class="row bg_w m-0">
+  <div class="container-fluid mt-4 pt-3 pb-4">
+    <form>
+     <div class="row bg_w m-0 p-3 d-flex align-items-center"> 
+         <div class="form-group col-sm-6 col-12 pr-30">
+          <label>Name <span class="text-danger">*</span> </label>
+          <input
+            [(ngModel)]="roleName"
+            type="text"
+            name="name"
+            placeholder="Name"
+            class="input-text"
+            (change)="changeData()"
+            #name="ngModel"
+            required
+            [ngClass]="{
+              error_input: (!name.valid && !name.pristine) || (name.invalid && name.touched)
+            }"
+          />
+        </div>
+        <div class="form-group col-sm-6 col-12 pl-30">
+          <label>Role Position </label>
+          <select
+            class="w-100 mt-1 form-control input-text"
+            [(ngModel)]="selectedPositionId"
+            name="position"
+            (change)="onChangePosition($event)"
+            [disabled]="isIgnored"
+          >
+            <option value="">Top of tree</option>
+            <option [value]="role.id" *ngFor="let role of currentOrderedRoles" [ngStyle]="{ order: role?.level }"
+              >under level <b> {{ role.level }} - </b> {{ role.name }}</option
+            >
+          </select>
+        </div>
+      </div>
+      <div class="row bg_w m-0 p-3 d-flex align-items-center">
+        <div class="form-gro col-sm-6 col-12 pl-5">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            [(ngModel)]="isIgnored"
+            name="isIgnored"
+            value=""
+            id="flexCheckDefault"
+            (change)="changeData()"
+          />
+          <label class="form-check-label" for="flexCheckDefault"> Ignore Levels </label>
+        </div>
+      </div>
+      <div class="row bg_w m-0 p-3">
+        <div class="form-group col-sm-6 col-12 pr-30">
+          <label>Current Roles</label>
+          <div class="current border rounded">
+            <ul role="list ">
+              <li *ngIf="roleName && !isIgnored" [ngStyle]="{ order: selectedPosition }" class="role_position">
+                <ng-container *ngIf="role?.id && cloned">
+                  {{ selectedPosition ? 'level ' + [selectedPosition] + ' - ' : '' }}
+                  {{ roleName }}
+                </ng-container>
+                <ng-container *ngIf="role?.id && !cloned">
+                  {{ selectedPosition ? 'level ' + [selectedPosition] + ' - ' : '' }}
+                  {{ roleName }}
+                </ng-container>
+                <ng-container *ngIf="!role?.id">
+                  {{ selectedPosition ? 'level ' + [selectedPosition - 1] + ' - ' : '' }}
+                  {{ roleName }}
+                </ng-container>
+              </li>
+              <mat-divider></mat-divider>
+
+              <li
+                *ngFor="let _role of currentRoles"
+                [ngStyle]="{ order: _role?.level }"
+                [ngClass]="{ role_position: _role.id == role?.id }"
+              >
+                <ng-container *ngIf="cloned">
+                  <b>level {{ _role?.level }} - </b> {{ _role.name }}
+                </ng-container>
+                <ng-container *ngIf="_role.id !== role?.id && !cloned">
+                  <b>level {{ _role?.level }} - </b> {{ _role.name }}
+                </ng-container>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="form-group col-sm-6 col-12 pl-30">
+          <label>Ignore Level Roles</label>
+          <div class="ignore border rounded">
+            <ul role="list">
+              <li *ngIf="roleName && isIgnored" class="role_position">{{ roleName }}</li>
+              <mat-divider></mat-divider>
+              <li *ngFor="let role of ignoreRoles">{{ role?.name }}</li>
+            </ul>
+          </div>
+        </div>
+       
+      </div>
+    </form>
+  </div>
+</div> 

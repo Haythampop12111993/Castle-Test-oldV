@@ -1,0 +1,66 @@
+<mat-card class="option-card">
+  <mat-card-content>
+    <h3 class="card__title">Cities</h3>
+    <div class="row">
+      <div class="col-xs-12 margin-bottom d-f-end">
+        <button (click)="openCityModal(cityForm)" class="btn btn-primary">
+          Add City
+        </button>
+      </div>
+      <div class="col-xs-12 margin-bottom">
+        <table>
+          <tr>
+            <th>name</th>
+            <th>Actions</th>
+          </tr>
+          <tr class="data" *ngFor="let city of cities_list">
+            <td>
+              {{ city.name }}
+            </td>
+            <td>
+              <button
+                class="btn btn-primary"
+                (click)="openCityModal(cityForm, city)"
+              >
+                Edit
+              </button>
+              <button class="btn btn-danger delete" (click)="deleteCity(city)">
+                Delete
+              </button>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<modal
+  #cityForm
+  title="City Form"
+  submitButtonLabel="submit"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="sendCityModalSubmit(cityForm)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <form>
+      <div class="row search">
+        <div class="col-xs-12 form-group">
+          <label for="">Name</label>
+          <input
+            type="text"
+            class="form-control"
+            name="name"
+            [(ngModel)]="dataForm.name"
+          />
+        </div>
+      </div>
+    </form>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="cityForm.close()">close</button>
+  </modal-footer>
+</modal>

@@ -1,0 +1,404 @@
+<ng-container *ngIf="true">
+  <section class="projects">
+    <div class="container-fluid">
+      <h2>PROJECTS</h2>
+      <div class="new-project-container" *ngIf="projects">
+        <ng-container *ngFor="let project of projects; let index = index">
+          <div class="new-project" *ngIf="!project.is_hidden">
+            <div class="new-project-inner">
+              <div class="new-image-container">
+                <div class="new-image-inner-container">
+                  <img
+                    *ngIf="project?.image?.url"
+                    class="img-responsive"
+                    [src]="project?.image?.url"
+                    alt=""
+                  />
+                  <img
+                    *ngIf="!project?.image?.url"
+                    class="img-responsive"
+                    src="../../assets/img/no-image-found.png"
+                    alt=""
+                  />
+                </div>
+              </div>
+              <div class="project-details">
+                <h3>{{ project?.name }}</h3>
+                <p class="district-label">
+                  District:
+                  <span class="district-value">{{
+                    project?.district?.name
+                  }}</span>
+                </p>
+                <div class="down-payment-container">
+                  <span class="starting-price-label">Down Payment: </span>
+                  <span class="starting-price-value"
+                    >{{ project?.down_payment }} %</span
+                  >
+                </div>
+                <div class="down-payment-container">
+                  <span class="starting-price-label">Completion Rate: </span>
+                  <span class="starting-price-value"
+                    >{{ project?.completion_rate }} %</span
+                  >
+                </div>
+                <div class="down-payment-container">
+                  <span class="starting-price-label"
+                    >Available Parking Slots:
+                  </span>
+                  <span class="starting-price-value">{{
+                    project?.available_parking_slots
+                  }}</span>
+                </div>
+                <div class="down-payment-container">
+                  <span class="starting-price-label">Parking Price: </span>
+                  <span class="starting-price-value"
+                    >{{ project?.garage_price }} <sup>EGP</sup></span
+                  >
+                </div>
+                <div class="down-payment-container">
+                  <span class="starting-price-label"
+                    >Available Storage Slots:
+                  </span>
+                  <span class="starting-price-value">{{
+                    project?.available_storage_slots
+                  }}</span>
+                </div>
+                <div class="down-payment-container">
+                  <span class="starting-price-label">Storage Price: </span>
+                  <span class="starting-price-value"
+                    >{{ project?.storage_price }} <sup>EGP</sup></span
+                  >
+                </div>
+                <div class="unit-types-container" *ngIf="project?.unit_types">
+                  <p class="unit-type-label">Unit Types</p>
+                  <div class="unit-types-value-container">
+                    <button
+                      *ngFor="let pm of project?.unit_types"
+                      class="btn btn-default active"
+                      (click)="getProjectUnitsbytype(project?.id, pm?.id)"
+                    >
+                      {{ pm.name }} ({{ pm.available_unit_count }})
+                    </button>
+                  </div>
+                </div>
+                <div class="actions-on-projects">
+                  <div class="container-fluid">
+                    <div class="row">
+                      <div
+                        class="col-md-6"
+                        *ngIf="project?.static_master_plan?.length > 0"
+                      >
+                        <button
+                          class="action view-static-master-plan"
+                          (click)="staticMasterPlanImagesModal.open()"
+                        >
+                          <i class="fa fa-columns" aria-hidden="true"></i>
+                          <span>masterplan</span>
+                        </button>
+                      </div>
+                      <div class="col-md-6">
+                        <button
+                          class="action view-all-units"
+                          (click)="goToUnits(project?.id)"
+                        >
+                          <i class="fa fa-home" aria-hidden="true"></i>
+                          <span>View Units</span>
+                        </button>
+                      </div>
+                      <div
+                        class="col-md-6"
+                        *ngIf="
+                          userData.role == 'Admin' ||
+                          userData.role == 'Super Development' ||
+                          userData.role == 'Development Director'
+                        "
+                      >
+                        <button
+                          class="action edit-project"
+                          (click)="staticMasterPlanImagesModal.open()"
+                          [routerLink]="['add', project?.id]"
+                        >
+                          <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                          <span>Edit Project</span>
+                        </button>
+                      </div>
+                      <div
+                        class="col-md-6"
+                        *ngIf="userData.role == 'Admin'"
+                      >
+                        <button
+                          class="action edit-project"
+                          [routerLink]="['upload-offer-images']"
+                          [queryParams]="{ project_id: project?.id }"
+                        >
+                          <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                          <span>Upload Offer Images</span>
+                        </button>
+                      </div>
+                      <div
+                        class="col-md-6"
+                        *ngIf="
+                          userData.role == 'CEO' ||
+                          userData.role == 'Admin' ||
+                          userData.role == 'Moderator' ||
+                          userData.role == 'Super Moderator' ||
+                          userData.role == 'Development Director' ||
+                          userData.role == 'Super Development' ||
+                          userData.role == 'Head Of Sales'
+                        "
+                      >
+                        <button
+                          class="action exports-units"
+                          (click)="openExcel(project?.excel)"
+                        >
+                          <i class="fa fa-download" aria-hidden="true"></i>
+                          <span>Export Units</span>
+                        </button>
+                      </div>
+                      <div class="col-md-6">
+                        <button
+                          class="action exports-units"
+                          (click)="downloadAvailableSheet(project?.id)"
+                        >
+                          <i class="fa fa-download" aria-hidden="true"></i>
+                          <span>Export Available Sheet</span>
+                        </button>
+                      </div>
+                      <div class="col-md-6" *ngIf="project?.brochure_url">
+                        <button
+                          class="action exports-units"
+                          (click)="downloadFile(project?.brochure_url)"
+                        >
+                          <i class="fa fa-download" aria-hidden="true"></i>
+                          <span>Download Brochure File</span>
+                        </button>
+                      </div>
+                      <div class="col-md-6" (click)="importNewUnitsModal.open(); project_id = project.id">
+                        <button class="action view-static-master-plan">
+                          <i class="fa fa-download" aria-hidden="true"></i>
+                          <span>Import New Units</span>
+                        </button>
+                      </div>
+                      <div class="col-md-6">
+                        <button class="action view-static-master-plan" (click)="fileInput.click(); project_id = project.id">
+                          <i class="fa fa-download" aria-hidden="true"></i>
+                          <span>Import Updated Units</span>
+                        </button>
+                        <input
+                          style="display: none"
+                          type="file"
+                          accept=".xlsx, .xls"
+                          id="unit_excel"
+                          #fileInput
+                          (change)="updateImportNewUnitsModal($event)"
+                          class="form-control"
+                        />
+                      </div>
+                      <div
+                        *ngIf="
+                          (userData.role == 'Admin' ||
+                            userData.role == 'Super Development' ||
+                            userData.role == 'Moderator' ||
+                            userData.role == 'Super Moderator' ||
+                            userData.role == 'Development Director') &&
+                          project?.masterplan
+                        "
+                        (click)="setupModeMasterPlan(project?.id)"
+                        class="col-md-12"
+                      >
+                        <button class="action masterplan-setup">
+                          <i class="fa fa-wrench" aria-hidden="true"></i>
+                          <span>MasterPlan Setup</span>
+                        </button>
+                      </div>
+                      <div
+                        (click)="goToConstructionUpdates(project?.id)"
+                        class="col-md-12"
+                      >
+                        <button class="action masterplan-setup">
+                          <i class="fa fa-building" aria-hidden="true"></i>
+                          <span>Construction Updates</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- <div class="col-md-12">
+                  <h4>Unit Types</h4>
+                  <div *ngFor="let pm of p?.unit_types">
+                    <button class="btn btn-default active" (click)="getProjectUnitsbytype(p?.id, pm?.id)">{{pm.name}}</button>
+                  </div>
+                </div> -->
+                  <!-- <div class="col-xs-12">
+                  <a *ngIf="userData.role == 'Admin' && p?.masterplan" (click)="setupModeMasterPlan(p?.id)" class="edit-btn btn btn-default pull-right">
+                    MasterPlan Setup
+                  </a>
+                  <a *ngIf="userData.role == 'Admin'" [routerLink]="['add', p?.id]" class="edit-btn btn btn-default pull-right">
+                    Edit Project
+                  </a>
+                  <a [routerLink]="['units/',p?.id]" [queryParams]="{masterplan: p?.masterplan }" class="btn btn-primary pull-right">
+                    View All Units
+                  </a>
+                  <a class="edit-btn export-unit btn btn-default pull-right" *ngIf="userData?.role == 'Admin'"
+                    [href]="p?.excel">
+                    Export Units
+                  </a>
+                </div> -->
+                </div>
+  
+                <modal
+                  #staticMasterPlanImagesModal
+                  title="Static Master Plan Images"
+                  modalClass="modal-md"
+                  [hideCloseButton]="true"
+                  [closeOnOutsideClick]="true"
+                  (onOpen)="staticMasterPlanImagesModalModalOpen()"
+                  (onClose)="staticMasterPlanImagesModalClose()"
+                >
+                  <modal-header> </modal-header>
+                  <modal-content>
+                    <p
+                      *ngIf="
+                        project?.static_master_plan &&
+                        project?.static_master_plan.length == 0
+                      "
+                      class="text-center"
+                    >
+                      There is no Static Master plan uploaded.
+                    </p>
+                    <div
+                      class="row h-70vh"
+                      *ngIf="
+                        project?.static_master_plan &&
+                        project?.static_master_plan.length > 0
+                      "
+                    >
+                      <div
+                        class="col-sm-12 static-masterplan-image-container h-100"
+                        *ngFor="
+                          let img of project?.static_master_plan;
+                          let i = index
+                        "
+                      >
+                        <img
+                          attr.id="print_{{ i }}"
+                          [src]="img?.image?.url"
+                          class="img-responsive static-masterplan-image"
+                          alt=""
+                          (click)="openMasterPlanZoom(img?.image?.url)"
+                        />
+                        <div class="print-buttons-container">
+                          <button
+                            (click)="deleteBtn(img, index, i)"
+                            class="delete-btn"
+                            *ngIf="
+                              userData.role == 'Admin' ||
+                              userData.role == 'Super Development' ||
+                              userData.role == 'Development Director'
+                            "
+                          >
+                            <i class="fa fa-trash" aria-hidden="true"></i>
+                            <span>delete</span>
+                          </button>
+                          <button
+                            (click)="printImg(img?.image?.url)"
+                            class="delete-btn print--flag"
+                          >
+                            <i class="fa fa-print" aria-hidden="true"></i>
+                            <span>Print</span>
+                          </button>
+                        </div>
+                      </div>
+                      <!-- <div class="col-sm-12 static-masterplan-image-container">
+                      <img class="test-img" attr.id="print_1" [src]="project?.static_master_plan[0]?.image?.url" alt="">
+                    </div>
+                    <button (click)="printImg(0, project?.static_master_plan[0]?.image?.url)" class="delete-btn" *ngIf="userData.role == 'Admin'">
+                      <i class="fa fa-print" aria-hidden="true"></i>
+                      <span>Print</span>
+                    </button> -->
+                    </div>
+                  </modal-content>
+                  <modal-footer>
+                    <button
+                      class="btn btn-secondary"
+                      (click)="staticMasterPlanImagesModal.close()"
+                    >
+                      close
+                    </button>
+                  </modal-footer>
+                </modal>
+              <modal
+                #importNewUnitsModal
+                title="Import New Units"
+                modalClass="modal-md"
+                [hideCloseButton]="true"
+                [closeOnOutsideClick]="true"
+              >
+                <modal-header></modal-header>
+                <modal-content>
+                  <form>
+                    <div class="form-group">
+                      <div *ngIf="userData.is_full_access">
+                        <a
+                          class="btn btn-default import-btn"
+                          target="_blank"
+                          [href]="
+                            environment?.api_raw_base_url +
+                            '/uploads/documents/project/import_project_units_example.xlsx'
+                          "
+                          >Download Unit Example</a
+                        >
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label>IMPORT UNITS</label>
+                      <input
+                        type="file"
+                        accept=".xlsx, .xls"
+                        id="unit_excel"
+                        #file
+                        (change)="onExcelChange($event)"
+                        class="form-control"
+                      />
+                      <small>Upload units excel sheet</small>
+                    </div>
+                  </form>
+                </modal-content>
+                <modal-footer>
+                  <button class="btn close_btn" (click)="importNewUnitsModal.close()">
+                    close
+                  </button>
+                  <button
+                    class="btn save_btn"
+                    (click)="submitImportNewUnitsModal(importNewUnitsModal)"
+                  >
+                    Save
+                  </button>
+                </modal-footer>
+              </modal>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+  
+      <div *ngIf="pagination.to" class="col-xs-12 text-center">
+        <p>({{ pagination.to }} / {{ pagination.total }})</p>
+        <p>page {{ pagination.page }}</p>
+      </div>
+      <div class="col-xs-12 text-center">
+        <ngb-pagination
+          [collectionSize]="pagination.last_page * 10"
+          [(page)]="page"
+          [maxSize]="5"
+          [rotate]="true"
+          [ellipses]="true"
+          [boundaryLinks]="true"
+          (pageChange)="getprojects($event)"
+          [size]="lg"
+        >
+        </ngb-pagination>
+      </div>
+    </div>
+  </section>
+</ng-container>

@@ -1,0 +1,181 @@
+<nav class="nav-bar-full">
+  <ng2-slim-loading-bar
+    [color]="'rgb(222, 191, 114)'"
+    [height]="'2px'"
+  ></ng2-slim-loading-bar>
+
+  <div
+    class="header-container"
+    [ngClass]="{ 'opened-nav': menuIsExpanded, 'closed-nav': !menuIsExpanded }"
+  >
+    <div>
+      <img
+        [ngClass]="{ 'logo-collapsed': menuIsExpanded }"
+        [src]="'assets/logos/logo.png'"
+        style="width: 100px"
+        [alt]="envStatics._view + ' Logo'"
+        class="logo"
+      />
+    </div>
+    <div>
+      <ul class="list-items__header">
+        <li
+          *ngIf="userData.role != 'Broker Incentive'"
+          [hidden]="userData.role == 'Call Center' || userData.role == 'MD'"
+          class="notification-container"
+          class="dropdown"
+          dropdown
+        >
+          <i
+            dropdown-open
+            (click)="notificationOpened()"
+            class="fa fa-bell"
+            aria-hidden="true"
+          ></i>
+          <span
+            dropdown-open
+            (click)="notificationOpened()"
+            class="notification-counter"
+            *ngIf="notificationCounter"
+            >{{ notificationCounter }}</span
+          >
+          <ul
+            class="dropdown-menu in-header notification"
+            *ngIf="userData.role != 'Broker Incentive'"
+          >
+            <div class="notifi-title">Notifications</div>
+            <div class="list-container">
+              <li
+                *ngFor="let notification of notificationsList"
+                (click)="goToNotification(notification)"
+              >
+                <div
+                  class="notification-single-container"
+                  [ngClass]="{
+                    'reservation-notification':
+                      notification.type == 'Reservation',
+                    'lead-notification': notification.type == 'Lead'
+                  }"
+                >
+                  <div class="notification-title">
+                    <span class="title">{{ notification?.type }}</span>
+                    <span class="date">{{
+                      notification?.created_at | date : "medium"
+                    }}</span>
+                  </div>
+                  <div class="notification-desc">
+                    {{ notification?.details }}
+                  </div>
+                </div>
+              </li>
+            </div>
+            <button class="seemore-btn" (click)="goToNotification()">
+              See All
+            </button>
+          </ul>
+        </li>
+        <li
+          *ngIf="
+            ((userData.role != 'A.R Accountant' &&
+              userData.role != 'Treasury Accountant') ||
+              userData.role == 'Call Center') &&
+            userData.role != 'MD' &&
+            userData?.role != 'Super Development' &&
+            userData.role != 'Engineer' &&
+            userData.role != 'Broker Incentive' &&
+            userData.role != 'Broker'
+          "
+          (click)="addLead()"
+        >
+          <i class="fa fa-plus-circle" aria-hidden="true"></i>
+          Add New Lead
+        </li>
+        <li class="dropdown header-user__item" dropdown>
+          <img
+            dropdown-open
+            *ngIf="!userPic"
+            src="assets/images/img_avatar2.png"
+            alt="avatar"
+          />
+          <div dropdown-open>
+            <img
+              *ngIf="userPic"
+              onerror="this.onerror=null; this.src='assets/images/img_avatar2.png'"
+              [src]="userPic"
+              alt="user pic"
+            />
+            <span>{{ userData?.name }}</span>
+            <span class="dorpdown-icon-container">
+              <i class="fa fa-chevron-down" aria-hidden="true"></i>
+            </span>
+          </div>
+          <ul class="dropdown-menu in-header">
+            <li *ngIf="userData.role != 'MD'" (click)="goToMyProfile()">
+              <a class="nav-link">
+                <span class="icon">
+                  <i class="fa fa-user" aria-hidden="true"></i>
+                </span>
+                <span>My Profile</span>
+              </a>
+            </li>
+            <li (click)="changePasswordModal.open()">
+              <a class="nav-link">
+                <span class="icon">
+                  <i class="fa fa-key" aria-hidden="true"></i>
+                </span>
+                <span>Change Password</span>
+              </a>
+            </li>
+            <li (click)="logout()">
+              <a class="nav-link">
+                <span class="icon">
+                  <i class="fa fa-power-off" aria-hidden="true"></i>
+                </span>
+                <span>Logout</span>
+              </a>
+            </li>
+          </ul>
+          <!-- <i class="fa fa-chevron-down" aria-hidden="true"></i> -->
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<modal
+  #changePasswordModal
+  title="Change Password"
+  submitButtonLabel="submit"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onOpen)="changePasswordModalActionOnOpen()"
+  (onClose)="changePasswordModalActionOnClose()"
+  (onSubmit)="changePasswordMethod(changePasswordModal)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <form [formGroup]="changePasswordForm">
+      <div class="form-group">
+        <label for="">Current Password</label>
+        <input
+          type="password"
+          class="form-control"
+          formControlName="old_password"
+        />
+      </div>
+      <div class="form-group">
+        <label for="">New Password</label>
+        <input
+          type="password"
+          class="form-control"
+          formControlName="new_password"
+        />
+      </div>
+    </form>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="changePasswordModal.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>

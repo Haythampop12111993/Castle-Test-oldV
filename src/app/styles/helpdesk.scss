@@ -1,0 +1,7 @@
+.routable{
+  text-decoration: underline;
+  cursor: pointer;
+  &:hover{
+    color: blue !important;
+  }
+}

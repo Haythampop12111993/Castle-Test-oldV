@@ -1,0 +1,121 @@
+<mat-card>
+  <mat-card-content>
+    <div class="row">
+      <div class="col-md-12">
+        <h3 class="card__title lato">Ambassador Settings</h3>
+      </div>
+      <!-- <div class="col-md-4">
+        <div class="settings-icons pull-right">
+          <div class="dropdown" dropdown>
+            <i class="fa fa-cog" aria-hidden="true" dropdown-open></i>
+            <ul class="dropdown-menu menu-settings">
+              <li>
+                <a [href]="ambassador_export_url">
+                  <span>Export Ambassadors</span>
+                </a>
+              </li>
+              <li (click)="importAmbassadorModal.open()">
+                <a>
+                  <span>Import Ambassadors</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div> -->
+    </div>
+    <hr />
+    <div class="row">
+      <div class="col-xs-12 margin-bottom">
+        <form #ambassadorForm="ngForm" class="form-group">
+          <div class="col-xs-4 form-group">
+            <label for="">Ambassador Name :</label>
+            <input
+              name="add_ambassador"
+              [(ngModel)]="add_ambassador.name"
+              type="text"
+              class="form-control"
+              required
+            />
+          </div>
+          <div class=" col-xs-4 form-group">
+            <label for="">Contact Person :</label>
+            <select
+              name="contact_person"
+              [(ngModel)]="add_ambassador.contact_person"
+              class="form-control"
+            >
+              <option *ngFor="let cp of agents" [value]="cp.id">{{
+                cp.name
+              }}</option>
+            </select>
+          </div>
+          <div class="col-xs-4 form-group">
+            <label for="">Contact Phone :</label>
+            <input
+              name="contact_phone"
+              [(ngModel)]="add_ambassador.contact_phone"
+              type="text"
+              class="form-control"
+              required
+            />
+          </div>
+          <div class="col-xs-4 form-group margin-top">
+            <label for="">Contact Address :</label>
+            <input
+              name="contact_address"
+              [(ngModel)]="add_ambassador.contact_address"
+              type="text"
+              class="form-control"
+              required
+            />
+          </div>
+          <div class="col-xs-1 col-xs-offset-7 form-group margin-top">
+            <button
+              (click)="addAmbassador()"
+              class="btn btn-primary add-btn"
+              type="submit"
+              [disabled]="!ambassadorForm.form.valid"
+            >
+              Add
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<modal
+  #importAmbassadorModal
+  title="Import Ambassadors"
+  submitButtonLabel="submit"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onOpen)="importAmbassadorsModalOpen()"
+  (onClose)="importAmbassadorsModalClose()"
+  (onSubmit)="uploadExcelMethod(importAmbassadorModal)"
+>
+  <modal-content>
+    <div class="row">
+      <div class="form-group col-xs-6">
+        <form class="form-group btn-group-files pull-left">
+          <label for="">Ambassadors File : </label>
+          <input
+            type="file"
+            accept=".xlsx, .xls"
+            class="margin-left"
+            id="file"
+            (change)="handleUploadExcel($event)"
+          />
+        </form>
+      </div>
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="importAmbassadorModal.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>

@@ -1,0 +1,89 @@
+<section class="add-new-team">
+  <div class="container-fluid" *ngIf="addContractForm">
+    <h2 *ngIf="is_edit">Edit Contract</h2>
+    <h2 *ngIf="!is_edit">Add Contract</h2>
+    <div>
+      <h4>Varibales</h4>
+      <div class="variables-group">
+        <button [ngClass]="{'active_grp_btn': group.active}" *ngFor="let group of variables_groups; let index = index"
+          class="variable-grp-btn" (click)="setActiveGroup(group, index)">
+          {{group?.name}}
+        </button>
+      </div>
+      <div *ngIf="variables" class="table table-responsive">
+        <table class="table table-bordered">
+          <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Actions</th>
+          </tr>
+          <tr *ngFor="let variable of variables; let index = index">
+            <td>{{variable?.name}}</td>
+            <td>{{variable?.description}}</td>
+            <td>
+              <button class="copy" (click)="copy(variable)">copy</button>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <form [formGroup]="addContractForm" (ngSubmit)="addContract()">
+        <div class="border-sec">
+          <div class="row">
+            <div class="col-xs-6">
+              <div class="form-group">
+                <label for="">Contract Name</label>
+                <input type="text" formControlName="name" class="form-control" placeholder="Contract Name">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-6">
+              <div class="form-group">
+                <label for="">Contract Type</label>
+                <select class="form-control" name="contract_type" id="contract_type" formControlName="contract_type"
+                  (change)="onContractTypeChange($event)">
+                  <option *ngFor="let contract of contract_types" [value]="contract">{{contract}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-xs-6">
+              <div class="form-group">
+                <label for="">Project</label>
+                <select name="project_id" id="project_id" class="form-control" formControlName="project_id">
+                  <option *ngFor="let project of projects" [value]="project.id">{{project.name}}</option>
+                </select>
+              </div>
+              <div class="form-group" *ngIf="contract_type == 'extension'">
+                <label for="">Contract</label>
+                <select class="form-control js-example-basic-multiple" formControlName="parent_id"  name="parent_id" id="parent_id">
+                  <option *ngFor="let contract of contracts" [value]="contract.id">{{contract?.name}}</option>
+                </select>
+
+                <!-- <angular2-multiselect [data]="contracts" [(ngModel)]="selectedItems" formControlName="parents"
+                  name="parents" id="parents" [settings]="dropdownSettings"></angular2-multiselect> -->
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-6">
+              <div class="form-group">
+                <label for="">Contract File</label>
+                <input type="file"
+                  accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword"
+                  id="unit_excel" #file (change)="onFileUpload($event)" class="form-control">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <button class="btn btn-default pull-right btn-black" [disabled]="addContractForm.invalid">
+            SAVE
+          </button>
+          <button class="btn btn-default btn-black " [routerLink]="['/pages/settings/contracts']">
+            BACK
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>

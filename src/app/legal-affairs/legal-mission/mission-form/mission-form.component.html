@@ -1,0 +1,164 @@
+<section class="case-form" dir="rtl" lang="ar">
+  <div class="container-fluid">
+    <div class="flex">
+      <h2 *ngIf="!mission_id">إضافة معاملة خارجية</h2>
+      <h2 *ngIf="mission_id">تعديل معاملة خارجية</h2>
+    </div>
+    <div class="border-sec">
+      <form>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="description">وصف القضية</label>
+              <editor
+                [init]="editorConfig"
+                id="description"
+                name="description"
+                dir="rtl"
+                [(ngModel)]="form_data.description"
+              >
+              </editor>
+            </div>
+            <div
+              *ngIf="submitted && errors && errors?.description"
+              class="text-danger mt-1"
+            >
+              {{ errors?.description?.join(", ") }}
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="name">اسم المعاملة</label>
+              <input
+                type="text"
+                class="form-control"
+                id="name"
+                name="name"
+                [(ngModel)]="form_data.name"
+              />
+              <div
+                *ngIf="submitted && errors && errors?.name"
+                class="text-danger mt-1"
+              >
+                {{ errors?.name?.join(", ") }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="category_id">نوع المعاملة</label>
+              <ngx-select-v1
+                appendTo="body"
+                id="category_id"
+                name="category_id"
+                [(ngModel)]="form_data.category_id"
+              >
+                <ngx-option-v1
+                  *ngFor="let item of categoriesArray"
+                  [value]="item.id"
+                  >{{ item.name }}</ngx-option-v1
+                >
+              </ngx-select-v1>
+              <div
+                *ngIf="submitted && errors && errors?.category_id"
+                class="text-danger mt-1"
+              >
+                {{ errors?.category_id?.join(", ") }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="status_id">حالة المعاملة</label>
+              <ngx-select-v1
+                appendTo="body"
+                id="status_id"
+                name="status_id"
+                [(ngModel)]="form_data.status_id"
+              >
+                <ngx-option-v1
+                  *ngFor="let item of StatusesArray"
+                  [value]="item.id"
+                  >{{ item.name }}</ngx-option-v1
+                >
+              </ngx-select-v1>
+              <div
+                *ngIf="submitted && errors && errors?.status_id"
+                class="text-danger mt-1"
+              >
+                {{ errors?.status_id?.join(", ") }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="side_id">الجهة</label>
+              <ngx-select-v1
+                appendTo="body"
+                id="side_id"
+                name="side_id"
+                [(ngModel)]="form_data.side_id"
+              >
+                <ngx-option-v1
+                  *ngFor="let item of SidesArray"
+                  [value]="item.id"
+                  >{{ item.name }}</ngx-option-v1
+                >
+              </ngx-select-v1>
+              <div
+                *ngIf="submitted && errors && errors?.side_id"
+                class="text-danger mt-1"
+              >
+                {{ errors?.side_id?.join(", ") }}
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="date">التاريخ</label>
+              <input
+                type="date"
+                class="form-control"
+                id="date"
+                name="date"
+                [(ngModel)]="form_data.date"
+              />
+              <div
+                *ngIf="submitted && errors && errors?.date"
+                class="text-danger mt-1"
+              >
+                {{ errors?.date?.join(", ") }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="!mission_id">
+          <h3 class="text-center">الملفات</h3>
+
+          <div class="form-group">
+            <label for="files">الملفات</label>
+            <input
+              type="file"
+              multiple
+              class="form-control"
+              id="files"
+              name="files"
+              (change)="handleUploadFiles($event)"
+            />
+          </div>
+          <div
+            *ngIf="submitted && errors && errors?.files"
+            class="text-danger mt-1"
+          >
+            {{ errors?.files?.join(", ") }}
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="d-flex justify-content-end">
+      <button
+        type="submit"
+        [disabled]="is_submitting"
+        (click)="save()"
+        class="btn btn-default btn-black"
+      >
+        حفظ
+      </button>
+    </div>
+  </div>
+</section>

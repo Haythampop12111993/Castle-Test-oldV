@@ -1,0 +1,209 @@
+<div class="container-fluid mt-3">
+  <h3 class="basic_title mb-4 col-12">Listing Roles</h3>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="row bg_w m-0">
+        <div class="container-fluid row mt-4 pt-3 pb-4">
+
+          <!-- filters -->
+          <div class="col-12 mb-3">
+            <button
+              type="button"
+              class="btn btn-light border btn-width ml-2 mb-2"
+              [ngClass]="{ 'btn-dark': filtered == '' }"
+              (click)="filterRoles('all')"
+            >
+              All <span class="badge bg-secondary">{{ roles.length }}</span>
+            </button>
+            <button
+              type="button"
+              class="btn btn-light border btn-width ml-2 mb-2"
+              [ngClass]="{ 'btn-dark': filtered == 'levels' }"
+              (click)="filterRoles('levels')"
+            >
+              Hierarchy <span class="badge bg-secondary">{{ levelsRoles.length }}</span>
+            </button>
+            <button
+              type="button"
+              class="btn btn-light border btn-width ml-2 mb-2"
+              [ngClass]="{ 'btn-dark': filtered == 'ignore' }"
+              (click)="filterRoles('ignore')"
+            >
+              Ignore Levels <span class="badge bg-secondary">{{ ignoredRoles.length }}</span>
+            </button>
+          </div>
+
+          <!-- Table -->
+          <div class="col-12 mb-3">
+            <ng-container *ngIf="filtered == 'levels' || filtered == ''">
+              <table class="table table-responsive table-bordered">
+                <tr>
+                  <th class="example-element-row text-center">Hirerachy</th>
+                  <th class="example-element-row text-center">Permissions</th>
+                  <th class="example-element-row text-center">Modules</th>
+                  <th class="example-element-row text-center">Action</th>
+                </tr>
+
+                <ng-container *ngFor="let role of levelsRoles;  let i = index">
+                  <tr>
+                    <td class="text-center">{{ role?.name || '-' }}</td>
+                    <td  class="text-center">
+                      <span
+                      class="badge bg-secondary text-light _badge"
+                      (click)="getRole(role?.id); expandedElement = expandedElement === role ? null : role" 
+                       [attr.data-target]="'#collapse-' + i" [attr.aria-expanded]="false" [attr.aria-controls] = "'collapse-' + i"
+                      >{{ role?.permissions_count }} Permissions</span>
+                    </td>
+                    <td  class="text-center">{{ role?.modules?.join(' - ') || '-' }}</td>
+                    <td  class="text-center">
+                      <span class="action inline-block ml-2" [routerLink]="['/pages/settings/roles/edit', role.id]"
+                      >Edit</span
+                    >
+                    <span class="action inline-block ml-2 text-danger" (click)="deleteRole(role.id)">Delete</span>
+                    <span
+                      class="action inline-block ml-2"
+                      [routerLink]="['/pages/settings/roles/clone', role.id]"
+                      [queryParams]="{ cloned: 'true' }"
+                      
+                    >
+                      Clone
+                      <i
+                        class="fa fa-exclamation-circle mr-1"
+                        data-toggle="tooltip" data-placement="bottom" title="clone role as new role"
+                      ></i>
+                    </span>
+                    </td>
+  
+                  </tr>
+  
+                  <tr  class="example-detail-row" *ngIf="role == expandedElement">
+                    <td colspan="4" class="collapse-row">
+                      <div class="example-element-detail" [attr.id]="'collapse-' + i" class="container collapse out" [ngClass]="{'in': role == expandedElement, 'out': role != expandedElement}">
+                        <div class="details w-100">
+                          <div class="card mb-3 shadow-sm" *ngFor="let item of selectedRole.modules">
+                            <div class="card-body pb-0">
+                              <h5 class="card-title">{{ item.name }}</h5>
+                              <div class="card-text">
+                                <ul class="d-flex flex-wrap">
+                                  <li
+                                    class="text-left mb-2 pr-1"
+                                    style="flex-basis: 200px"
+                                    *ngFor="let per of item.permissions"
+                                  >
+                                    {{ per.name }}
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+
+                </ng-container>
+
+                <tr  *ngIf="!levelsRoles || levelsRoles.length == 0">
+                  <td colspan="4" >
+                    <h5 class="text-center text-muted">No Record found</h5>
+                  </td>
+                </tr>
+              </table>
+            </ng-container>
+
+            <div *ngIf="filtered == '' && (levelsRoles.length > 0 && ignoredRoles.length > 0)">
+              <hr class="bg-dark" />
+            </div>
+
+            <ng-container *ngIf="filtered == 'ignore' || filtered == ''">
+
+              <table class="table table-responsive table-bordered">
+                <tr>
+                  <th class="example-element-row text-center">Ignore Roles</th>
+                  <th class="example-element-row text-center">Permissions</th>
+                  <th class="example-element-row text-center">Modules</th>
+                  <th class="example-element-row text-center">Action</th>
+                </tr>
+                <ng-container *ngFor="let role of ignoredRoles;  let i = index">
+                  <tr>
+                    <td  class="text-center">{{ role?.name || '-' }}</td>
+                    <td  class="text-center">
+                      <span
+                      class="badge bg-secondary text-light _badge"
+                      (click)="getRole(role?.id); expandedElement = expandedElement === role ? null : role"
+                      [attr.data-target]="'#collapse' + i" [attr.aria-expanded]="false" [attr.aria-controls] = "'collapse' + i"
+                      >{{ role?.permissions_count }} Permissions</span>
+                    </td>
+                    <td  class="text-center">{{ role?.modules?.join(' - ') || '-' }}</td>
+  
+                    <td  class="text-center">
+                      <span
+                        class="action inline-block ml-2"
+                        [routerLink]="['/pages/settings/roles/edit', role.id]"
+                        *ngIf="permissionsService.can_modify_role"
+                        >Edit</span
+                      >
+                      <span
+                        class="action inline-block ml-2 text-danger"
+                        (click)="deleteRole(role.id)"
+                        *ngIf="permissionsService.can_modify_role && role.id != 1"
+                        >Delete</span
+                      >
+                      <span
+                        class="action inline-block ml-2"
+                        [routerLink]="['/pages/settings/roles/clone', role.id]"
+                        [queryParams]="{ cloned: 'true' }"
+                        *ngIf="permissionsService.can_modify_role"
+                      >
+                        Clone
+                        <i
+                          class="fa fa-exclamation-circle mr-1"
+                          data-toggle="tooltip" data-placement="bottom" title="clone role as new role"
+                        ></i>
+                      </span>
+                    </td>
+  
+                  </tr>
+  
+                  <tr  class="example-detail-row" *ngIf="role == expandedElement">
+                    <td colspan="4" class="collapse-row">
+                      <div class="example-element-detail" [attr.id]="'collapse' + i" class="container collapse out" [ngClass]="{'in': role == expandedElement, 'out': role != expandedElement}">
+                        <div class="details w-100">
+                          <div class="card mb-3 shadow-sm" *ngFor="let item of selectedRole.modules">
+                            <div class="card-body pb-0">
+                              <h5 class="card-title">{{ item.name }}</h5>
+                              <div class="card-text">
+                                <ul class="d-flex flex-wrap">
+                                  <li
+                                    class="text-left mb-2 pr-1"
+                                    style="flex-basis: 200px"
+                                    *ngFor="let per of item.permissions"
+                                  >
+                                    {{ per.name }}
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+
+                </ng-container>
+
+                <tr  *ngIf="!ignoredRoles || ignoredRoles.length == 0">
+                  <td colspan="4" >
+                    <h5 class="text-center text-muted">No Record found</h5>
+                  </td>
+                </tr>
+              </table>
+
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,693 @@
+<section class="users-table">
+  <div class="container-fluid">
+    <!-- <h2 class="users-table__title">Tickets</h2> -->
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="col-xs-4">
+        <h3>Tickets</h3>
+      </div>
+
+      <!-- <div class="col-xs-2 actions">
+      </div> -->
+      <div class="col-xs d-flex align-items-center">
+        <div
+          class="settings-icons pull-right"
+          *ngIf="
+            userData.role != 'Legal and Technical' &&
+            userData.role != 'Facility'
+          "
+        >
+          <div class="dropdown" dropdown>
+            <i class="fa fa-cog" aria-hidden="true" dropdown-open></i>
+            <ul class="dropdown-menu menu-settings">
+              <li
+                class="d-flex align-items-center justify-content-center"
+                *ngIf="
+                  userData.role == 'Admin' ||
+                  userData.role == 'Super Development' ||
+                  userData.role == 'Moderator' ||
+                  userData.role == 'Super Moderator' ||
+                  userData.role == 'AR Manager' ||
+                  userData?.is_sales_top_level ||
+                  userData.role == 'Sales Manager' ||
+                  userData.role == 'Sales Director' ||
+                  userData.role == 'CRM Supervisor' ||
+                  userData.role == 'CRM Agent' ||
+                  userData.role == 'Helpdesk Supervisor' ||
+                  userData.role == 'Helpdesk Agent' ||
+                  userData?.role == 'Contractor'
+                "
+              >
+                <button
+                  class="btn btn-transparent"
+                  (click)="exportTickets(filterObj)"
+                >
+                  Export Tickets
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <button
+          class="btn btn-secoundary"
+          [routerLink]="['/pages/add-ticket']"
+          *ngIf="
+            userData &&
+            (userData.role == 'Helpdesk Supervisor' ||
+              userData.role == 'Moderator' ||
+              userData.role == 'Super Moderator' ||
+              userData.role == 'Departmen Head' ||
+              userData.role == 'Admin' ||
+              userData.role == 'Super Development' ||
+              userData.role == 'CCO' ||
+              userData.role == 'Development Director' ||
+              userData.role == 'Helpdesk Agent' ||
+              userData.role == 'Legal Head' ||
+              userData.role == 'Legal and Technical' ||
+              userData.role == 'A.R Manager' ||
+              userData.role == 'Facility' ||
+              userData.role == 'Call Center')
+          "
+        >
+          Add Ticket
+        </button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="buttons">
+          <button
+            class="tab-btn"
+            (click)="setView('tickets')"
+            [ngClass]="{ 'active-tab': view == 'tickets' }"
+          >
+            Tickets
+          </button>
+          <button
+            class="tab-btn"
+            *ngIf="
+              role == 'Helpdesk Supervisor' ||
+              'Admin' ||
+              'Super Development' ||
+              'CCO' ||
+              'Development Director'
+            "
+            (click)="setView('resolved')"
+            [ngClass]="{ 'active-tab': view == 'resolved' }"
+          >
+            Resolved Tickets
+          </button>
+          <button
+            class="tab-btn"
+            *ngIf="
+              role == 'Helpdesk Supervisor' ||
+              'Admin' ||
+              'Super Development' ||
+              'CCO' ||
+              'Development Director'
+            "
+            (click)="setView('history')"
+            [ngClass]="{ 'active-tab': view == 'history' }"
+          >
+            History
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="proj-details">
+      <form [formGroup]="searchTicketForm" (ngSubmit)="addTicket()">
+        <div class="row">
+          <!-- <div class="form-group col-md-3">
+            <label for="">Ticket Title </label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Ticket Title"
+              formControlName="title"
+            />
+          </div> -->
+          <div class="form-group col-md-3">
+            <label for="">Reservation</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Reservation RFID"
+              formControlName="reservations"
+            />
+          </div>
+          <div class="form-group col-md-3">
+            <label for="">Unit Serial</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Unit Serial"
+              formControlName="unit_serial"
+            />
+          </div>
+          <div class="form-group col-md-3">
+            <label for="">Lead Name</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Lead Name"
+              formControlName="filter_lead_name"
+            />
+          </div>
+          <div class="form-group col-md-3">
+            <label for="">Lead Phone</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Lead Phone"
+              formControlName="filter_lead_phone"
+            />
+          </div>
+          <div class="form-group col-md-3">
+            <label for="">Ticket Id</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Ticket Id"
+              formControlName="ticket_id"
+            />
+          </div>
+          <div class="form-group col-md-3">
+            <label for="">Request Closure</label>
+            <ng-select
+              name="status"
+              id="status"
+              placeholder="Select Request Closure"
+              formControlName="status"
+            >
+              <ng-option *ngFor="let status of ticket_status" [value]="status.id">
+                {{ status.name }}
+              </ng-option>
+            </ng-select>
+          </div>
+          <div class="form-group col-md-3">
+            <label for="">Client Request</label>
+            <ng-select
+              name="client_request"
+              id="client_request"
+              placeholder="Select Client Request"
+              formControlName="ticket_client_request_id"
+            >
+              <ng-option
+                *ngFor="let ticket_client_request of ticket_client_requests"
+                [value]="ticket_client_request.id"
+              >
+                {{ ticket_client_request.name }}
+              </ng-option>
+            </ng-select>
+          </div>
+          <div class="form-group col-md-3">
+            <label for="">Ticket Type</label>
+            <ng-select
+              name="ticket_type"
+              id="ticket_type"
+              formControlName="type"
+              placeholder="Select Ticket Type"
+            >
+              <ng-option *ngFor="let type of ticket_types" [value]="type.id">
+                {{ type.name }}
+              </ng-option>
+            </ng-select>
+          </div>
+          <div class="form-group col-md-3">
+            <label for="">Ticket Priority </label>
+            <ng-select
+              name="ticket_priority"
+              id="ticket_priority"
+              formControlName="priority"
+              placeholder="Select Ticket Priority"
+            >
+              <ng-option
+                *ngFor="let priority of ticket_priorities"
+                [value]="priority.id"
+              >
+                {{ priority.name }}
+              </ng-option>
+            </ng-select>
+          </div>
+          <div class="form-group col-md-3">
+            <label for="">Source</label>
+            <ng-select
+              name="source_id"
+              id="source_id"
+              formControlName="source"
+              placeholder="Select Ticket Source"
+            >
+              <ng-option *ngFor="let source of ticket_sources" [value]="source.id">
+                {{ source.name }}
+              </ng-option>
+            </ng-select>
+          </div>
+          <div class="form-group col-md-3">
+            <label for="">Agents</label>
+            <ng-select
+              id="agents"
+              name="agents"
+              formControlName="agents"
+              [multiple]="true"
+            >
+              <ng-option *ngFor="let agent of allAgents" [value]="agent.id">{{
+                agent.name
+              }}</ng-option>
+            </ng-select>
+          </div>
+          <div class="form-group col-md-3">
+            <label for="">Projects</label>
+            <ng-select
+              id="projects"
+              name="projects"
+              formControlName="projects"
+              [multiple]="true"
+            >
+              <ng-option
+                *ngFor="let project of allProjects"
+                [value]="project.id"
+                >{{ project.name }}</ng-option
+              >
+            </ng-select>
+          </div>
+          <div class="form-group col-md-3">
+            <label for="">From Date</label>
+            <input
+              type="date"
+              class="form-control"
+              placeholder="From Date"
+              formControlName="date_from"
+            />
+          </div>
+          <div class="col-md-6 d-flex mb-3">
+            <div class="form-group col-md-6 ps-0">
+              <label for="">To Date</label>
+              <input
+                type="date"
+                class="form-control"
+                placeholder="To Date"
+                formControlName="date_to"
+              />
+            </div>
+            <div class="col-md-6 d-flex align-items-center gap-1">
+              <button
+                class="btn btn-default btn-black pe-2"
+                type="button"
+                (click)="advancedSearch()"
+              >
+                Search
+              </button>
+              <button
+                class="btn btn-default btn-black ps-1"
+                type="button"
+                (click)="reset()"
+              >
+                Reset
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+      <!-- <div class="row filter-outer-container">
+        <div class="col-md-12">
+          <div class="search_container">
+
+          </div>
+          <div class="filter">
+            <div class="row">
+              <div class="col-md-2">
+                <h3 class="search__title">Advanced Search</h3>
+              </div>
+                <div class="form-group search-btn-container">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="search"
+                    placeholder="Seach users by name, phone, title"
+                    name="seachUsers"
+                    (keyup.enter)="searchUsers()"
+                    [(ngModel)]="searchUserKeyword"
+                  />
+                  <button
+                    class="btn btn-default pull-right btn-black"
+                    type="button"
+                    [disabled]="!searchUserKeyword"
+                    (click)="searchUsers()"
+                  >
+                    Search
+                  </button>
+                  <button
+                    class="btn btn-default pull-right btn-black"
+                    type="button"
+                    (click)="reset()"
+                  >
+                    Reset
+                  </button>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div> -->
+      <div class="row">
+        <!-- <div class="col-xs-12">
+          <div class="settings-icons pull-right">
+            <div class="dropdown" dropdown>
+              <i class="fa fa-cog" aria-hidden="true" dropdown-open></i>
+              <ul class="dropdown-menu">
+                <li>
+                  <a [href]="user_export_url">
+                    <span>Export Users</span>
+                  </a>
+                </li>
+                <li (click)="importUsersModal.open()">
+                  <a>
+                    <span>Import Users</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div> -->
+        <div class="clearfix"></div>
+        <div class="col-md-12" *ngIf="view == 'tickets'">
+          <div class="table table-responsive">
+            <table class="table table-bordered">
+              <tr>
+                <th>Ticket ID</th>
+                <th>Priority</th>
+                <th>Type</th>
+                <th>Source</th>
+                <th>Lead Name</th>
+                <th>Lead Phone</th>
+                <th>Customer Name</th>
+                <th>Customer Phone</th>
+                <th>Reservations serial</th>
+                <th>Request Closure</th>
+                <th>Client Request</th>
+                <th>Assigned To</th>
+                <th>Department</th>
+                <th>Description</th>
+                <th>Created At</th>
+                <th>Created By</th>
+                <th>Action</th>
+              </tr>
+
+              <tr *ngFor="let ticket of tickets">
+                <td>#{{ ticket.id || "-" }}</td>
+                <td>{{ ticket.priority?.name || "-" }}</td>
+                <td>{{ ticket.type?.name || "-" }}</td>
+                <td>{{ ticket.source?.name || "-" }}</td>
+                <td
+                  class="routable"
+                  title="opens the lead in new page"
+                  (click)="viewLead(ticket?.lead?.id)"
+                >
+                  {{ ticket.lead?.name || "-" }}
+                </td>
+                <td>{{ ticket.lead?.phone || "-" }}</td>
+                <td>{{ ticket.customer?.name || "-" }}</td>
+                <td>{{ ticket.customer?.phone || "-" }}</td>
+                <td>
+                  <p
+                    *ngFor="let res of ticket.reservations"
+                    class="routable"
+                    title="opens the reservation in new page"
+                    (click)="viewReservation(res.id)"
+                  >
+                    {{ res.id || "-" }}
+                  </p>
+                  <p
+                    *ngIf="
+                      !ticket.reservations || ticket.reservations?.length == 0
+                    "
+                    style="margin: 0"
+                  >
+                    -
+                  </p>
+                </td>
+                <td>
+                  <span>{{ ticket?.status?.name }}</span>
+                </td>
+                <td>
+                  <span>{{ ticket?.ticket_client_request?.name }}</span>
+                </td>
+                <td>{{ ticket.assigned_user?.name || "-" }}</td>
+                <td>{{ ticket.department?.name || "-" }}</td>
+                <td>{{ getTicketDescription(ticket) }}</td>
+                <td>{{ ticket.created_at || "-" }}</td>
+                <td>{{ ticket.user?.name }}</td>
+                <td>
+                  <div class="dropdown" dropdown>
+                    <img
+                      class="more-options-icon"
+                      src="assets/img/show-more-button-with-three-dots.svg"
+                      dropdown-open
+                    />
+                    <ul class="dropdown-menu">
+                      <li (click)="goToTicketView(ticket.id)">
+                        <a>
+                          <span class="doc_link">View</span>
+                        </a>
+                      </li>
+
+                      <li
+                        *ngIf="
+                          ticket.permissions.can_edit_ticket &&
+                          role != 'CCO' &&
+                          role != 'Development Director'
+                        "
+                        (click)="goToEditTicket(ticket.id)"
+                      >
+                        <a>
+                          <span class="doc_link">Edit</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+
+              <tr *ngIf="!tickets || tickets.length == 0">
+                <td colspan="15">
+                  <h4>No Data Found</h4>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div class="col-xs-12 text-center">
+            <ngb-pagination
+              [collectionSize]="tickets_raw_data?.last_page * 10"
+              [(page)]="pageTest"
+              [maxSize]="5"
+              [rotate]="true"
+              [ellipses]="true"
+              [boundaryLinks]="true"
+              (pageChange)="pageChange($event)"
+              [size]="'lg'"
+            >
+            </ngb-pagination>
+          </div>
+        </div>
+
+        <div class="col-md-12" *ngIf="view == 'resolved'">
+          <div class="table table-responsive">
+            <table class="table table-bordered">
+              <tr>
+                <th>Ticket ID</th>
+                <th>Title</th>
+                <th>Priority</th>
+                <th>Type</th>
+                <th>Source</th>
+                <th>Lead Name</th>
+                <th>Lead Phone</th>
+                <th>Customer Name</th>
+                <th>Customer Phone</th>
+                <th>Reservations serial</th>
+                <th>Assigned To</th>
+                <th>Department</th>
+                <th>Description</th>
+                <th>Created At</th>
+                <th>Created By</th>
+                <th>Action</th>
+              </tr>
+
+              <tr *ngFor="let ticket of tickets">
+                <td>#{{ ticket.id || "-" }}</td>
+                <td>{{ ticket.title || "-" }}</td>
+                <td>{{ ticket.priority?.name || "-" }}</td>
+                <td>{{ ticket.type?.name || "-" }}</td>
+                <td>{{ ticket.source?.name || "-" }}</td>
+                <td
+                  class="routable"
+                  title="opens the lead in new page"
+                  (click)="viewLead(ticket?.lead?.id)"
+                >
+                  {{ ticket.lead?.name || "-" }}
+                </td>
+                <td>{{ ticket.lead?.phone || "-" }}</td>
+                <td>{{ ticket.customer?.name || "-" }}</td>
+                <td>{{ ticket.customer?.phone || "-" }}</td>
+                <td>
+                  <p
+                    *ngFor="let res of ticket.reservations"
+                    class="routable"
+                    title="opens the reservation in new page"
+                    (click)="viewReservation(res.id)"
+                  >
+                    {{ res.id || "-" }}
+                  </p>
+                  <p
+                    *ngIf="
+                      !ticket.reservations || ticket.reservations?.length == 0
+                    "
+                    style="margin: 0"
+                  >
+                    -
+                  </p>
+                </td>
+                <td>{{ ticket.assigned_user?.name || "-" }}</td>
+                <td>{{ ticket.department?.name || "-" }}</td>
+                <td>{{ getTicketDescription(ticket) }}</td>
+                <td>{{ ticket.created_at || "-" }}</td>
+                <td>{{ ticket.user?.name }}</td>
+                <td>
+                  <div class="dropdown" dropdown>
+                    <img
+                      class="more-options-icon"
+                      src="assets/img/show-more-button-with-three-dots.svg"
+                      dropdown-open
+                    />
+                    <ul class="dropdown-menu">
+                      <li (click)="goToTicketView(ticket.id, true)">
+                        <a>
+                          <span class="doc_link">View</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+              <tr *ngIf="!tickets || tickets.length == 0">
+                <td colspan="15">
+                  <h4>No Data Found</h4>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div class="col-xs-12 text-center">
+            <ngb-pagination
+              [collectionSize]="tickets_raw_data?.last_page * 10"
+              [(page)]="pageTest"
+              [maxSize]="5"
+              [rotate]="true"
+              [ellipses]="true"
+              [boundaryLinks]="true"
+              (pageChange)="pageChange($event)"
+              [size]="'lg'"
+            >
+            </ngb-pagination>
+          </div>
+        </div>
+
+        <div class="col-md-12" *ngIf="view == 'history'">
+          <div class="table table-responsive">
+            <table class="table table-bordered">
+              <tr>
+                <th>Ticket ID</th>
+                <th>Title</th>
+                <th>Priority</th>
+                <th>Type</th>
+                <th>Source</th>
+                <th>Lead Name</th>
+                <th>Lead Phone</th>
+                <th>Customer Name</th>
+                <th>Customer Phone</th>
+                <th>Reservations serial</th>
+                <th>Assigned To</th>
+                <th>Department</th>
+                <th>Description</th>
+                <th>Created At</th>
+                <th>Created By</th>
+                <th>Action</th>
+              </tr>
+
+              <tr *ngFor="let ticket of tickets">
+                <td>#{{ ticket.id || "-" }}</td>
+                <td>{{ ticket.title || "-" }}</td>
+                <td>{{ ticket.priority?.name || "-" }}</td>
+                <td>{{ ticket.type?.name || "-" }}</td>
+                <td>{{ ticket.source?.name || "-" }}</td>
+                <td
+                  class="routable"
+                  title="opens the lead in new page"
+                  (click)="viewLead(ticket?.lead?.id)"
+                >
+                  {{ ticket.lead?.name || "-" }}
+                </td>
+                <td>{{ ticket.lead?.phone || "-" }}</td>
+                <td>{{ ticket.customer?.name || "-" }}</td>
+                <td>{{ ticket.customer?.phone || "-" }}</td>
+                <td>
+                  <p
+                    *ngFor="let res of ticket.reservations"
+                    class="routable"
+                    title="opens the reservation in new page"
+                    (click)="viewReservation(res.id)"
+                  >
+                    {{ res.id || "-" }}
+                  </p>
+                  <p
+                    *ngIf="
+                      !ticket.reservations || ticket.reservations?.length == 0
+                    "
+                    style="margin: 0"
+                  >
+                    -
+                  </p>
+                </td>
+                <td>{{ ticket.assigned_user?.name || "-" }}</td>
+                <td>{{ ticket.department?.name || "-" }}</td>
+                <td>{{ getTicketDescription(ticket) }}</td>
+                <td>{{ ticket.created_at || "-" }}</td>
+                <td>{{ ticket.user?.name }}</td>
+                <td>
+                  <div class="dropdown" dropdown>
+                    <img
+                      class="more-options-icon"
+                      src="assets/img/show-more-button-with-three-dots.svg"
+                      dropdown-open
+                    />
+                    <ul class="dropdown-menu">
+                      <li (click)="goToTicketView(ticket.id, true, true)">
+                        <a>
+                          <span class="doc_link">View</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+              <tr *ngIf="!tickets || tickets.length == 0">
+                <td colspan="15">
+                  <h4>No Data Found</h4>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div class="col-xs-12 text-center">
+            <ngb-pagination
+              [collectionSize]="tickets_raw_data?.last_page * 10"
+              [(page)]="pageTest"
+              [maxSize]="5"
+              [rotate]="true"
+              [ellipses]="true"
+              [boundaryLinks]="true"
+              (pageChange)="pageChange($event)"
+              [size]="'lg'"
+            >
+            </ngb-pagination>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,296 @@
+<section *ngIf="!coming_soon" class="project-inner">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-xs-12 top-header-container">
+        <div class="col-xs-10">
+          <h2>{{ view }}</h2>
+        </div>
+        <div
+          *ngIf="view == 'Availability Requests'"
+          class="col-xs-2 import-container"
+        >
+          <div class="settings-icons pull-right">
+            <div class="dropdown" dropdown>
+              <i class="fa fa-cog" aria-hidden="true" dropdown-open></i>
+              <ul class="dropdown-menu">
+                <li
+                  *ngIf="
+                    userProfile?.role == 'Admin' ||
+                    userProfile?.role == 'Super Development' ||
+                    userProfile.role == 'Moderator' ||
+                    userInfo.role == 'Super Moderator'
+                  "
+                  (click)="approveAll()"
+                >
+                  <a>
+                    <span>Admin Approve Selected</span>
+                  </a>
+                </li>
+                <li
+                  *ngIf="
+                    userProfile?.role == 'Admin' ||
+                    userProfile?.role == 'Super Development' ||
+                    userProfile.role == 'Moderator' ||
+                    userInfo.role == 'Super Moderator'
+                  "
+                  (click)="declineAll()"
+                >
+                  <a>
+                    <span>Admin Decline Selected</span>
+                  </a>
+                </li>
+                <li
+                  *ngIf="
+                    userProfile?.role == 'Admin' ||
+                    userProfile?.role == 'Super Development' ||
+                    userProfile.role == 'Moderator' ||
+                    userInfo.role == 'Super Moderator'
+                  "
+                  (click)="exportAvailabilityRequests()"
+                >
+                  <a>
+                    <span>Export Availability Requests</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div
+          *ngIf="view == 'Availability Requests History'"
+          class="col-xs-2 import-container"
+        >
+          <div class="settings-icons pull-right">
+            <div class="dropdown" dropdown>
+              <i class="fa fa-cog" aria-hidden="true" dropdown-open></i>
+              <ul class="dropdown-menu">
+                <li
+                  *ngIf="
+                    userProfile?.role == 'Admin' ||
+                    userProfile?.role == 'Super Development' ||
+                    userProfile.role == 'Moderator' ||
+                    userInfo.role == 'Super Moderator'
+                  "
+                  (click)="exportAvailabilityRequestsHistory()"
+                >
+                  <a>
+                    <span>Export Availability Requests History</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-3">
+          <div class="form-group">
+            <label for="">View Type</label>
+            <ng-select
+              palceholder="Select View Type"
+              [(ngModel)]="view"
+              (change)="viewChanged($event)"
+            >
+              <ng-option value="Availability Requests">
+                Availability Requests
+              </ng-option>
+              <ng-option value="Availability Requests History">
+                Availability Requests History
+              </ng-option>
+            </ng-select>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="proj-details">
+      <div class="row" *ngIf="view == 'Availability Requests'">
+        <div class="col-md-12">
+          <div class="table table-responsive">
+            <table class="table table-bordered">
+              <tr>
+                <th>
+                  <input
+                    type="checkbox"
+                    [(ngModel)]="check_all"
+                    name="check_all"
+                    (ngModelChange)="onFilterChange($event)"
+                  />
+                </th>
+                <th class="th-label">
+                  <span>Serial</span>
+                </th>
+                <th>Area</th>
+                <!-- <th>Type</th> -->
+                <th>Price</th>
+                <th>Request Comment</th>
+                <th>Date</th>
+
+                <th>Actions</th>
+              </tr>
+              <ng-container *ngFor="let r of requests; let index = index">
+                <tr>
+                  <td>
+                    <input
+                      type="checkbox"
+                      name="checked"
+                      [(ngModel)]="r.checked"
+                      [checked]="r.checked"
+                    />
+                  </td>
+                  <td>{{ r.unit?.serial }}</td>
+                  <td>{{ r.unit?.build_area }}</td>
+                  <!-- <td>{{r.unit?.unit_type?.name}}</td> -->
+                  <!-- <td>{{r.unit?.price}}<br>( {{r.unit?.price / r.unit?.build_area | number : '4.0-0'}} / m )</td> -->
+                  <td>
+                    <p
+                      class="price-container-td"
+                      *ngFor="let price_type of pu?.finishing_types"
+                    >
+                      ( {{ price_type?.pivot?.price | number : "4.0-0" }} /
+                      {{ price_type?.name }} )
+                    </p>
+                  </td>
+                  <td>{{ r?.comment }}</td>
+                  <td>{{ r.created_at | date : "medium" }}</td>
+                  <td>
+                    <div class="dropdown" dropdown>
+                      <img
+                        class="more-options-icon"
+                        src="assets/img/show-more-button-with-three-dots.svg"
+                        dropdown-open
+                      />
+                      <ul class="dropdown-menu">
+                        <li
+                          (click)="approve(index, r.id, commentModal)"
+                          *ngIf="
+                            userProfile?.role == 'Admin' ||
+                            userProfile?.role == 'Super Development' ||
+                            userProfile.role == 'Moderator' ||
+                            userInfo.role == 'Super Moderator'
+                          "
+                        >
+                          <a>
+                            <span>Super Admin Approve</span>
+                          </a>
+                        </li>
+                        <li
+                          class="decline-list-item"
+                          (click)="decline(index, r.id)"
+                          *ngIf="
+                            userProfile?.role == 'Admin' ||
+                            userProfile?.role == 'Super Development' ||
+                            userProfile.role == 'Moderator' ||
+                            userInfo.role == 'Super Moderator'
+                          "
+                        >
+                          <a>
+                            <span>Super Admin Decline</span>
+                          </a>
+                        </li>
+                        <li
+                          (click)="delete(index, r.id)"
+                          *ngIf="
+                            userProfile?.role == 'Admin' ||
+                            userProfile?.role == 'Super Development' ||
+                            userProfile.role == 'Moderator' ||
+                            userInfo.role == 'Super Moderator'
+                          "
+                        >
+                          <a>
+                            <span>Super Admin Delete</span>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+              </ng-container>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="row" *ngIf="view == 'Availability Requests History'">
+        <div class="col-md-12">
+          <div class="table table-responsive">
+            <table class="table table-bordered">
+              <tr>
+                <th class="th-label">
+                  <span>Serial</span>
+                </th>
+                <th>Area</th>
+                <th>Status</th>
+                <th>Request Comment</th>
+                <th>Price</th>
+                <th>Super Admin Comment</th>
+                <th>Last Action Date</th>
+              </tr>
+              <tr
+                *ngFor="let r of requests_history?.data; let index = index"
+                [ngClass]="{
+                  'bg-success': r?.status == 'Approved',
+                  'bg-danger': r?.status == 'Declined'
+                }"
+              >
+                <td>{{ r.unit?.serial }}</td>
+                <td>{{ r.unit?.build_area }}</td>
+                <td>{{ r.unit?.status }}</td>
+                <td>{{ r?.comment }}</td>
+                <td>
+                  {{ r.unit?.price }}<br />(
+                  {{ r.unit?.price / r.unit?.build_area | number : "4.0-0" }} /
+                  m )
+                </td>
+                <td>{{ r.unit?.superadmin_comment }}</td>
+                <td>{{ r.updated_at | date : "medium" }}</td>
+              </tr>
+            </table>
+          </div>
+          <div class="col-xs-12 text-center"></div>
+          <div class="col-xs-12 text-center">
+            <ngb-pagination
+              [collectionSize]="requests_history?.last_page * 10"
+              [(page)]="pageTest"
+              [maxSize]="5"
+              [rotate]="true"
+              [ellipses]="true"
+              [boundaryLinks]="true"
+              (pageChange)="pageChange($event)"
+              [size]="lg"
+            >
+            </ngb-pagination>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<modal
+  #commentModal
+  title="Comment"
+  submitButtonLabel="Approve"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="onSubmitCommentModal(commentModal)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <textarea
+      placeholder="Add Your Comment .. "
+      class="form-control"
+      [(ngModel)]="userComment"
+      cols="30"
+      rows="10"
+    ></textarea>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="closeModal(commentModal)">
+      Cancel
+    </button>
+  </modal-footer>
+</modal>
+
+<app-upcoming-scene
+  *ngIf="coming_soon"
+  [name]="'Availability Requests'"
+></app-upcoming-scene>

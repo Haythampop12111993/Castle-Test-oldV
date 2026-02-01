@@ -1,0 +1,70 @@
+.list-group-item{
+    cursor: pointer;
+}
+
+.list-group-item:hover{
+    background-color: #eee;
+}
+
+h2.filter-cil{
+    font-size: 31px;
+    font-weight: 500;
+    margin-right: 50px;
+    position: relative;
+    margin-top: 3px;
+    color: rgba(0, 0, 0, 0.734) !important;
+}
+
+h2.filter-cil:after{
+    content: '';
+    position: absolute;
+    display: block;
+    width: 90%;
+    left: 3px;
+    bottom: -8px;
+    height: 3px;
+    background-color: #414f5a;
+    border-radius: 5px;
+}
+
+.pending{
+    background-color: white;
+}
+.approved{
+    background-color: rgba(24, 124, 24, 0.36);
+
+}
+.declined{
+    background-color: rgba(226, 0, 0, 0.45);
+}
+
+.closed{
+    background-color: #6cfd33;
+}
+
+.table-responsive {
+    min-height: .01%;
+    overflow-x: initial;
+}
+
+.dropdown-menu{
+    left: auto;
+    right: 0;
+}
+
+div.ngui-auto-complete-wrapper {
+    display: inline-block !important;
+}
+
+.ngx-pagination {
+    padding: 0;
+}
+
+.decline-list-item {
+  background-color: indianred;
+}
+
+.decline-list-item:hover,
+.decline-list-item a:hover {
+  background-color: #c95050;
+}

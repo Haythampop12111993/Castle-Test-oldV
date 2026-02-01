@@ -1,0 +1,145 @@
+.profile-pic img {
+  cursor: pointer;
+}
+
+textarea {
+  resize: none;
+}
+
+.user-data {
+  width: 100%;
+  /* height: 200px; */
+  height: 250px;
+}
+
+.user-tabs {
+  width: 100%;
+}
+
+.user-container {
+  margin: 30px;
+}
+
+.cover-user-profile {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.cover-photo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  -o-object-fit: cover;
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+
+.user-profile-image {
+  position: absolute;
+  border-radius: 50%;
+  z-index: 999;
+  width: 100px;
+  height: 100px;
+  bottom: -40px;
+  right: 0;
+  left: 0;
+  margin: auto;
+  cursor: pointer;
+}
+
+.user-name {
+  margin-top: 50px;
+  text-align: center;
+  font-size: 25px;
+}
+
+.user-title {
+  text-align: center;
+  font-size: 20px;
+}
+
+.info-container {
+}
+
+.info-label {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.info-value {
+  font-weight: 700;
+  color: gray;
+}
+
+.social-links {
+  margin-top: 25px;
+  display: flex;
+  justify-content: center;
+}
+
+.social-links i {
+  display: inline-block;
+  margin-right: 20px;
+  font-size: 20px;
+}
+
+.line-container {
+  width: 100%;
+  height: 2px;
+  background-color: gray;
+  margin-top: -1px;
+}
+
+.tab-button {
+  color: #000;
+  background-color: #fff;
+  border: 1px solid gray;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  padding: 8px 35px;
+}
+
+.tab-button.active {
+  color: #fff;
+  background-color: gray;
+  border: 1px solid gray;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  padding: 8px 35px;
+}
+
+.tabs-sections-container {
+  margin-top: 15px;
+}
+
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.submit-btn {
+  background-color: gray;
+  color: #fff;
+  padding: 5px 15px;
+  border: none;
+  border-radius: 5px;
+  margin-right: 20px;
+}
+
+.cancel-btn {
+  background-color: #ccc;
+  color: #000;
+  padding: 5px 15px;
+  border: none;
+  border-radius: 5px;
+  margin-right: 20px;
+}
+
+.no-interaction {
+  opacity: 0.3;
+  cursor: wait;
+}

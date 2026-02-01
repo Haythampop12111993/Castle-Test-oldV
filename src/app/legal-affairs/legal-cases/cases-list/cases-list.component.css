@@ -1,0 +1,54 @@
+/* .dropdown-menu {
+  left: unset;
+  right: 0;
+} */
+
+/* .button {
+  width: 90px !important;
+  height: 35px;
+  padding: 0 !important;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  margin-inline-end: 5px;
+} */
+*:not(.fa) {
+  font-family: "Cairo", sans-serif;
+}
+
+.gap-15 {
+  gap: 15px;
+}
+
+.table_sticky_header {
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.table_sticky_header .table_sticky_header_header {
+  background-color: var(--color-warm-gray);
+
+  /* Stick to the left */
+  top: 0;
+  position: sticky;
+  /* Displayed on top of other rows when scrolling */
+  z-index: 999;
+}
+
+.table_sticky_header_header th {
+  text-align: right;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.custom-hr {
+  margin: 0;
+  border-color: black;
+}
+
+/*  */
+::ng-deep .pagination {
+  padding: 0;
+}

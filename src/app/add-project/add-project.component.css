@@ -1,0 +1,53 @@
+.phase-container {
+  max-height: 250px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+
+section.new-lead .border-sec .col-md-4,
+section.eoi .border-sec .col-md-4,
+section.add-new-proj .border-sec .col-md-4,
+section.add-rf-form .border-sec .col-md-4,
+section.add-new-unit-type .border-sec .col-md-4,
+section.add-new-payment-plan .border-sec .col-md-4,
+section.add-new-team .border-sec .col-md-4,
+section.add-new-unit .border-sec .col-md-4 {
+  border-right: 1px solid #bfbfbf;
+  /* height: 633px; */
+  margin-bottom: -25px;
+}
+
+.margin-top-import-units {
+  margin-top: 44px;
+}
+
+.flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.required {
+  color: red;
+  display: block;
+  margin-bottom: 10px;
+}
+
+section.new-lead .border-sec,
+section.eoi .border-sec,
+section.add-new-proj .border-sec,
+section.add-rf-form .border-sec,
+section.add-new-unit-type .border-sec,
+section.add-new-payment-plan .border-sec,
+section.add-new-team .border-sec,
+section.add-new-unit .border-sec,
+section.add-new-user .border-sec {
+  /* height: 765px; */
+}
+
+.no-interaction {
+  opacity: 0.3;
+  cursor: not-allowed;
+}

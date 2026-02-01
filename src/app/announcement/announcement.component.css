@@ -1,0 +1,30 @@
+.page-container {
+    padding: 10px 20px;
+}
+
+.announcement-page-title {
+    margin-bottom: 30px;
+}
+
+.announcement .title {
+    margin-top: 10px;
+    font-weight: bold;
+    font-size: 1.4em;
+}
+
+.announcement .desc {
+    margin-top: 5px;
+    color: #333;
+    font-weight: 500;
+}
+
+.announcement .video-container {
+    display: flex;
+    margin-top: 58px;
+}
+
+.announcement .video-container video {
+    max-width: 100%;
+    height: 300px;
+    margin: 0 auto;
+}

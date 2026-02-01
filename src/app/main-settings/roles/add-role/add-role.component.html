@@ -1,0 +1,28 @@
+<div class="container-fluid mt-3" id="add-role">
+  <h3 class="basic_title mb-4 col-12">
+    {{ roleId && !cloned ? 'Edit Role' : 'Create New Role' }}
+  </h3>
+
+  <div class="row">
+    <div class="col-md-12">
+      <mat-tab-group>
+        <mat-tab label="Metadata">
+          <app-add-meta (formObj)="bindMetaObj($event)" [cloned]="cloned"></app-add-meta>
+        </mat-tab>
+        <mat-tab label="Permissions">
+          <app-add-permission (choosePermissions)="choosePermissions($event)"></app-add-permission>
+        </mat-tab>
+      </mat-tab-group>
+
+      <div class="form-group bg_w m-0 col-12 role-btns">
+        <p class="pt-3 text-muted fw-bold" *ngIf="selectedPermissions.length > 0">
+          {{ selectedPermissions.length }} selected permissions
+        </p>
+        <button type="submit" (click)="submit()" class="submit" [disabled]="!roleObj.name">Save</button>
+        <button type="button" class="btn btn-light border btn-width" [routerLink]="['/pages/settings/roles']">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

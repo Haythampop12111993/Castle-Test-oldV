@@ -1,0 +1,155 @@
+<div class="row bg_w m-0">
+  <div
+    class="col-xs-12 mb-3"
+    *ngIf="
+      userData.role === 'Admin' ||
+      userData.role == 'Super Development' ||
+      userData.role === 'Call Center' ||
+      userData.role === 'Sales Manager'
+    "
+  >
+    <div class="import_leads_container p-15">
+      <h3>Import Cold Calls List</h3>
+
+      <form [formGroup]="importForm" (submit)="importSubmit()">
+        <div class="form-group">
+          <input
+            type="file"
+            class="form-control"
+            (change)="handleImportedFile($event)"
+            accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+            #inputFile
+          />
+        </div>
+        <div class="form-group">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="name"
+            placeholder="File Name *"
+          />
+        </div>
+        <div class="form-group">
+          <a class="export_demo" (click)="exportDemo()"
+            >Download Example File</a
+          >
+        </div>
+        <button
+          type="submit"
+          mat-button
+          class="custom_button m-0"
+          [disabled]="!importForm.valid || is_loading"
+        >
+          Submit
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="col-xs-12">
+    <div class="import_leads_container p-15">
+      <div class="mb-3">
+        <input
+          type="text"
+          class="form-control"
+          ngModel
+          (ngModelChange)="fetchAllContactData($event)"
+          placeholder="search by name"
+        />
+      </div>
+      <div class="row">
+        <ng-container
+          *ngIf="
+            contactsElements && contactsElements.length != 0;
+            else noReusltFound
+          "
+        >
+          <div
+            class="col-lg-4 col-md-6 col-12 mb-3"
+            *ngFor="let contact of contactsElements"
+          >
+            <div class="data_card rounded shadow">
+              <div
+                class="data_view"
+                [routerLink]="['..', 'details', contact.id, 'card']"
+                [queryParams]="{ data: 'all' }"
+              >
+                <div class="d-flex mb-3">
+                  <span> Name: </span>
+                  <p>
+                    {{ contact.name }}
+                  </p>
+                </div>
+                <div class="d-flex mb-3">
+                  <span> Date: </span>
+                  <p>
+                    {{ contact.created_at | date }}
+                  </p>
+                </div>
+                <div class="d-flex mb-3">
+                  <span>
+                    {{ contact.contacts_count }}
+                  </span>
+                  <p>Contacts</p>
+                </div>
+                <div class="d-flex mb-3">
+                  <span>
+                    {{ contact.assigned }}
+                  </span>
+                  <p>Assigned Contacts</p>
+                </div>
+                <div class="d-flex mb-3">
+                  <span>
+                    {{ contact.not_assigned }}
+                  </span>
+                  <p>Not Assigned Contacts</p>
+                </div>
+                <div class="d-flex mb-3">
+                  <span> Uploaded By: </span>
+                  <p>
+                    {{ contact.user?.name }}
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                class="btn btn-danger"
+                (click)="deleteFile(contact.id)"
+              >
+                <i class="fa fa-trash"></i> Delete
+              </button>
+
+              <button class="btn" (click)="export(contact.id)">
+                <i class="fa fa-download"></i> Export Excel
+              </button>
+            </div>
+          </div></ng-container
+        >
+
+        <div
+          class="col-md-12 text-center"
+          *ngIf="contactsElements && contactsElements.length > 0"
+        >
+          <ngb-pagination
+            [collectionSize]="contactsRaw?.last_page * 10"
+            [(page)]="currentPage"
+            [maxSize]="5"
+            [rotate]="true"
+            [ellipses]="true"
+            [boundaryLinks]="true"
+            (pageChange)="pageChange($event)"
+            [size]="'lg'"
+          >
+          </ngb-pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #noReusltFound>
+  <div class="col-xs-12 d-flex justify-content-center align-items-center h-100">
+    <h2 class="text-capitalize text-warning">no results found</h2>
+  </div>
+</ng-template>

@@ -1,0 +1,86 @@
+.img-overlay-wrap {
+  position: relative;
+  display: inline-block;
+  /* <= shrinks container to image size */
+  /* transition: transform 150ms ease-in-out; */
+  width: 95%;
+  margin-left: 2.5%;
+}
+
+.img-overlay-wrap img {
+  /* <= optional, for responsiveness */
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.img-overlay-wrap svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* .img-overlay-wrap:hover {
+  transform: rotate( 15deg );
+} */
+
+.path {
+  opacity: .1;
+  stroke-width: 0;
+  cursor: pointer;
+}
+
+.path:hover {
+  fill: green;
+  cursor: pointer;
+  opacity: 0.5;
+}
+
+.unit-path {
+  opacity: .1;
+  stroke-width: 0;
+  cursor: pointer;
+}
+
+
+.unit-red {
+  fill: red;
+  cursor: pointer;
+  opacity: 0.5;
+}
+
+.unit-green {
+  fill: green;
+  cursor: pointer;
+  opacity: 0.5;
+}
+
+path::after {
+  content: " - Remember this";
+}
+
+
+::ng-deep .mat-tooltip {
+  /* background: red!important; */
+  font-size: 20px;
+}
+
+.master-plan-title-container {
+  margin-bottom: 20px;
+}
+
+.master-plan-title-container h1 {
+  margin-left: 5px;
+}
+
+.master-plan-title-container .close-container {
+  font-size: 36px;
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 60px;
+  margin-top: 30px;
+}
+
+.master-plan-title-container .close-container i {
+  cursor: pointer;
+}

@@ -1,0 +1,432 @@
+<section class="add-new-proj">
+  <div class="container-fluid">
+    <div class="flex">
+      <h2 *ngIf="projectId == 0">ADD NEW PROJECT</h2>
+      <h2 *ngIf="projectId != 0">EDIT PROJECT</h2>
+      <!-- <div *ngIf="userData.is_full_access">
+        <a
+          class="btn btn-default pull-right import-btn"
+          [href]="
+            environment.api_raw_base_url +
+            '/uploads/documents/project/import_project_units_example.xlsx'
+          "
+          >Download Unit Example</a
+        >
+      </div> -->
+    </div>
+    <div class="border-sec">
+      <div class="row">
+        <form [formGroup]="project" (ngSubmit)="save()" class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <h4>PROJECT INFORMATION</h4>
+            </div>
+            <div class="form-group">
+              <label for="">Name :</label>
+              <input
+                type="text"
+                id="name"
+                formControlName="name"
+                placeholder=""
+                class="form-control req"
+              />
+              <small class="required">* required</small>
+            </div>
+            <div class="form-group">
+              <label for="">Type :</label>
+              <ng-select
+                formControlName="type"
+                name="type"
+                id="type"
+                placeholder="Select Type"
+              >
+                <ng-option value="Commercial">Commercial</ng-option>
+                <ng-option value="Residential">Residential</ng-option>
+                <ng-option value="Administrative">Administrative</ng-option>
+                <ng-option value="Hotel">Hotel</ng-option>
+              </ng-select>
+              <small class="required">* required</small>
+            </div>
+            <div class="form-group">
+              <label for="">Delivery Date :</label>
+              <input
+                type="date"
+                id="delivery_compilation"
+                formControlName="delivery_compilation"
+                placeholder=""
+                class="form-control req"
+              />
+            </div>
+            <div class="form-group">
+              <label for="">Developer :</label>
+              <ng-select
+                formControlName="developer_id"
+                name="developer_id"
+                id="developer_id"
+                placeholder="Select Developer"
+              >
+                <ng-option
+                  *ngFor="let developer of developers"
+                  [value]="developer.id"
+                >
+                  {{ developer.name }}
+                </ng-option>
+              </ng-select>
+            </div>
+            <!-- <div class="form-group">
+                <label for="">Commission per million :</label>
+                <input
+                  type="text"
+                  id="commission_per_million"
+                  formControlName="commission_per_million"
+                  placeholder=""
+                  class="form-control req"
+                />
+                <small class="required">* required</small>
+              </div> -->
+            <div class="form-group">
+              <label for="">Completion rate :</label>
+              <input
+                type="text"
+                id="completion_rate"
+                formControlName="completion_rate"
+                placeholder=""
+                class="form-control req"
+                oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+              />
+              <small class="required">* required</small>
+            </div>
+            <div class="form-group">
+              <label for="">Down Payment :</label>
+              <input
+                type="text"
+                min="0"
+                id="number"
+                formControlName="down_payment"
+                placeholder="Enter Down Payment"
+                class="form-control req"
+                oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+              />
+              <small class="required">* required</small>
+            </div>
+            <div class="form-group">
+              <label for="">Garage Price : </label>
+              <input
+                type="text"
+                name="garage_price"
+                class="form-control"
+                formControlName="garage_price"
+                placeholder="Enter Garage Price"
+              />
+              <small class="required">* required</small>
+            </div>
+            <div class="form-group">
+              <label for="">Garage Slots : </label>
+              <input
+                type="text"
+                name="slots"
+                class="form-control"
+                formControlName="slots"
+                placeholder="Enter Garage Slots"
+                oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+              />
+              <small class="required">* required</small>
+            </div>
+            <div class="form-group">
+              <label for="">Storage Slots : </label>
+              <input
+                type="text"
+                name="storage_slots"
+                class="form-control"
+                formControlName="storage_slots"
+                placeholder="Enter Storage Slots"
+                oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+              />
+            </div>
+            <div class="form-group">
+              <label for="">Storage Price : </label>
+              <input
+                type="text"
+                name="storage_price"
+                class="form-control"
+                formControlName="storage_price"
+                placeholder="Enter Storage Price"
+                oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+              />
+            </div>
+            <div class="form-group">
+              <label for="">Extra Outdoor Meter : </label>
+              <input
+                type="text"
+                name="extra_outdoor_meters"
+                class="form-control"
+                formControlName="extra_outdoor_meters"
+                placeholder="Enter Extra Outdoor Meter"
+                oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+              />
+            </div>
+            <div class="form-group">
+              <label for="">Extra Outdoor Meter Price : </label>
+              <input
+                type="text"
+                name="extra_outdoor_meter_price"
+                class="form-control"
+                formControlName="extra_outdoor_meter_price"
+                placeholder="Enter Extra Outdoor Meter Price"
+                oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+              />
+            </div>
+            <div class="form-group">
+              <label for="">Description :</label>
+              <textarea
+                name=""
+                formControlName="details"
+                rows="4"
+                class="form-control"
+                placeholder=""
+              ></textarea>
+              <small class="required">* required</small>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <h4>PHASES</h4>
+            </div>
+            <div class="form-group">
+              <label for="">Number of phases :</label>
+              <input
+                type="number"
+                formControlName="number_of_phases"
+                maxlength="2"
+                (keyup)="selectPhasesNumber($event)"
+                placeholder=""
+                class="form-control"
+              />
+              <small class="required">* required</small>
+              <small>Max number is 20</small>
+            </div>
+            <div class="phase-container">
+              <div *ngFor="let phase of phases; let x = index" class="phase">
+                <div class="form-group">
+                  <label>PHASE {{ x + 1 }}</label>
+                  <input
+                    type="text"
+                    [(ngModel)]="phase.serial"
+                    [ngModelOptions]="{ standalone: true }"
+                    name="phase_name"
+                    placeholder="Phase Serial"
+                    class="form-control"
+                  />
+                </div>
+                <div class="row">
+                  <div class="col-xs-6">
+                    <div class="form-group">
+                      <label for="">Starting Date</label>
+                      <input
+                        type="date"
+                        [(ngModel)]="phase.start_date"
+                        [ngModelOptions]="{ standalone: true }"
+                        name="phase_start"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-xs-6">
+                    <div class="form-group">
+                      <label for="">Delivery Date</label>
+                      <input
+                        type="date"
+                        [(ngModel)]="phase.end_date"
+                        [ngModelOptions]="{ standalone: true }"
+                        name="phase_end"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <h4></h4>
+            </div>
+            <!-- <div
+              class="form-group margin-top-import-units"
+              *ngIf="projectId !== 0 && userData.is_full_access"
+            >
+              <label>IMPORT UNITS</label>
+              <input
+                type="file"
+                accept=".xlsx, .xls"
+                id="unit_excel"
+                #file
+                (change)="onExcelChange($event)"
+                class="form-control"
+              />
+              <small>Upload units excel sheet</small>
+            </div> -->
+            <div
+              class="form-group margin-top-import-units"
+              *ngIf="projectId !== 0"
+            >
+              <label>UPLOAD BROCHURE FILE</label>
+              <input
+                type="file"
+                accept=".pdf"
+                id="brochure_file"
+                #file
+                (change)="onBrochureChange($event)"
+                class="form-control"
+              />
+              <small>Upload Brochure File</small>
+            </div>
+            <br />
+            <div class="form-group">
+              <label>PROJECT IMAGE</label>
+              <input
+                accept="image/*"
+                type="file"
+                id="project_img"
+                #fileInput
+                (change)="onProjectImage($event)"
+                class="form-control"
+              />
+              <small>Upload Project cover image</small>
+            </div>
+            <br />
+            <div class="form-group">
+              <label>STATIC MASTER PLAN</label>
+              <input
+                accept="image/*"
+                multiple
+                type="file"
+                id="static_mater_plan"
+                #fileInput
+                (change)="onStaticMasterPlanImage($event)"
+                class="form-control"
+              />
+              <small>Upload Static Master Plan image</small>
+            </div>
+            <div class="form-group">
+              <label>Installment Logo</label>
+              <input
+                accept="image/*"
+                type="file"
+                id="installment_image"
+                #fileInput
+                (change)="onInstallmentImage($event)"
+                class="form-control"
+              />
+              <small>Installment Logo must be 55 height, 140 width</small>
+            </div>
+            <div class="form-group">
+              <label for="">Send Reminder: </label>
+              <input
+                class="margin-left-15"
+                type="checkbox"
+                formControlName="send_reminder"
+                [value]="send_reminder"
+              />
+            </div>
+          </div>
+          <hr class="col-xs-12" />
+          <div class="col-md-12 row">
+            <div class="form-group col-xs-4">
+              <label for="land_number">Land Number: </label>
+              <input
+                class="form-control"
+                type="text"
+                formControlName="land_number"
+                name="land_number"
+                id="land_number"
+              />
+            </div>
+            <div class="form-group col-xs-4">
+              <label for="land_letter">Land Letter: </label>
+              <input
+                class="form-control"
+                type="text"
+                formControlName="land_letter"
+                name="land_letter"
+                id="land_letter"
+              />
+            </div>
+            <div class="form-group col-xs-4">
+              <label for="license_issuer">License Issuer: </label>
+              <input
+                class="form-control"
+                type="text"
+                formControlName="license_issuer"
+                name="license_issuer"
+                id="license_issuer"
+              />
+            </div>
+          </div>
+          <div class="col-md-12 row">
+            <div class="form-group col-md-6">
+              <label for="district_id">District :</label>
+              <ng-select
+                id="district"
+                formControlName="district_id"
+                placeholder="Select District"
+              >
+                <ng-option *ngFor="let d of districts" [value]="d.id">
+                  {{ d.name }}
+                </ng-option>
+              </ng-select>
+              <small class="required">* required</small>
+            </div>
+            <div class="form-group col-md-6">
+              <label for="region">region: </label>
+              <input
+                class="form-control"
+                type="text"
+                formControlName="region"
+                name="region"
+                id="region"
+              />
+            </div>
+          </div>
+          <div class="col-md-12 row">
+            <div class="form-group col-md-6">
+              <label for="land_owner_section">Land Owner Section: </label>
+              <editor
+                [init]="editorConfig"
+                id="land_owner_section"
+                name="land_owner_section"
+                formControlName="land_owner_section"
+              >
+              </editor>
+            </div>
+
+            <div class="form-group col-md-6">
+              <label for="general_finishing_section"
+                >General Finishing Section:
+              </label>
+              <editor
+                [init]="editorConfig"
+                id="general_finishing_section"
+                name="general_finishing_section"
+                formControlName="general_finishing_section"
+              >
+              </editor>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="form-group">
+      <button
+        type="submit"
+        [ngClass]="{ 'no-interaction': is_submitting }"
+        [disabled]="!project.valid"
+        (click)="save()"
+        class="btn btn-default pull-right btn-black"
+      >
+        SAVE
+      </button>
+      <button class="btn btn-default btn-black" (click)="gotodashboard()">
+        BACK
+      </button>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,23 @@
+.modal-content .modal-footer .btn.btn-default {
+  color: #000 !important;
+}
+
+.more-options-icon {
+  width: 20px;
+  cursor: pointer;
+}
+
+.more-options-icon:hover {
+  -webkit-filter: grayscale(100%);
+  /* Safari 6.0 - 9.0 */
+  filter: grayscale(100%);
+}
+
+.no-interaction {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.lato {
+  font-family: "Lato", sans-serif, fontaweomse;
+}

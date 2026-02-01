@@ -1,0 +1,455 @@
+<section class="unit" *ngIf="ticket_details">
+  <div class="container-fluid">
+    <h2>TICKET #{{ ticket_id }}</h2>
+    <div class="row">
+      <div class="col-xs-12"></div>
+      <div class="col-xs-12">
+        <div class="lead-details">
+          <div class="header-lead">
+            <ng-template [ngTemplateOutlet]="header"></ng-template>
+          </div>
+
+          <div class="lead-content-section">
+            <div>
+              <!-- Nav tabs -->
+              <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active">
+                  <a href="#feedbackTab" role="tab" data-toggle="tab"
+                    >Feedback</a
+                  >
+                </li>
+                <li role="presentation">
+                  <a href="#approvalsTab" role="tab" data-toggle="tab"
+                    >Approvals</a
+                  >
+                </li>
+
+                <li role="presentation">
+                  <a href="#attachmentsTab" role="tab" data-toggle="tab"
+                    >Attachments</a
+                  >
+                </li>
+
+                <li role="presentation">
+                  <a href="#activitiesTab" role="tab" data-toggle="tab"
+                    >Activity log</a
+                  >
+                </li>
+              </ul>
+
+              <!-- Tab panes -->
+
+              <div class="tab-content">
+                <ng-template [ngTemplateOutlet]="feedbackTab"></ng-template>
+                <ng-template [ngTemplateOutlet]="approvalsTab"></ng-template>
+                <ng-template [ngTemplateOutlet]="attachmentsTab"></ng-template>
+                <ng-template [ngTemplateOutlet]="activitiesTab"></ng-template>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- <ngx-ui-loader></ngx-ui-loader> -->
+<ng-template #header>
+  <div class="row">
+    <div class="col-md-9">
+      <div class="media">
+        <div class="media-left">
+          <a>
+            {{ ticket_details?.priority?.name || "-" }}
+          </a>
+        </div>
+        <div class="media-body">
+          <h3>#{{ ticket_details?.id || "-" }}</h3>
+          <div class="row">
+            <div class="col-xs-6">
+              <ul class="list-unstyled">
+                <li>
+                  <b>Priority:</b> {{ ticket_details?.priority?.name || "-" }}
+                </li>
+                <li>
+                  <b>Source:</b> {{ ticket_details?.source?.name || "-" }}
+                </li>
+                <li><b>Type:</b> {{ ticket_details?.type?.name || "-" }}</li>
+                <li>
+                  <b>status:</b> {{ ticket_details?.status?.name || "-" }}
+                </li>
+                <li>
+                  <b>Assigned User:</b>
+                  {{ ticket_details?.assigned_user?.name || "-" }}
+                </li>
+                <li>
+                  <b>Department:</b>
+                  {{ ticket_details?.department?.name || "-" }}
+                </li>
+                <li><b>Created By:</b> {{ ticket_details?.user?.name }}</li>
+                <li>
+                  <b>Created At:</b> {{ ticket_details?.created_at || "-" }}
+                </li>
+              </ul>
+            </div>
+            <div class="col-xs-6">
+              <ul class="list-unstyled">
+                <li>
+                  <b>Lead Name: </b>
+                  <span
+                    class="routable"
+                    (click)="viewLead()"
+                    title="view lead in new page"
+                    >{{ ticket_details?.lead?.name || "-" }}</span
+                  >
+                </li>
+                <li>
+                  <b>Lead Phone:</b>
+                  <span
+                    class="routable"
+                    (click)="viewLead()"
+                    title="view lead in new page"
+                    >{{ ticket_details?.lead?.phone || "-" }}</span
+                  >
+                </li>
+                <li>
+                  <b>Lead Email:</b>
+                  <span
+                    class="routable"
+                    (click)="viewLead()"
+                    title="view lead in new page"
+                    >{{ ticket_details?.lead?.email || "-" }}</span
+                  >
+                </li>
+                <li>
+                  <b>Customer Name: </b
+                  >{{ ticket_details?.customer?.name || "-" }}
+                </li>
+                <li>
+                  <b>Customer Phone:</b>
+                  {{ ticket_details?.customer?.phone || "-" }}
+                </li>
+                <li>
+                  <b>Customer Note: </b
+                  >{{ ticket_details?.customer?.notes || "-" }}
+                </li>
+                <li>
+                  <b>
+                    Reservations:
+                    {{
+                      ticket_details?.reservations?.length == 0 ? "-" : ""
+                    }}</b
+                  >
+                  <a
+                    *ngFor="let r of ticket_details.reservations"
+                    title="view reservation in new page"
+                    class="routable"
+                    (click)="viewReservation(r.id)"
+                  >
+                    {{ r.id }}
+                  </a>
+                </li>
+                <li>
+                  <b>Description:</b> {{ ticket_details?.description || "-" }}
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- <div class="col-md-3 operation-container" *ngIf="!isResolved"> -->
+    <div class="col-md-3 operation-container">
+      <div class="contact-lead">
+        <ul *ngIf="!no_actions" class="list-unstyled edit-spam">
+          <li *ngIf="ticket_details?.permissions?.can_reopen_ticket">
+            <button
+              class="w-100 btn btn-primary"
+              (click)="reOpenTicket(ticket_details.id)"
+            >
+              Reopen Ticket
+            </button>
+          </li>
+          <li *ngIf="ticket_details?.permissions?.can_assign_ticket">
+            <button
+              class="w-100 btn btn-primary"
+              (click)="assignTicketModal.open(ticket_details)"
+            >
+              Assign Ticket
+            </button>
+          </li>
+          <li *ngIf="ticket_details?.permissions?.can_add_feedback">
+            <button
+              class="w-100 btn btn-primary"
+              (click)="addFeedbackModal.open(ticket_details)"
+            >
+              Add Feedback
+            </button>
+          </li>
+          <li
+            *ngIf="ticket_details?.permissions?.can_ask_approval"
+            title="Request approval from a department head."
+          >
+            <button
+              class="w-100 btn btn-primary"
+              (click)="requestApprovalModal.open(ticket_details)"
+            >
+              Request approval
+            </button>
+          </li>
+          <li
+            title="Either approve or disapprove it."
+            *ngIf="ticket_details?.permissions?.can_accept_approval"
+          >
+            <button
+              class="w-100 btn btn-primary"
+              style="font-size: smaller"
+              (click)="resolveRequestApprovalModal.open(ticket_details)"
+            >
+              Resolve Approval Request
+            </button>
+          </li>
+          <li *ngIf="ticket_details?.permissions?.can_change_status">
+            <button
+              class="w-100 btn btn-primary"
+              (click)="changeStatusModal.open(ticket_details)"
+            >
+              Change Status
+            </button>
+          </li>
+          <li *ngIf="ticket_details?.permissions?.can_change_status">
+            <button
+              class="w-100 btn btn-primary"
+              [routerLink]="['/pages/reminder']"
+              [queryParams]="{ ticket_id: ticket_details.id }"
+            >
+              Add Reminder
+            </button>
+          </li>
+          <li *ngIf="ticket_details?.permissions?.can_mark_as_resolved">
+            <button
+            *ngIf="!ticket_details?.is_resolved"
+              class="w-100 btn btn-success"
+              (click)="markAsResolved()"
+              title="This will end the ticket cycle and get it out of the helpdesk circulation"
+            >
+              Mark ticket as resolved
+            </button>
+          </li>
+          <li *ngIf="ticket_details?.permissions?.can_delete_ticket">
+            <button
+              class="w-100 btn btn-danger"
+              (click)="deleteTicket()"
+              title="This will delete ticket"
+            >
+              Delete Ticket
+            </button>
+          </li>
+          <li *ngIf="ticket_details?.permissions?.can_mark_as_finished">
+            <button
+              class="w-100 btn btn-success"
+              title="This means that this department has nothing more to do on this ticket"
+              (click)="markAsFinished()"
+            >
+              Mark ticket as finished
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #feedbackTab>
+  <div role="tabpanel" class="tab-pane fade in active" id="feedbackTab">
+    <div class="col-md-12 pb-5">
+      <div
+        *ngIf="ticketFeedbacks?.length == 0"
+        class="text-center"
+        style="padding: 50px"
+      >
+        No feedbacks yet...
+      </div>
+      <div class="time-line">
+        <ul class="list-unstyled">
+          <li *ngFor="let feedback of ticketFeedbacks">
+            <span class="crcle-t"></span>
+            <div class="tm-content">
+              <div class="dateformat">{{ feedback.created_at }}</div>
+              <h5>
+                by {{ feedback.user?.name || "-" }}
+                <span> from {{ feedback.department?.name || "-" }}</span>
+              </h5>
+              <p>{{ feedback?.description || "-" }}</p>
+              <div *ngIf="feedback?.attachments">
+                <a
+                  *ngFor="let attachment of feedback?.attachments"
+                  target="_blank"
+                  [href]="attachment.src"
+                >
+                  {{ attachment?.name }}
+                </a>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #approvalsTab>
+  <div role="tabpanel" class="tab-pane fade" id="approvalsTab">
+    <div class="col-md-12 pb-5">
+      <div
+        *ngIf="ticket_details?.approvals?.length == 0"
+        class="text-center"
+        style="padding: 50px"
+      >
+        No requests so far...
+      </div>
+      <div class="time-line">
+        <ul class="list-unstyled">
+          <li *ngFor="let approval of ticket_details?.approvals.reverse()">
+            <span class="crcle-t"></span>
+            <div class="tm-content">
+              <div class="dateformat">{{ approval.created_at }}</div>
+              <h5 *ngIf="approval.user && approval?.department">
+                by {{ approval.user?.name }} From
+                {{ approval?.department?.name }} department
+              </h5>
+
+              <h6 *ngIf="!approval">Waiting user approval/decline...</h6>
+
+              <h6 *ngIf="approval">
+                Is Approved:
+                <span
+                  *ngIf="ticket_details?.pending_approval?.id"
+                  [ngClass]="'not-approved'"
+                  >pending</span
+                >
+                <span
+                  *ngIf="!ticket_details?.pending_approval?.id"
+                  [ngClass]="{
+                    approved: approval.is_approved,
+                    'not-approved': !approval.is_approved
+                  }"
+                >
+                  {{ approval.is_approved ? "Yes" : "No" }}
+                </span>
+              </h6>
+              <p>{{ approval?.description }}</p>
+              <p>Request #{{ approval?.id }}</p>
+              <div *ngIf="approval?.attachments">
+                <a
+                  *ngFor="let attachment of approval?.attachments"
+                  target="_blank"
+                  [href]="attachment.src"
+                >
+                  {{ attachment?.name }}
+                </a>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #attachmentsTab>
+  <div role="tabpanel" class="tab-pane fade" id="attachmentsTab">
+    <div
+      *ngIf="ticket_details?.attachments?.length == 0"
+      class="text-center"
+      style="padding: 50px"
+    >
+      No attachemnts found.
+    </div>
+    <table class="table" *ngIf="ticket_details?.attachments">
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Preview</th>
+        <th>Download</th>
+        <th>Created At</th>
+        <!-- <th>Delete</th> -->
+      </tr>
+      <tr *ngFor="let attachment of ticket_details?.attachments">
+        <td>{{ attachment?.id }}</td>
+        <td>{{ attachment?.name }}</td>
+        <td>
+          <img
+            [src]="attachment?.src"
+            [alt]="attachment?.name"
+            class="preview"
+          />
+        </td>
+        <td>
+          <a
+            [href]="attachment.src"
+            target="_blank"
+            download="{{ attachment?.name }}"
+            >Download</a
+          >
+        </td>
+        <td>{{ attachment?.created_at }}</td>
+        <!-- <td>
+          <button (click)="deleteDocument(document.id)" class="delete-btn">Delete</button>
+        </td> -->
+      </tr>
+    </table>
+  </div>
+</ng-template>
+
+<ng-template #activitiesTab>
+  <div role="tabpanel" class="tab-pane fade" id="activitiesTab">
+    <div class="col-md-12 pb-5">
+      <div
+        *ngIf="ticketActivities?.data?.length == 0"
+        class="text-center"
+        style="padding: 50px"
+      >
+        No activities yet...
+      </div>
+      <div class="time-line">
+        <ul class="list-unstyled">
+          <li *ngFor="let item of ticketActivities?.data">
+            <span class="crcle-t"></span>
+            <div class="tm-content">
+              <div class="dateformat">
+                {{ item?.created_at | date : "medium" }}
+              </div>
+              <div class="activity-details">
+                {{ item?.description }}
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- Modals -->
+<app-assign-ticket-modal
+  #assignTicketModal
+  [department_id]="ticket_details?.department_id"
+  [user_id]="ticket_details?.assigned_user?.id"
+  (onSubmit)="initialize($event)"
+></app-assign-ticket-modal>
+<app-add-feedback-modal
+  #addFeedbackModal
+  (onSubmit)="initialize($event)"
+></app-add-feedback-modal>
+<app-change-status-modal
+  #changeStatusModal
+  (onSubmit)="initialize($event)"
+></app-change-status-modal>
+<app-request-approval-modal
+  #requestApprovalModal
+  (onSubmit)="initialize($event)"
+></app-request-approval-modal>
+<app-resolve-approval-request-modal
+  #resolveRequestApprovalModal
+  (onSubmit)="initialize($event)"
+></app-resolve-approval-request-modal>

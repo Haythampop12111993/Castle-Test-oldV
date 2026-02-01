@@ -1,0 +1,77 @@
+.logs-page {
+  padding: 50px 25px;
+}
+
+.log-filter-outer-container {
+  border: 1px solid #ccc;
+}
+
+.log-filter-headline h4 {
+  text-align: center;
+  padding: 20px 0px;
+  font-size: 25px;
+  font-weight: bold;
+  border-bottom: 1px solid #ccc;
+}
+
+.log-filter-inputs-container .form-control {
+  width: 80%;
+  margin: 10px auto;
+  display: flex;
+  flex-direction: column;
+  box-shadow: none;
+  border: none;
+}
+
+.button-container button {
+  width: 100%;
+  border: none;
+  margin-top: 20px;
+  color: #fff;
+  background-color: gray;
+  padding: 15px 0px;
+}
+
+.rotation {
+  width: 98%;
+  max-width: 98%;
+  /* margin: 10px auto; */
+  /* padding: 10px auto; */
+  border-radius: 10px;
+  min-width: 98%;
+  background: #d8d8d8;
+  height: 100%;
+  position: relative;
+}
+
+.rotation .highlight {
+  display: inline-block;
+  width: 0.5%;
+  position: absolute;
+  height: 100%;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+.reservation {
+  background-color: #b34444;
+}
+
+.lead {
+  background-color: #8bc34a;
+}
+
+.rotation {
+  widows: 99.5%;
+}
+
+.rotation-date {
+  color: #666;
+  padding: 10px 20px 0px;
+}
+
+.rotation-text {
+  font-size: 1.7rem;
+  font-family: lato;
+  padding: 10px 20px;
+}

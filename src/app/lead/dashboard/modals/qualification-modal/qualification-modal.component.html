@@ -1,0 +1,70 @@
+<modal
+  #modalRef
+  title="Qualification FeedBack"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <ng-container *ngIf="formData">
+      <div
+        class="form-group"
+        *ngFor="let question of questions_list; let index = index"
+      >
+        <label for="question_${index}">{{ question.question }}</label>
+        <select
+          class="form-control"
+          [ngModelOptions]="{ standalone: true }"
+          placeholder="Answer :"
+          name="question_${index}"
+          [(ngModel)]="formData.feedbacks[question.id]"
+        >
+          <option *ngFor="let answer of question.answers" [value]="answer.id">
+            {{ answer.answer }}
+          </option>
+        </select>
+      </div>
+      <div class="row">
+        <div class="col-sm-6 form-group">
+          <input
+            type="radio"
+            name="qualified"
+            id="qualified"
+            [(ngModel)]="formData.status"
+            value="qualified"
+          />
+          <label for="qualified">Qualified</label>
+        </div>
+        <div class="col-sm-6 form-group">
+          <input
+            type="radio"
+            name="disqualified"
+            id="disqualified"
+            [(ngModel)]="formData.status"
+            value="disqualified"
+          />
+          <label for="disqualified">Disqualified</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="feedback_comment">Comment</label>
+        <textarea
+          class="form-control"
+          name="feedback_comment"
+          id="feedback_comment"
+          [(ngModel)]="formData.comment"
+          cols="30"
+          rows="10"
+        ></textarea>
+      </div>
+    </ng-container>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="modalRef.close()">Cancle</button>
+    <button class="btn btn-secondary" (click)="save()" [disabled]="submitting">
+      Save
+    </button>
+  </modal-footer>
+</modal>

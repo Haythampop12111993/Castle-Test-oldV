@@ -1,0 +1,44 @@
+.card__title {
+    margin-bottom: 20px;
+  }
+  
+  .margin-bottom {
+    margin-bottom: 15px;
+  }
+  
+  .margin-top {
+    margin-top: 10px;
+  }
+  
+  button.btn.btn-primary.add-btn {
+    margin-top: 20px;
+  }
+  
+  .settings-icons i {
+    font-size: 3rem;
+    cursor: pointer;
+    margin: 10px;
+  }
+  
+  .dropdown i {
+    font-family: FontAwesome !important;
+  }
+  
+  .dropdown-menu{
+    left: -133px !important;
+  }
+  
+  .flex-end {
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  button {
+    outline: none;
+    border: none;
+    background-color: #88671f;
+    width: 150px;
+    color: #fff;
+    padding: 10px;
+    font-weight: bold;
+  }

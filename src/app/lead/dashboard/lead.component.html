@@ -1,0 +1,2705 @@
+<section class="lead-pg">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="col-xs-4">
+          <h2>LEADS</h2>
+        </div>
+        <div
+          *ngIf="
+            (userData.role == 'Admin' ||
+              userData.role == 'Super Development' ||
+              userData.role == 'Moderator' ||
+              userData.role == 'Super Moderator' ||
+              userData.role == 'Marketing') &&
+            userData.role != 'CCO' &&
+            userData.role != 'Development Director' &&
+            !readOnlyMode
+          "
+          class="col-xs-8 import-container mt-20"
+        >
+          <div
+            class="import-inner-container"
+            *ngIf="
+              userData.role != 'Moderator' &&
+              userData.role != 'Super Moderator' &&
+              userData.role != 'CCO' &&
+              userData.role != 'Development Director'
+            "
+          >
+            <button class="btn" (click)="addAdminComment.open()">
+              <i class="fa fa-comments-o" aria-hidden="true"></i>
+              <span>Add Admin Comment</span>
+            </button>
+          </div>
+          <div class="import-inner-container">
+            <button class="btn" (click)="firstModal.open()">
+              <i class="fa fa-upload" aria-hidden="true"></i>
+              <span>Import Leads</span>
+            </button>
+          </div>
+          <div
+            class="import-inner-container"
+            *ngIf="
+              userData.role == 'Marketing' ||
+              userData.role == 'Admin' ||
+              userData.role == 'Super Development' ||
+              userData.role == 'Moderator' ||
+              (userData.role == 'Super Moderator' &&
+                userData.role != 'CCO' &&
+                userData.role != 'Development Director')
+            "
+          >
+            <button class="btn" (click)="bulkSmsModal.open()">
+              <i class="fa fa-comment-o" aria-hidden="true"></i>
+              <span> Send Bulk SMS </span>
+            </button>
+          </div>
+          <!-- <div class="import-inner-container" *ngIf="userData.role == 'Marketing' || userData.role == 'Admin'">
+            <a class="btn btn-default pull-right import-btn" [href]="export_lead">
+              <i class="fa fa-external-link" aria-hidden="true"></i>
+              <span>
+                Export Leads
+              </span>
+            </a>
+          </div> -->
+        </div>
+      </div>
+      <modal
+        #firstModal
+        title="Import Leads"
+        submitButtonLabel="submit"
+        modalClass="modal-md"
+        [hideCloseButton]="true"
+        [closeOnOutsideClick]="true"
+        (onSubmit)="!isSubmittingImport && uploadExcelMethod(firstModal)"
+        disabled="true"
+      >
+        <modal-header></modal-header>
+        <modal-content>
+          <div class="row">
+            <div class="form-group col-xs-6">
+              <form
+                class="form-group btn-group-files pull-left"
+                [formGroup]="uploadExcel"
+              >
+                <div class="form-group">
+                  <h4>LEAD CYCLE</h4>
+                </div>
+                <div class="form-group">
+                  <select
+                    class="form-control"
+                    [ngModelOptions]="{ standalone: true }"
+                    placeholder="Select Agents :"
+                    name="send_to_agent"
+                    [(ngModel)]="send_to_agent"
+                  >
+                    <option value="all" selected>All</option>
+                    <option [disabled]="isMarekting" value="agent">
+                      Specific Agent
+                    </option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="">Rotation</label>
+                  <select
+                    class="form-control"
+                    [ngModelOptions]="{ standalone: true }"
+                    placeholder="Select Rotation :"
+                    name="rotation_id"
+                    [(ngModel)]="rotation_id"
+                  >
+                    <option value=""></option>
+                    <option
+                      *ngFor="let rotation of rotations"
+                      [value]="rotation.id"
+                    >
+                      {{ rotation.name }}
+                    </option>
+                  </select>
+                </div>
+                <div *ngIf="send_to_agent == 'agent'" class="form-group">
+                  <label>Search Agents :</label>
+                  <div class="search-btn-container">
+                    <div>
+                      <input
+                        ngui-auto-complete
+                        [source]="observableSource.bind(this)"
+                        placeholder="Search for Agent by name "
+                        [ngModelOptions]="{ standalone: true }"
+                        class="form-control"
+                        name="chosen_lead"
+                        [(ngModel)]="chosenAgent"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <input
+                  type="file"
+                  accept=".xlsx, .xls"
+                  class="margin-left"
+                  id="file"
+                  (change)="handleUploadExcel($event)"
+                />
+              </form>
+            </div>
+            <div class="form-group col-xs-6">
+              <div class="form-group">
+                <a
+                  class="btn btn-default pull-right"
+                  [href]="
+                    environment.api_raw_base_url +
+                    'uploads/documents/leads/import_leads.xlsx'
+                  "
+                  >Download Import Example</a
+                >
+              </div>
+            </div>
+          </div>
+        </modal-content>
+        <modal-footer>
+          <button class="btn btn-secondary" (click)="firstModal.close()">
+            close
+          </button>
+        </modal-footer>
+      </modal>
+      <modal
+        #bulkSmsModal
+        title="Send Bulk SMS"
+        submitButtonLabel="submit"
+        modalClass="modal-md"
+        [hideCloseButton]="true"
+        [closeOnOutsideClick]="true"
+        (onOpen)="openSMSgroupModal(bulkSmsModal)"
+        (onClose)="SmSgroupFormModalOnClose()"
+        (onSubmit)="SmSgroupSendMethod(bulkSmsModal)"
+      >
+        <modal-header> </modal-header>
+        <modal-content>
+          <div class="row">
+            <div class="form-group inner-modal-sms">
+              <form class="form-group btn-group-files" [formGroup]="smsgroup">
+                <div class="form-group">
+                  <h4>Send Bulk SMS By Status</h4>
+                </div>
+                <div class="col-md-12 form-group">
+                  <select
+                    class="form-control"
+                    name="status"
+                    formControlName="lead_status"
+                    required
+                  >
+                    <option disabled selected hidden>Select a status</option>
+                    <option value="New">New</option>
+                    <option value="Follow Up">Follow Up</option>
+                    <option value="Closed">Closed</option>
+                    <option value="Disqualified">Disqualified</option>
+                  </select>
+                </div>
+                <div class="col-md-12 form-group">
+                  <label for="">Message :</label>
+                  <textarea
+                    class="form-control"
+                    style="resize: none"
+                    name="message"
+                    formControlName="message"
+                    palceholder="Enter your message here..."
+                    rows="5"
+                  ></textarea>
+                </div>
+              </form>
+            </div>
+          </div>
+        </modal-content>
+        <modal-footer>
+          <button class="btn btn-secondary" (click)="bulkSmsModal.close()">
+            close
+          </button>
+        </modal-footer>
+      </modal>
+
+      <modal
+        #addAdminComment
+        title="Add Admin Comment"
+        submitButtonLabel="submit"
+        modalClass="modal-md"
+        [hideCloseButton]="true"
+        [closeOnOutsideClick]="true"
+        (onSubmit)="addAdminComent(addAdminComment)"
+      >
+        <modal-header></modal-header>
+        <modal-content>
+          <div class="row">
+            <div class="form-group col-xs-12">
+              <div class="form-group">
+                <label for="">Admin Comment</label>
+                <textarea
+                  placeholder="Add Your Comment .. "
+                  class="form-control"
+                  [(ngModel)]="adminComment"
+                  cols="30"
+                  rows="10"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+        </modal-content>
+        <modal-footer>
+          <button class="btn btn-secondary" (click)="addAdminComment.close()">
+            close
+          </button>
+        </modal-footer>
+      </modal>
+
+      <div class="col-md-4" *ngIf="!readOnlyMode">
+        <div class="expand-shrink">
+          <button
+            (click)="actions_is_collapsed = !actions_is_collapsed"
+            class="btn"
+          >
+            <span class="icon" *ngIf="actions_is_collapsed == false"
+              ><i class="fa fa-minus" aria-hidden="true"></i>
+            </span>
+            <span class="icon" *ngIf="actions_is_collapsed == true"
+              ><i class="fa fa-plus" aria-hidden="true"></i>
+            </span>
+            <span class="title">Bulk Actions</span>
+          </button>
+          <button (click)="is_collapsed = !is_collapsed" class="btn">
+            <span class="icon" *ngIf="is_collapsed == false"
+              ><i class="fa fa-minus" aria-hidden="true"></i>
+            </span>
+            <span class="icon" *ngIf="is_collapsed == true"
+              ><i class="fa fa-plus" aria-hidden="true"></i>
+            </span>
+            <span class="title">Filter</span>
+          </button>
+        </div>
+        <div class="leads-prs">
+          <form
+            class="form-container"
+            [ngClass]="{ collapsed: is_collapsed }"
+            [formGroup]="filterForm"
+            (ngSubmit)="onFilterSubmit()"
+          >
+            <div class="search">
+              <input
+                type="text"
+                formControlName="filter_name"
+                style="
+                  border: 1px solid #d6d6d6;
+                  background-color: white;
+                  border-radius: 3px;
+                "
+                class="form-control lead-name"
+                placeholder="Name / Phone"
+              />
+            </div>
+            <div class="search">
+              <input
+                formControlName="amount"
+                placeholder="Amount Exceed"
+                class="form-control lead-consultant"
+                style="
+                  border: 1px solid #d6d6d6;
+                  background-color: white;
+                  border-radius: 3px;
+                "
+              />
+            </div>
+            <div class="search">
+              <input
+                ngui-auto-complete
+                formControlName="filter_consultant"
+                placeholder="Property Consultant"
+                class="form-control lead-consultant"
+                style="
+                  border: 1px solid #d6d6d6;
+                  background-color: white;
+                  border-radius: 3px;
+                "
+                name="filterLeadByWordText"
+                [source]="filterLeadObservable.bind(this)"
+              />
+            </div>
+            <div class="filters">
+              <div class="ui-grid ui-grid-responsive ui-fluid">
+                <div class="ui-grid-row">
+                  <div class="ui-grid-col-6">
+                    <p-multiSelect
+                      formControlName="filter_status"
+                      [options]="searchLeadsStatus"
+                      [filter]="true"
+                      defaultLabel="Status"
+                      optionLabel="name"
+                    >
+                    </p-multiSelect>
+                  </div>
+                  <div class="ui-grid-col-6">
+                    <p-dropdown
+                      formControlName="qualified_feedback_status"
+                      [options]="[
+                        { id: '1', name: 'Qualified' },
+                        { id: '2', name: 'Disqualified' },
+                        { id: '3', name: 'Not Qualified' }
+                      ]"
+                      [filter]="true"
+                      [autoWidth]="false"
+                      placeholder="Qualified Status"
+                      [showClear]="true"
+                      optionLabel="name"
+                      optionValue="id"
+                    >
+                    </p-dropdown>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="filters">
+              <div class="ui-grid ui-grid-responsive ui-fluid">
+                <div class="ui-grid-row">
+                  <div class="ui-grid-col-6">
+                    <p-dropdown
+                      formControlName="team_id"
+                      [options]="teams"
+                      [filter]="true"
+                      [autoWidth]="false"
+                      placeholder="Team"
+                      [showClear]="true"
+                      optionLabel="name"
+                    >
+                    </p-dropdown>
+                  </div>
+                  <div class="ui-grid-col-6">
+                    <p-multiSelect
+                      formControlName="filter_activity"
+                      [options]="activitiesForFilter"
+                      [filter]="true"
+                      defaultLabel="Activity"
+                      optionLabel="name"
+                    >
+                    </p-multiSelect>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="channel-source-filter">
+              <div class="filters">
+                <div class="ui-grid ui-grid-responsive ui-fluid">
+                  <div class="ui-grid-row">
+                    <div class="ui-grid-col-6">
+                      <p-dropdown
+                        formControlName="filter_channels"
+                        [options]="leadChannels"
+                        [filter]="true"
+                        [autoWidth]="false"
+                        placeholder="Channel"
+                        [showClear]="true"
+                        optionLabel="name"
+                      >
+                      </p-dropdown>
+                    </div>
+                    <div class="ui-grid-col-6">
+                      <p-multiSelect
+                        formControlName="filter_sources"
+                        [options]="searchLeadSources"
+                        [filter]="true"
+                        defaultLabel="Source"
+                        optionLabel="name"
+                      >
+                      </p-multiSelect>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="filters">
+                <div class="ui-grid ui-grid-responsive ui-fluid">
+                  <div class="ui-grid-row">
+                    <div class="ui-grid-col-6">
+                      <p-dropdown
+                        formControlName="lead_event_id"
+                        [options]="events"
+                        [filter]="true"
+                        [autoWidth]="false"
+                        placeholder="Event"
+                        [showClear]="true"
+                        optionLabel="name"
+                      >
+                      </p-dropdown>
+                    </div>
+                    <div class="ui-grid-col-6">
+                      <p-dropdown
+                        formControlName="campaign_id"
+                        [options]="lead_campaigns"
+                        [filter]="true"
+                        [autoWidth]="false"
+                        placeholder="Campaign"
+                        [showClear]="true"
+                        optionLabel="name"
+                      >
+                      </p-dropdown>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="filter-row">
+              <div class="filters">
+                <div class="ui-grid ui-grid-responsive ui-fluid">
+                  <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                      <!-- <p-dropdown
+                        formControlName="interested_project_id"
+                        [options]="projects"
+                        [filter]="true"
+                        [autoWidth]="false"
+                        placeholder="Project"
+                        [showClear]="true"
+                        optionLabel="name"
+                      >
+                      </p-dropdown> -->
+                      <p-multiSelect
+                        formControlName="interested_project_id"
+                        [options]="projectsForFilter"
+                        [filter]="true"
+                        defaultLabel="Projects"
+                        optionLabel="name"
+                      >
+                      </p-multiSelect>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="filters">
+                <div class="ui-grid ui-grid-responsive ui-fluid">
+                  <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                      <p-dropdown
+                        formControlName="order_by"
+                        [options]="[
+                          { id: 'updated_at', name: 'Last Updated' },
+                          { id: 'created_at', name: 'Last Created' },
+                          { id: 'oldest_updated', name: 'Oldest Updated' }
+                        ]"
+                        [filter]="true"
+                        [autoWidth]="false"
+                        placeholder="Sort By"
+                        [showClear]="true"
+                        optionLabel="name"
+                        optionValue="id"
+                      >
+                      </p-dropdown>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="filters dates">
+              <div class="ui-grid ui-grid-responsive ui-fluid">
+                <div class="ui-grid-row">
+                  <div class="ui-grid-col-12">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-group mb-0">
+                          <label for="From Date">From Date</label>
+                          <input
+                            type="date"
+                            class="form-control"
+                            placeholder="From Date"
+                            formControlName="date_from"
+                          />
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-group mb-0">
+                          <label for="">To Date</label>
+                          <input
+                            type="date"
+                            class="form-control"
+                            placeholder="To Date"
+                            formControlName="date_to"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="filters dates">
+              <div class="ui-grid ui-grid-responsive ui-fluid">
+                <div class="ui-grid-row">
+                  <div class="ui-grid-col-12">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-group mb-0">
+                          <label for="From Date">From Last Activity Date</label>
+                          <input
+                            type="date"
+                            class="form-control"
+                            placeholder="From Last Activity Date"
+                            formControlName="from_last_activity_date"
+                          />
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-group mb-0">
+                          <label for="">To Last Activity Date</label>
+                          <input
+                            type="date"
+                            class="form-control"
+                            placeholder="To Last Activity Date"
+                            formControlName="to_last_activity_date"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="filter date">
+              <div class="ui-grid ui-grid-responsive ui-fluid">
+                <div class="ui-grid-row">
+                  <div class="ui-grid-col-12">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label for="reminder">Reminder</label>
+                          <select
+                            class="form-control"
+                            formControlName="reminder"
+                            name="reminder"
+                            id="reminder"
+                          >
+                            <option value=""></option>
+                            <option value="past">Delayed</option>
+                            <option value="today">today</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label for="comment">Comment</label>
+                          <textarea
+                            class="form-control"
+                            name="comment"
+                            id="comment"
+                            formControlName="comment"
+                          ></textarea>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="d-flex justify-content-between">
+              <div class="filter-btns">
+                <button
+                  pButton
+                  type="submit"
+                  class="filter-search-btn"
+                  label="Search"
+                  [disabled]="filterSubmitDisabled"
+                ></button>
+                <button
+                  pButton
+                  type="button"
+                  class="filter-reset-btn"
+                  label="Reset"
+                  (click)="onReset()"
+                ></button>
+              </div>
+              <div class="filter-btns">
+                <button
+                  type="button"
+                  class="btn"
+                  (click)="exportFillteredLeads()"
+                >
+                  <i class="fa fa-download"></i>
+                </button>
+              </div>
+            </div>
+          </form>
+
+          <div
+            class="actions__container"
+            [ngClass]="{ collapsed: actions_is_collapsed }"
+          >
+            <div>
+              <mat-checkbox
+                color="primary"
+                (change)="selectAllLeads($event.checked)"
+                [checked]="allLeadsChecked"
+              >
+              </mat-checkbox>
+              <span> Select all leads </span>
+            </div>
+            <div>
+              <button
+                *ngIf="
+                  userData.email.toLowerCase() === 'joseph.ezzat@jebal.com' ||
+                  userData.email.toLowerCase() ===
+                    'joseph.ezzat@jomhoria.com' ||
+                  userData.email === 'fabricasupport@castle.com'
+                "
+                class="btn btn-default btn__dark"
+                (click)="deleteLeads.open()"
+              >
+                Delete
+              </button>
+              <button
+                class="btn btn-default btn__dark"
+                (click)="reassignLeads.open()"
+              >
+                Reassign
+              </button>
+            </div>
+          </div>
+
+          <div class="contacts-container" #leadsContainer>
+            <div
+              class="bulk__container d-flex justify-content-between align-items-center p-8"
+              *ngIf="!actions_is_collapsed"
+            >
+              <div>
+                <mat-checkbox
+                  [checked]="allChecked"
+                  [indeterminate]="someComplete()"
+                  (change)="setAll($event.checked)"
+                  [disabled]="disableCheckbox"
+                >
+                </mat-checkbox>
+                <span> Select all per page </span>
+              </div>
+              <div>
+                <span>
+                  {{ selectedLeadsCount }}
+                </span>
+                <span> / {{ leadsTotal }} </span>
+              </div>
+            </div>
+            <div
+              class="contact d-flex"
+              (click)="getLeadDetails(lead.id)"
+              [ngClass]="{
+                'active-lead ': lead.id == selectedLead,
+                'leaddetailnewcircle ': lead.status === 'New',
+                'leaddetailclosedcircle ': lead.status === 'Closed',
+                'leaddetailnot-qualifycircle ': lead.status === 'Disqualified',
+                'leaddetailprogresscircle ': lead.status === 'Inprogress',
+                'leaddetailfollowcircle ': lead.status === 'Follow Up',
+                'leaddetailon-goingcircle ': lead.status === 'Ongoing',
+                'leaddetailfreezecircle ': lead.status === 'Freeze',
+                'leaddetailnoactivitycircle ': lead.status === 'No Activity',
+                'leaddetail-about-closedcircle ':
+                  lead.status === 'About To Close'
+              }"
+              *ngFor="let lead of filteredLeads"
+            >
+              <div
+                class="badge-bg contact-status-badge d-flex align-items-center justify-conetnt-center"
+              >
+                <span>
+                  {{ lead?.status?.substr(0, 6) }}
+                </span>
+              </div>
+              <div class="flex-grow-1 pe-4 p-4">
+                <div class="d-flex align-items-center justify-content-between">
+                  <h4 class="fs-16 mt-0">
+                    <mat-checkbox
+                      [(ngModel)]="lead.checked"
+                      (ngModelChange)="updateAllComplete()"
+                      [disabled]="disableCheckbox"
+                      (click)="$event.stopPropagation()"
+                      *ngIf="!actions_is_collapsed"
+                    >
+                    </mat-checkbox>
+                    {{
+                      lead?.name?.length > 20
+                        ? lead?.name?.substr(0, 20) + "..."
+                        : lead?.name
+                    }}
+                  </h4>
+                  <i
+                    class="fa fa-thumbs-o-up fa-2x text-success"
+                    *ngIf="lead.qualified_feedback_status === 'qualified'"
+                  ></i>
+                  <i
+                    class="fa fa-thumbs-o-down fa-2x text-danger"
+                    *ngIf="lead.qualified_feedback_status === 'disqualified'"
+                  ></i>
+                </div>
+                <div
+                  class="d-flex align-items-center justify-content-between flex-wrap fs-12"
+                >
+                  <span>{{ lead.phone }}</span>
+                  <span *ngIf="lead.agent != null">
+                    {{ lead.agent.name }}
+                  </span>
+                </div>
+                <div
+                  class="d-flex align-items-center justify-content-between flex-wrap fs-12"
+                >
+                  <span>
+                    <span
+                      class="activity_type"
+                      *ngIf="lead?.latest_activity?.title"
+                      >{{ lead?.latest_activity?.title }}</span
+                    >
+                  </span>
+
+                  <span>
+                    <span *ngIf="lead.last_activity" class="lead-list-item">
+                      {{ lead.last_activity | dateAgo }}
+                      <i class="fa fa-clock-o" aria-hidden="true"></i>
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="col-sm-12 d-flex justify-content-center p-15"
+              *ngIf="!loadingFilteredLeads && next_page_url"
+            >
+              <button class="btn" (click)="getMoreLeads()">Load More</button>
+            </div>
+
+            <div
+              class="col-sm-12 text-center p-15"
+              *ngIf="loadingFilteredLeads"
+            >
+              <i class="fa fa-spinner fa-spin fa-2x"></i>
+            </div>
+
+            <h4
+              [ngStyle]="{ 'text-align': 'center' }"
+              *ngIf="
+                !loadingFilteredLeads &&
+                (!filteredLeads || filteredLeads?.length == 0)
+              "
+            >
+              No data found
+            </h4>
+          </div>
+        </div>
+      </div>
+
+      <div [ngClass]="{ 'col-md-12': readOnlyMode, 'col-md-8': !readOnlyMode }">
+        <div class="lead-details">
+          <h4
+            [ngStyle]="{ 'text-align': 'center', margin: '35% 0' }"
+            *ngIf="!leadDetails"
+          >
+            No data found
+          </h4>
+          <ng-container *ngIf="leadDetails">
+            <div class="header-lead">
+              <div class="ribbon" *ngIf="leadDetails.is_blocklist">
+                <span>Blocked</span>
+              </div>
+              <div class="row">
+                <div
+                  class="d-flex justify-content-between align-items-center m-0 px-30 py-8"
+                >
+                  <div class="d-flex justify-conetnt-center align-items-center">
+                    <div class="lead-status">
+                      <div
+                        class="leaddetailstatus"
+                        [ngClass]="{
+                          'lead-New': leadDetails.status === 'New',
+                          'lead-Interested':
+                            leadDetails.status === 'Interested',
+                          'lead-Closed': leadDetails.status === 'Closed',
+                          'lead-NotInterested':
+                            leadDetails.status === 'Not Interested',
+                          'lead-Freeze': leadDetails.status === 'Freeze',
+                          'lead-NoAnswer': leadDetails.status === 'No Answer',
+                          'lead-NotReachable':
+                            leadDetails.status === 'Not Reachable'
+                        }"
+                      >
+                        <span class="fs-16">{{
+                          leadDetails?.status?.substr(0, 6)
+                        }}</span>
+                      </div>
+                    </div>
+                    <div class="ps-8 pe-15">
+                      <h3 class="m-0 fs-20">
+                        {{ leadDetails.name }}
+                        <span
+                          class="label label-primary"
+                          *ngIf="leadDetails.is_pipeline == 1"
+                          >Pipeline</span
+                        >
+                      </h3>
+                    </div>
+                    <span class="lead_id">#{{ leadDetails.id }}</span>
+
+                    <i
+                      class="fa fa-thumbs-o-up fa-2x text-success ms-1"
+                      *ngIf="
+                        leadDetails.qualified_feedback_status === 'qualified'
+                      "
+                    ></i>
+                    <i
+                      class="fa fa-thumbs-o-down fa-2x text-danger ms-1"
+                      *ngIf="
+                        leadDetails.qualified_feedback_status === 'disqualified'
+                      "
+                    ></i>
+                  </div>
+                  <div class="actions-btns pe-8">
+                    <div>
+                      <button
+                        class="btn"
+                        (click)="changeStatusModal.open()"
+                        *ngIf="userData.role !== 'Helpdesk Supervisor'"
+                      >
+                        <span>Change Status</span>
+                      </button>
+                      <button
+                        class="btn activity-btn"
+                        (click)="addActivityModal.open()"
+                        *ngIf="
+                          !readOnlyMode &&
+                          (userData.role != 'Call Center' ||
+                            leadDetails.status == 'Disqualified')
+                        "
+                      >
+                        <span>Add Activity</span>
+                      </button>
+                    </div>
+                    <div
+                      *ngIf="
+                        userData.role == 'Admin' ||
+                        userData.role == 'Super Development' ||
+                        userData.role === 'Call Center'
+                      "
+                      style="margin-top: 5px"
+                    >
+                      <button
+                        class="btn"
+                        [ngClass]="{
+                          'btn-success':
+                            leadDetails.qualified_feedback_status ===
+                            'qualified',
+                          'btn-danger':
+                            leadDetails.qualified_feedback_status ===
+                            'disqualified'
+                        }"
+                        (click)="viewQualificationModal.open(leadDetails)"
+                        *ngIf="leadDetails.qualified_feedback_status"
+                      >
+                        {{ leadDetails.qualified_feedback_status }}
+                      </button>
+                      <button
+                        class="btn"
+                        (click)="addQualificationModal.open(leadId)"
+                        *ngIf="!leadDetails.qualified_feedback_status"
+                      >
+                        Set Qualification
+                      </button>
+                      <button
+                        class="btn"
+                        (click)="addFeedBackModal.open(leadId)"
+                      >
+                        <span>Customer Satisfaction Survey</span>
+                      </button>
+                    </div>
+                    <div style="margin-top: 5px">
+                      <button
+                        class="btn"
+                        (click)="viewScript('call_center_script')"
+                        *ngIf="callCenterScript.call_center_script"
+                      >
+                        Call Center Script
+                      </button>
+                      <button
+                        class="btn"
+                        (click)="viewScript('sales_script')"
+                        *ngIf="callCenterScript.sales_script"
+                      >
+                        <span>Sales Script</span>
+                      </button>
+                    </div>
+                    <div
+                      style="margin-top: 5px"
+                      *ngIf="
+                        userData.role == 'Admin' ||
+                        userData.role == 'Super Development' ||
+                        userData.role == 'Super Moderator'
+                      "
+                    >
+                      <button
+                        *ngIf="!leadDetails.is_blocklist"
+                        class="btn btn-danger"
+                        (click)="addToBlocklist()"
+                      >
+                        Add to blocklist
+                      </button>
+                      <button
+                        *ngIf="leadDetails.is_blocklist"
+                        class="btn btn-danger"
+                        (click)="removeFromBlocklist()"
+                      >
+                        Remove from blocklist
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  class="col-12 d-flex justify-conetnt-center align-items-center px-30 p-8 pt-0"
+                  *ngIf="
+                    leadDetails.reservations &&
+                    leadDetails.reservations.length > 0
+                  "
+                >
+                  <h4 class="fs-16 m-0 me-8">Owned Units:</h4>
+                  <div
+                    class="badge me-8"
+                    *ngFor="let reservation of leadDetails.reservations"
+                  >
+                    #{{ reservation.id }}
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="lead-left">
+                    <div class="lead-contact-details pull-left">
+                      <ul class="list-unstyled">
+                        <li *ngIf="leadDetails.status">
+                          Status:
+                          <span class="value-label">{{
+                            leadDetails.status
+                          }}</span>
+                        </li>
+                        <li *ngIf="leadDetails?.units_ids?.length">
+                          Unit ID:
+                          <span class="value-label">{{
+                            leadDetails?.units_ids.join(" / ")
+                          }}</span>
+                        </li>
+                        <li *ngIf="leadDetails.email">
+                          Email:
+                          <span class="value-label">{{
+                            leadDetails.email
+                          }}</span>
+                        </li>
+                        <li *ngIf="leadDetails.phone">
+                          Phone Number:
+                          <span class="value-label">{{
+                            leadDetails.phone
+                          }}</span>
+                        </li>
+                        <li *ngIf="leadDetails.phone_2">
+                          Second Phone Number:
+                          <span class="value-label">{{
+                            leadDetails.phone_2
+                          }}</span>
+                        </li>
+                        <li *ngIf="leadDetails.phone_3">
+                          Third Phone Number:
+                          <span class="value-label">{{
+                            leadDetails.phone_3
+                          }}</span>
+                        </li>
+                        <li *ngIf="leadDetails.phone_4">
+                          Fourth Phone Number:
+                          <span class="value-label">{{
+                            leadDetails.phone_4
+                          }}</span>
+                        </li>
+                        <li *ngIf="leadDetails.address">
+                          Address:
+                          <span class="value-label">{{
+                            leadDetails.address
+                          }}</span>
+                        </li>
+                        <li *ngIf="leadDetails.id_address">
+                          ID Address:
+                          <span class="value-label">{{
+                            leadDetails.id_address
+                          }}</span>
+                        </li>
+                        <li *ngIf="leadDetails.gender">
+                          Gender:
+                          <span class="value-label">{{
+                            leadDetails.gender
+                          }}</span>
+                        </li>
+                        <li *ngIf="leadDetails.religion">
+                          Religion:
+                          <span class="value-label">{{
+                            leadDetails.religion
+                          }}</span>
+                        </li>
+                        <li *ngIf="leadDetails.byc">
+                          Byc:
+                          <span class="value-label">{{
+                            leadDetails.byc?.name
+                          }}</span>
+                        </li>
+                        <li *ngIf="leadDetails.date_of_birth">
+                          Date of Birth:
+                          <span class="value-label">{{
+                            leadDetails.date_of_birth
+                          }}</span>
+                        </li>
+                        <li *ngIf="leadDetails.age">
+                          Age:
+                          <span class="value-label">{{
+                            leadDetails.age
+                          }}</span>
+                        </li>
+                        <li *ngIf="leadDetails.country">
+                          Country:
+                          <span class="value-label">{{
+                            leadDetails.country
+                          }}</span>
+                        </li>
+                        <li *ngIf="leadDetails.national_num">
+                          ID Number:
+                          <span class="value-label">{{
+                            leadDetails.national_num
+                          }}</span>
+                        </li>
+                        <li
+                          *ngIf="
+                            leadDetails.budget_to || leadDetails.budget_from
+                          "
+                        >
+                          Budget:
+                          <span class="value-label"
+                            >{{ leadDetails.budget_to }} -
+                            {{ leadDetails.budget_from }}</span
+                          >
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <ul class="list-unstyled">
+                    <li *ngIf="leadDetails.lead_channel?.name">
+                      Lead Channel:
+                      <span class="value-label">{{
+                        leadDetails.lead_channel?.name
+                      }}</span>
+                    </li>
+                    <li *ngIf="leadDetails.lead_source">
+                      Lead Source:
+                      <span class="value-label">{{
+                        leadDetails.lead_source
+                      }}</span>
+                    </li>
+                    <li *ngIf="leadDetails.project_type">
+                      Project type:
+                      <span class="value-label">{{
+                        leadDetails.project_type
+                      }}</span>
+                    </li>
+                    <li *ngIf="leadDetails.unit_type">
+                      Unit Type:
+                      <span class="value-label">{{
+                        leadDetails.unit_type
+                      }}</span>
+                    </li>
+                    <li *ngIf="leadDetails.time">
+                      Preferred time for a call:
+                      <span class="value-label">{{
+                        leadDetails.time
+                      }}</span>
+                    </li>
+                    <li *ngIf="leadDetails.day">
+                      Preferred day for a call:
+                      <span class="value-label">{{
+                        leadDetails.day
+                      }}</span>
+                    </li>
+                    <li *ngIf="leadDetails.broker">
+                      Broker Name:
+                      <span class="value-label">{{
+                        leadDetails.broker?.name
+                      }}</span>
+                    </li>
+                    <li *ngIf="leadDetails.broker_incentive">
+                      Broker Incentive:
+                      <span class="value-label">{{
+                        leadDetails.broker_incentive?.name
+                      }}</span>
+                    </li>
+                    <li
+                      *ngIf="leadDetails.is_arm == 1 && leadDetails.arm?.name"
+                    >
+                      ARM Agent :
+                      <span class="value-label">{{
+                        leadDetails.arm?.name
+                      }}</span>
+                    </li>
+                    <li *ngIf="leadDetails.occupation">
+                      Occupation:
+                      <span class="value-label">{{
+                        leadDetails.occupation
+                      }}</span>
+                    </li>
+                    <li *ngIf="leadDetails.workplace">
+                      Company Name:
+                      <span class="value-label">{{
+                        leadDetails.workplace
+                      }}</span>
+                    </li>
+                    <li *ngIf="leadDetails.lead_event_name">
+                      Event:
+                      <span class="value-label">{{
+                        leadDetails.lead_event_name
+                      }}</span>
+                    </li>
+                    <li *ngIf="leadDetails.lead_campaign">
+                      Campaign:
+                      <span class="value-label">{{
+                        leadDetails.lead_campaign?.name
+                      }}</span>
+                    </li>
+                    <li *ngIf="leadDetails?.interested_projects">
+                      interest Project:
+                      <span
+                        class="value-label"
+                        *ngFor="
+                          let project of leadDetails?.interested_projects;
+                          let last = last
+                        "
+                        >{{ project?.name }}<span *ngIf="!last">, </span></span
+                      >
+                    </li>
+                    <li *ngIf="leadDetails.intrestedUnitTypes">
+                      Interest Unit Types:
+                      <span class="value-label">{{
+                        leadDetails.intrestedUnitTypes
+                      }}</span>
+                    </li>
+                    <li *ngIf="leadDetails?.comment">
+                      Comment:
+                      <span class="value-label">{{
+                        leadDetails?.comment
+                      }}</span>
+                    </li>
+                    <li *ngIf="leadDetails?.how_hear_about_us">
+                      How did you header about us:
+                      <span class="value-label">{{
+                        leadDetails?.how_hear_about_us
+                      }}</span>
+                    </li>
+                    <li
+                      *ngIf="
+                        userData.role == 'Admin' ||
+                        userData.role == 'Super Development' ||
+                        userData.role == 'Moderator' ||
+                        userData.role == 'Super Moderator' ||
+                        userData.role == 'CCO' ||
+                        userData.role == 'Development Director'
+                      "
+                    >
+                      Admin Comment:
+                      <span class="value-label">{{
+                        leadDetails?.admin_comment
+                      }}</span>
+                    </li>
+                    <li *ngIf="leadDetails.created_at">
+                      Time Created:
+                      <span class="value-label">{{
+                        leadDetails.created_at | amTimeAgo
+                      }}</span>
+                    </li>
+                    <li *ngIf="leadDetails.meeting_date">
+                      Indoor Meeting:
+                      <span class="value-label">{{
+                        leadDetails.meeting_date
+                      }}</span>
+                    </li>
+                    <li *ngIf="leadDetails.last_activity">
+                      Last Activity:<span class="value-label"
+                        >{{ leadDetails.last_activity | amTimeAgo }}
+                        <i class="fa fa-clock-o" aria-hidden="true"></i
+                      ></span>
+                    </li>
+                    <li *ngIf="leadDetails.branch">
+                      Branch:<span class="value-label">{{
+                        leadDetails.branch?.name
+                      }}</span>
+                    </li>
+                    <li *ngIf="leadDetails.available_time_to_call">
+                      Available Time To Call:<span class="value-label">{{
+                        leadDetails.available_time_to_call
+                      }}</span>
+                    </li>
+                    <li *ngIf="leadDetails.catch_date">
+                      Catch Date:<span class="value-label">{{
+                        leadDetails.catch_date
+                      }}</span>
+                    </li>
+                  </ul>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label
+                      *ngIf="
+                        (userData.role == 'Admin' ||
+                          userData.role == 'Super Development' ||
+                          userData.role == 'Moderator' ||
+                          userData.role == 'Super Moderator' ||
+                          userData.role == 'Sales Manager' ||
+                          userData.is_arm == '1') &&
+                        userData.role != 'CCO' &&
+                        userData.role != 'Development Director' &&
+                        leadDetails?.lead_source != 'Self Generate'
+                      "
+                      for=""
+                      >Assign to agent</label
+                    >
+                    <ng-container
+                      *ngIf="
+                        userData.role != 'CCO' &&
+                        userData.role != 'Development Director'
+                      "
+                    >
+                      <select
+                        type="text"
+                        placeholder="Assign to an agent"
+                        class="form-control"
+                        name="assignAgent"
+                        [(ngModel)]="leadDetails.agent_id"
+                        (change)="assignToAgent()"
+                        *ngIf="leadDetails?.lead_source != 'Self Generate'"
+                      >
+                        <option
+                          *ngFor="let agent of agents"
+                          value="{{ agent.id }}"
+                        >
+                          {{ agent.name }}
+                        </option>
+                      </select>
+                    </ng-container>
+                    <label
+                      *ngIf="
+                        (userData.role == 'Admin' ||
+                          userData.role == 'Super Development' ||
+                          userData.role == 'Moderator' ||
+                          userData.role == 'Super Moderator' ||
+                          userData.role == 'Sales Manager' ||
+                          userData.is_arm == '1') &&
+                        userData.role != 'CCO' &&
+                        userData.role != 'Development Director' &&
+                        leadDetails?.lead_source == 'Self Generate'
+                      "
+                      for=""
+                      >Assigned to :</label
+                    >
+                    <select
+                      *ngIf="
+                        (userData.role == 'Admin' ||
+                          userData.role == 'Super Development' ||
+                          userData.role == 'Moderator' ||
+                          userData.role == 'Super Moderator' ||
+                          userData.role == 'Sales Manager' ||
+                          userData.is_arm == '1') &&
+                        userData.role != 'CCO' &&
+                        userData.role != 'Development Director' &&
+                        leadDetails?.lead_source == 'Self Generate'
+                      "
+                      type="text"
+                      placeholder="Assign to an agent"
+                      class="form-control"
+                      name="assignAgent"
+                      [attr.disabled]="
+                        leadDetails?.lead_source == 'Self Generate'
+                      "
+                      [(ngModel)]="leadDetails.agent_id"
+                      (change)="assignToAgent()"
+                    >
+                      <option
+                        *ngFor="let agent of agents"
+                        value="{{ agent.id }}"
+                      >
+                        {{ agent.name }}
+                      </option>
+                    </select>
+                  </div>
+                  <div
+                    class="form-group"
+                    *ngIf="
+                      userData.role == 'Admin' ||
+                      userData.role == 'Super Development' ||
+                      userData.role == 'Call Center' ||
+                      userData.role == 'Marketing'
+                    "
+                  >
+                    <label for="">Ticket Type</label>
+                    <select
+                      class="form-control"
+                      placeholder="Ticket Type..."
+                      [(ngModel)]="leadDetails.ticket_type_id"
+                      (change)="ticketTypeChange($event.target.value)"
+                    >
+                      <option
+                        *ngFor="let ticket_type of lead_ticket_types"
+                        [value]="ticket_type.id"
+                      >
+                        {{ ticket_type.name }}
+                      </option>
+                    </select>
+                  </div>
+                  <ul class="list-unstyled">
+                    <li
+                      *ngIf="
+                        userData.role == 'Admin' ||
+                        userData.role == 'Super Development' ||
+                        userData.role == 'Moderator' ||
+                        (userData.role == 'Super Moderator' &&
+                          userData.role != 'CCO' &&
+                          userData.role != 'Development Director')
+                      "
+                      [swal]="{
+                        title: 'Are you sure',
+                        text: 'Lead will be deleted!',
+                        type: 'warning',
+                        showCancelButton: true
+                      }"
+                      (confirm)="deleteLead(leadDetails.id)"
+                    >
+                      <i
+                        class="fa fa-times-circle q-color"
+                        aria-hidden="true"
+                      ></i>
+                      <span>Delete</span>
+                    </li>
+                    <li
+                      *ngIf="
+                        (userData.role == 'Admin' ||
+                          userData.role == 'Super Development' ||
+                          userData.role == 'Moderator' ||
+                          userData.role == 'Marketing' ||
+                          userData.role == 'Super Moderator') &&
+                        userData.role != 'CCO' &&
+                        userData.role != 'Development Director'
+                      "
+                      (click)="editLead(leadDetails.id)"
+                    >
+                      <i class="fa fa-pencil n-color" aria-hidden="true"></i>
+                      <span>Edit</span>
+                    </li>
+                    <li
+                      *ngIf="
+                        userData.phone_extension &&
+                        (leadDetails.phone ||
+                          leadDetails.phone_2 ||
+                          leadDetails.phone_3)
+                      "
+                      (click)="callLeadModal.open()"
+                    >
+                      <button class="btn">
+                        <i class="fa fa-phone-o n-color" aria-hidden="true"></i>
+                        <span>Call Lead</span>
+                      </button>
+                    </li>
+                    <li
+                      [hidden]="
+                        userData.role == 'Helpdesk Supervisor' ||
+                        userData.role == 'Helpdesk Agent' ||
+                        userData.role == 'CCO' ||
+                        userData.role == 'Development Director'
+                      "
+                      (click)="openSmMModal(smsModal)"
+                    >
+                      <i
+                        class="fa fa-commenting-o n-color"
+                        aria-hidden="true"
+                      ></i>
+                      <span>Send SMS</span>
+                    </li>
+                    <li
+                      [hidden]="
+                        userData.role == 'Helpdesk Supervisor' ||
+                        userData.role == 'Helpdesk Agent' ||
+                        userData.role == 'CCO' ||
+                        userData.role == 'Development Director'
+                      "
+                      (click)="openEmailModal(emailModal)"
+                    >
+                      <i class="fa fa-envelope" aria-hidden="true"></i>
+                      <span>Send Email</span>
+                    </li>
+                    <li
+                      [hidden]="
+                        userData.role == 'Helpdesk Supervisor' ||
+                        userData.role == 'Helpdesk Agent' ||
+                        userData.role == 'CCO' ||
+                        userData.role == 'Development Director'
+                      "
+                      (click)="leadHadMeeting()"
+                    >
+                      <i class="fa fa-meetup" aria-hidden="true"></i>
+                      <span>Indoor Meeting</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="lead-content-section">
+              <div>
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                  <li role="presentation" class="active">
+                    <a
+                      href="#lead-activity"
+                      aria-controls="lead-activity"
+                      role="tab"
+                      data-toggle="tab"
+                      >Lead Activity</a
+                    >
+                  </li>
+                  <!-- <li role="presentation" *ngIf="userData.role != 'Call Center'">
+                  <a
+                    href="#status_update"
+                    aria-controls="profile"
+                    role="tab"
+                    data-toggle="tab"
+                    >Status Updates</a
+                  >
+                </li> -->
+                  <li
+                    role="presentation"
+                    *ngIf="userData.role != 'Call Center'"
+                  >
+                    <a
+                      href="#messages"
+                      aria-controls="messages"
+                      role="tab"
+                      data-toggle="tab"
+                      >Documents</a
+                    >
+                  </li>
+                  <li role="presentation" *ngIf="!readOnlyMode">
+                    <a
+                      href="#requests"
+                      aria-controls="messages"
+                      role="tab"
+                      data-toggle="tab"
+                      >Requests</a
+                    >
+                  </li>
+                  <li
+                    role="presentation"
+                    *ngIf="!readOnlyMode && userData.role != 'Call Center'"
+                  >
+                    <a
+                      href="#reminders"
+                      aria-controls="messages"
+                      role="tab"
+                      data-toggle="tab"
+                      >Reminders</a
+                    >
+                  </li>
+                  <li
+                    role="presentation"
+                    *ngIf="!readOnlyMode && userData.role != 'Call Center'"
+                  >
+                    <a
+                      href="#comments"
+                      aria-controls="messages"
+                      role="tab"
+                      data-toggle="tab"
+                      >Comments</a
+                    >
+                  </li>
+                  <li role="presentation">
+                    <a
+                      href="#feedbacks"
+                      aria-controls="messages"
+                      role="tab"
+                      data-toggle="tab"
+                      >Feedbacks</a
+                    >
+                  </li>
+                </ul>
+                <div class="tab-content">
+                  <div
+                    role="tabpanel"
+                    class="tab-pane fade in active"
+                    id="lead-activity"
+                  >
+                    <div class="col-md-12">
+                      <div
+                        class="time-line"
+                        *ngFor="let activity of leadActivities"
+                      >
+                        <h2>{{ activity.title }}</h2>
+                        <ul class="list-unstyled">
+                          <li *ngFor="let act of activity.$activities_in_month">
+                            <span class="crcle-t"></span>
+                            <div class="tm-content">
+                              <div class="dateformat">
+                                {{ act.created_at | date : "medium" }}
+                              </div>
+                              <h5>{{ act.title }}</h5>
+                              <p>{{ act.details }} | by {{ act.username }}</p>
+                            </div>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <div role="tabpanel" class="tab-pane fade" id="status_update">
+                    <div class="status-update">
+                      <div class="col-md-5">
+                        <h3>Current Status: {{ leadDetails.status }}</h3>
+                        <div
+                          class="status"
+                          *ngIf="
+                            userData?.is_sales_team ||
+                            userData.role == 'Admin' ||
+                            userData.role == 'Super Development'
+                          "
+                        >
+                          <form #form="ngForm">
+                            <div class="form-group">
+                              <label for="">change Status</label>
+                              <select
+                                class="form-control"
+                                [(ngModel)]="lstatus.status"
+                                name="status"
+                                required
+                              >
+                                <option
+                                  *ngFor="let s of leadStatus"
+                                  value="{{ s.name }}"
+                                >
+                                  {{ s.name }}
+                                </option>
+                              </select>
+                            </div>
+                            <div class="form-group">
+                              <label for="">change Reason</label>
+                              <textarea
+                                name=""
+                                id=""
+                                rows="6"
+                                class="form-control"
+                                #changereason="ngModel"
+                                name="changereason"
+                                [(ngModel)]="lstatus.changeResaon"
+                                required
+                              ></textarea>
+                            </div>
+                            <div class="form-group">
+                              <button
+                                class="btn btn-primary pull-right"
+                                [disabled]="!form.form.valid"
+                                (click)="changeStatus()"
+                              >
+                                CONFIRM
+                              </button>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div role="tabpanel" class="tab-pane fade" id="messages">
+                    <div class="col-md-8">
+                      <div class="document">
+                        <ng-container *ngIf="!readOnlyMode">
+                          <h3
+                            *ngIf="
+                              !readOnlyMode &&
+                              userData.role != 'Legal and Technical' &&
+                              userData.role != 'Facility' &&
+                              userData.role != 'CCO' &&
+                              userData.role != 'Development Director'
+                            "
+                          >
+                            Add Lead Documents
+                          </h3>
+                          <form
+                            [formGroup]="documentForm"
+                            (ngSubmit)="onDocumentSubmit()"
+                          >
+                            <div class="row">
+                              <div class="col-xs-6">
+                                <div class="form-group">
+                                  <label for="">ID Type</label>
+                                  <select
+                                    class="form-control"
+                                    name="type"
+                                    [(ngModel)]="document.type"
+                                    placeholder="Document Type"
+                                    id="type"
+                                    formControlName="type"
+                                    required
+                                  >
+                                    <option
+                                      *ngFor="let d of documentTypes"
+                                      value="{{ d.text }}"
+                                    >
+                                      {{ d.text }}
+                                    </option>
+                                  </select>
+                                </div>
+                              </div>
+                              <div class="col-xs-6">
+                                <div class="form-group">
+                                  <label for="">ID Numbers</label>
+                                  <input
+                                    type="text"
+                                    class="form-control"
+                                    id="number"
+                                    name="documnetNumber"
+                                    placeholder="Document Number"
+                                    formControlName="value"
+                                    required
+                                  />
+                                </div>
+                              </div>
+                              <div class="col-xs-6">
+                                <div class="form-group">
+                                  <label for="">ID Issue Date</label>
+                                  <input
+                                    type="text"
+                                    class="form-control"
+                                    id="value_date"
+                                    name="documnetDate"
+                                    placeholder="Document Issue Date"
+                                    formControlName="value_date"
+                                  />
+                                </div>
+                              </div>
+                              <div class="col-xs-6">
+                                <div class="form-group">
+                                  <label for="">Is residence</label>
+                                  <!-- <input type="text" class="form-control" id="value_date" name="documnetDate"
+                                    placeholder="Document Issue Date" formControlName="value_date" /> -->
+                                  <select
+                                    class="form-control"
+                                    name="is_residence"
+                                    id="is_residence"
+                                    formControlName="is_residence"
+                                  >
+                                    <option value="false">No</option>
+                                    <option value="true">Yes</option>
+                                  </select>
+                                </div>
+                              </div>
+                              <div class="col-xs-6">
+                                <div class="form-group">
+                                  <label for="">Upload Scan</label>
+                                  <input
+                                    type="file"
+                                    id="image"
+                                    #fileInput
+                                    (change)="onFileChange($event)"
+                                    required
+                                  />
+                                </div>
+                              </div>
+                              <div
+                                class="col-xs-6"
+                                *ngIf="is_residence == 'true'"
+                              >
+                                <div class="form-group">
+                                  <label for="">Upload Residence</label>
+                                  <input
+                                    type="file"
+                                    id="is_residence"
+                                    #is_residence
+                                    (change)="onResidenceChange($event)"
+                                    required
+                                  />
+                                </div>
+                              </div>
+                              <div class="col-xs-12">
+                                <div
+                                  [hidden]="
+                                    userData.role == 'Helpdesk Supervisor'
+                                  "
+                                  class="form-group"
+                                >
+                                  <button
+                                    class="btn btn-primary pull-right"
+                                    type="submit"
+                                    [disabled]="documentForm.invalid"
+                                  >
+                                    CONFIRM
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </form>
+                        </ng-container>
+                        <h4>Lead Documents</h4>
+                        <table class="table">
+                          <tr>
+                            <th>Scan img</th>
+                            <th>National</th>
+                            <th>Passport</th>
+                          </tr>
+                          <tr>
+                            <td>
+                              <!--  <img width='75' *ngIf='leadDetails.national_url' src="{{leadDetails.national_url}}">
+                            <img width='75' *ngIf='leadDetails.passport_url' src="{{leadDetails.passport_url}}"> -->
+                              <modal-gallery
+                                [modalImages]="imagesArray"
+                                [downloadable]="true"
+                                [buttonsConfig]="{ download: true }"
+                              >
+                              </modal-gallery>
+                            </td>
+                            <td>{{ leadDetails.national_num }}</td>
+                            <td>{{ leadDetails.passport_num }}</td>
+                          </tr>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <div role="tabpanel" class="tab-pane fade" id="requests">
+                    <div class="col-md-7">
+                      <div
+                        class="time-line-requests"
+                        *ngFor="let request of lead_requests"
+                      >
+                        <h2>{{ request.title }}</h2>
+                        <ul class="list-unstyled">
+                          <li *ngFor="let r of request.requests_in_month">
+                            <span class="crcle-t"></span>
+                            <div class="tm-content">
+                              <div class="dateformat">
+                                {{ r.created_at | date : "medium" }}
+                              </div>
+                              <div>
+                                <div class="row">
+                                  <div class="col-md-6">
+                                    <p>Country: {{ r.country }}</p>
+                                  </div>
+                                  <div class="col-md-6">
+                                    <p>Governorates: {{ r.governorate }}</p>
+                                  </div>
+                                </div>
+
+                                <div class="row">
+                                  <div class="col-md-6">
+                                    <p>District: {{ r.district }}</p>
+                                  </div>
+                                  <div class="col-md-6">
+                                    <p>Delivery Date : {{ r.delivery_date }}</p>
+                                  </div>
+                                </div>
+
+                                <div class="row">
+                                  <div class="col-md-6">
+                                    <p>Project: {{ r.project_name }}</p>
+                                  </div>
+                                  <div class="col-md-6">
+                                    <p>Unit Type : {{ r.unit_type_name }}</p>
+                                  </div>
+                                </div>
+
+                                <div class="row">
+                                  <div class="col-md-6">
+                                    <p>
+                                      Total Budget From: {{ r.budget_from }}
+                                    </p>
+                                  </div>
+                                  <div class="col-md-6">
+                                    <p>Total Budget To: {{ r.budget_to }}</p>
+                                  </div>
+                                </div>
+
+                                <div class="row">
+                                  <div class="col-md-6">
+                                    <p>
+                                      Down Payment From:
+                                      {{ r.down_payment_from }}
+                                    </p>
+                                  </div>
+                                  <div class="col-md-6">
+                                    <p>
+                                      Down Payment To: {{ r.down_payment_to }}
+                                    </p>
+                                  </div>
+                                </div>
+
+                                <div class="row">
+                                  <div class="col-md-6">
+                                    <p>
+                                      Monthly Installments From:
+                                      {{ r.installments_from }}
+                                    </p>
+                                  </div>
+                                  <div class="col-md-6">
+                                    <p>
+                                      Monthly Installments To:
+                                      {{ r.installments_to }}
+                                    </p>
+                                  </div>
+                                </div>
+
+                                <div class="row">
+                                  <div class="col-md-6">
+                                    <p>
+                                      Unit Area From: {{ r.unit_area_from }}
+                                    </p>
+                                  </div>
+                                  <div class="col-md-6">
+                                    <p>Unit Area To: {{ r.unit_area_to }}</p>
+                                  </div>
+                                </div>
+                              </div>
+                              <!-- <p>{{ r.unit_type_name }} {{ r.governorate }}</p> -->
+                            </div>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                    <div
+                      class="col-md-5"
+                      *ngIf="
+                        userData.role != 'CCO' &&
+                        userData.role != 'Development Director'
+                      "
+                    >
+                      <div class="request-form">
+                        <form #requestForm="ngForm">
+                          <div class="row">
+                            <div class="col-md-6">
+                              <div class="form-group">
+                                <label for="">Country</label>
+                                <input
+                                  type="text"
+                                  class="form-control"
+                                  #country="ngModel"
+                                  name="country"
+                                  [(ngModel)]="request.country"
+                                />
+                              </div>
+                            </div>
+                            <div class="col-md-6">
+                              <div class="form-group">
+                                <label for="">Governorates</label>
+                                <input
+                                  type="text"
+                                  class="form-control"
+                                  #governorate="ngModel"
+                                  name="governorate"
+                                  [(ngModel)]="request.governorate"
+                                />
+                              </div>
+                            </div>
+                            <div class="col-md-6">
+                              <div class="form-group">
+                                <label for="">District</label>
+                                <input
+                                  type="text"
+                                  class="form-control"
+                                  #district="ngModel"
+                                  name="district"
+                                  [(ngModel)]="request.district"
+                                />
+                              </div>
+                            </div>
+                            <div class="col-md-6">
+                              <div class="form-group">
+                                <label for="">Delivery Date</label>
+                                <input
+                                  type="date"
+                                  class="form-control"
+                                  #delivery_date="ngModel"
+                                  name="delivery_date"
+                                  [(ngModel)]="request.delivery_date"
+                                />
+                              </div>
+                            </div>
+                            <div class="col-md-6">
+                              <div class="form-group">
+                                <label for="">Project</label>
+                                <select
+                                  (change)="onProjectChange($event)"
+                                  class="form-control"
+                                  #project_id="ngModel"
+                                  [(ngModel)]="request.project_id"
+                                  name="project_id"
+                                >
+                                  <option
+                                    *ngFor="let project of projects"
+                                    [value]="project.id"
+                                  >
+                                    {{ project.name }}
+                                  </option>
+                                </select>
+                              </div>
+                            </div>
+                            <div class="col-md-6">
+                              <div class="form-group">
+                                <label for="">Unit Type</label>
+                                <!-- <input type="text" class="form-control" #unit_type="ngModel" name="unit_type" [(ngModel)]="request.unit_type"> -->
+                                <select
+                                  class="form-control"
+                                  name="unit_type_id"
+                                  #unit_type="ngModel"
+                                  [(ngModel)]="request.unit_type"
+                                >
+                                  <option
+                                    *ngFor="let type of types"
+                                    [value]="type.id"
+                                  >
+                                    {{ type.name }}
+                                  </option>
+                                </select>
+                              </div>
+                            </div>
+                            <div class="col-md-6">
+                              <div class="form-group">
+                                <label for="">Total Budget From</label>
+                                <input
+                                  type="text"
+                                  class="form-control"
+                                  #unit_type="ngModel"
+                                  name="total_budget_from"
+                                  [(ngModel)]="request.total_budget_from"
+                                />
+                              </div>
+                            </div>
+                            <div class="col-md-6">
+                              <div class="form-group">
+                                <label for="">Total Budget To</label>
+                                <input
+                                  type="text"
+                                  class="form-control"
+                                  #total_budget_to="ngModel"
+                                  name="total_budget_to"
+                                  [(ngModel)]="request.total_budget_to"
+                                />
+                              </div>
+                            </div>
+                            <div class="col-md-6">
+                              <div class="form-group">
+                                <label for="">Down Payment From</label>
+                                <input
+                                  type="text"
+                                  class="form-control"
+                                  #down_payment_from="ngModel"
+                                  name="down_payment_from"
+                                  [(ngModel)]="request.down_payment_from"
+                                />
+                              </div>
+                            </div>
+                            <div class="col-md-6">
+                              <div class="form-group">
+                                <label for="">Down Payment To</label>
+                                <input
+                                  type="text"
+                                  class="form-control"
+                                  #down_payment_to="ngModel"
+                                  name="down_payment_to"
+                                  [(ngModel)]="request.down_payment_to"
+                                />
+                              </div>
+                            </div>
+                            <div class="col-md-6">
+                              <div class="form-group">
+                                <label for="">Monthly Installments From</label>
+                                <input
+                                  type="text"
+                                  class="form-control"
+                                  #monthly_installments_from="ngModel"
+                                  name="monthly_installments_from"
+                                  [(ngModel)]="
+                                    request.monthly_installments_from
+                                  "
+                                />
+                              </div>
+                            </div>
+                            <div class="col-md-6">
+                              <div class="form-group">
+                                <label for="">Monthly Installments To</label>
+                                <input
+                                  type="text"
+                                  class="form-control"
+                                  #monthly_installments_to="ngModel"
+                                  name="monthly_installments_to"
+                                  [(ngModel)]="request.monthly_installments_to"
+                                />
+                              </div>
+                            </div>
+                            <div class="col-md-6">
+                              <div class="form-group">
+                                <label for="">Unit Area From</label>
+                                <input
+                                  type="text"
+                                  class="form-control"
+                                  #unit_area_from="ngModel"
+                                  name="unit_area_from"
+                                  [(ngModel)]="request.unit_area_from"
+                                />
+                              </div>
+                            </div>
+                            <div class="col-md-6">
+                              <div class="form-group">
+                                <label for="">Unit Area To</label>
+                                <input
+                                  type="text"
+                                  class="form-control"
+                                  #unit_area_to="ngModel"
+                                  name="unit_area_to"
+                                  [(ngModel)]="request.unit_area_to"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <button
+                              class="btn btn-primary pull-right"
+                              (click)="addRequest()"
+                              [disabled]="!requestForm.form.valid"
+                            >
+                              Add Request
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    role="tabpanel"
+                    class="tab-pane fade"
+                    id="reminders"
+                    *ngIf="
+                      !readOnlyMode &&
+                      userData.role != 'CCO' &&
+                      userData.role != 'Development Director'
+                    "
+                  >
+                    <div class="col-md-8">
+                      <div
+                        class="time-line"
+                        *ngFor="let reminder of lead_reminders"
+                      >
+                        <h2>{{ reminder.title }}</h2>
+                        <ul class="list-unstyled">
+                          <li *ngFor="let rem of reminder.reminders_in_month">
+                            <span class="crcle-t"></span>
+                            <div class="tm-content">
+                              <div class="dateformat">
+                                {{ rem.datetime }}
+                              </div>
+                              <h5>
+                                <input
+                                  type="checkbox"
+                                  name="is_read"
+                                  (change)="onReminderChange($event, rem)"
+                                  [checked]="rem.is_read"
+                                  id=""
+                                />
+                                {{ rem.title }}
+                              </h5>
+                              <p>
+                                {{ rem.desc }} | by {{ rem.username }} |
+                                {{ rem.datetime }}
+                              </p>
+                            </div>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                    <div
+                      class="col-md-4"
+                      *ngIf="
+                        userData.role != 'CCO' &&
+                        userData.role != 'Development Director'
+                      "
+                    >
+                      <div class="reminder">
+                        <form #reminderForm="ngForm">
+                          <div class="form-group">
+                            <label for="">Reminder Title</label>
+                            <select
+                              class="form-control"
+                              #title="ngModel"
+                              [(ngModel)]="reminder.title"
+                              name="title"
+                            >
+                              <option *ngFor="let reminder of reminders">
+                                {{ reminder.name }}
+                              </option>
+                            </select>
+                          </div>
+                          <div class="form-group">
+                            <label for="">Reminder Description</label>
+                            <textarea
+                              type="text"
+                              class="form-control"
+                              #details="ngModel"
+                              name="details"
+                              rows="4"
+                              [(ngModel)]="reminder.details"
+                              required
+                            ></textarea>
+                          </div>
+                          <div class="form-group">
+                            <label for="">Reminder Date</label>
+                            <input
+                              type="datetime-local"
+                              class="form-control"
+                              #reminder_datetime="ngModel"
+                              name="reminder_datetime"
+                              [(ngModel)]="reminder.reminder_datetime"
+                              required
+                            />
+                          </div>
+                          <div
+                            [hidden]="userData.role == 'Helpdesk Supervisor'"
+                            class="form-group"
+                          >
+                            <button
+                              class="btn btn-primary pull-right"
+                              (click)="addReminder()"
+                              [disabled]="!reminderForm.form.valid"
+                            >
+                              ADD Reminder
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    role="tabpanel"
+                    class="tab-pane fade"
+                    id="comments"
+                    *ngIf="
+                      !readOnlyMode &&
+                      userData.role != 'CCO' &&
+                      userData.role != 'Development Director'
+                    "
+                  >
+                    <div class="col-md-12 d-flex align-items-center justify-content-end">
+
+                      <button class="btn btn-primary" (click)="is_edit_comment = false; addComment.open()">
+                        Add
+                      </button>
+                    </div>
+                    <div class="col-md-12 my-8">
+                      <div class="table table-responsive">
+                        <table class="table table-bordered">
+                          <thead>
+                            <tr>
+                              <th class="centered">Comment</th>
+                              <th class="centered">Date</th>
+                              <th class="centered">Created By</th>
+                              <th class="centered">Action</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let co of leadDetails.comments; let i = index">
+                              <td class="centered">{{ co.comment }}</td>
+                              <td class="centered">
+                                {{ co.created_at | date : "medium" }}
+                              </td>
+                              <td class="centered">
+                                {{ co.user.name }}
+                              </td>
+                              <td class="centered">
+                                <div class="dropdown" [ngClass]="{'show': openDropdownIndex === i}">
+                                  <img
+                                    class="more-options-icon"
+                                    src="assets/img/show-more-button-with-three-dots.svg"
+                                    (click)="toggleDropdown(i, $event)"
+                                    style="cursor: pointer;"
+                                  />
+                                  <ul class="dropdown-menu" [ngClass]="{'show': openDropdownIndex === i}">
+                                    <li (click)="is_edit_comment = true; comment_id = co.id; comment = co.comment; addComment.open(); openDropdownIndex = null">
+                                      <a>
+                                        <span>Edit</span>
+                                      </a>
+                                    </li>
+                                    <li (click)="deleteLeadComment(co.id); openDropdownIndex = null">
+                                      <a>
+                                        <span>Delete</span>
+                                      </a>
+                                    </li>
+                                  </ul>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    role="tabpanel"
+                    class="tab-pane fade"
+                    id="feedbacks"
+                    style="padding-top: 30px"
+                  >
+                    <div class="col-md-12">
+                      <div class="time-line">
+                        <ul class="list-unstyled">
+                          <li *ngFor="let feedBack of leadDetails.feedbacks">
+                            <span class="crcle-t"></span>
+                            <div class="tm-content">
+                              <div class="dateformat">
+                                <p *ngIf="feedBack.user" class="text-dark">
+                                  By: {{ feedBack.user.name }}
+                                </p>
+                                <p>
+                                  {{ feedBack.created_at | date : "medium" }}
+                                </p>
+                              </div>
+                              <ng-container
+                                *ngFor="let question of feedBack.feedbacks"
+                              >
+                                <h5>{{ question.question.question }}</h5>
+                                <p>{{ question.answer?.answer || "-" }}</p>
+                              </ng-container>
+                              <h5>Comment</h5>
+                              <p>{{ feedBack.comment }}</p>
+                            </div>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<modal
+  #addComment
+  title="Add Comment"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <div class="row">
+      <form>
+        <div class="form-group col-xs-12">
+          <label for="">Comment</label>
+          <input
+            type="text"
+            class="form-control"
+            name="comment"
+            [(ngModel)]="comment"
+          />
+        </div>
+      </form>
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button *ngIf="!is_edit_comment" class="btn btn-primary" (click)="addLeadComment(addComment)">
+      Submit
+    </button>
+    <button *ngIf="is_edit_comment" class="btn btn-primary" (click)="editLeadComment(addComment)">
+      Edit
+    </button>
+    <button class="btn btn-secondary" (click)="addComment.close()">close</button>
+  </modal-footer>
+</modal>
+
+<modal
+  #smsModal
+  title="Send SmS"
+  submitButtonLabel="submit"
+  modalClass="modal-lg"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onClose)="smsModalOnClose()"
+  (onSubmit)="sendSmSBulk(smsModal)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <form [formGroup]="smsForm">
+      <div class="row">
+        <div class="col-md-12 form-group">
+          <label for="">Lead Number</label>
+          <input
+            type="tel"
+            name="tel"
+            formControlName="phone"
+            class="form-control"
+            readonly
+          />
+        </div>
+        <div class="col-md-12 form-group">
+          <label for="">Message :</label>
+          <textarea
+            class="form-control"
+            style="resize: none"
+            name="message"
+            formControlName="message"
+            palceholder="Enter your message here..."
+            rows="5"
+          ></textarea>
+        </div>
+      </div>
+    </form>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="smsModal.close()">close</button>
+  </modal-footer>
+</modal>
+
+<modal
+  #callLeadModal
+  title="Call Lead"
+  modalClass="modal-lg"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+>
+  <modal-header> </modal-header>
+  <modal-content *ngIf="leadDetails">
+    <div class="row" *ngIf="leadDetails.phone">
+      <div class="col-md-8">
+        {{ leadDetails.phone }}
+      </div>
+      <div class="col-md-2 form-group">
+        <button class="btn" (click)="callLead(leadDetails.phone)">
+          <i class="fa fa-phone-o n-color" aria-hidden="true"></i>
+          <span>Call Lead</span>
+        </button>
+      </div>
+    </div>
+    <div class="row" *ngIf="leadDetails.phone_2">
+      <div class="col-md-8">
+        {{ leadDetails.phone_2 }}
+      </div>
+      <div class="col-md-2 form-group">
+        <button class="btn" (click)="callLead(leadDetails.phone_2)">
+          <i class="fa fa-phone-o n-color" aria-hidden="true"></i>
+          <span>Call Lead</span>
+        </button>
+      </div>
+    </div>
+    <div class="row" *ngIf="leadDetails.phone_3">
+      <div class="col-md-8">
+        {{ leadDetails.phone_3 }}
+      </div>
+      <div class="col-md-2 form-group">
+        <button class="btn" (click)="callLead(leadDetails.phone_3)">
+          <i class="fa fa-phone-o n-color" aria-hidden="true"></i>
+          <span>Call Lead</span>
+        </button>
+      </div>
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="callLeadModal.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>
+
+<modal
+  #emailModal
+  title="Send Email"
+  submitButtonLabel="send"
+  modalClass="modal-lg"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onClose)="emailModalOnClose()"
+  (onSubmit)="sendEmailBulk(emailModal)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <form [formGroup]="emailForm">
+      <div class="row">
+        <div class="col-md-12 form-group">
+          <label for="">Email Subject</label>
+          <input
+            type="text"
+            name="text"
+            formControlName="subject"
+            class="form-control"
+          />
+        </div>
+        <div class="col-md-12 form-group">
+          <label for="">Email Message :</label>
+          <textarea
+            class="form-control"
+            style="resize: none"
+            name="message"
+            formControlName="content"
+            palceholder="Enter your message here..."
+            rows="5"
+          ></textarea>
+        </div>
+      </div>
+    </form>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="emailModal.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>
+
+<modal
+  #addActivityModal
+  title="Add Activity"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+>
+  <modal-content>
+    <form #addActivityForm="ngForm">
+      <div class="row">
+        <div class="col-xs-12 form-group">
+          <label>Activity <span class="text-danger">*</span></label>
+          <select
+            class="form-control"
+            [(ngModel)]="activity.actionName"
+            name="actionName"
+            required
+          >
+            <option value="" selected hidden>Select Activity</option>
+            <option *ngFor="let action of actions">
+              {{ action.name }}
+            </option>
+          </select>
+        </div>
+        <div class="col-xs-12 form-group">
+          <label>Action Description <span class="text-danger">*</span></label>
+
+          <textarea
+            type="text"
+            class="form-control"
+            name="actionDescription"
+            placeholder="Action Description"
+            rows="4"
+            [(ngModel)]="activity.actionDescription"
+            required
+          ></textarea>
+        </div>
+      </div>
+    </form>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="addActivityModal.close()">
+      close
+    </button>
+    <button
+      class="btn btn-success"
+      (click)="addAction(addActivityModal)"
+      [disabled]="!addActivityForm.valid"
+    >
+      Submit
+    </button>
+  </modal-footer>
+</modal>
+
+<modal
+  #changeStatusModal
+  title="Change Status"
+  submitButtonLabel="Submit"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onSubmit)="changeStatusForm.valid && changeStatus(changeStatusModal)"
+>
+  <modal-content>
+    <form #changeStatusForm="ngForm">
+      <div class="row">
+        <div class="col-xs-12 form-group">
+          <select
+            class="form-control"
+            [(ngModel)]="lstatus.status"
+            name="status"
+            required
+          >
+            <option value="" selected hidden>Select Status</option>
+            <option *ngFor="let s of searchLeadsStatus" value="{{ s.name }}">
+              {{ s.name }}
+            </option>
+          </select>
+        </div>
+        <div class="col-xs-12 form-group">
+          <textarea
+            type="text"
+            class="form-control"
+            name="changereason"
+            placeholder="Reason"
+            rows="4"
+            [(ngModel)]="lstatus.changeResaon"
+            required
+          ></textarea>
+        </div>
+      </div>
+    </form>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="changeStatusModal.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>
+
+<modal
+  #reassignLeads
+  title="Reassign leads"
+  submitButtonLabel="save"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onOpen)="reassignLeadsModalOpen(reassignLeads)"
+  (onClose)="reassignLeadsModalClose(reassignLeads)"
+  (onSubmit)="
+    (reassignLeadsPayload.reassign_user_id ||
+      reassignLeadsPayload.rotation_id) &&
+      reassignLeadsModalSubmit(reassignLeads)
+  "
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <div class="row">
+      <div class="col-md-12">
+        <p *ngIf="reassignLeadsPayload?.select_all">
+          This action will affect {{ leadsTotal }} lead.
+        </p>
+        <p *ngIf="!reassignLeadsPayload?.select_all">
+          This action will affect
+          {{ reassignLeadsPayload?.leads_ids?.length }} lead.
+        </p>
+      </div>
+      <div class="col-md-12">
+        <div class="form-group">
+          <label for="">Type</label>
+          <select
+            class="form-control"
+            placeholder="Type :"
+            name="assign_type"
+            [(ngModel)]="assign_type"
+          >
+            <option value="agent">Agent</option>
+            <option value="rotation">Rotation</option>
+          </select>
+        </div>
+        <div class="form-group" *ngIf="assign_type == 'rotation'">
+          <label for="">Rotation</label>
+          <select
+            class="form-control"
+            placeholder="Select Rotation :"
+            name="rotation_id"
+            [(ngModel)]="reassignLeadsPayload.rotation_id"
+          >
+            <option *ngFor="let rotation of rotations" [value]="rotation.id">
+              {{ rotation.name }}
+            </option>
+          </select>
+        </div>
+        <div class="form-group" *ngIf="assign_type == 'agent'">
+          <label for="">Assign to agent *</label>
+          <select
+            type="text"
+            class="form-control"
+            name="agent_id"
+            [(ngModel)]="reassignLeadsPayload.reassign_user_id"
+            required
+          >
+            <option *ngFor="let agent of agents" value="{{ agent.id }}">
+              {{ agent.name }}
+            </option>
+          </select>
+        </div>
+        <div class="form-group">
+          <select
+            class="form-control"
+            [(ngModel)]="reassignLeadsPayload.new_status"
+            name="status"
+            required
+          >
+            <option value="" selected hidden>Select Status</option>
+            <option *ngFor="let s of searchLeadsStatus" value="{{ s.name }}">
+              {{ s.name }}
+            </option>
+          </select>
+        </div>
+        <div class="form-group">
+          <textarea
+            type="text"
+            class="form-control"
+            name="changereason"
+            placeholder="Reason"
+            rows="4"
+            [(ngModel)]="reassignLeadsPayload.reason"
+            required
+          ></textarea>
+        </div>
+      </div>
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="reassignLeads.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>
+
+<modal
+  #deleteLeads
+  title="Delete leads"
+  submitButtonLabel="delete"
+  modalClass="modal-md"
+  [hideCloseButton]="true"
+  [closeOnOutsideClick]="true"
+  (onOpen)="deleteLeadsModalOpen(deleteLeads)"
+  (onClose)="deleteLeadsModalClose(deleteLeads)"
+  (onSubmit)="deleteLeadsModalSubmit(deleteLeads)"
+>
+  <modal-header> </modal-header>
+  <modal-content>
+    <div class="row">
+      <div class="col-md-12">
+        <p *ngIf="deleteLeadsPayload?.select_all">
+          This action will affect {{ leadsTotal }} lead.
+        </p>
+        <p *ngIf="!deleteLeadsPayload?.select_all">
+          This action will affect
+          {{ deleteLeadsPayload?.leads_ids?.length }} lead.
+        </p>
+      </div>
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="deleteLeads.close()">
+      close
+    </button>
+  </modal-footer>
+</modal>
+
+<app-qualification-modal
+  #addQualificationModal
+  (onSave)="getLeadDetails(leadId)"
+></app-qualification-modal>
+
+<app-view-qualification-modal
+  #viewQualificationModal
+></app-view-qualification-modal>
+
+<app-feedback-modal
+  #addFeedBackModal
+  (onSave)="getLeadDetails(leadId)"
+></app-feedback-modal>
+<a
+  *ngIf="leadDetails?.whatsapp_link"
+  [href]="leadDetails.whatsapp_link"
+  class="floating-btn"
+  target="_blank"
+>
+  <i class="fa fa-whatsapp floating-btn-icon"></i>
+</a>

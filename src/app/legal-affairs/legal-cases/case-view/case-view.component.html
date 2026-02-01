@@ -1,0 +1,319 @@
+<section id="legal-case-view" dir="rtl" *ngIf="case">
+  <div class="container-fluid">
+    <div class="d-flex justify-content-between">
+      <h2>قضية رقم #{{ case.case_no }}</h2>
+      <div class="d-flex justify-content-center align-items-center gap-15">
+        <div class="btn-group" role="group">
+          <button
+            type="button"
+            class="btn btn-warning"
+            (click)="addActivityModal.open(case.id)"
+          >
+            تسلسل الجلسات
+          </button>
+          <button
+            type="button"
+            class="btn btn-success"
+            (click)="addNoteModal.open(case.id)"
+            *ngIf="
+              userData.role == 'Admin' ||
+              userData.role == 'Super Development' ||
+              userData.role == 'Legal Head'
+            "
+          >
+            إضافة ملاحظة
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="changeStatusModal.open(case.id, case.status_id)"
+          >
+            تغيير الحالة
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="casesFilesModal.open(case)"
+          >
+            المرفقات
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-9">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <ng-container *ngIf="case.description">
+              <h3 class="text-center">وصف القضية</h3>
+              <p [innerHTML]="case.description"></p>
+            </ng-container>
+
+            <ng-container *ngIf="case.logs?.length">
+              <hr class="hr" />
+              <div class="d-flex align-items-stretch">
+                <div class="col-md-6">
+                  <h3 class="text-center">تسلسل الجلسات</h3>
+                  <div
+                    class="activity-logs d-flex flex-column justify-content-center"
+                  >
+                    <div
+                      class="log-row d-flex justify-content-start align-items-start"
+                      *ngFor="let log of case.logs"
+                    >
+                      <div class="time-line"></div>
+                      <div class="log-data">
+                        <p class="h4 text-muted p-0 m-0">
+                          {{
+                            log.created_at
+                              | date : "medium" : undefined : "ar-EG"
+                          }}
+                        </p>
+                        <div class="row-content h4 p-0 m-0">
+                          <p>{{ log.details }}</p>
+                          <div
+                            class="files-container d-flex justify-content-center"
+                          >
+                            <div
+                              class="file d-flex justify-content-between align-items-center"
+                              *ngFor="let file of log.files"
+                            >
+                              <div class="data text-nowrap">
+                                <i class="fa fa-file" aria-hidden="true"></i>
+                                {{ file.name }}
+                              </div>
+                              <div class="actions">
+                                <div
+                                  class="btn-group folder-actions"
+                                  role="group"
+                                  aria-label="Basic example"
+                                >
+                                  <button
+                                    type="button"
+                                    class="btn btn-danger"
+                                    (click)="deleteFile(file.id)"
+                                  >
+                                    <i
+                                      class="fa fa-trash"
+                                      aria-hidden="true"
+                                    ></i>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    class="btn btn-primary"
+                                    (click)="openFile(file.full_url)"
+                                  >
+                                    <i
+                                      class="fa fa-download"
+                                      aria-hidden="true"
+                                    ></i>
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 border-left">
+                  <h3 class="text-center">الملاحظات</h3>
+                  <div
+                    class="activity-logs d-flex flex-column justify-content-center"
+                  >
+                    <div
+                      class="log-row d-flex justify-content-start align-items-start"
+                      *ngFor="let note of case.notes"
+                    >
+                      <div class="time-line"></div>
+                      <div class="log-data">
+                        <p class="h4 text-muted p-0 m-0">
+                          {{
+                            note.created_at
+                              | date : "medium" : undefined : "ar-EG"
+                          }}
+                        </p>
+                        <div class="row-content h4 p-0 m-0">
+                          <p>{{ note.details }}</p>
+                          <div
+                            class="files-container d-flex justify-content-center"
+                          >
+                            <div
+                              class="file d-flex justify-content-between align-items-center"
+                              *ngFor="let file of note.files"
+                            >
+                              <div class="data text-nowrap">
+                                <i class="fa fa-file" aria-hidden="true"></i>
+                                {{ file.name }}
+                              </div>
+                              <div class="actions">
+                                <div
+                                  class="btn-group folder-actions"
+                                  role="group"
+                                  aria-label="Basic example"
+                                >
+                                  <button
+                                    type="button"
+                                    class="btn btn-danger"
+                                    (click)="deleteFile(file.id)"
+                                  >
+                                    <i
+                                      class="fa fa-trash"
+                                      aria-hidden="true"
+                                    ></i>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    class="btn btn-primary"
+                                    (click)="openFile(file.full_url)"
+                                  >
+                                    <i
+                                      class="fa fa-download"
+                                      aria-hidden="true"
+                                    ></i>
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+      <div class="col-xs-3">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <h3 class="text-center mt-0">بيانات القضية</h3>
+            <div>
+              <div class="table-row">
+                <b>رقم القضية</b>
+                <span>{{ case.case_no }}</span>
+              </div>
+              <div class="table-row">
+                <b>رقم الملف</b>
+                <span>{{ case.case_file_no }}</span>
+              </div>
+              <div class="table-row">
+                <b>نوع القضية</b>
+                <span>{{ case.category?.name || "" }}</span>
+              </div>
+              <div class="table-row">
+                <b>حالة القضية</b>
+                <span>{{ case.status?.name || "" }}</span>
+              </div>
+              <div class="table-row">
+                <b>المحكمة</b>
+                <span>{{ case.court?.name || "" }}</span>
+              </div>
+              <div class="table-row">
+                <b>تاريخ اول جلسة</b>
+                <span>{{
+                  case.receive_date | date : "mediumDate" : undefined : "ar-EG"
+                }}</span>
+              </div>
+              <div class="table-row">
+                <b>تاريخ الإيداع</b>
+                <span>{{
+                  case.filing_date | date : "mediumDate" : undefined : "ar-EG"
+                }}</span>
+              </div>
+              <div class="table-row">
+                <b>تاريخ الحكم</b>
+                <span>{{
+                  case.judgement_date
+                    | date : "mediumDate" : undefined : "ar-EG"
+                }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <h3 class="text-center mt-0">الشاكي</h3>
+            <div>
+              <div class="table-row">
+                <b>النوع</b>
+                <span>{{
+                  case.plaintiff_type ? typeMapping[case.plaintiff_type] : ""
+                }}</span>
+              </div>
+              <div class="table-row" *ngIf="case.plaintiff_type !== 'CRED'">
+                <b>الاسم</b>
+                <span>{{ case.plaintiff_name }}</span>
+              </div>
+              <div class="table-row" *ngIf="case.plaintiff_lead">
+                <b>الموقف المالي للعميل</b>
+                <span>{{
+                  case.plaintiff_lead.late_installments_no == "0"
+                    ? "مسدد بالكامل"
+                    : case.plaintiff_lead.late_installments_no + "اقساط متاخرة"
+                }}</span>
+              </div>
+              <div class="table-row">
+                <b>اسم المحامي</b>
+                <span>{{ case.plaintiff_lawyer_name }}</span>
+              </div>
+              <div class="table-row">
+                <b>رقم المحامي</b>
+                <span>{{ case.plaintiff_lawyer_phone }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <h3 class="text-center mt-0">المشكو في حقة</h3>
+            <div>
+              <div class="table-row">
+                <b>النوع</b>
+                <span>{{
+                  case.accused_type ? typeMapping[case.accused_type] : ""
+                }}</span>
+              </div>
+              <div class="table-row" *ngIf="case.accused_type !== 'CRED'">
+                <b>الاسم</b>
+                <span>{{ case.accused_name }}</span>
+              </div>
+              <div class="table-row" *ngIf="case.accused_lead">
+                <b>الموقف المالي للعميل</b>
+                <span>{{
+                  case.accused_lead.late_installments_no == "0"
+                    ? "مسدد بالكامل"
+                    : case.accused_lead.late_installments_no + "اقساط متاخرة"
+                }}</span>
+              </div>
+              <div class="table-row">
+                <b>اسم المحامي</b>
+                <span>{{ case.accused_lawyer_name }}</span>
+              </div>
+              <div class="table-row">
+                <b>رقم المحامي</b>
+                <span>{{ case.accused_lawyer_phone }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<app-change-case-status
+  #changeStatusModal
+  (onSave)="getCase()"
+></app-change-case-status>
+
+<app-case-activity-form
+  #addActivityModal
+  (onSave)="getCase()"
+></app-case-activity-form>
+
+<app-case-note-form #addNoteModal (onSave)="getCase()"></app-case-note-form>
+
+<app-case-files #casesFilesModal (onSave)="getCase()"></app-case-files>

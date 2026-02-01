@@ -1,0 +1,209 @@
+<section class="payment-plans-table">
+  <div class="container-fluid">
+    <div class="proj-details">
+      <div class="row filter-outer-container">
+        <div class="col-md-12" [ngClass]="{ 'no-interaction': is_refreshing }">
+          <div class="row">
+            <div class="col-xs-10">
+              <h3>Client Statements</h3>
+            </div>
+            <div class="col-xs-2 actions">
+              <button
+                (click)="filter_collapsed = !filter_collapsed"
+                class="advanced-filter"
+              >
+                <i class="fa fa-filter" aria-hidden="true"></i>
+              </button>
+              <!-- <div
+                class="settings-icons pull-right"
+                *ngIf="userProfile.role != 'Legal and Technical'"
+              >
+                <div class="dropdown" dropdown>
+                  <i class="fa fa-cog" aria-hidden="true" dropdown-open></i>
+                  <ul class="dropdown-menu menu-settings">
+                    <li
+                      *ngIf="
+                        (userProfile.role == 'Admin' ||
+                          userProfile.role == 'CFO' ||
+                          userProfile.role == 'Moderator' ||
+                          userProfile?.is_sales_top_level ||
+                          userProfile?.role == 'Contractor') &&
+                        userProfile.can_export
+                      "
+                    >
+                      <a [href]="excel">
+                        <span>Export Reservations</span>
+                      </a>
+                    </li>
+                    <li
+                      *ngIf="
+                        (userProfile.role == 'Admin' ||
+                          userProfile.role == 'CFO' ||
+                          userProfile.role == 'Moderator' ||
+                          userProfile?.role == 'Accountant') &&
+                        userProfile.can_export
+                      "
+                      (click)="exportTable()"
+                    >
+                      <a>
+                        <span>Export Filtered Reservations</span>
+                      </a>
+                    </li>
+                    <li
+                      (click)="importReservationModal.open()"
+                      *ngIf="
+                        userProfile.role == 'Admin' &&
+                        userProfile.role != 'Moderator' &&
+                        userProfile.can_import
+                      "
+                    >
+                      <a>
+                        <span>Import Reservation</span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div> -->
+            </div>
+          </div>
+          <div class="row">
+            <div
+              class="col-md-12"
+              [ngClass]="{ 'no-interaction': is_refreshing }"
+              *ngIf="filter_collapsed"
+            >
+              <form
+                class="filter"
+                [formGroup]="filterForm"
+                (ngSubmit)="filterClients()"
+              >
+                <div class="d-flex">
+                  <div class="form-group">
+                    <label for="">Client Name / Phone :</label>
+                    <input
+                      type="text"
+                      name="keyword"
+                      id="keyword"
+                      class="form-control"
+                      formControlName="keyword"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="">Unit Serial :</label>
+                    <input
+                      type="text"
+                      name="unit_serial"
+                      id="unit_serial"
+                      class="form-control"
+                      formControlName="unit_serial"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="">Date From :</label>
+                    <input
+                      type="date"
+                      name="date_from"
+                      formControlName="date_from"
+                      class="form-control"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="">Date to :</label>
+                    <input
+                      type="date"
+                      name="date_to"
+                      formControlName="date_to"
+                      class="form-control"
+                    />
+                  </div>
+                </div>
+                <div class="search-buttons">
+                  <div class="border-form text-center margin-top">
+                    <button type="submit" class="button c-bg">FILTER</button>
+                  </div>
+                  <div class="border-form text-center">
+                    <button
+                      (click)="resetFilters()"
+                      type="button"
+                      class="button bg-danger reset-filter"
+                    >
+                      RESET
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div
+              class="col-md-12 margin-top-20"
+              [ngClass]="{ 'no-interaction': is_refreshing }"
+            >
+              <div class="table table-responsive table_sticky_header">
+                <table class="table table-bordered">
+                  <tr class="table_sticky_header_header">
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Email</th>
+                    <th>Channel</th>
+                    <th>Source</th>
+                    <th>Agent</th>
+                    <th>Balance</th>
+                    <th>Owned Units</th>
+                    <th>Action</th>
+                  </tr>
+                  <tr
+                    *ngFor="let client of clients; let i = index">
+                    <td>{{ client.name }}</td>
+                    <td>{{ client.phone }}</td>
+                    <td>{{ client.email }}</td>
+                    <td>
+                      {{ client.lead_channel?.name }}
+                    </td>
+                    <td>{{ client.lead_source == '-1' ? 'Self Generate' : client.lead_source }}</td>   
+                    <td>{{ client.agent?.name }}</td>   
+                    <td>{{ client.client_balance | currency : ' ' }}</td>    
+                    <td>
+                      <div class="d-flex flex-row">
+                        <span *ngFor="let unit_serial of client?.units_serial" class="margin-5-auto">
+                          {{ unit_serial }}
+                        </span>
+                      </div>
+                    </td>
+                    <td>
+                      <button mat-icon-button [matMenuTriggerFor]="actionsMenu">
+                        <img
+                          class="more-options-icon"
+                          src="assets/img/show-more-button-with-three-dots.svg"
+                        />
+                      </button>
+                      <mat-menu #actionsMenu="matMenu">
+                        <button mat-menu-item (click)="viewClient(client)">
+                          View
+                        </button>
+                      </mat-menu>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+              <div *ngIf="current_page" class="col-xs-6">
+                <p>({{ per_page }} / {{ total }}) page {{ current_page }}</p>
+              </div>
+              <div class="col-xs-6 text-right">
+                <ngb-pagination
+                  [collectionSize]="clients_raw_data?.last_page * 10"
+                  [(page)]="pageTest"
+                  [maxSize]="5"
+                  [rotate]="true"
+                  [ellipses]="true"
+                  [boundaryLinks]="true"
+                  (pageChange)="pageChange($event)"
+                  [size]="lg"
+                >
+                </ngb-pagination>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

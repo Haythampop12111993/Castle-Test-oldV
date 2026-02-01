@@ -1,0 +1,188 @@
+.pagination-el {
+    cursor: pointer;
+  }
+  
+  .doc_link {
+    text-decoration: none;
+    /* color: #fff; */
+    cursor: pointer;
+  }
+  
+  .btn-margin-bottom {
+    margin-bottom: 7px;
+  }
+  
+  .disable-interaction-and-opacity {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+  
+  .flex-column {
+    display: flex;
+  }
+  
+  .flex-column label {
+    margin-right: 50px;
+  }
+  
+  .width-161 {
+    width: 95%;
+  }
+  
+  .btn-group-files {
+    display: flex;
+    /* flex-direction: row; */
+    /* justify-content: space-between; */
+    /* align-items: center; */
+  }
+  
+  .margin-left {
+    margin-right: -108px;
+  }
+  
+  .dropdown-menu {
+    left: unset;
+    right: 0;
+  }
+  
+  .table-responsive {
+    overflow-x: unset;
+  }
+  
+  .import-btn {
+    margin-top: 22px;
+  }
+  
+  .col-xs-2.import-container {
+    display: flex;
+    margin-left: -20px;
+  }
+  
+  .import-inner-container {
+    margin-right: 10px;
+    display: inline-block;
+  }
+  
+  .filter-inputs {
+    margin: 0px 20px;
+    width: 300px;
+  }
+
+  .filter{
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    box-shadow: 0 0 8px lightgrey;
+    border-radius: 8px;
+  }
+
+  .search-form-inputs{
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+  .c-bg{
+    background-color: black;
+    width: fit-content;
+    min-width: 150px;
+    height: 50px;
+    border: none;
+    color: gray;
+    margin: 20px;
+    font-size: 20px;
+    border-radius: 8px;
+    font-weight: 600;
+  }
+  .reset-por{
+    background-color: gray;
+    width: fit-content;
+    min-width: 150px;
+    height: 50px;
+    border: none;
+    color: white;
+    margin: 20px;
+    font-size: 20px;
+    border-radius: 8px;
+    font-weight: 600;
+
+}
+
+
+  .filter-form{
+    width: 100%;
+  }
+
+  .filter h3{
+    margin-left: 20px;
+  }
+
+  
+  .form-group.filter-inputs label {
+    margin: 0px !important;
+  }
+  
+  .reset-filter {
+    background-color: #dc3838 !important;
+  }
+  
+  .pointer {
+    cursor: pointer;
+  }
+  
+  table {
+    width: 100%;
+    margin-top: 20px;
+    box-shadow: 0 0 8px lightgrey;
+  }
+  
+  .eoi-table a.btn.btn-default.pull-right,
+  .unit-types-table a.btn.btn-default.pull-right,
+  .payment-plans-table a.btn.btn-default.pull-right,
+  .rf-tble a.btn.btn-default.pull-right,
+  .users-table a.btn.btn-default.pull-right,
+  .teams-table a.btn.btn-default.pull-right {
+    margin-bottom: 0px !important;
+  }
+  
+  .import-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+  
+  /* // table row colors */
+  .contract-types-color-guide-inner .color-guide-value.sale-approved {
+    background-color: #78ce7b47;
+  }
+  
+  .bg-rent-success {
+    background-color: #7883ce94;
+  }
+  
+  .bg-rent-declined {
+    background: #ff2222bd;
+  }
+  
+  .p-ddl{
+    display: block;
+  }
+  .p-ddl .ui-fluid .ui-dropdown {
+    width: 100% !important;
+  
+  }
+  
+  ::ng-deep .agents .p-ddl .ui-dropdown{
+    width: 100% !important;
+    /* padding: 6px 0 !important; */
+  }
+  ::ng-deep .agents .p-ddl .ui-dropdown .ui-dropdown-trigger{
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center;
+  }
+  ::ng-deep .agents .p-ddl .ui-dropdown label.ui-dropdown-label {
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }

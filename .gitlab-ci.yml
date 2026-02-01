@@ -1,0 +1,16 @@
+stages:
+  - triggers
+
+staging:
+  stage: triggers
+  trigger:
+    include: ci/staging.yml
+  only:
+    - staging
+
+production:
+  stage: triggers
+  trigger:
+    include: ci/production.yml
+  only:
+    - master

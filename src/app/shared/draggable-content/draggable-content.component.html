@@ -1,0 +1,9 @@
+<div
+  class="wrapper"
+  #drag_container
+  (mousedown)="onMouseDown()"
+  (mousemove)="onDrag($event)"
+  (mouseup)="onMouseUp()"
+>
+  <ng-content></ng-content>
+</div>

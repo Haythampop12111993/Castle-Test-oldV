@@ -1,0 +1,229 @@
+<section class="dashboard">
+  <div class="dashboard-sales">
+    <h1>DASHBOARD</h1>
+    <div class="dashboard-header">
+      <div class="dashboard-header__user">
+        <span>Welcome back, {{ userData?.name }}</span>
+        <a> <i class="fa fa-map-marker" aria-hidden="true"></i> Cairo, Egypt</a>
+      </div>
+      <div class="dashboard-header__inputs">
+        <div class="channel-dropdown">
+          <p-dropdown
+            [style]="{ width: '196px' }"
+            [options]="channels"
+            [(ngModel)]="selectedChannel"
+            (onChange)="onChannelChange()"
+            [filter]="true"
+            [autoWidth]="false"
+            placeholder="Select Channel"
+            [showClear]="true"
+            optionLabel="name"
+          ></p-dropdown>
+        </div>
+        <div class="calendar-container">
+          <p-calendar
+            [(ngModel)]="rangeDates"
+            selectionMode="range"
+            [readonlyInput]="true"
+            (onSelect)="onChangeDatePicker()"
+            yearRange="2000:2040"
+            [monthNavigator]="true"
+            [yearNavigator]="true"
+            showButtonBar="true"
+            [showIcon]="true"
+          ></p-calendar>
+        </div>
+      </div>
+    </div>
+    <div class="sales-pipeline">
+      <span class="sales-pipeline__title">Sales Pipeline</span>
+      <div class="sales-pipeline__bar"></div>
+    </div>
+    <div class="sales-stats">
+      <div class="sales-stats__wrapper">
+        <div
+          *ngFor="let leadStatus of statsData?.leads_status"
+          class="sales-states__card"
+          (click)="onLeadStatusClicked(leadStatus)"
+        >
+          <div class="card-number">{{ leadStatus.count }}</div>
+          <div class="card-title">{{ leadStatus.status }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="inventory-pipeline">
+      <span class="inventory-pipeline__title">Tickets Statuses</span>
+      <div class="inventory-pipeline__bar"></div>
+    </div>
+    <div class="sales-stats">
+      <div class="sales-stats__wrapper">
+        <div
+          *ngFor="let ticket of statsData?.tickets_status"
+          class="states__card"
+        >
+          <!-- (click)="onticketClicked(ticket)" -->
+          <div class="card-number">{{ ticket.count }}</div>
+          <div class="card-title">{{ ticket.status_string }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="inventory-pipeline">
+      <span class="inventory-pipeline__title">Tickets Types</span>
+      <div class="inventory-pipeline__bar"></div>
+    </div>
+    <div class="sales-stats">
+      <div class="sales-stats__wrapper">
+        <div
+          *ngFor="let ticket of statsData?.tickets_types"
+          class="states__card"
+        >
+          <!-- (click)="onticketClicked(ticket)" -->
+          <div class="card-number">{{ ticket.count }}</div>
+          <div class="card-title">{{ ticket.type_string }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="dashboard-activities">
+    <div class="dashboard-activities__wrapper">
+      <div class="activities-schedule">
+        <h1 class="activities-schedule__header">ACTIVITIES SCHEDULE</h1>
+        <div class="list-group__activities">
+          <a
+            *ngFor="let item of statsData?.leads_activity"
+            class="activities-item list-group__item"
+            (click)="goToLeadsWithActivity(item)"
+          >
+            <div class="list-item__container">
+              <div>
+                <i class="list-item__bullet"></i>
+                <span class="list-item__name">{{ item.title }}</span>
+              </div>
+              <div class="item-number__container">
+                <span class="item-number">{{ item.count }}</span>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="latest-activities">
+        <h1 class="latest-activities__header">LATEST ACTIVITIES</h1>
+        <div class="activities-timeline">
+          <div
+            class="timeline-container"
+            *ngFor="let timeline of statsData?.activities_list"
+            (click)="goToLead(timeline.lead)"
+          >
+            <span class="timeline">{{ timeline.created_at }}</span>
+            <div class="bullet-container">
+              <i class="timeline-bullet"></i>
+            </div>
+            <div class="timeline-details">
+              <span class="timeline-details__title"
+                >{{ timeline.title }} ({{ timeline?.lead?.name }})</span
+              >
+              <p>{{ timeline?.details }}</p>
+              <p>By: {{ timeline?.user?.name }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="sales-performance">
+        <h1 class="sales-performance__header">SALES PERFORMANCE</h1>
+        <div class="list-group__activities">
+          <a class="list-group__item sales-item">
+            <div class="list-item__container">
+              <div>
+                <i class="list-item__bullet"></i>
+                <span class="list-item__name">Top Pr. Consultant</span>
+              </div>
+              <div class="item-user__container">
+                <img
+                  class="item-user__image"
+                  src="assets/images/img_avatar2.png"
+                />
+                <span>{{ statsData?.top?.agent?.user?.name }}</span>
+              </div>
+            </div>
+          </a>
+          <a class="list-group__item sales-item">
+            <div class="list-item__container">
+              <div>
+                <i class="list-item__bullet"></i>
+                <span class="list-item__name">Top Team</span>
+              </div>
+              <div class="item-user__container">
+                <span>{{ statsData?.top?.team?.team?.name }}</span>
+              </div>
+            </div>
+          </a>
+          <a class="list-group__item sales-item">
+            <div class="list-item__container">
+              <div>
+                <i class="list-item__bullet"></i>
+                <span class="list-item__name">Top Sales Manager</span>
+              </div>
+              <div class="item-user__container">
+                <img
+                  class="item-user__image"
+                  src="assets/images/img_avatar2.png"
+                />
+                <span>{{ statsData?.top?.sales_manager?.director?.name }}</span>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sales-charts">
+    <div class="sales-charts__wrapper">
+      <div class="sales-charts__single">
+        <h1 class="sales-chart__header">SALES ACTIVITY</h1>
+        <div
+          *ngIf="
+            lineChartsData.salesActivity.length > 0 &&
+              lineChartsLabels.salesActivity.length > 0;
+            else salesActivitySpinner
+          "
+        >
+          <canvas
+            baseChart
+            width="300"
+            height="300"
+            [datasets]="lineChartsData.salesActivity"
+            [labels]="lineChartsLabels.salesActivity"
+            [options]="lineChartsOptions.salesActivity"
+            [colors]="lineChartsColors.salesActivity"
+            [legend]="true"
+            [chartType]="'line'"
+          ></canvas>
+        </div>
+        <ng-template #salesActivitySpinner>
+          <div class="chart-spinner">
+            <div class="lds-ripple">
+              <div></div>
+              <div></div>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="footer-copyrights">
+      &copy; {{ currentYear }} {{ envStatics.projectName }}
+    </div>
+    <div class="footer-upbutton">
+      <a (click)="onGoPageTop()"><i class="fa fa-arrow-circle-up"></i> UP</a>
+    </div>
+  </div>
+</section>
+
+<!-- <div class="box">
+  <div>
+    Under Maintainance !
+  </div>
+  <p><span>Stay Tuned !</span> we`re working on a new dashboard</p>
+</div> -->

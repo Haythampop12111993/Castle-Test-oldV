@@ -1,0 +1,39 @@
+<div class="container-fluid mt-3">
+  <div class="row">
+    <div
+      class="col-xs-12 pb-20 d-flex justify-content-between align-items-center"
+    >
+      <ul class="nav nav-pills">
+        <li
+          class="nav-item"
+          routerLinkActive="active"
+          *ngIf="userData.role !== 'Property Consultant'"
+        >
+          <a class="nav-link" [routerLink]="['all']">Data Sheets</a>
+        </li>
+        <li
+          class="nav-item"
+          routerLinkActive="active"
+          *ngIf="userData.role !== 'Property Consultant'"
+        >
+          <a class="nav-link" [routerLink]="['agents']">Agents</a>
+        </li>
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" [routerLink]="['my-contacts']">My Contacts</a>
+        </li>
+        <ng-container *ngFor="let status of statuses_list">
+          <li
+            class="nav-item"
+            routerLinkActive="active"
+            *ngIf="status.can_deleted"
+          >
+            <a class="nav-link" [routerLink]="['view-status', status.id]">{{
+              status.name
+            }}</a>
+          </li>
+        </ng-container>
+      </ul>
+    </div>
+  </div>
+  <router-outlet></router-outlet>
+</div>

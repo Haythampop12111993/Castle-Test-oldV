@@ -1,0 +1,106 @@
+<div class="container">
+  <div class="dndPlaceholder col-md-12" #placeholder></div>
+  <div class="page-header">
+    <div class="row select-campaign-container">
+      <div class="col-md-2 no-border"></div>
+      <div class="col-md-4 no-border">
+        <div class="form-group">
+          <select class="form-contorl" name="campaign_id" id="" [(ngModel)]="campaign_id" placeholder="Select Campaign">
+            <!-- <option value="" disabled>Select Campaign</option> -->
+            <!-- <option *ngFor="let camp of campaigns" [value]="camp.id">{{camp?.name}}</option> -->
+            <option value="all">All</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-2 no-border">
+        <button class="apply-btn" (click)="getData()">Apply</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6"
+      [dndList]
+      [dndPlaceholder]="placeholder"
+      [dndModel]="users">
+      <div class="col-md-12">
+        <span class="headline">Property Consultants</span>
+      </div>
+      <div *ngFor="let user of users"
+        class="col-md-12"
+        [dndType]="'user'"
+        (dndMoved)="removeUser(user, users)"
+        [dndDraggable]
+        [dndObject]="user">
+        <span>
+          <i class="fa fa-bars" aria-hidden="true"></i>
+        </span>
+        <span>
+          {{user.name}}
+        </span>
+      </div>
+    </div>
+    <div class="col-md-6"
+      [dndList]
+      [dndModel]="selected"
+      [dndPlaceholder]="placeholder">
+      <div class="col-md-12">
+        <span class="headline">Selected</span>
+      </div>
+      <div *ngFor="let user of selected"
+        class="col-md-12 selected-item"
+        [ngStyle]="{
+          'background-color': user?.teams?.branch?.branch_color
+        }"
+        [dndType]="'user'"
+        (dndMoved)="removeSelected(user, selected)"
+        [dndDraggable]
+        [dndObject]="user">
+        <span>
+          <i class="fa fa-bars" aria-hidden="true"></i>
+        </span>
+        <span>
+          {{user?.name}}
+        </span>
+      </div>
+    </div>
+    <div class="row" *ngIf="can_submit">
+      <div class="col-md-6 no-border"></div>
+      <div class="col-md-6 no-border">
+        <div class="col-md-3 no-border"></div>
+        <div class="col-md-6 no-border">
+          <button class="apply-btn" (click)="submit()">Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- <div class="row">
+    <div class="col-md-6"
+      [dndList]
+      [dndPlaceholder]="placeholder"
+      [dndModel]="simpleList[0]">
+      <div class="col-md-12">
+        <span class="headline">Property Consultants</span>
+      </div>
+      <div *ngFor="let item of simpleList[0]"
+        class="col-md-12"
+        [dndType]="'item'"
+        (dndMoved)="removeItem(item, simpleList[0])"
+        [dndDraggable]
+        [dndObject]="item">{{item.name}}</div>
+    </div>
+    <div class="col-md-6"
+      [dndList]
+      [dndModel]="simpleList[1]"
+      [dndPlaceholder]="placeholder">
+      <div *ngFor="let item of simpleList[1]"
+        class="col-md-12"
+        [dndType]="'item'"
+        (dndMoved)="removeItem(item, simpleList[1])"
+        [dndDraggable]
+        [dndObject]="item">{{item.name}}</div>
+    </div>
+  </div> -->
+  
+</div>

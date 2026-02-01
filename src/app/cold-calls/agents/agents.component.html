@@ -1,0 +1,96 @@
+<div class="row bg_w m-0">
+  <div class="section-border col-xs-12 p-15">
+    <div class="mb-3">
+      <input
+        type="text"
+        class="form-control"
+        ngModel
+        (ngModelChange)="fetchAgentsData($event)"
+        placeholder="search by name"
+      />
+    </div>
+    <div
+      class="row"
+      *ngIf="
+        contactsElements && contactsElements.length != 0;
+        else noReusltFound
+      "
+    >
+      <div
+        class="col-lg-3 col-md-6 col-12 mb-3"
+        *ngFor="let contact of contactsElements"
+      >
+        <div class="data_card rounded shadow">
+          <div class="d-flex mb-3">
+            <span> Name: </span>
+            <p>
+              {{ contact.agent_name }}
+            </p>
+          </div>
+          <div class="d-flex mb-3">
+            <span> Contacts: </span>
+            <p>
+              {{ contact.contacts }}
+            </p>
+          </div>
+          <div class="d-flex mb-3">
+            <span> Interested: </span>
+            <p>
+              {{ contact.Interested }}
+            </p>
+          </div>
+
+          <ng-container *ngFor="let status of statuses_list">
+            <div class="d-flex mb-3" *ngIf="status.can_deleted">
+              <span> {{ status.name }}: </span>
+              <p>
+                {{ contact[status.name] }}
+              </p>
+            </div>
+          </ng-container>
+
+          <div class="d-flex mb-3">
+            <span> No Action: </span>
+            <p>
+              {{ contact["No Action"] }}
+            </p>
+          </div>
+
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [routerLink]="['..', 'details', contact.agent_id, 'agent']"
+          >
+            View Contacts
+          </button>
+
+          <button class="btn" (click)="export(contact.agent_id)">
+            <i class="fa fa-download"></i> Export Excel
+          </button>
+        </div>
+      </div>
+      <div
+        class="col-xs-12 text-center"
+        *ngIf="contactsElements && contactsElements.length > 0"
+      >
+        <ngb-pagination
+          [collectionSize]="contactsRaw?.last_page * 10"
+          [(page)]="currentPage"
+          [maxSize]="5"
+          [rotate]="true"
+          [ellipses]="true"
+          [boundaryLinks]="true"
+          (pageChange)="pageChange($event)"
+          [size]="'lg'"
+        >
+        </ngb-pagination>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #noReusltFound>
+  <div class="col-xs-12 d-flex justify-content-center align-items-center h-100">
+    <h2 class="text-capitalize text-warning">no results found</h2>
+  </div>
+</ng-template>

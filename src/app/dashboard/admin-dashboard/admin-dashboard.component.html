@@ -1,0 +1,990 @@
+<section class="dashboard">
+  <div class="dashboard-sales">
+    <h1>DASHBOARD</h1>
+    <div class="dashboard-header">
+      <div class="dashboard-header__user">
+        <span>Welcome back, {{ userData?.name }}</span>
+        <a> <i class="fa fa-map-marker" aria-hidden="true"></i> Cairo, Egypt</a>
+      </div>
+      <div class="dashboard-header__inputs">
+        <div class="form-group mh-10">
+          <label for="">Channels :</label>
+          <div>
+            <p-dropdown
+              [style]="{ width: '130px' }"
+              [options]="channels"
+              [(ngModel)]="selectedChannel"
+              (onChange)="filterDashboard()"
+              [filter]="true"
+              [autoWidth]="false"
+              placeholder="Select Channel"
+              [showClear]="true"
+              optionLabel="name"
+            ></p-dropdown>
+          </div>
+        </div>
+        <div class="form-group mh-10">
+          <label for="">Project :</label>
+          <div>
+            <p-dropdown
+              [style]="{ width: '130px', padding: '3px 0' }"
+              [options]="projects"
+              [(ngModel)]="selectedProject"
+              (onChange)="filterDashboard()"
+              [filter]="true"
+              [autoWidth]="false"
+              placeholder="Select Project"
+              [showClear]="true"
+              optionLabel="name"
+            ></p-dropdown>
+          </div>
+        </div>
+        <div class="form-group mh-10">
+          <label for="">Date From :</label>
+          <input
+            [ngStyle]="{ width: '130px', padding: '3px 0' }"
+            type="date"
+            name="date_from"
+            id="date_from"
+            class="form-control"
+            [(ngModel)]="salesFilter.date_from"
+            (change)="filterDashboard()"
+          />
+        </div>
+        <div class="form-group mh-10">
+          <label for="">Date To :</label>
+          <input
+            placeholder="Date To"
+            [ngStyle]="{ width: '130px', padding: '3px 0' }"
+            type="date"
+            name="date_to"
+            id="date_to"
+            class="form-control"
+            [(ngModel)]="salesFilter.date_to"
+            (change)="filterDashboard()"
+          />
+        </div>
+        <div class="form-group mh-10">
+          <label for="">Teams : </label>
+          <div>
+            <p-dropdown
+              [style]="{ width: '130px' }"
+              [options]="teams"
+              [(ngModel)]="selectedTeam"
+              (onChange)="filterDashboard()"
+              [filter]="true"
+              [autoWidth]="false"
+              placeholder="Select Team"
+              [showClear]="true"
+              optionLabel="name"
+            ></p-dropdown>
+          </div>
+        </div>
+        <div class="form-group mh-10">
+          <label for="">Users : </label>
+          <div>
+            <p-dropdown
+              [style]="{ width: '130px' }"
+              [options]="users"
+              [(ngModel)]="selectedUserFilter"
+              (onChange)="filterDashboard()"
+              [filter]="true"
+              [autoWidth]="false"
+              placeholder="Select User"
+              [showClear]="true"
+              optionLabel="name"
+            ></p-dropdown>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Leads Pipeline -->
+  <div class="pipeline pipeline_leads">
+    <div class="pipeline_header">
+      <div class="pipeline_title">Leads Pipeline</div>
+      <div class="pipeline_bar"></div>
+    </div>
+    <div class="pipeline_body">
+      <draggable-content>
+        <div
+          *ngFor="let status of statsData.leadStatusStats?.leads_status"
+          class="pipeline_card bordered-card"
+          (click)="onLeadStatusClicked(status)"
+        >
+          <div class="card-number">{{ status.count }}</div>
+          <div class="card-title">{{ status.status }}</div>
+        </div>
+      </draggable-content>
+    </div>
+  </div>
+
+  <!-- Activities Pipeline -->
+  <div class="pipeline pipeline_activities">
+    <div class="pipeline_header">
+      <div class="pipeline_title">Activities Pipeline</div>
+      <div class="pipeline_bar"></div>
+    </div>
+    <div class="pipeline_body">
+      <draggable-content>
+        <div
+          *ngFor="let activity of statsData?.activityStats?.leads_activity"
+          class="pipeline_card bordered-card"
+          (click)="goToLeadsWithActivity(activity)"
+        >
+          <div class="card-number">{{ activity.count }}</div>
+          <div class="card-title">{{ activity.title || "-" }}</div>
+        </div>
+      </draggable-content>
+    </div>
+  </div>
+
+  <!--  -->
+
+  <div class="my-3 m-0 row d-flex align-items-stretch">
+    <div class="col-xs-7">
+      <div class="bg-pattern-1 p-15 rounded row">
+        <h3 class="col-xs-12 text-white">Sales Pipeline</h3>
+        <div class="col-xs-6">
+          <div class="statics-card p-15 rounded">
+            <div class="d-flex justify-content-between">
+              <p class="m-0 fs-16">Today</p>
+              <p class="m-0 fs-18">
+                {{ statsData?.salesPipelineStats?.Today_reservation?.count }}
+              </p>
+            </div>
+            <p class="m-0 fs-16 fw-bold">
+              {{
+                statsData?.salesPipelineStats?.Today_reservation?.sum | number
+              }}
+              EGP
+            </p>
+          </div>
+        </div>
+        <div class="col-xs-6">
+          <div class="statics-card p-15 rounded">
+            <div class="d-flex justify-content-between">
+              <p class="m-0 fs-16">Month To Date</p>
+              <p class="m-0 fs-18">
+                {{ statsData?.salesPipelineStats?.MTD_reservation?.count }}
+              </p>
+            </div>
+            <p class="m-0 fs-16 fw-bold">
+              {{ statsData?.salesPipelineStats?.MTD_reservation?.sum | number }}
+              EGP
+            </p>
+          </div>
+        </div>
+        <div class="col-xs-6">
+          <div class="statics-card p-15 rounded">
+            <div class="d-flex justify-content-between">
+              <p class="m-0 fs-16">Year To Date</p>
+              <p class="m-0 fs-18">
+                {{ statsData?.salesPipelineStats?.YTD_reservation?.count }}
+              </p>
+            </div>
+            <p class="m-0 fs-16 fw-bold">
+              {{ statsData?.salesPipelineStats?.YTD_reservation?.sum | number }}
+              EGP
+            </p>
+          </div>
+        </div>
+        <div class="col-xs-6">
+          <div class="statics-card p-15 rounded">
+            <div class="d-flex justify-content-between">
+              <p class="m-0 fs-16">Accumulative</p>
+              <p class="m-0 fs-18">
+                {{
+                  statsData?.salesPipelineStats?.Accumulative_reservation?.count
+                }}
+              </p>
+            </div>
+            <p class="m-0 fs-16 fw-bold">
+              {{
+                statsData?.salesPipelineStats?.Accumulative_reservation?.sum
+                  | number
+              }}
+              EGP
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="bg-pattern-2 p-15 rounded row mt-3">
+        <h3 class="col-xs-12 text-white">Collection Pipeline</h3>
+
+        <div
+          class="col-xs-6"
+          (mouseenter)="stopPaymentCardsSlider('Today_payment_collections')"
+          (mouseleave)="startPaymentCardsSlider('Today_payment_collections')"
+        >
+          <div
+            class="statics-card p-15 rounded animated"
+            [ngClass]="{
+              zoomOut:
+                viewPaymentCardsSlider['Today_payment_collections'].change,
+              zoomIn:
+                !viewPaymentCardsSlider['Today_payment_collections'].change
+            }"
+          >
+            <div class="d-flex justify-content-between">
+              <p class="m-0 fs-16">Today</p>
+              <p class="m-0 fs-18">
+                {{
+                  paymentCardsSliderValues[
+                    viewPaymentCardsSlider["Today_payment_collections"].value
+                  ] | titlecase
+                }}
+              </p>
+            </div>
+            <p class="m-0 fs-16 fw-bold">
+              {{
+                statsData?.paymentCollectedPipelineStats
+                  ?.Today_payment_collections[
+                  paymentCardsSliderValues[
+                    viewPaymentCardsSlider["Today_payment_collections"].value
+                  ]
+                ] | number
+              }}
+              EGP
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="col-xs-6"
+          (mouseenter)="stopPaymentCardsSlider('MTD_payment_collections')"
+          (mouseleave)="startPaymentCardsSlider('MTD_payment_collections')"
+        >
+          <div
+            class="statics-card p-15 rounded animated"
+            [ngClass]="{
+              zoomOut: viewPaymentCardsSlider['MTD_payment_collections'].change,
+              zoomIn: !viewPaymentCardsSlider['MTD_payment_collections'].change
+            }"
+          >
+            <div class="d-flex justify-content-between">
+              <p class="m-0 fs-16">Month To Date</p>
+              <p class="m-0 fs-18">
+                {{
+                  paymentCardsSliderValues[
+                    viewPaymentCardsSlider["MTD_payment_collections"].value
+                  ] | titlecase
+                }}
+              </p>
+            </div>
+            <p class="m-0 fs-16 fw-bold">
+              {{
+                statsData?.paymentCollectedPipelineStats
+                  ?.MTD_payment_collections[
+                  paymentCardsSliderValues[
+                    viewPaymentCardsSlider["MTD_payment_collections"].value
+                  ]
+                ] | number
+              }}
+              EGP
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="col-xs-6"
+          (mouseenter)="stopPaymentCardsSlider('YTD_payment_collections')"
+          (mouseleave)="startPaymentCardsSlider('YTD_payment_collections')"
+        >
+          <div
+            class="statics-card p-15 rounded animated"
+            [ngClass]="{
+              zoomOut: viewPaymentCardsSlider['YTD_payment_collections'].change,
+              zoomIn: !viewPaymentCardsSlider['YTD_payment_collections'].change
+            }"
+          >
+            <div class="d-flex justify-content-between">
+              <p class="m-0 fs-16">Year To Date</p>
+              <p class="m-0 fs-18">
+                {{
+                  paymentCardsSliderValues[
+                    viewPaymentCardsSlider["YTD_payment_collections"].value
+                  ] | titlecase
+                }}
+              </p>
+            </div>
+            <p class="m-0 fs-16 fw-bold">
+              {{
+                statsData?.paymentCollectedPipelineStats
+                  ?.YTD_payment_collections[
+                  paymentCardsSliderValues[
+                    viewPaymentCardsSlider["YTD_payment_collections"].value
+                  ]
+                ] | number
+              }}
+              EGP
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="col-xs-6"
+          (mouseenter)="
+            stopPaymentCardsSlider('Accumulative_payment_collections')
+          "
+          (mouseleave)="
+            startPaymentCardsSlider('Accumulative_payment_collections')
+          "
+        >
+          <div
+            class="statics-card p-15 rounded animated"
+            [ngClass]="{
+              zoomOut:
+                viewPaymentCardsSlider['Accumulative_payment_collections']
+                  .change,
+              zoomIn:
+                !viewPaymentCardsSlider['Accumulative_payment_collections']
+                  .change
+            }"
+          >
+            <div class="d-flex justify-content-between">
+              <p class="m-0 fs-16">Accumulative</p>
+              <p class="m-0 fs-18">
+                {{
+                  paymentCardsSliderValues[
+                    viewPaymentCardsSlider["Accumulative_payment_collections"]
+                      .value
+                  ] | titlecase
+                }}
+              </p>
+            </div>
+            <p class="m-0 fs-16 fw-bold">
+              {{
+                statsData?.paymentCollectedPipelineStats
+                  ?.Accumulative_payment_collections[
+                  paymentCardsSliderValues[
+                    viewPaymentCardsSlider["Accumulative_payment_collections"]
+                      .value
+                  ]
+                ] | number
+              }}
+              EGP
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-5 p-0">
+      <div class="h-100 ms-2 bg-pattern-3 p-15 dotted-bg rounded row">
+        <h3 class="col-xs-12 text-white">Inventory Pipeline</h3>
+
+        <div class="col-xs-12">
+          <div class="statics-card m-5px p-15 rounded">
+            <div class="d-flex justify-content-between">
+              <p class="m-0 fs-16">TOTAL UNITS</p>
+              <p class="m-0 fs-18">
+                {{ statsData?.inventoryStats?.units_total?.count }}
+              </p>
+            </div>
+            <p class="m-0 fs-16 fw-bold">
+              {{ statsData?.inventoryStats?.units_total?.sum | number }}
+              EGP
+            </p>
+          </div>
+        </div>
+
+        <div class="col-xs-12">
+          <div class="statics-card m-5px p-15 rounded">
+            <div class="d-flex justify-content-between">
+              <p class="m-0 fs-16">AVAILABLE UNITS</p>
+              <p class="m-0 fs-18">
+                {{ statsData?.inventoryStats?.units_available?.count }}
+              </p>
+            </div>
+            <p class="m-0 fs-16 fw-bold">
+              {{ statsData?.inventoryStats?.units_available?.sum | number }}
+              EGP
+            </p>
+          </div>
+        </div>
+
+        <div class="col-xs-12">
+          <div class="statics-card m-5px p-15 rounded">
+            <div class="d-flex justify-content-between">
+              <p class="m-0 fs-16">PENDING</p>
+              <p class="m-0 fs-18">
+                {{ statsData?.inventoryStats?.units_sold?.count }}
+              </p>
+            </div>
+            <p class="m-0 fs-16 fw-bold">
+              {{ statsData?.inventoryStats?.units_sold?.sum | number }}
+              EGP
+            </p>
+          </div>
+        </div>
+
+        <div class="col-xs-12">
+          <div class="statics-card m-5px p-15 rounded">
+            <div class="d-flex justify-content-between">
+              <p class="m-0 fs-16">CONTRACTED UNITS</p>
+              <p class="m-0 fs-18">
+                {{ statsData?.inventoryStats?.units_contracted?.count }}
+              </p>
+            </div>
+            <p class="m-0 fs-16 fw-bold">
+              {{ statsData?.inventoryStats?.units_contracted?.sum | number }}
+              EGP
+            </p>
+          </div>
+        </div>
+
+        <div class="col-xs-12">
+          <div class="statics-card m-5px p-15 rounded">
+            <div class="d-flex justify-content-between">
+              <p class="m-0 fs-16">CONTRACTED UNITS WITH MAINTENANCE</p>
+              <p class="m-0 fs-18">
+                {{
+                  statsData?.inventoryStats?.units_contracted_maintenance?.count
+                }}
+              </p>
+            </div>
+            <p class="m-0 fs-16 fw-bold">
+              {{
+                statsData?.inventoryStats?.units_contracted_maintenance?.sum
+                  | number
+              }}
+              EGP
+            </p>
+          </div>
+        </div>
+
+        <div class="col-xs-12">
+          <div class="statics-card m-5px p-15 rounded">
+            <div class="d-flex justify-content-between">
+              <p class="m-0 fs-16">ACTIVE RESERVATION</p>
+              <p class="m-0 fs-18">
+                {{ statsData?.inventoryStats?.active_reservations?.count }}
+              </p>
+            </div>
+            <p class="m-0 fs-16 fw-bold">
+              {{ statsData?.inventoryStats?.active_reservations?.sum | number }}
+              EGP
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--  -->
+
+  <!-- Start : target -->
+  <div class="project-dropdown">
+    <button class="btn btn-export btn-center" (click)="exportTarget()">
+      Export
+    </button>
+    <p-dropdown
+      name="year"
+      [style]="{ width: '130px', margin: '0 10px', padding: '3px 0' }"
+      [options]="getYears()"
+      [(ngModel)]="selectedYear"
+      (onChange)="
+        onChangeFilter(
+          $event.value,
+          selectedMonth,
+          selectedProject_filter,
+          selectedUser
+        )
+      "
+      [filter]="true"
+      [autoWidth]="false"
+      placeholder="Select Year"
+      [showClear]="true"
+      optionLabel="name"
+    ></p-dropdown>
+    <p-dropdown
+      name="month"
+      [style]="{ width: '130px', margin: '0 10px', padding: '3px 0' }"
+      [options]="getMonths()"
+      [(ngModel)]="selectedMonth"
+      (onChange)="
+        onChangeFilter(
+          selectedYear,
+          $event.value,
+          selectedProject_filter,
+          selectedUser
+        )
+      "
+      [filter]="true"
+      [autoWidth]="false"
+      placeholder="Select Month"
+      [showClear]="true"
+      optionLabel="name"
+    ></p-dropdown>
+    <p-dropdown
+      [style]="{ width: '130px' }"
+      [options]="projects"
+      [(ngModel)]="selectedProject_filter"
+      (onChange)="
+        onChangeFilter(selectedYear, selectedMonth, $event.value, selectedUser)
+      "
+      [filter]="true"
+      [autoWidth]="false"
+      placeholder="Select Project"
+      [showClear]="true"
+      optionLabel="name"
+    ></p-dropdown>
+    <p-dropdown
+      name="userId"
+      [style]="{ width: '130px', margin: '0 10px', padding: '3px 0' }"
+      [options]="users"
+      [(ngModel)]="selectedUser"
+      (onChange)="
+        onChangeFilter(
+          selectedYear,
+          selectedMonth,
+          selectedProject_filter,
+          $event.value
+        )
+      "
+      [filter]="true"
+      [autoWidth]="false"
+      placeholder="Select User"
+      [showClear]="true"
+      optionLabel="name"
+    ></p-dropdown>
+    <p-dropdown
+      [style]="{ width: '130px' }"
+      [options]="teams"
+      [(ngModel)]="selectedTeam_filter"
+      (onChange)="
+        onChangeFilter(
+          selectedYear,
+          selectedMonth,
+          $event.value,
+          selectedUser,
+          selectedTeam_filter
+        )
+      "
+      [filter]="true"
+      [autoWidth]="false"
+      placeholder="Select Team"
+      [showClear]="true"
+      optionLabel="name"
+    ></p-dropdown>
+  </div>
+  <div class="wallet-pipeline">
+    <span class="wallet-pipeline__title"> Wallet</span>
+    <div class="wallet-pipeline__bar"></div>
+  </div>
+  <div class="wallet-stats">
+    <div class="wallet-stats__wrapper">
+      <div class="total-commissions">
+        <div class="total-commissions__stats">
+          <div class="wallet-stats__number">
+            <!-- {{ statsData?.wallet?.total_commissions | number }} -->
+            {{ waletTarget?.my_target || 0 }}
+          </div>
+          <div class="wallet-stats__title">MY TARGET</div>
+        </div>
+        <div class="total-commissions__icon">
+          <img
+            src="assets/img/dashboard/total-units-icon.png"
+            alt="total commissions icon"
+          />
+        </div>
+      </div>
+      <div class="commissioned">
+        <div class="commissioned__stats">
+          <div class="wallet-stats__number">
+            <!-- {{ statsData?.wallet?.commissioned }} -->
+            {{ waletTarget?.achieved_from_target || 0 }}
+          </div>
+          <div class="wallet-stats__title">ACHIEVED FROM TARGET</div>
+        </div>
+        <div class="commissioned__icon">
+          <img
+            src="assets/img/dashboard/available-units-icon.png"
+            alt="commissioned icon"
+          />
+        </div>
+      </div>
+      <div class="wallet-pending">
+        <div class="pending__stats">
+          <div class="wallet-stats__number">
+            <!-- {{ statsData?.wallet?.pending }} -->
+            {{ waletTarget?.total_commission || 0 }}
+          </div>
+          <div class="wallet-stats__title">TOTAL COMMISSION</div>
+        </div>
+        <div class="pending__icon">
+          <img
+            src="assets/img/dashboard/contracted-units-icon.png"
+            alt="pending icon"
+          />
+        </div>
+      </div>
+      <div class="wallet-pending acheivement-percentage">
+        <div class="pending__stats">
+          <div class="wallet-stats__number">
+            <!-- 25% -->
+            {{
+              waletTarget && waletTarget?.achievement_percentage > 0
+                ? waletTarget?.achievement_percentage
+                : 0
+            }}%
+          </div>
+          <div class="wallet-stats__title">ACHIEVEMENT PERCENTAGE</div>
+        </div>
+        <div class="pending__icon">
+          <img
+            src="https://cdn.discordapp.com/attachments/762679290059292702/787983898377584681/icon.png"
+            alt="pending icon"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="inventory-pipeline">
+    <span class="inventory-pipeline__title">Tickets Statuses</span>
+    <div class="solid-pipeline__bar"></div>
+  </div>
+  <div class="sales-stats">
+    <div class="sales-stats__wrapper">
+      <div
+        *ngFor="let ticket of statsData?.ticketsStatuses?.tickets_status"
+        class="states__card"
+      >
+        <!-- (click)="onticketClicked(ticket)" -->
+        <div class="card-number">{{ ticket.count }}</div>
+        <div class="card-title">{{ ticket.status_string }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="inventory-pipeline">
+    <span class="inventory-pipeline__title">Tickets Types</span>
+    <div class="solid-pipeline__bar"></div>
+  </div>
+  <div class="sales-stats">
+    <div class="sales-stats__wrapper">
+      <div
+        *ngFor="let ticket of statsData?.ticketsStatuses?.tickets_types"
+        class="states__card"
+      >
+        <div class="card-number">{{ ticket.count }}</div>
+        <div class="card-title">{{ ticket.type_string }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- End : target -->
+
+  <div class="dashboard-activities">
+    <div class="dashboard-activities__wrapper">
+      <div class="card" #cardEl>
+        <div id="calendar" #calendarEl></div>
+      </div>
+      <div
+        class="latest-activities card"
+        [ngStyle]="{ height: cardEl?.clientHeight + 'px' }"
+      >
+        <h1 class="latest-activities__header">LATEST ACTIVITIES</h1>
+        <div class="activities-timeline">
+          <div
+            class="d-flex justify-content-between align-items-center"
+            *ngFor="let timeline of statsData?.activityStats?.activities_list"
+          >
+            <div class="timeline-container">
+              <span class="timeline">{{ timeline.created_at }}</span>
+              <div class="bullet-container">
+                <i class="timeline-bullet"></i>
+              </div>
+              <div class="timeline-details">
+                <p>
+                  <span class="timeline-details__title"
+                    >{{ timeline?.title }} For
+                  </span>
+                  <span
+                    class="timeline-lead cursor-pointer"
+                    (click)="goToLead(timeline?.lead?.id)"
+                    >{{ timeline?.lead?.name }}</span
+                  >
+                </p>
+                <p>{{ timeline?.details }}</p>
+              </div>
+            </div>
+            <div class="timeline-user">
+              <img
+                *ngIf="
+                  timeline?.user?.name?.user_image;
+                  else timelineImageLetters
+                "
+                [src]="timeline?.user?.name?.user_image"
+              />
+              <ng-template #timelineImageLetters>
+                <span class="img-letters">
+                  {{ getFirstNames(timeline?.user?.name) }}
+                </span>
+              </ng-template>
+
+              <span>{{ timeline?.user?.name }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="gamifactaion-wrapper">
+    <div
+      class="gamifactaion-card flex-grow-1"
+      *ngIf="statsData?.activityStats?.top?.agent"
+    >
+      <img
+        [src]="
+          statsData?.activityStats?.top?.agent?.user?.gender === 'female'
+            ? 'assets/img/dashboard/woman-achive.png'
+            : 'assets/img/dashboard/man-achive.png'
+        "
+        alt=""
+        class="bg-image"
+      />
+      <div class="content">
+        <h3>Congratulations ! 🎉</h3>
+        <p>Best seller of the month</p>
+        <p class="lead winner-data">
+          <img
+            *ngIf="
+              statsData?.activityStats?.top?.agent?.user?.user_image;
+              else imageLetters
+            "
+            [src]="statsData?.activityStats?.top?.agent?.user?.user_image"
+          />
+          <ng-template #imageLetters>
+            <span class="img-letters">
+              {{
+                getFirstNames(statsData?.activityStats?.top?.agent?.user?.name)
+              }}
+            </span>
+          </ng-template>
+
+          <span>
+            <p class="fw-bolder m-0">
+              {{ statsData?.activityStats?.top?.agent?.user?.name }}
+            </p>
+
+            <p class="winner-title m-0">Pr. Consultant</p>
+          </span>
+        </p>
+      </div>
+    </div>
+    <div
+      class="gamifactaion-card flex-grow-1"
+      *ngIf="statsData?.activityStats?.top?.team"
+    >
+      <img
+        src="assets/img/dashboard/team-success.png"
+        alt=""
+        class="bg-image"
+      />
+      <div class="content">
+        <h3>Congratulations! 🎉</h3>
+        <p>Best Team of the month</p>
+        <p class="lead winner-data">
+          <span class="img-letters">
+            {{ getFirstNames(statsData?.activityStats?.top?.team?.team?.name) }}
+          </span>
+
+          <span>
+            <p class="fw-bolder m-0">
+              {{ statsData?.activityStats?.top?.team?.team?.name }}
+            </p>
+
+            <p class="winner-title m-0">Team</p>
+          </span>
+        </p>
+      </div>
+    </div>
+    <div
+      class="gamifactaion-card flex-grow-1"
+      *ngIf="statsData?.activityStats?.top?.sales_manager"
+    >
+      <img src="assets/img/dashboard/trophy.png" alt="" class="bg-image" />
+
+      <div class="content">
+        <h3>Congratulations! 🎉</h3>
+        <p>Best Manager of the month</p>
+        <p class="lead winner-data">
+          <img
+            *ngIf="
+              statsData?.activityStats?.top?.sales_manager?.user?.user_image;
+              else imageLetters
+            "
+            [src]="
+              statsData?.activityStats?.top?.sales_manager?.user?.user_image
+            "
+          />
+          <ng-template #imageLetters>
+            <span class="img-letters">
+              {{
+                getFirstNames(
+                  statsData?.activityStats?.top?.sales_manager?.user?.name
+                )
+              }}
+            </span>
+          </ng-template>
+
+          <span>
+            <p class="fw-bolder m-0">
+              {{ statsData?.activityStats?.top?.sales_manager?.user?.name }}
+            </p>
+
+            <p class="winner-title m-0">Sales Manager</p>
+          </span>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="sales-charts">
+    <div class="sales-charts__wrapper">
+      <div class="sales-charts__single">
+        <h1 class="sales-chart__header">SALES ACTIVITY</h1>
+        <div
+          *ngIf="
+            lineChartsData.salesActivity.length > 0 &&
+              lineChartsLabels.salesActivity.length > 0;
+            else salesActivitySpinner
+          "
+        >
+          <canvas
+            baseChart
+            width="300"
+            height="300"
+            [datasets]="lineChartsData.salesActivity"
+            [labels]="lineChartsLabels.salesActivity"
+            [options]="lineChartsOptions.salesActivity"
+            [colors]="lineChartsColors.salesActivity"
+            [legend]="true"
+            [chartType]="'line'"
+          ></canvas>
+        </div>
+        <ng-template #salesActivitySpinner>
+          <div class="chart-spinner">
+            <div class="lds-ripple">
+              <div></div>
+              <div></div>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+      <div class="sales-charts__single">
+        <h1 class="sales-chart__header">MONTHLY SALES CHART</h1>
+        <div
+          *ngIf="
+            lineChartsData.monthlySales.length > 0 &&
+              lineChartsLabels.monthlySales.length > 0;
+            else monthlySalesSpinner
+          "
+        >
+          <canvas
+            baseChart
+            width="300"
+            height="300"
+            [datasets]="lineChartsData.monthlySales"
+            [labels]="lineChartsLabels.monthlySales"
+            [options]="lineChartsOptions.monthlySales"
+            [colors]="lineChartsColors.monthlySales"
+            [legend]="true"
+            [chartType]="'line'"
+          ></canvas>
+        </div>
+        <ng-template #monthlySalesSpinner>
+          <div class="chart-spinner">
+            <div class="lds-ripple">
+              <div></div>
+              <div></div>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+
+  <div class="inventory-charts">
+    <div class="inventory-charts__wrapper">
+      <div class="inventory-charts__single">
+        <h1 class="inventory-chart__header">
+          AVAILABLE INVENTORY CHART / UNITS
+        </h1>
+        <div
+          *ngIf="
+            barChartsData.availableInventory.length > 0 &&
+              barChartsLabels.availableInventory.length > 0;
+            else availableInventorySpinner
+          "
+        >
+          <canvas
+            baseChart
+            width="300"
+            height="300"
+            [datasets]="barChartsData.availableInventory"
+            [labels]="barChartsLabels.availableInventory"
+            [options]="barChartsOptions.availableInventory"
+            [colors]="barChartsColors"
+            [legend]="true"
+            [chartType]="'bar'"
+          ></canvas>
+        </div>
+        <ng-template #availableInventorySpinner>
+          <div class="chart-spinner">
+            <div class="lds-ripple">
+              <div></div>
+              <div></div>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+      <div class="inventory-charts__single">
+        <h1 class="inventory-chart__header">SOLD INVENTORY CHART / UNITS</h1>
+        <div
+          *ngIf="
+            barChartsData.soldInventory.length > 0 &&
+              barChartsLabels.soldInventory.length > 0;
+            else soldInventorySpinner
+          "
+        >
+          <canvas
+            baseChart
+            width="300"
+            height="300"
+            [datasets]="barChartsData.soldInventory"
+            [labels]="barChartsLabels.soldInventory"
+            [options]="barChartsOptions.soldInventory"
+            [colors]="barChartsColors"
+            [legend]="true"
+            [chartType]="'bar'"
+          ></canvas>
+        </div>
+        <ng-template #soldInventorySpinner>
+          <div class="chart-spinner">
+            <div class="lds-ripple">
+              <div></div>
+              <div></div>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-copyrights">
+      &copy; {{ currentYear }} {{ envStatics.projectName }}
+    </div>
+    <div class="footer-upbutton">
+      <a (click)="onGoPageTop()"><i class="fa fa-arrow-circle-up"></i> UP</a>
+    </div>
+  </div>
+</section>
+
+<app-reminder-form
+  [event]="selectedEvent"
+  [(status)]="formDisplay"
+  (refresh)="getReminders()"
+></app-reminder-form>

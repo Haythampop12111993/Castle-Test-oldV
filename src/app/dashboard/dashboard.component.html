@@ -1,0 +1,79 @@
+<ng-container [ngSwitch]="true">
+  <ng-container
+    *ngSwitchCase="
+      userProfile?.role === 'Admin' ||
+      userProfile?.role === 'Super Development' ||
+      userProfile?.role === 'CCO' ||
+      userProfile?.role === 'Moderator' ||
+      userProfile?.role === 'Super Moderator' ||
+      userProfile?.role === 'MD' ||
+      userProfile?.role == 'Development Director'
+    "
+  >
+    <app-admin-dashboard></app-admin-dashboard>
+  </ng-container>
+  <ng-container
+    *ngSwitchCase="
+      userProfile?.is_sales_team && userProfile.role != 'Sales Manager'
+    "
+  >
+    <app-user-dashboard></app-user-dashboard>
+  </ng-container>
+  <ng-container
+    *ngSwitchCase="
+      userProfile?.is_sales_team && userProfile.role == 'Sales Manager'
+    "
+  >
+    <app-sales-manager-dashboard></app-sales-manager-dashboard>
+  </ng-container>
+  <ng-container
+    *ngSwitchCase="
+      userProfile?.role != 'Development Director' &&
+        userProfile?.role !== 'Admin' &&
+        userProfile?.role !== 'Super Development' &&
+        userProfile?.role != 'CCO' &&
+        userProfile?.role !== 'Moderator' &&
+        userProfile?.role !== 'Super Moderator' &&
+        (userProfile?.role === 'A.R Accountant' ||
+          userProfile?.role === 'AR Manager' ||
+          userProfile?.role === 'G.L Accountant' ||
+          userProfile?.role === 'Treasury Accountant');
+      accountant
+    "
+  >
+    <app-accountant-dashboard></app-accountant-dashboard>
+  </ng-container>
+  <ng-container
+    *ngSwitchCase="
+      userProfile?.role !== 'Admin' &&
+      userProfile?.role !== 'Super Development' &&
+      userProfile?.role != 'CCO' &&
+      userProfile?.role != 'Development Director' &&
+      userProfile?.role !== 'Moderator' &&
+      userProfile?.role !== 'Super Moderator' &&
+      userProfile?.role === 'Marketing'
+    "
+  >
+    <app-marketing-dashboard></app-marketing-dashboard>
+  </ng-container>
+  <ng-container
+    *ngSwitchCase="
+      userProfile?.role !== 'Admin' &&
+      userProfile?.role !== 'Super Development' &&
+      userProfile?.role != 'CCO' &&
+      userProfile?.role != 'Development Director' &&
+      userProfile?.role !== 'Moderator' &&
+      userProfile?.role !== 'Super Moderator' &&
+      (userProfile?.role === 'Helpdesk Supervisor' ||
+        userProfile?.role === 'Helpdesk Agent')
+    "
+  >
+    <app-helpdesk-dashboard></app-helpdesk-dashboard>
+  </ng-container>
+  <ng-container *ngSwitchDefault>
+    <div class="box">
+      <div>Under Maintainance !</div>
+      <p><span>Stay Tuned !</span> we`re working on a new dashboard</p>
+    </div>
+  </ng-container>
+</ng-container>

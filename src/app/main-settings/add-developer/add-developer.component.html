@@ -1,0 +1,106 @@
+<div class="row">
+  <div class="col-xs-12">
+      <div class="import-container">
+          <div class="import-inner-container flex-space">
+              <h2 class="title">{{title}}</h2>
+          </div>
+      </div>
+  </div>
+
+  <div class="col-xs-12">
+    <form  #form="ngForm">
+      <div class="form-group col-xs-6">
+        <label for="">Developer Name :</label>
+        <input name="add_developer" [(ngModel)]="add_developer.name" type="text" class="form-control" required />
+      </div>
+      <div class="form-group col-xs-12 center-btn">
+        <button
+        mat-button
+        type="submit"
+        class="btn "
+        (click)="addDeveloper()"
+        [disabled]="!form.form.valid"
+      >
+        SAVE
+      </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<!-- <mat-card>
+  <mat-card-content>
+    <div class="row">
+      <div class="col-xs-12">
+        <h3 class="card__title lato">Brokers Settings</h3>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 margin-bottom">
+        <form #brokerForm="ngForm" class="form-group">
+          <div class="form-group col-xs-4">
+            <label for="">Broker Name :</label>
+            <input name="add_developer" [(ngModel)]="add_developer.name" type="text" class="form-control" required />
+          </div>
+          <div class=" col-xs-4 form-group">
+            <label for="">Contact Person :</label>
+            <input name="contact_person" [(ngModel)]="add_developer.contact_person" type="text" class="form-control"
+              required />
+          </div>
+          <div class="col-xs-4 form-group">
+            <label for="">Contact Phone :</label>
+            <input name="contact_phone" [(ngModel)]="add_developer.contact_phone" type="text" class="form-control"
+              required />
+          </div>
+          <div class="col-xs-4 form-group margin-top">
+            <label for="">Contact Address :</label>
+            <input name="contact_address" [(ngModel)]="add_developer.contact_address" type="text" class="form-control"
+              required />
+          </div>
+          <div class="col-xs-4 form-group margin-top">
+            <label for="">P.C in-charge :</label>
+            <select type="text" placeholder="agent" class="form-control" name="agent"
+              [(ngModel)]="add_developer.agent_in_charge">
+              <option value="">...</option>
+              <option *ngFor="let agent of agents" value="{{ agent.id }}">
+                {{ agent.name }}
+              </option>
+            </select>
+          </div>
+          <div class="col-xs-4 form-group margin-top">
+            <label for="">Broker Logo</label>
+            <input type="file" id="broker" accept="image/*" #file (change)="onFileChange($event)" class="form-control">
+          </div>
+          <div class="col-xs-12 flex-end form-group margin-top">
+            <button (click)="addDeveloper()" class="btn btn-primary add-btn" type="submit"
+              [disabled]="!brokerForm.form.valid">
+              Add
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card> -->
+
+<!-- <modal #importBrokerModal title="Import Brokers" submitButtonLabel="submit" modalClass="modal-md"
+  [hideCloseButton]="true" [closeOnOutsideClick]="true" (onOpen)="importBrokersModalOpen()"
+  (onClose)="importBrokersModalClose()" (onSubmit)="uploadBrokerExcelMethod(importBrokerModal)">
+  <modal-content>
+    <div class="row">
+      <div class="form-group col-xs-6">
+        <form class="form-group btn-group-files pull-left">
+          <label for="">Brokers File : </label>
+          <input type="file" accept=".xlsx, .xls" class="margin-left" id="brokerExcelFile"
+            (change)="handleBrokerUploadExcel($event)" />
+        </form>
+      </div>
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-secondary" (click)="importBrokerModal.close()">
+      close
+    </button>
+  </modal-footer>
+</modal> -->

@@ -1,0 +1,32 @@
+<ng-container *ngIf="status === 'open' && img">
+  <div class="image-zoom-modal-overlay" (click)="status = 'close'">
+    <div class="image-zoom-modal">
+      <img
+        #image
+        [src]="img"
+        (error)="img = ''"
+        alt=""
+        (mousemove)="onZoom($event)"
+        (mouseover)="onZoom($event)"
+        (wheel)="onScroll($event)"
+      />
+      <div
+        #magnifierEl
+        class="img-magnifier-glass"
+        (mousemove)="onZoom($event)"
+        (mouseleave)="offZoom($event)"
+        (wheel)="onScroll($event)"
+        [ngClass]="{ hidden: !magnifier.view }"
+        [ngStyle]="{
+          'background-image': 'url(' + img + ')',
+          'background-size': bgSize,
+          width: magnifier.width + 'px',
+          height: magnifier.height + 'px',
+          top: magnifier.top,
+          left: magnifier.left,
+          'background-position': magnifier.backgroundPosition
+        }"
+      ></div>
+    </div>
+  </div>
+</ng-container>

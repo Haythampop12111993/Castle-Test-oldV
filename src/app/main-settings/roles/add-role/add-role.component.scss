@@ -1,0 +1,87 @@
+@import '../styles/shared';
+ul {
+  list-style: none;
+  display: flex;
+  padding: 0;
+  margin: 0;
+  li {
+    flex: 1;
+    padding: 15px;
+    background: transparent;
+    color: #000;
+    font-weight: 500;
+    font-size: 1rem;
+    white-space: nowrap;
+    text-align: center;
+    cursor: pointer;
+    position: relative;
+    transition: 0.4s;
+    // &::after {
+    //     content: '';
+    //     background-color:  var(--accent_main);
+    //     position: absolute;
+    //     bottom: 0;
+    //     left: 50%;
+    //     transform: translate(-50%, 0%);
+    //     height: 2px;
+    //     width: 0%;
+    // }
+    &:hover {
+      color: var(--accent_main);
+    }
+    @media (max-width: 500px) {
+      flex: 1 0 50%;
+    }
+  }
+}
+/* active tab */
+::ng-deep .mat-tab-nav-bar,
+::ng-deep .mat-tab-header {
+  border-bottom: unset !important;
+}
+::ng-deep .mat-tab-body-wrapper {
+  border-top: 1px solid #eee;
+  padding-top: 20px;
+}
+::ng-deep .mat-tab-list .mat-tab-labels .mat-tab-label-active {
+  background: #fff !important;
+  color: var(--accent_main) !important;
+  transition: 0.4s !important;
+  border: 1px solid #eee;
+  &::after {
+    width: 80%;
+  }
+}
+::ng-deep .mat-tab-group.mat-primary .mat-ink-bar,
+.mat-tab-nav-bar.mat-primary .mat-ink-bar {
+  background-color: unset;
+}
+::ng-deep #add-role .mat-tab-body-content {
+  overflow: hidden !important;
+}
+::ng-deep .mat-tab-group.mat-primary .mat-ink-bar,
+.mat-tab-nav-bar.mat-primary .mat-ink-bar {
+  background-color: unset;
+}
+.role-btns{
+  display: flex;
+  justify-content: end;
+  align-items: center;
+}
+.submit {
+  color: white;
+  background-color: gray;
+  border: 1px solid gray;
+  border-radius: 4px;
+  height: 36px;
+  width: 120px;
+  margin: 20px;
+}
+.cancel {
+  color: gray;
+  font-size: small;
+  margin-top: 5px;
+}
+.btn-width {
+  width: 120px;
+}

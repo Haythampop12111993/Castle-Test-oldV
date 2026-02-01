@@ -1,0 +1,61 @@
+<section class="users-table">
+  <div class="container-fluid">
+    <h2 class="users-table__title">Banks</h2>
+    <div class="proj-details">
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="settings-icons pull-right">
+            <div class="dropdown" dropdown>
+              <i class="fa fa-cog" aria-hidden="true" dropdown-open></i>
+              <ul class="dropdown-menu">
+                <li>
+                  <a [routerLink]="['/pages/print-cheque']">
+                    <span>Add Bank Cheque Template</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="col-md-12">
+          <div class="table table-responsive">
+            <table class="table table-bordered">
+              <tr>
+                <th>ID</th>
+                <th>Bank Name</th>
+                <th>Created At</th>
+                <th>Actions</th>
+              </tr>
+              <tr
+                *ngFor="let bank of banks"
+              >
+                <td>#{{ bank.id }}</td>
+                <td>{{ bank.bank_name }}</td>
+                <td>{{ bank.created_at }}</td>
+                <td>
+                  <div class="dropdown" dropdown>
+                    <img
+                      class="more-options-icon"
+                      src="assets/img/show-more-button-with-three-dots.svg"
+                      dropdown-open
+                    />
+                    <ul class="dropdown-menu">
+                      <li
+                        (click)="deleteBank(bank.id)"
+                      >
+                        <a>
+                          <span class="doc_link">Delete</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

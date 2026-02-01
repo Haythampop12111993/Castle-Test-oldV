@@ -1,0 +1,138 @@
+.projects {
+  padding-bottom: 350px;
+}
+
+.generate-btns-container {
+  margin-top: 20px;
+}
+
+.clear-fix {
+  clear: both;
+}
+
+.percentage-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.percentage-inner {
+  background-color: #fff;
+  padding: 10px;
+  border: 1px solid #000;
+  border-radius: 15px;
+  font-size: 18px;
+}
+
+.margin-top-20 {
+  margin-top: 20px;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.justify-content-end {
+  justify-content: flex-end;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.justify-content-center {
+  justify-content: center;
+}
+
+.align-items-center {
+  align-items: center;
+}
+
+.remove-button {
+  font-size: 20px;
+  margin-top: 7px;
+}
+
+.margin-right-20 {
+  margin-right: 20px;
+}
+
+.margin-top-10 {
+  margin-top: 10px;
+}
+
+.payment-status {
+  font-size: 14px;
+  border: 1px solid #7f8003;
+  padding: 2px;
+  border-radius: 3px;
+  display: inline-block;
+  vertical-align: middle;
+  margin-top: -3px;
+  margin-left: 9px;
+  color: #7f8003;
+}
+
+li {
+  font-size: 13px;
+  margin-bottom: 2px;
+  color: #444;
+  font-weight: 500;
+}
+
+.unit-details {
+  padding-top: 20px;
+}
+
+.invalid-date {
+  border: 1px solid red !important;
+}
+
+.affix {
+  position: fixed;
+  right: 10px;
+  bottom: 10px;
+  padding: 10px;
+}
+
+.payment-form-container {
+  height: 81vh;
+  overflow: scroll;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+.w-55 {
+  width: 55%;
+}
+
+.w-45 {
+  width: 45%;
+}
+
+
+.p-h-20 {
+  padding: 0 20px;
+}
+
+.px-10 {
+  padding: 0 10px;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.checkbox-container {
+  display: flex;
+  align-items: start;
+}
+
+.checkbox-container input {
+  display: inline-block;
+  margin-left: 10px;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}

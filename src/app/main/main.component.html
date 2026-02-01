@@ -1,0 +1,24 @@
+<!--=======START TOP PAGE BACKGROUND=======-->
+<!-- <div class="header-bg"></div> -->
+<!--=======End TOP PAGE BACKGROUND=======-->
+<!--#############################################################-->
+<!--========START SIDEBAR=========-->
+<navbar (sidebarCollapsed)="handleSidebarCollapsed($event)"></navbar>
+<!--========End SIDEBAR=========-->
+<!--##################################################################-->
+<!--=====START MAIN PAGE CONTENTS======-->
+
+<div class="main-contents" [ngClass]="{'active': menuOpen}">
+    <!--======== START TOP NAVBAR=======-->
+   <header [menuIsExpanded]="menuOpen"></header>
+    <!--======== END TOP NAVBAR=======-->
+    <!--###########################################################-->
+    <!--START BREADCRUMB-->
+    <breadcrumb></breadcrumb>
+
+    <!--End BREADCRUMB-->
+    <!--#########################################################-->
+    <!--START LEADS-->
+    <router-outlet></router-outlet>
+    <!--END LEADS-->
+</div>

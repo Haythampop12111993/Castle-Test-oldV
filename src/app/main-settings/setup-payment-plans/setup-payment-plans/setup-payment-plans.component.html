@@ -1,0 +1,700 @@
+<form
+  [formGroup]="setupPaymentForm"
+  *ngIf="setupPaymentForm"
+  class="container-fluid"
+>
+  <div class="row">
+    <div class="col-md-12">
+      <h2>Setup Payment Plan</h2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <div class="payment-tabs-container">
+        <div
+          class="payment-tab general"
+          [ngClass]="{ 'payment-tab--active': activeTab == 'general' }"
+          (click)="setActiveView('general')"
+        >
+          <p>Payment Plan General</p>
+        </div>
+        <div
+          class="payment-tab details"
+          [ngClass]="{ 'payment-tab--active': activeTab == 'details' }"
+          (click)="setActiveView('details')"
+        >
+          <p>Payment Plan Details</p>
+        </div>
+        <div
+          class="payment-tab extra"
+          [ngClass]="{ 'payment-tab--active': activeTab == 'extra' }"
+          (click)="setActiveView('extra')"
+        >
+          <p>Payment Plan Extra</p>
+        </div>
+        <div
+          class="payment-tab details"
+          [ngClass]="{ 'payment-tab--active': activeTab == 'preview' }"
+          (click)="setActiveView('preview')"
+        >
+          <p>Payment Plan Preview</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row" *ngIf="activeTab == 'general'">
+    <div class="col-md-4">
+      <div class="form-group">
+        <label for="">Payment Plan Name</label>
+        <input
+          placeholder="Payment Plan Name"
+          type="text"
+          class="form-control"
+          formControlName="payment_plan_name"
+        />
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label for="">Project Name</label>
+        <ng-select
+          name="project_ids"
+          formControlName="project_ids"
+          [multiple]="true"
+        >
+          <ng-option *ngFor="let project of projects" [value]="project.id">{{
+            project.name
+          }}</ng-option>
+        </ng-select>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label for="">Finish Type</label>
+        <select
+          (change)="onFinishTypeChange($event.target.value)"
+          class="form-control"
+          name="finishing_type_id"
+          id="finishing_type_id"
+          formControlName="finishing_type_id"
+        >
+          <option
+            *ngFor="let finishing_type of finishing_types"
+            [value]="finishing_type?.id"
+          >
+            {{ finishing_type?.name }}
+          </option>
+        </select>
+      </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="col-md-4" *ngIf="projects && phases && phases.length > 0">
+      <div class="form-group">
+        <label>Phases</label>
+        <ng-select name="phases" formControlName="phases" [multiple]="true">
+          <ng-option *ngFor="let phase of phases" [value]="phase.id">{{
+            phase.serial
+          }}</ng-option>
+        </ng-select>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label for="">Number of Years</label>
+        <input
+          placeholder="Number of Years"
+          type="number"
+          class="form-control"
+          formControlName="number_of_years"
+        />
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label for="">Description</label>
+        <input
+          placeholder="Description"
+          type="text"
+          class="form-control"
+          formControlName="description"
+        />
+      </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label for="">Interest Percentage</label>
+        <input
+          placeholder="Interest Percentage"
+          type="number"
+          class="form-control"
+          formControlName="interest_percentage"
+        />
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label for="">Discount Percentage</label>
+        <input
+          placeholder="Discount Percentage"
+          type="number"
+          class="form-control"
+          formControlName="discount_percentage"
+        />
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label for="">Example Price</label>
+        <input
+          placeholder="Example Price"
+          type="text"
+          class="form-control"
+          formControlName="example_price"
+        />
+      </div>
+    </div>
+  </div>
+  <div class="row" *ngIf="activeTab == 'general'">
+    <div class="col-md-12">
+      <div class="buttons-container">
+        <button class="next" (click)="setActiveView('details')">Next</button>
+      </div>
+    </div>
+  </div>
+  <div class="row" *ngIf="activeTab == 'details'">
+    <div class="col-md-4">
+      <div class="form-group">
+        <label for="">Type</label>
+        <select class="form-control" formControlName="type">
+          <option value="down_payment">Down Payment</option>
+          <option value="installment">Installments</option>
+        </select>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label for="">Number</label>
+        <input formControlName="number" type="number" class="form-control" />
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label for="">Total Percent</label>
+        <input
+          formControlName="total_percent"
+          type="total_percent"
+          class="form-control"
+        />
+      </div>
+    </div>
+
+    <div class="col-md-12 percentage-actions">
+      <div class="percentage-container">
+        <div class="percentage-inner">
+          Remaining Percentage: {{ percentage }}%
+        </div>
+      </div>
+      <div class="buttons-container">
+        <button *ngIf="!is_edit_payment" class="add-btn" (click)="addDetails()">
+          Add
+        </button>
+        <button *ngIf="is_edit_payment" class="save-btn" (click)="save()">
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="row" *ngIf="activeTab == 'details'">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="table table-responsive">
+          <table class="table table-bordered">
+            <tr>
+              <th>Type</th>
+              <th>Name</th>
+              <th>Percentage</th>
+              <th>Interval</th>
+              <th>Static Date</th>
+              <th>Action</th>
+            </tr>
+            <tr
+              *ngFor="
+                let payment of paymentPlanDetailsArray.controls;
+                let index = index
+              "
+            >
+              <ng-container [formGroup]="payment">
+                <td>{{ payment.get("type").value }}</td>
+                <td>
+                  <input
+                    type="text"
+                    class="form-control table-input"
+                    formControlName="name"
+                    name="{{ name + index }}"
+                  />
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    class="form-control table-input"
+                    formControlName="percentage"
+                    (keyup)="percentageChange($event, payment)"
+                  />
+                </td>
+                <td>
+                  <input
+                    (keyup)="intervalChange($event, index)"
+                    (change)="intervalChange($event, index)"
+                    type="text"
+                    class="form-control table-input"
+                    formControlName="interval"
+                  />
+                </td>
+                <td>
+                  <input
+                    (change)="dateTimeChange($event, index)"
+                    type="date"
+                    id="static_date"
+                    placeholder=""
+                    class="form-control table-input"
+                    formControlName="static_date"
+                  />
+                </td>
+                <td>
+                  <div class="dropdown" dropdown>
+                    <img
+                      class="more-options-icon"
+                      src="assets/img/show-more-button-with-three-dots.svg"
+                      dropdown-open
+                    />
+                    <ul class="dropdown-menu">
+                      <li (click)="removePayment(index)">
+                        <a>
+                          <span class="doc_link">Remove</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </td>
+              </ng-container>
+            </tr>
+            <tr>
+              <td class="no-border"></td>
+              <td class="no-border"></td>
+              <td>Total : {{ total_inp_percentage }}</td>
+              <td class="no-border"></td>
+              <td class="no-border"></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="buttons-container">
+          <button class="back" (click)="back()">Back</button>
+          <button class="next" (click)="setActiveView('extra')">Next</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row" *ngIf="activeTab == 'extra'">
+    <div class="col-md-4">
+      <div class="form-group">
+        <label for="">Extra Paymnet Type</label>
+        <select
+          class="form-control"
+          name="extra_payment_type"
+          formControlName="extra_payment_type"
+        >
+          <option *ngFor="let type of types" [value]="type">{{ type }}</option>
+          <option value="Storage Slots">Storage Slots</option>
+          <option value="Extra Outdoor Meter">Extra Outdoor Meter</option>
+        </select>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label for="">Extra Payment Name</label>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="extra_payment_name"
+          name="extra_payment_name"
+          placeholder="Extra Payment Name"
+        />
+      </div>
+    </div>
+    <div
+      *ngIf="
+        setupPaymentForm.get('extra_payment_type').value != 'Custom Maintenance'
+      "
+    >
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="">Extra Payment Interval / Months</label>
+          <input
+            type="number"
+            (keyup)="resetExtraPaymentStaticDate($event)"
+            class="form-control"
+            formControlName="extra_payment_interval"
+            name="extra_payment_interval"
+            placeholder="Extra Payment Interval / Months"
+          />
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="">Extra Payment Static Date</label>
+          <input
+            type="date"
+            (change)="resetExtraPaymentValue($event)"
+            formControlName="extra_payment_static_date"
+            class="form-control"
+            name="extra_payment_static_date"
+            placeholder="Extra Payment Static Date"
+          />
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="">Extra Payment Pricing Type</label>
+          <select
+            class="form-control"
+            name="extra_payment_price_type"
+            formControlName="extra_payment_price_type"
+            class="form-control"
+          >
+            <option value="Amount">Amount</option>
+            <option value="Percentage">Percentage</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="">Extra Payment Value</label>
+          <input
+            type="text"
+            formControlName="extra_payment_value"
+            class="form-control"
+            name="extra_payment_value"
+            placeholder="Extra Payment Value"
+          />
+        </div>
+      </div>
+    </div>
+    <div
+      *ngIf="
+        setupPaymentForm.get('extra_payment_type').value == 'Custom Maintenance'
+      "
+    >
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="">Extra Payment Custom Value</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="extra_payment_custom_value"
+            name="extra_payment_custom_value"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-12">
+      <div class="buttons-container buttons-container-end">
+        <button *ngIf="!is_edit_extra" class="add-btn" (click)="addExtra()">
+          Add
+        </button>
+        <button *ngIf="is_edit_extra" class="save-btn" (click)="saveExtra()">
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="row" *ngIf="activeTab == 'extra'">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="buttons-container">
+          <button class="back" (click)="back()">Back</button>
+          <button class="next" (click)="setActiveView('preview')">Next</button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="table table-responsive">
+          <table class="table table-bordered">
+            <tr>
+              <th>Extra Payment Type</th>
+              <th>Extra Payment Name</th>
+              <th>Extra Payment Interval</th>
+              <th>Extra Payment Static Date</th>
+              <th>Extra Payment Price Type</th>
+              <th>Extra Payment Value</th>
+              <th>Extra Payment Custom Value</th>
+              <th>Actions</th>
+            </tr>
+            <tr *ngFor="let payment of extraPayments; let index = index">
+              <td>
+                <!-- <span *ngIf="payment.extra_payment_type != 5">
+                  {{ payment.extra_payment_type }}
+                </span>
+                <span *ngIf="payment.extra_payment_type == 5">
+                  Storage slot
+                </span> -->
+                {{ payment.extra_payment_type }}
+              </td>
+              <td>{{ payment.extra_payment_name }}</td>
+              <td>{{ payment.extra_payment_interval }}</td>
+              <th>{{ payment.extra_payment_static_date }}</th>
+              <td>{{ payment.extra_payment_price_type }}</td>
+              <td>{{ payment.extra_payment_value }}</td>
+              <td>{{ payment.extra_payment_custom_value }}</td>
+              <td>
+                <div class="dropdown" dropdown>
+                  <img
+                    class="more-options-icon"
+                    src="assets/img/show-more-button-with-three-dots.svg"
+                    dropdown-open
+                  />
+                  <ul class="dropdown-menu">
+                    <li (click)="removeExtraPayment(index)">
+                      <a>
+                        <span class="doc_link">Remove</span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row" *ngIf="activeTab == 'preview'">
+    <div class="row">
+      <div class="col-md-12">
+        <h4 class="general-info-title text-center">General Details</h4>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="general-info">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="label">Payment Plan Name:</div>
+                </div>
+                <div class="col-md-6">
+                  <div class="value">
+                    {{ previewPayments?.general?.payment_plan_name }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="general-info">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="label">Project Name:</div>
+                </div>
+                <div class="col-md-6">
+                  <div class="value">{{ currentSelectedProjectName }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="general-info">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="label">Finishing Type:</div>
+                </div>
+                <div class="col-md-6">
+                  <div class="value">{{ finish_type_name }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="general-info">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="label">Phases:</div>
+                </div>
+                <div class="col-md-6">
+                  <!-- <span *ngFor="let phase of previewPayments?.general?.phases">{{phase?.serial}}, </span> -->
+                  <div class="value">{{ currentSelectedPhases }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="general-info">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="label">Number of Years:</div>
+                </div>
+                <div class="col-md-6">
+                  <div class="value">
+                    {{ previewPayments?.general?.number_of_years }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="general-info">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="label">Description:</div>
+                </div>
+                <div class="col-md-6">
+                  <div class="value">
+                    {{ previewPayments?.general?.description }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="general-info">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="label">Example Price:</div>
+                </div>
+                <div class="col-md-6">
+                  <!-- <div class="value">{{previewPayments?.general?.example_price}}</div> -->
+                  <div class="value">
+                    {{
+                      previewPayments?.general?.example_price | currency : " "
+                    }}
+                    LE
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="general-info">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="label">Interest Percentage:</div>
+                </div>
+                <div class="col-md-6">
+                  <div class="value">
+                    {{ previewPayments?.general?.interest_percentage }}%
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="general-info">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="label">Discount Percentage:</div>
+                </div>
+                <div class="col-md-6">
+                  <div class="value">
+                    {{ previewPayments?.general?.discount_percentage }}%
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr />
+      <div class="col-md-12">
+        <div class="table table-responsive">
+          <h4 class="general-info-title text-center">Payment Plan Details</h4>
+          <table class="table table-bordered">
+            <tr>
+              <th>Type</th>
+              <th>Name</th>
+              <th>Percentage</th>
+              <th>Interval</th>
+              <th>Static Date</th>
+              <th>Amount</th>
+            </tr>
+            <tr
+              *ngFor="
+                let payment of previewPayments.payment_details;
+                let index = index
+              "
+            >
+              <td>{{ payment?.type }}</td>
+              <td>{{ payment?.name }}</td>
+              <td>{{ payment?.percentage }}%</td>
+              <td>{{ payment?.interval }}</td>
+              <td>{{ payment?.static_date }}</td>
+              <td>{{ payment?.amount | currency : " " }} LE</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <hr />
+      <div class="col-md-12">
+        <div class="table table-responsive">
+          <h4 class="general-info-title text-center">Payment Plan Extra</h4>
+          <table class="table table-bordered">
+            <tr>
+              <th>Extra Payment Type</th>
+              <th>Extra Payment Name</th>
+              <th>Extra Payment Interval</th>
+              <th>Extra Payment Static Date</th>
+              <th>Extra Payment Price Type</th>
+              <th>Extra Payment Value</th>
+              <th>Extra Payment Custom Value</th>
+            </tr>
+            <tr
+              *ngFor="
+                let payment of previewPayments.extra_payments;
+                let index = index
+              "
+            >
+              <td>
+                <!-- <span *ngIf="payment.extra_payment_type != 5">
+                  {{ payment.extra_payment_type }}
+                </span>
+                <span *ngIf="payment.extra_payment_type == 5">
+                  Storage slot
+                </span> -->
+                {{ payment.extra_payment_type }}
+              </td>
+              <td>{{ payment.extra_payment_name }}</td>
+              <td>{{ payment.extra_payment_interval }}</td>
+              <td>{{ payment?.extra_payment_static_date }}</td>
+              <td>{{ payment.extra_payment_price_type }}</td>
+              <td>
+                <span *ngIf="payment.extra_payment_price_type == 'Amount'">
+                  {{ payment.extra_payment_value | currency : " " }} LE
+                </span>
+                <span *ngIf="payment.extra_payment_price_type == 'Percentage'">
+                  {{ payment.extra_payment_value }} %
+                </span>
+              </td>
+              <td>{{ payment.extra_payment_custom_value }}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="buttons-container">
+          <button class="back" (click)="back()">Back</button>
+          <button
+            class="next"
+            (click)="submit()"
+            [ngClass]="{ 'disable-interaction-and-opacity': disabled_req }"
+          >
+            Finish
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

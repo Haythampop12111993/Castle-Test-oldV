@@ -1,0 +1,97 @@
+<section class="payment-plans-table">
+  <div class="container-fluid">
+    <div class="proj-details">
+      <div class="row">
+        <div class="col-xs-4">
+          <h3>Balance Sheet</h3>
+        </div>
+        <div class="col-xs-8">
+          <div class="settings-icons pull-right">
+            <div class="dropdown" dropdown>
+              <i class="fa fa-cog" aria-hidden="true" dropdown-open></i>
+              <ul class="dropdown-menu menu-settings">
+                <li>
+                  <a>
+                    <span>Export Balance Sheet</span>
+                  </a>
+                </li>
+                <li>
+                  <a>
+                    <span>Add Transaction</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12" [ngClass]="{'no-interaction': is_refreshing}">
+          <div class="table table-responsive">
+            <table class="table table-bordered">
+              <tr>
+                <th>Serial</th>
+                <th>Date</th>
+                <th>Type</th>
+                <th>From Account</th>
+                <th>To Account</th>
+                <th>Amount</th>
+                <th>Value Date</th>
+                <th>Cr</th>
+                <th>Dr</th>
+                <th>Balance</th>
+                <th>Description</th>
+                <!-- <th>Action</th> -->
+              </tr>
+              <tr *ngFor="let b of balanceSheet?.data ;let i = index">
+                <td>{{b?.id}}</td>
+                <td>{{b?.date}}</td>
+                <td>{{b?.type}}</td>
+                <td>{{b?.from_account?.name}}</td>
+                <td>{{b?.to_account?.name}}</td>
+                <td>{{b?.amount}}</td>
+                <td *ngIf="b.type == 'cheque'">{{b?.value_date}}</td>
+                <td *ngIf="b.type != 'cheque'">NA</td>
+                <td>
+                  <span *ngIf="b.type == 'Income'">{{b?.amount}}</span>
+                </td>
+                <td>
+                  <span *ngIf="b.type != 'Income'">{{b?.amount}}</span>{{b?.dr}}</td>
+                <td class="balance">
+                  <span *ngIf="accountID == b?.from_account?.id">{{b?.from_account_balance}}</span>
+                  <span *ngIf="accountID == b?.to_account?.id">{{b?.to_account_balance}}</span>
+                </td>
+                <td>{{b?.description}}</td>
+                <!-- <td>
+                  <div class="dropdown" dropdown>
+                    <img class="more-options-icon" src="assets/img/show-more-button-with-three-dots.svg" dropdown-open/>
+                    <ul class="dropdown-menu">
+                      <li [routerLink]="['/pages/finance/accounts/add/', account?.id]">
+                        <a>
+                          <span>Edit</span>
+                        </a>
+                      </li>
+                      <li [routerLink]="['/pages/finance/balance-sheet']">
+                        <a>
+                          <span>Balance Sheet</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </td> -->
+              </tr>
+            </table>
+          </div>
+        </div>
+        <div class="col-md-12 pull-left">
+          <button [routerLink]="['/pages/finance/accounts']" class="btn btn-default pull-right btn-black">Back</button>
+        </div>
+        <div class="row">
+          <div class="col-xs-12 text-center">
+            <ngb-pagination [collectionSize]="balanceSheet?.last_page * 10" [(page)]="pageTest" [maxSize]="5" [rotate]="true" [ellipses]="true"
+              [boundaryLinks]="true" (pageChange)="pageChange($event)" [size]="lg">
+            </ngb-pagination>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

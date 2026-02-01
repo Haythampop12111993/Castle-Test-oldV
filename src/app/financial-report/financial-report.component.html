@@ -1,0 +1,1121 @@
+<div class="container-fluid">
+  <div class="proj-details">
+    <div class="proj-details">
+      <div class="row">
+        <div class="col-xs-4">
+          <h3></h3>
+        </div>
+      </div>
+      <div class="row">
+        <div
+          class="col-md-12 pb-20 d-flex justify-content-between align-items-center"
+        >
+          <ul class="nav nav-pills">
+            <li
+              class="nav-item"
+              [ngClass]="{ active: view == 'bounced-checks' }"
+            >
+              <a class="nav-link" (click)="setView('bounced-checks')"
+                >Bounced Checks</a
+              >
+            </li>
+            <li
+              class="nav-item"
+              [ngClass]="{ active: view == 'sales-reports' }"
+            >
+              <a class="nav-link" (click)="setView('sales-reports')">
+                Sales Reports</a
+              >
+            </li>
+            <li
+              class="nav-item"
+              [ngClass]="{ active: view == 'delivery-date' }"
+            >
+              <a class="nav-link" (click)="setView('delivery-date')">
+                Delivery Date
+              </a>
+            </li>
+            <li class="nav-item" [ngClass]="{ active: view == 'matching' }">
+              <a class="nav-link" (click)="setView('matching')">
+                Sales Receivable Analysis
+              </a>
+            </li>
+            <li
+              class="nav-item"
+              [ngClass]="{ active: view == 'post_date_analysis' }"
+            >
+              <a class="nav-link" (click)="setView('post_date_analysis')">
+                Post Dated Cheque Analysis</a
+              >
+            </li>
+            <li
+              class="nav-item"
+              [ngClass]="{ active: view == 'combined-statement' }"
+            >
+              <a class="nav-link" (click)="setView('combined-statement')">
+                Consolidated Portfolio
+              </a>
+            </li>
+            <li class="nav-item" [ngClass]="{ active: view == 'area-counter' }">
+              <a class="nav-link" (click)="setView('area-counter')">
+                Area Counter
+              </a>
+            </li>
+          </ul>
+          <div>
+            <button
+              [disabled]="downloading_export || isLoading"
+              class="btn"
+              (click)="downloadReport()"
+            >
+              <i class="fa fa-download"></i>
+            </button>
+            <button
+              class="btn"
+              (click)="views_conf.filters = !views_conf.filters"
+              *ngIf="view != 'area-counter'"
+            >
+              <i class="fa fa-filter"></i>
+            </button>
+            <button
+              class="btn"
+              *ngIf="views_conf.charts !== null"
+              (click)="views_conf.charts = !views_conf.charts"
+            >
+              <i class="fa fa-table" *ngIf="views_conf.charts"></i>
+              <i class="fa fa-line-chart" *ngIf="!views_conf.charts"></i>
+            </button>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <!-- filters -->
+          <div class="filters row m-0 p-15" *ngIf="views_conf.filters">
+            <form class="col-md-12">
+              <div class="row m-3">
+                <div
+                  class="col-md-4 form-group"
+                  *ngIf="filter_schema.filter_project_id"
+                >
+                  <label for="project_id">Project</label>
+                  <ng-select
+                    [multiple]="true"
+                    id="project_id"
+                    name="project_id"
+                    [(ngModel)]="filter_form['filter_project_id[]']"
+                  >
+                    <ng-option [disabled]="true" value="">Select</ng-option>
+                    <ng-option
+                      *ngFor="let project of filter_dependencies.projects"
+                      [value]="project.id"
+                      >{{ project.name }}</ng-option
+                    >
+                  </ng-select>
+                </div>
+                <div
+                  class="col-md-4 form-group"
+                  *ngIf="filter_schema.filter_lead"
+                >
+                  <label for="lead_id">Lead</label>
+                  <input
+                    type="text"
+                    placeholder="Lead"
+                    [(ngModel)]="filter_form.filter_lead"
+                    class="form-control"
+                    name="lead_id"
+                    id="lead_id"
+                  />
+                </div>
+                <div
+                  class="col-md-4 form-group"
+                  *ngIf="filter_schema.filter_unit"
+                >
+                  <label for="unit_id">Unit</label>
+                  <input
+                    type="text"
+                    placeholder="Unit"
+                    [(ngModel)]="filter_form.filter_unit"
+                    class="form-control"
+                    name="unit_id"
+                    id="unit_id"
+                  />
+                </div>
+                <div
+                  class="col-md-4 form-group"
+                  *ngIf="filter_schema.filter_unit_type_id"
+                >
+                  <label for="unit_type_id">Unit Type</label>
+                  <ng-select
+                    [multiple]="true"
+                    id="unit_type_id"
+                    name="unit_type_id"
+                    [(ngModel)]="filter_form['filter_unit_type_id[]']"
+                  >
+                    <ng-option [disabled]="true" value="">Select</ng-option>
+                    <ng-option
+                      *ngFor="let type of filter_dependencies.unitTypes"
+                      [value]="type.id"
+                      >{{ type.name }}</ng-option
+                    >
+                  </ng-select>
+                </div>
+                <div
+                  class="col-md-4 form-group"
+                  *ngIf="filter_schema.filter_store_bank_id"
+                >
+                  <label for="project_id">Bank</label>
+                  <ng-select
+                    [multiple]="true"
+                    id="project_id"
+                    name="project_id"
+                    [(ngModel)]="filter_form['filter_store_bank_id[]']"
+                  >
+                    <ng-option [disabled]="true" value="">Select</ng-option>
+                    <ng-option
+                      *ngFor="let bank of filter_dependencies.banks"
+                      [value]="bank.id"
+                      >{{ bank.name }}</ng-option
+                    >
+                  </ng-select>
+                </div>
+                <div
+                  class="col-md-4 form-group"
+                  *ngIf="filter_schema.filter_year"
+                >
+                  <label for="year">Year</label>
+                  <ng-select
+                    id="year"
+                    name="year"
+                    [(ngModel)]="filter_form.filter_year"
+                  >
+                    <ng-option [disabled]="true" value="">Select</ng-option>
+                    <ng-option
+                      *ngFor="let year of filter_dependencies.years"
+                      [value]="year"
+                      >{{ year }}</ng-option
+                    >
+                  </ng-select>
+                </div>
+                <div
+                  class="col-md-4 form-group"
+                  *ngIf="filter_schema.filter_date_from"
+                >
+                  <label for="from_date">From Date</label>
+                  <input
+                    type="date"
+                    placeholder="From Date"
+                    [(ngModel)]="filter_form.filter_date_from"
+                    class="form-control"
+                    name="from_date"
+                    id="from_date"
+                  />
+                </div>
+                <div
+                  class="col-md-4 form-group"
+                  *ngIf="filter_schema.filter_date_to"
+                >
+                  <label for="to_date">To Date</label>
+                  <input
+                    type="date"
+                    placeholder="To Date"
+                    [(ngModel)]="filter_form.filter_date_to"
+                    class="form-control"
+                    name="to_date"
+                    id="to_date"
+                  />
+                </div>
+                <div
+                  class="col-md-4 form-group"
+                  *ngIf="filter_schema.filter_deal_status"
+                >
+                  <label for="year">Deal Status</label>
+                  <ng-select
+                    id="deal_status"
+                    name="deal_status"
+                    [(ngModel)]="filter_form.filter_deal_status"
+                  >
+                    <ng-option [disabled]="true" value="">Select</ng-option>
+                    <ng-option
+                      *ngFor="
+                        let deal_status of filter_dependencies.deal_statuses
+                      "
+                      [value]="deal_status"
+                      >{{ deal_status }}</ng-option
+                    >
+                  </ng-select>
+                </div>
+                <div
+                  class="col-md-4 form-group"
+                  *ngIf="filter_schema.filter_project_type"
+                >
+                  <label for="year">Project Type</label>
+                  <ng-select
+                    id="project_type"
+                    name="project_type"
+                    [(ngModel)]="filter_form.filter_project_type"
+                  >
+                    <ng-option [disabled]="true" value="">Select</ng-option>
+                    <ng-option
+                      *ngFor="
+                        let project_type of filter_dependencies.project_types
+                      "
+                      [value]="project_type"
+                      >{{ project_type }}</ng-option
+                    >
+                  </ng-select>
+                </div>
+                <div
+                  class="col-md-4 form-group"
+                  *ngIf="filter_schema.filter_payment_type"
+                >
+                  <label for="year">Payment Type</label>
+                  <ng-select
+                    id="payment_type"
+                    name="payment_type"
+                    [(ngModel)]="filter_form.filter_payment_type"
+                  >
+                    <ng-option [disabled]="true" value="">Select</ng-option>
+                    <ng-option
+                      *ngFor="
+                        let payment_type of filter_dependencies.payment_types
+                      "
+                      [value]="payment_type"
+                      >{{ payment_type }}</ng-option
+                    >
+                  </ng-select>
+                </div>
+                <div class="col-md-4 filter-buttons">
+                  <button class="filter-btn" (click)="getData()" value="button">
+                    Filter
+                  </button>
+                  <button
+                    class="reset-btn"
+                    (click)="filter_form = {}; getData()"
+                    value="button"
+                  >
+                    Reset
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div
+            *ngIf="isLoading"
+            class="loader-wrapper text-center"
+            role="status"
+          >
+            <div class="loader">{{ loader.text }}</div>
+          </div>
+
+          <!-- Bounced Checks -->
+          <div class="row m-0" *ngIf="view == 'bounced-checks' && !isLoading">
+            <div class="col-md-12 table-responsive">
+              <table class="table">
+                <tr class="heading monthly-record">
+                  <th class="heading centered" colspan="8">
+                    Bounced chequess Project Level
+                    <span
+                      *ngIf="
+                        filter_form.filter_date_from ||
+                        filter_form.filter_date_to
+                      "
+                    >
+                      ({{
+                        filter_form.filter_date_from
+                          ? filter_form.filter_date_from
+                          : "Start"
+                      }}
+                      to
+                      {{
+                        filter_form.filter_date_to
+                          ? filter_form.filter_date_to
+                          : "Now"
+                      }})
+                    </span>
+                  </th>
+                </tr>
+                <tr>
+                  <th class="centered status" colspan="4">Unit Details</th>
+                  <th class="centered status" colspan="4">
+                    Bounced Cheque Details
+                  </th>
+                </tr>
+                <tr>
+                  <th class="centered status">Customer</th>
+                  <th class="centered status">Project</th>
+                  <th class="centered status">Unit Serial</th>
+                  <th class="centered status">Unit Type</th>
+                  <th class="centered status">Amount</th>
+                  <th class="centered status">Date</th>
+                  <th class="centered status">No. of days late in payment</th>
+                  <th class="centered status">
+                    Historical Status From Return Cheques
+                  </th>
+                </tr>
+                <tr *ngFor="let row of reports.bounced_cheques">
+                  <td class="centered">
+                    {{ row?.reservation?.sharing_lead_names }}
+                  </td>
+                  <td class="centered">
+                    {{ row?.unit?.project?.name }}
+                  </td>
+                  <td class="centered">
+                    <a
+                      [routerLink]="['/pages/projects/view-unit']"
+                      [queryParams]="{ unit_id: row?.unit?.id }"
+                      >{{ row?.unit?.serial }}</a
+                    >
+                  </td>
+                  <td class="centered">
+                    {{ row?.unit?.unit_type?.name }}
+                  </td>
+                  <td class="centered">{{ row?.amount | currency : " " }}</td>
+                  <td class="centered">{{ row?.date }}</td>
+                  <td class="centered">{{ row?.days_late }}</td>
+                  <td class="centered">
+                    {{ row?.lead?.num_bounced_cheques }}
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <!-- Sales Reports -->
+          <div class="row m-0" *ngIf="view == 'sales-reports' && !isLoading">
+            <div class="col-md-12 table-responsive" *ngIf="!views_conf.charts">
+              <table class="table">
+                <tr class="heading monthly-sources centered">
+                  <th class="heading centered" colspan="10">
+                    The sales Report Project Level
+                    <span
+                      *ngIf="
+                        filter_form.filter_date_from ||
+                        filter_form.filter_date_to
+                      "
+                    >
+                      ({{
+                        filter_form.filter_date_from
+                          ? filter_form.filter_date_from
+                          : "Start"
+                      }}
+                      to
+                      {{
+                        filter_form.filter_date_to
+                          ? filter_form.filter_date_to
+                          : "Now"
+                      }})
+                    </span>
+                  </th>
+                </tr>
+                <tr>
+                  <th
+                    class="centered status"
+                    class="centered status vertical-align-center"
+                    rowspan="2"
+                  >
+                    Project
+                  </th>
+
+                  <th class="centered status" colspan="2">Total Sold Unit</th>
+
+                  <th class="centered status" colspan="2">
+                    Total Checks Received
+                  </th>
+
+                  <th class="centered status" colspan="3">Collected</th>
+
+                  <th class="centered status" colspan="2">Bounced</th>
+                  <!-- <th class="centered status">Total Fines</th> -->
+                </tr>
+                <tr>
+                  <th class="centered status">Num</th>
+                  <th class="centered status">Value</th>
+
+                  <th class="centered status">Num</th>
+                  <th class="centered status">Value</th>
+
+                  <th class="centered status">Num</th>
+                  <th class="centered status">Value</th>
+                  <th class="centered status">percentage</th>
+
+                  <th class="centered status">Num</th>
+                  <th class="centered status">Value</th>
+                </tr>
+                <tr *ngFor="let row of reports.projects_sales">
+                  <td class="centered">{{ row?.project_name }}</td>
+
+                  <td class="centered">{{ row?.sold_units_num }}</td>
+                  <td class="centered">
+                    {{ row?.sold_units_value | currency : " " }}
+                  </td>
+
+                  <td class="centered">{{ row?.cheques_num }}</td>
+                  <td class="centered">
+                    {{ row?.cheques_value | currency : " " }}
+                  </td>
+
+                  <td class="centered">
+                    {{ row?.collected_num }}
+                  </td>
+                  <td class="centered">
+                    {{ row?.collected_value | currency : " " }}
+                  </td>
+                  <td class="centered">{{ row?.collected_percentage }} %</td>
+
+                  <td class="centered">{{ row?.bounced_num }}</td>
+                  <td class="centered">
+                    {{ row?.bounced_value | currency : " " }}
+                  </td>
+                  <!-- <td class="centered"></td> -->
+                </tr>
+              </table>
+            </div>
+            <div class="col-md-12" *ngIf="views_conf.charts">
+              <div style="max-height: 300px">
+                <canvas
+                  baseChart
+                  height="600"
+                  [datasets]="charts.projects_sales.datasets"
+                  [labels]="charts.projects_sales.labels"
+                  [options]="chartOptions"
+                  [legend]="true"
+                  [chartType]="'line'"
+                ></canvas>
+              </div>
+            </div>
+          </div>
+          <!-- Delivery Date -->
+          <div class="row m-0" *ngIf="view == 'delivery-date' && !isLoading">
+            <div class="col-md-12 table-responsive">
+              <table class="table">
+                <tr class="heading monthly-sources centered">
+                  <th class="heading centered" colspan="10">
+                    Payment status and delivery date
+                    <span
+                      *ngIf="
+                        filter_form.filter_date_from ||
+                        filter_form.filter_date_to
+                      "
+                    >
+                      ({{
+                        filter_form.filter_date_from
+                          ? filter_form.filter_date_from
+                          : "Start"
+                      }}
+                      to
+                      {{
+                        filter_form.filter_date_to
+                          ? filter_form.filter_date_to
+                          : "Now"
+                      }})
+                    </span>
+                  </th>
+                </tr>
+                <tr>
+                  <th class="centered status" colspan="5">Unit Details</th>
+                  <th class="centered status" colspan="2">Payment Details</th>
+                  <th class="centered status" colspan="3">Contract Details</th>
+                </tr>
+                <tr>
+                  <th class="centered status">Project</th>
+                  <th class="centered status">Unit Serial</th>
+                  <th class="centered status">Unit Type</th>
+                  <th class="centered status">Unit Price</th>
+                  <th class="centered status">Customer Name</th>
+
+                  <th class="centered status">
+                    Amount Paid / Collected To Date
+                  </th>
+                  <th class="centered status">% Paid / Collected To Date</th>
+
+                  <th class="centered status">Contract Date</th>
+                  <th class="centered status">
+                    Delivery Date After Grace Period
+                  </th>
+                  <th class="centered status">No. of Days to delivering</th>
+                </tr>
+                <tr *ngFor="let row of reports.payment_status">
+                  <td class="centered">{{ row?.unit?.project?.name }}</td>
+                  <td class="centered">
+                    <a
+                      [routerLink]="['/pages/projects/view-unit']"
+                      [queryParams]="{ unit_id: row?.unit?.id }"
+                      >{{ row?.unit?.serial }}</a
+                    >
+                  </td>
+                  <td class="centered">{{ row?.unit?.unit_type?.name }}</td>
+                  <td class="centered">
+                    {{ row?.unit_price | currency : " " }}
+                  </td>
+                  <td class="centered">{{ row?.sharing_lead_names }}</td>
+                  <td class="centered">
+                    {{ row?.collected_value | currency : " " }}
+                  </td>
+                  <td class="centered">{{ row?.collected_percentage }} %</td>
+                  <td class="centered">{{ row?.contract_date }}</td>
+                  <td class="centered">
+                    {{ row?.delivery_date_after_grace_period }}
+                  </td>
+                  <td class="centered">{{ row?.num_days_to_delivering }}</td>
+                </tr>
+              </table>
+            </div>
+            <div class="col-md-12 text-center">
+              <ngb-pagination
+                [collectionSize]="paginate.total"
+                [(page)]="page"
+                [pageSize]="paginate.per_page"
+                [maxSize]="5"
+                [rotate]="true"
+                [ellipses]="true"
+                [boundaryLinks]="true"
+                (pageChange)="getPaymentStatusReport($event)"
+                [size]="lg"
+              >
+              </ngb-pagination>
+            </div>
+          </div>
+          <!-- A.R. Matching -->
+          <div class="row m-0" *ngIf="view == 'matching' && !isLoading">
+            <div class="col-md-12 table-responsive" *ngIf="!views_conf.charts">
+              <table class="table">
+                <tr class="heading monthly-sources centered">
+                  <th
+                    class="heading centered"
+                    [attr.colspan]="3 + reports.matching.headers.length * 2"
+                  >
+                    Sales Receivable Analysis
+                    <span
+                      *ngIf="
+                        filter_form.filter_date_from ||
+                        filter_form.filter_date_to
+                      "
+                    >
+                      ({{
+                        filter_form.filter_date_from
+                          ? filter_form.filter_date_from
+                          : "Start"
+                      }}
+                      to
+                      {{
+                        filter_form.filter_date_to
+                          ? filter_form.filter_date_to
+                          : "Now"
+                      }})
+                    </span>
+                  </th>
+                </tr>
+                <tr>
+                  <th class="centered status vertical-align-center" rowspan="2">
+                    Project
+                  </th>
+                  <th class="centered status" colspan="2">
+                    Total Checks Received
+                  </th>
+                  <th
+                    class="centered status"
+                    colspan="2"
+                    *ngFor="let bank of reports.matching.headers"
+                  >
+                    {{ bank }}
+                  </th>
+                </tr>
+                <tr>
+                  <th class="centered status">No.</th>
+                  <th class="centered status">Value</th>
+
+                  <ng-container *ngFor="let bank of reports.matching.headers">
+                    <th class="centered status">Amount</th>
+                    <th class="centered status">%</th>
+                  </ng-container>
+                </tr>
+                <tr *ngFor="let project of reports.matching.data">
+                  <td>{{ project.project_name }}</td>
+                  <td>{{ project.total_cheques }}</td>
+                  <td>{{ project.total_cheques_value | currency : " " }}</td>
+                  <ng-container *ngFor="let bank of reports.matching.headers">
+                    <td class="centered status">
+                      {{ project.banks[bank].amount | currency : " " }}
+                    </td>
+                    <td class="centered status">
+                      {{ project.banks[bank].percentage }}
+                    </td>
+                  </ng-container>
+                </tr>
+              </table>
+            </div>
+            <div class="col-md-12" *ngIf="views_conf.charts && charts.matching">
+              <div style="max-height: 300px">
+                <canvas
+                  baseChart
+                  height="600"
+                  [datasets]="charts.matching.datasets"
+                  [labels]="charts.matching.labels"
+                  [options]="chartOptions"
+                  [legend]="true"
+                  [chartType]="'line'"
+                ></canvas>
+              </div>
+            </div>
+          </div>
+          <!-- Post Date Analysis -->
+          <div
+            class="row m-0"
+            *ngIf="view == 'post_date_analysis' && !isLoading"
+          >
+            <div class="col-md-12 table-responsive" *ngIf="!views_conf.charts">
+              <table class="table">
+                <tr class="heading monthly-sources centered">
+                  <th
+                    class="heading centered"
+                    [attr.colspan]="
+                      3 + reports.post_date_analysis.years.headers.length * 2
+                    "
+                  >
+                    Post Dated Cheque Analysis
+                    <span
+                      *ngIf="
+                        filter_form.filter_date_from ||
+                        filter_form.filter_date_to
+                      "
+                    >
+                      ({{
+                        filter_form.filter_date_from
+                          ? filter_form.filter_date_from
+                          : "Start"
+                      }}
+                      to
+                      {{
+                        filter_form.filter_date_to
+                          ? filter_form.filter_date_to
+                          : "Now"
+                      }})
+                    </span>
+                  </th>
+                </tr>
+                <tr>
+                  <th class="centered status vertical-align-center" rowspan="2">
+                    Year
+                  </th>
+                  <th class="centered status" colspan="2">Post Date Cheques</th>
+                  <th
+                    class="centered status"
+                    *ngFor="
+                      let bank of reports.post_date_analysis.years.headers
+                    "
+                    colspan="2"
+                  >
+                    {{ bank }}
+                  </th>
+                </tr>
+                <tr>
+                  <th class="centered status">No.</th>
+                  <th class="centered status">Value</th>
+                  <ng-container
+                    *ngFor="
+                      let bank of reports.post_date_analysis.years.headers
+                    "
+                  >
+                    <th class="centered status">No.</th>
+                    <th class="centered status">Value</th>
+                  </ng-container>
+                </tr>
+                <tr
+                  *ngFor="let project of reports.post_date_analysis.years.data"
+                >
+                  <td>{{ project.year_name }}</td>
+
+                  <td>{{ project.post_date_cheques }}</td>
+                  <td>
+                    {{ project.post_date_cheques_value | currency : " " }}
+                  </td>
+
+                  <ng-container
+                    *ngFor="
+                      let bank of reports.post_date_analysis.years.headers
+                    "
+                  >
+                    <td class="centered status">
+                      {{ project.banks[bank].amount }}
+                    </td>
+                    <td class="centered status">
+                      {{ project.banks[bank].value | currency : " " }}
+                    </td>
+                  </ng-container>
+                </tr>
+              </table>
+            </div>
+            <div
+              class="col-md-12"
+              *ngIf="
+                views_conf.charts &&
+                !filter_form.filter_year &&
+                charts.post_date_analysis.years
+              "
+            >
+              <div style="max-height: 300px">
+                <canvas
+                  baseChart
+                  height="600"
+                  [datasets]="charts.post_date_analysis.years.datasets"
+                  [labels]="charts.post_date_analysis.years.labels"
+                  [options]="chartOptions"
+                  [legend]="true"
+                  [chartType]="'line'"
+                ></canvas>
+              </div>
+            </div>
+            <div class="col-md-12 table-responsive" *ngIf="!views_conf.charts">
+              <button
+                [disabled]="downloading_export || isLoading"
+                class="btn pull-right margin-bottom-10"
+                (click)="downloadReport('year')"
+              >
+                <i class="fa fa-download"></i>
+              </button>
+              <table class="table">
+                <tr class="heading monthly-sources centered">
+                  <th
+                    class="heading centered"
+                    [attr.colspan]="
+                      3 + reports.post_date_analysis.months.headers.length * 2
+                    "
+                  >
+                    Post Dated Cheque Analysis
+                    <span
+                      *ngIf="
+                        filter_form.filter_date_from ||
+                        filter_form.filter_date_to
+                      "
+                    >
+                      ({{
+                        filter_form.filter_date_from
+                          ? filter_form.filter_date_from
+                          : "Start"
+                      }}
+                      to
+                      {{
+                        filter_form.filter_date_to
+                          ? filter_form.filter_date_to
+                          : "Now"
+                      }})
+                    </span>
+                  </th>
+                </tr>
+                <tr>
+                  <th class="centered status vertical-align-center" rowspan="2">
+                    Month
+                  </th>
+                  <th class="centered status" colspan="2">Post Date Cheques</th>
+                  <th
+                    class="centered status"
+                    *ngFor="
+                      let bank of reports.post_date_analysis.months.headers
+                    "
+                    colspan="2"
+                  >
+                    {{ bank }}
+                  </th>
+                </tr>
+                <tr>
+                  <th class="centered status">No.</th>
+                  <th class="centered status">Value</th>
+                  <ng-container
+                    *ngFor="
+                      let bank of reports.post_date_analysis.months.headers
+                    "
+                  >
+                    <th class="centered status">No.</th>
+                    <th class="centered status">Value</th>
+                  </ng-container>
+                </tr>
+                <tr
+                  *ngFor="let project of reports.post_date_analysis.months.data"
+                >
+                  <td>{{ project.month_name }}</td>
+
+                  <td>{{ project.post_date_cheques }}</td>
+                  <td>
+                    {{ project.post_date_cheques_value | currency : " " }}
+                  </td>
+
+                  <ng-container
+                    *ngFor="
+                      let bank of reports.post_date_analysis.months.headers
+                    "
+                  >
+                    <td class="centered status">
+                      {{ project.banks[bank].amount }}
+                    </td>
+                    <td class="centered status">
+                      {{ project.banks[bank].value | currency : " " }}
+                    </td>
+                  </ng-container>
+                </tr>
+              </table>
+            </div>
+            <div
+              class="col-md-12"
+              *ngIf="views_conf.charts && charts.post_date_analysis.months"
+            >
+              <div style="max-height: 300px">
+                <canvas
+                  baseChart
+                  height="600"
+                  [datasets]="charts.post_date_analysis.months.datasets"
+                  [labels]="charts.post_date_analysis.months.labels"
+                  [options]="chartOptions"
+                  [legend]="true"
+                  [chartType]="'line'"
+                ></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Combined Statement -->
+          <div
+            class="row m-0"
+            *ngIf="view == 'combined-statement' && !isLoading"
+          >
+            <div class="col-md-12 data-box-container">
+              <div class="data-box">
+                <div class="d-flex justify-content-between">
+                  <p class="stat-title">Sales</p>
+                </div>
+                <p class="value">
+                  {{
+                    reports.combined_statement.cards.total_sales_value
+                      | currency : " "
+                  }}
+                </p>
+              </div>
+              <div class="data-box">
+                <div class="d-flex justify-content-between">
+                  <p class="stat-title">Installments</p>
+                  <p class="count">
+                    {{
+                      reports.combined_statement.cards.total_installments_num
+                    }}
+                  </p>
+                </div>
+                <p class="value">
+                  {{
+                    reports.combined_statement.cards.total_installments_value
+                      | currency : " "
+                  }}
+                </p>
+              </div>
+              <div class="data-box">
+                <div class="d-flex justify-content-between">
+                  <p class="stat-title">Collected</p>
+                  <p class="count">
+                    {{
+                      reports.combined_statement.cards
+                        .total_collected_percentage
+                    }}
+                    %
+                  </p>
+                </div>
+                <p class="value">
+                  {{
+                    reports.combined_statement.cards.total_collected_value
+                      | currency : " "
+                  }}
+                </p>
+              </div>
+            </div>
+            <div class="col-md-12 table-responsive">
+              <table class="table">
+                <tr class="heading monthly-sources centered">
+                  <th class="heading centered" colspan="11">
+                    Consolidated Portfolio By Customer
+                    <span
+                      *ngIf="
+                        filter_form.filter_date_from ||
+                        filter_form.filter_date_to
+                      "
+                    >
+                      ({{
+                        filter_form.filter_date_from
+                          ? filter_form.filter_date_from
+                          : "Start"
+                      }}
+                      to
+                      {{
+                        filter_form.filter_date_to
+                          ? filter_form.filter_date_to
+                          : "Now"
+                      }})
+                    </span>
+                  </th>
+                </tr>
+                <tr>
+                  <th class="centered status" colspan="5">Unit Details</th>
+                  <th class="centered status" colspan="5">Payment Details</th>
+                  <th></th>
+                </tr>
+                <tr>
+                  <th class="centered status vertical-align-center" rowspan="2">
+                    Customer
+                  </th>
+                  <th class="centered status vertical-align-center" rowspan="2">
+                    Project
+                  </th>
+                  <th class="centered status vertical-align-center" rowspan="2">
+                    Unit Serial
+                  </th>
+                  <th class="centered status vertical-align-center" rowspan="2">
+                    Unit Type
+                  </th>
+                  <th class="centered status vertical-align-center" rowspan="2">
+                    Unit Price
+                  </th>
+
+                  <th class="centered status" colspan="2">installments</th>
+                  <th class="centered status vertical-align-center" rowspan="2">
+                    Installments Type
+                  </th>
+                  <th class="centered status vertical-align-center" rowspan="2">
+                    Amount Collected To Date
+                  </th>
+                  <th class="centered status vertical-align-center" rowspan="2">
+                    % Collected To Date
+                  </th>
+                  <th rowspan="2"></th>
+                </tr>
+                <tr>
+                  <th class="centered status">No.</th>
+                  <th class="centered status">Value</th>
+                </tr>
+                <tr *ngFor="let row of reports.combined_statement.data">
+                  <td class="centered">{{ row?.sharing_lead_names }}</td>
+                  <td class="centered">{{ row?.unit?.project?.name }}</td>
+                  <td class="centered">
+                    <a
+                      [routerLink]="['/pages/projects/view-unit']"
+                      [queryParams]="{ unit_id: row?.unit?.id }"
+                      >{{ row?.unit?.serial }}</a
+                    >
+                  </td>
+                  <td class="centered">{{ row?.unit?.unit_type?.name }}</td>
+                  <td class="centered">
+                    {{ row?.unit_price | currency : " " }}
+                  </td>
+
+                  <td class="centered">{{ row?.installments_num }}</td>
+                  <td class="centered">
+                    {{ row?.installments_value | currency : " " }}
+                  </td>
+
+                  <td class="centered">{{ row?.installments_type }}</td>
+                  <td class="centered">
+                    {{ row?.collected_value | currency : " " }}
+                  </td>
+                  <td class="centered">{{ row?.collected_percentage }} %</td>
+                  <td class="centered">
+                    <button
+                      class="btn"
+                      (click)="singleReportDownloadCombinedStatemenet(row)"
+                    >
+                      <i class="fa fa-download"></i>
+                    </button>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div class="col-md-12 text-center">
+              <ngb-pagination
+                [collectionSize]="paginate.total"
+                [(page)]="page"
+                [pageSize]="paginate.per_page"
+                [maxSize]="5"
+                [rotate]="true"
+                [ellipses]="true"
+                [boundaryLinks]="true"
+                (pageChange)="getCombinedStatementReport($event)"
+                [size]="lg"
+              >
+              </ngb-pagination>
+            </div>
+          </div>
+
+          <!-- Area Counter -->
+          <div class="row min-h-70" *ngIf="view == 'area-counter'">
+            <div class="col-md-12">
+              <div class="row">
+                <div class="col-md-4 form-group">
+                  <label for="project_id">Project</label>
+                  <ng-select
+                    id="project_id"
+                    name="project_id"
+                    [(ngModel)]="area_counter_form.project_id"
+                    (change)="onProjectAreaCounterChange($event)"
+                  >
+                    <ng-option
+                      *ngFor="let project of projects"
+                      [value]="project.id"
+                      >{{ project.name }}</ng-option
+                    >
+                  </ng-select>
+                </div>
+
+                <div class="col-md-4 form-group">
+                  <label for="type">Type</label>
+                  <ng-select
+                    id="type"
+                    name="type"
+                    [(ngModel)]="area_counter_form.type"
+                  >
+                    <ng-option
+                      *ngFor="let type of designTypes"
+                      [value]="type.id"
+                      >{{ type.name }}</ng-option
+                    >
+                  </ng-select>
+                </div>
+
+                <div class="col-md-4 form-group">
+                  <label for="date">Date</label>
+                  <input
+                    type="date"
+                    placeholder="Date"
+                    [(ngModel)]="area_counter_form.date"
+                    class="form-control"
+                    name="date"
+                    id="date"
+                  />
+                </div>
+
+                <div class="col-md-12 filter-buttons flex justify-content-end">
+                  <button
+                    class="filter-btn"
+                    [disabled]="
+                      !area_counter_form.date ||
+                      !area_counter_form.type ||
+                      !area_counter_form.project_id
+                    "
+                    (click)="getData()"
+                    value="button"
+                  >
+                    Submit
+                  </button>
+                </div>
+              </div>
+
+              <div class="row" *ngIf="area != null && area != undefined">
+                <div class="col-md-12">
+                  <div class="data-box">
+                    <div class="d-flex justify-content-between">
+                      <p class="stat-title">Area</p>
+                    </div>
+                    <p class="value">
+                      {{ area | currency : " " }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

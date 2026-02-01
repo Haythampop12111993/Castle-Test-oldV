@@ -1,0 +1,43 @@
+<mat-card>
+  <mat-card-content>
+    <h3 class="card__title lato">Finance manager Pin Settings</h3>
+    <div class="row" *ngIf="pin_details">
+      <div class="col-xs-12 margin-bottom">
+        <form #pinForm="ngForm">
+          <div class="col-xs-3">
+            <div class="form-inline">
+              <label for="">Finance manager Pin code : </label>
+              <input
+                type="text"
+                class="form-control lato"
+                name="pin_details"
+                [ngClass]="{ 'edit-mode-active': pin_details.edit_mode }"
+                [(ngModel)]="pin_details.value"
+                [disabled]="!pin_details.edit_mode"
+              />
+            </div>
+          </div>
+          <div class="col-xs-1 col-xs-offset-8">
+            <div class="buttons">
+              <button
+                class="btn btn-primary"
+                *ngIf="!pin_details?.edit_mode"
+                (click)="edit_pin()"
+              >
+                Edit
+              </button>
+              <button
+                class="btn btn-success"
+                *ngIf="pin_details?.edit_mode"
+                (click)="save_pin()"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </mat-card-content>
+  <mat-card-actions></mat-card-actions>
+</mat-card>

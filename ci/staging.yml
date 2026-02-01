@@ -1,0 +1,54 @@
+image: node:8.9-alpine
+
+stages:
+  - dependencies
+  - build
+  - deploy
+
+variables:
+  NPM_CONFIG_LOGLEVEL: warn
+  NPM_CONFIG_FUND: false
+  NPM_CONFIG_AUDIT: false
+  NPM_CONFIG_REGISTRY: https://registry.npmmirror.com/
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - .npm/
+    # Exclude node_modules to avoid stale/corrupted binaries in old Node versions
+
+install_dependencies:
+  stage: dependencies
+  script:
+    - echo "Installing dependencies for legacy Angular 5 (Node 8/npm 5.6)"
+    - npm cache clean --force
+    - rm -rf node_modules
+    - npm install --no-optional || (echo "Retrying npm install..." && sleep 5 && npm install --no-optional)
+  artifacts:
+    paths:
+      - node_modules/
+
+build:
+  stage: build
+  script:
+    - echo "Building Angular project (staging config)"
+    - npm run build:staging
+  artifacts:
+    paths:
+      - dist/
+
+deploy:
+  image: alpine
+  stage: deploy
+  before_script:
+    - apk add --no-cache openssh-client
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY_STAGING" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan "$SSH_IP_STAGING" >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+  script:
+    - echo "Deploying build to staging server"
+    - cd dist
+    - scp -r * "$SSH_USER@$SSH_IP_STAGING:$SSH_PATH_STAGING"

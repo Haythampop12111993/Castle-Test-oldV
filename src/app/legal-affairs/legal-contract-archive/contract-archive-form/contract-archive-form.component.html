@@ -1,0 +1,72 @@
+<section class="case-form" dir="rtl" lang="ar">
+  <div class="container-fluid">
+    <div class="flex">
+      <h2 *ngIf="!case_id">إضافة ملف</h2>
+      <h2 *ngIf="case_id">تعديل ملف</h2>
+    </div>
+    <div class="border-sec">
+      <form>
+        <div class="form-group">
+          <label for="name">الاسم</label>
+          <input
+            type="text"
+            class="form-control"
+            id="name"
+            name="name"
+            [(ngModel)]="form_data.name"
+          />
+          <div
+            *ngIf="submitted && errors && errors?.name"
+            class="text-danger mt-1"
+          >
+            {{ errors?.name?.join(", ") }}
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="description">التفاصيل</label>
+          <editor
+            [init]="editorConfig"
+            id="desc"
+            name="desc"
+            dir="rtl"
+            [(ngModel)]="form_data.desc"
+          >
+          </editor>
+          <div
+            *ngIf="submitted && errors && errors?.desc"
+            class="text-danger mt-1"
+          >
+            {{ errors?.desc?.join(", ") }}
+          </div>
+        </div>
+        <div class="form-group" *ngIf="form_data.files">
+          <label for="files">الملفات</label>
+          <input
+            type="file"
+            multiple
+            class="form-control"
+            id="files"
+            name="files"
+            (change)="handleUploadFiles($event)"
+          />
+          <div
+            *ngIf="submitted && errors && errors?.files"
+            class="text-danger mt-1"
+          >
+            {{ errors?.files?.join(", ") }}
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="d-flex justify-content-end">
+      <button
+        type="submit"
+        [disabled]="is_submitting"
+        (click)="save()"
+        class="btn btn-default btn-black"
+      >
+        حفظ
+      </button>
+    </div>
+  </div>
+</section>
